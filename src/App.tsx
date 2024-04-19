@@ -1,7 +1,23 @@
+import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
+import StoreWrapper from "./stores/index";
+
+import { Background } from "@components/index";
+
+import "./all.scss";
+
+const router = createBrowserRouter([{
+    id: "app",
+    errorElement: <h1 className="somethingWentWrong">Something went wrong</h1>,
+    element: <StoreWrapper>
+        <Background />
+
+        <Outlet />
+    </StoreWrapper>,
+    children: [
+        { id: "home", path: "/", element: <></> }
+    ]
+}]);
+
 export default function App() {
-    return (
-        <h1>
-            This is the new Blacket Rewrite AKA Blacket V3.
-        </h1>
-    );
+    return <RouterProvider router={router} />;
 }
