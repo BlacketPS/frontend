@@ -1,17 +1,15 @@
 import { Background, Loader } from "@components/index";
 
-export default function Loading({ error = false, message }: { error?: boolean, message: string }) {
-    document.title = `Loading | ${import.meta.env.VITE_INFORMATION_NAME}`;
+export default function Loading({ error, message }: { error?: boolean, message: string }) {
+    return (
+        <>
+            <Background />
 
-    if (error) return (<>
-        <Background />
-
-        <Loader image="/content/blooks/Error.png" motionless={true} message={`Failed to load ${message}.`} />
-    </>);
-
-    return (<>
-        <Background />
-
-        <Loader image="/content/blooks/Console.gif" message={`Loading ${message}...`} />
-    </>);
+            <Loader
+                motionless={error}
+                image={!error ? "/content/blooks/Console.gif" : "/content/blooks/Error.png"}
+                message={!error ? `Loading ${message}...` : `Failed to load ${message}.`}
+            />
+        </>
+    );
 }

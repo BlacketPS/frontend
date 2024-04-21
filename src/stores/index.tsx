@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 
 import { ConfigStoreProvider } from "./ConfigStore";
+import { LoadingStoreProvider } from "./LoadingStore";
 import { SocketStoreProvider } from "./SocketStore";
 import { UserStoreProvider } from "./UserStore";
 import { BlookStoreProvider } from "./BlookStore";
@@ -15,27 +16,29 @@ import { EmojiStoreProvider } from "./EmojiStore";
 export default function StoreWrapper({ children }: { children: ReactNode }) {
     return (
         <ConfigStoreProvider>
-            <SocketStoreProvider>
-                <UserStoreProvider>
-                    <BlookStoreProvider>
-                        <RarityStoreProvider>
-                            <PackStoreProvider>
-                                <ItemStoreProvider>
-                                    <TitleStoreProvider>
-                                        <BannerStoreProvider>
-                                            <BadgeStoreProvider>
-                                                <EmojiStoreProvider>
-                                                    {children}
-                                                </EmojiStoreProvider>
-                                            </BadgeStoreProvider>
-                                        </BannerStoreProvider>
-                                    </TitleStoreProvider>
-                                </ItemStoreProvider>
-                            </PackStoreProvider>
-                        </RarityStoreProvider>
-                    </BlookStoreProvider>
-                </UserStoreProvider>
-            </SocketStoreProvider>
+            <LoadingStoreProvider>
+                <SocketStoreProvider>
+                    <UserStoreProvider>
+                        <BlookStoreProvider>
+                            <RarityStoreProvider>
+                                <PackStoreProvider>
+                                    <ItemStoreProvider>
+                                        <TitleStoreProvider>
+                                            <BannerStoreProvider>
+                                                <BadgeStoreProvider>
+                                                    <EmojiStoreProvider>
+                                                        {children}
+                                                    </EmojiStoreProvider>
+                                                </BadgeStoreProvider>
+                                            </BannerStoreProvider>
+                                        </TitleStoreProvider>
+                                    </ItemStoreProvider>
+                                </PackStoreProvider>
+                            </RarityStoreProvider>
+                        </BlookStoreProvider>
+                    </UserStoreProvider>
+                </SocketStoreProvider>
+            </LoadingStoreProvider>
         </ConfigStoreProvider>
     );
 }

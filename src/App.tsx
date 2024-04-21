@@ -1,21 +1,19 @@
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
 import StoreWrapper from "./stores/index";
-
-import { Background } from "@components/index";
+import * as routes from "./views/index.routes";
+import useCreateRoute from "./useCreateRoute";
+import { Route } from "./useCreateRoute";
+import Error from "./views/Error";
 
 import "./all.scss";
 
 const router = createBrowserRouter([{
     id: "app",
-    errorElement: <h1 className="somethingWentWrong">Something went wrong</h1>,
+    errorElement: <Error code={0} />,
     element: <StoreWrapper>
-        <Background />
-
         <Outlet />
     </StoreWrapper>,
-    children: [
-        { id: "home", path: "/", element: <></> }
-    ]
+    children: Object.values(routes).map((route) => useCreateRoute(route as Route))
 }]);
 
 export default function App() {
