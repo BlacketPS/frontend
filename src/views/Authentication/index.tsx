@@ -1,99 +1,110 @@
-/* import { useState } from "react";
-import { Navigate } from "react-router-dom";
+import { useState } from "react";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useLoading } from "@stores/LoadingStore";
-import { useUser } from "@stores/UserStore";
 import { useModal } from "@stores/ModalStore";
-import { useLogin, useRegister } from "@controllers/auth";
-import { HeaderBody, Input } from "@components";
-import { Container, Header, AgreeHolder, SubmitButton, ErrorContainer } from "@components/Authentication";
-import { OtpModal } from "@components/Modals/Authentication";
+import { useUser } from "@stores/UserStore";
+import { useLogin } from "@controllers/auth/useLogin/index";
+import { useRegister } from "@controllers/auth/useRegister/index";
+import { Input, ErrorContainer } from "@components/index";
+import { AgreeHolder, OtpModal, SubmitButton } from "./components/index";
 
-export default function Authentication({ type }) {
+import { AuthenticationType, AuthenticationProps } from "./authentication.d";
+import { LoginResponse } from "@controllers/auth/useLogin/useLogin.d";
+
+import styles from "./authentication.module.scss";
+
+export default function Authentication({ type }: AuthenticationProps) {
+    const navigate = useNavigate();
+
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [accessCode, setAccessCode] = useState<string>("");
+    const [checked, setChecked] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
+
     const { setLoading } = useLoading();
-    const { user } = useUser();
     const { createModal } = useModal();
+    const { user } = useUser();
+
+    const { login } = useLogin();
+    const { register } = useRegister();
 
     if (user) return <Navigate to="/dashboard" />;
-
-    const login = useLogin();
-    const register = useRegister();
-
-    const [username, setUsername] = useState("");
-    const [password, setPassword] = useState("");
-    const [accessCode, setAccessCode] = useState("");
-    const [checked, setChecked] = useState(false);
-    const [error, setError] = useState<string>("");
 
     const submitForm = async () => {
         if (username === "") return setError("Where's the username?");
         if (password === "") return setError("Where's the password?");
+        if (type === AuthenticationType.REGISTER && accessCode === "") return setError("Where's the access code?");
 
         if (!/^[a-zA-Z0-9_-]+$/.test(username)) return setError("Username can only contain letters, numbers, underscores, and dashes.");
 
-        if (type === "Login") {
+        if (type === AuthenticationType.LOGIN) {
             setLoading("Logging in");
-            login(username, password, null)
-                .then(res => {
-                    if (res === "codeRequired") createModal(<OtpModal username={username} password={password} />);
+            login(username, password)
+                .then((res: LoginResponse) => {
+                    if (res.data.codeRequired) createModal(<OtpModal username={username} password={password} />);
                     else navigate("/dashboard");
                 })
-                .catch(err => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
+                .catch((err: Fetch2Response) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
                 .finally(() => setLoading(false));
-        }
-        else if (type === "Register") {
+        } else if (type === AuthenticationType.REGISTER) {
             if (!checked) return setError("You must agree to our Privacy Policy and Terms of Service.");
             setLoading("Registering");
             register(username, password, accessCode, checked)
                 .then(() => navigate("/dashboard"))
-                .catch(err => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
+                .catch((err: Fetch2Response) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
                 .finally(() => setLoading(false));
         }
-    }
+    };
 
     return (
-        <HeaderBody>
-            <Container>
-                <Header>{type}</Header>
+        <form className={styles.container}>
+            <div className={styles.containerHeader}>
+                {type === AuthenticationType.LOGIN ? "Login" : "Register"}
+            </div>
 
-                <Input icon="fas fa-user" placeholder="Username" type="text" autoComplete="username" maxLength={16} onChange={e => {
+            <Input
+                icon="fas fa-user"
+                placeholder="Username"
+                type="text"
+                autoComplete="username"
+                maxLength={16}
+                onChange={(e) => {
                     setUsername(e.target.value);
-                    setError(null);
-                }} onKeyDown={e => e.key === "Enter" && submitForm()} />
+                    setError("");
+                }}
+            />
 
-                <Input icon="fas fa-lock" placeholder="Password" type="password" autoComplete="password" onChange={e => {
+            <Input
+                icon="fas fa-lock"
+                placeholder="Password"
+                type="password"
+                autoComplete="password"
+                onChange={(e) => {
                     setPassword(e.target.value);
-                    setError(null);
-                }} onKeyDown={e => e.key === "Enter" && submitForm()} />
+                    setError("");
+                }}
+            />
 
-                {type === "Register" && <Input icon="fas fa-lock" placeholder="Access Code" type="password" autoComplete="rewriteAccessCode" onChange={e => {
+            {type === AuthenticationType.REGISTER && <Input
+                icon="fas fa-lock"
+                placeholder="Access Code"
+                type="password"
+                autoComplete="rewriteAccessCode"
+                onChange={(e) => {
                     setAccessCode(e.target.value);
-                    setError(null);
-                }} onKeyDown={e => e.key === "Enter" && submitForm()} />}
+                    setError("");
+                }}
+            />}
 
-                {type === "Register" && <AgreeHolder checked={checked} onClick={() => setChecked(!checked) && setError(null)} />}
+            {type === AuthenticationType.REGISTER && <AgreeHolder checked={checked} onClick={() => {
+                setChecked(!checked);
+                setError("");
+            }} />}
 
-                <SubmitButton onClick={submitForm}>Let's Go!</SubmitButton>
+            <SubmitButton onClick={submitForm}>Let's Go!</SubmitButton>
 
-                {error && <ErrorContainer>{error}</ErrorContainer>}
-            </Container>
-        </HeaderBody>
-    )
-}
-*/
-
-import { useState } from "react";
-import { Navigate } from "react-router-dom";
-import { useLoading } from "@stores/LoadingStore";
-import { useUser } from "@stores/UserStore";
-
-import { AuthenticationType, AuthenticationProps } from "./authentication.d";
-
-export default function Authentication({ type }: AuthenticationProps) {
-
-
-    return (
-        <div>
-            {type === AuthenticationType.LOGIN ? "Login" : "Register"}
-        </div>
+            {error && <ErrorContainer>{error}</ErrorContainer>}
+        </form>
     );
 }

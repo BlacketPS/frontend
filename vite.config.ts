@@ -14,8 +14,8 @@ export default defineConfig({
             "react-textfit": "@namhong2001/react-textfit",
             "@components": "/src/components",
             "@controllers": "/src/controllers",
-            "@stores": "/src/stores",
-            "@styles": "/src/styles"
+            "@functions": "/src/functions",
+            "@stores": "/src/stores"
         }
     },
     server: {
@@ -32,11 +32,6 @@ export default defineConfig({
             scopeBehaviour: "local",
             localsConvention: "camelCaseOnly",
             generateScopedName: "[name]__[local]___[hash:base64:5]"
-        },
-        preprocessorOptions: {
-            scss: {
-                additionalData: "@import \"./src/styles/variables.scss\";"
-            }
         }
     },
     build: {

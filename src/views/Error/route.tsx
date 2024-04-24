@@ -4,4 +4,4 @@ export default {
     name: "NotFound",
     path: "*",
     component: <Error code={404} />
-};
+} as BlacketRoute;

@@ -1,20 +1,7 @@
 import { Helmet } from "react-helmet-async";
+import { Background, Header, HeaderBody, Sidebar, SidebarBody, PageHeader } from "@components/index";
 
-import { Background, Header, HeaderBody, SidebarBody } from "@components/index";
-import { HeaderProps } from "@components/Header/header.d";
-
-export interface Route {
-    name: string,
-    path: string,
-    component: JSX.Element,
-    title: string,
-    description: string,
-    background: boolean,
-    header: HeaderProps,
-    sidebar: boolean
-}
-
-export default function useCreateRoute(route: Route) {
+export default function useCreateRoute(route: BlacketRoute) {
     if (!route.background) route.background = true;
 
     return {
@@ -29,8 +16,15 @@ export default function useCreateRoute(route: Route) {
             {route.background && <Background />}
 
             {route.header && <Header {...route.header} />}
+            {route.sidebar && <Sidebar />}
 
-            {route.header ? <HeaderBody>{route.component}</HeaderBody> : route.sidebar ? <SidebarBody>{route.component}</SidebarBody> : route.component}
+            {route.header ? !route.dontUseBody ? <HeaderBody>
+                {route.component}
+            </HeaderBody> : route.component : route.sidebar ? !route.dontUseBody ? <SidebarBody>
+                {route.pageHeader && <PageHeader>{route.pageHeader}</PageHeader>}
+
+                {route.component}
+            </SidebarBody> : route.component : route.component}
         </>
     };
 }

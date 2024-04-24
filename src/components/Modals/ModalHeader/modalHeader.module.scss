@@ -1,0 +1,17 @@
+.header {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 20px 13px;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.divider {
+    width: 100%;
+    height: 5px;
+    background-color: var(--accent-color);
+    opacity: 0.1;
+    margin-bottom: 10px;
+}

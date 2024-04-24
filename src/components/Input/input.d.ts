@@ -1,4 +1,5 @@
-export interface InputProps {
-    icon?: string;
-    props: any;
+import { InputHTMLAttributes } from "react";
+
+export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
+    icon?: string
 }
