@@ -1,7 +1,7 @@
 import { Background, Header } from "@components/index";
-import { ErrorCode, ErrorProps } from "./error.d";
-
 import styles from "./error.module.scss";
+
+import { ErrorCode, ErrorProps } from "./error.d";
 
 export default function Error({ code, reason }: ErrorProps) {
     if (code === ErrorCode.UNKNOWN) document.title = `Error | ${import.meta.env.VITE_INFORMATION_NAME}`;
@@ -15,9 +15,9 @@ export default function Error({ code, reason }: ErrorProps) {
 
     return (
         <>
-            <Background />
+            {code !== ErrorCode.NOT_FOUND && <Background />}
 
-            <Header noLink={code !== ErrorCode.NOT_FOUND} />
+            {code !== ErrorCode.NOT_FOUND && <Header noLink={true} />}
 
             <div className={styles.body}>
                 <div className={styles.container}>

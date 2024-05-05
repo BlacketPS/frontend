@@ -16,11 +16,11 @@ export function ConfigStoreProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const fetchData = async () => await window.fetch2.get("/api")
-            .then((res) => setConfig(res.data));
+            .then((res: Fetch2Response) => setConfig(res.data));
 
         fetchData()
             .then(() => setLoading(false))
-            .catch((res) => {
+            .catch((res: Fetch2Response) => {
                 if (res.status !== 403) setError(true);
                 else setError(res.data.message);
             });

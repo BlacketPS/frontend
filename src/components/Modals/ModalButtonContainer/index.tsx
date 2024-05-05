@@ -4,5 +4,5 @@ import { ModalButtonContainerProps } from "./modalButtonContainer.d";
 import styles from "./modalButtonContainer.module.scss";
 
 export default function ModalButtonContainer({ loading = false, children }: ModalButtonContainerProps) {
-    return <div className={styles.buttonContainer} data-loading={loading}>{loading ? <Loader className={styles.loader} /> : children}</div>;
+    return <div className={styles.buttonContainer} data-loading={loading}>{loading ? <Loader noModal={true} className={styles.loader} /> : children}</div>;
 }

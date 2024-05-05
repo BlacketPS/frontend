@@ -19,7 +19,7 @@ export function ItemStoreProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const fetchData = async () => await window.fetch2.get("/api/data/items")
-            .then((res) => setItems(res.data.items));
+            .then((res: Fetch2Response) => setItems(res.data));
 
         fetchData()
             .then(() => setLoading(false))

@@ -9,8 +9,6 @@ export function useLogin() {
 
     const login = (username: string, password: string, otpCode?: string) => new Promise<LoginResponse>((resolve, reject) => window.fetch2.post("/api/auth/login", { username, password, otpCode })
         .then((res: LoginResponse) => {
-            if (res.data.codeRequired) return resolve(res);
-
             localStorage.setItem("token", res.data.token);
 
             window.fetch2.get("/api/users/me").then((res: Fetch2Response) => {

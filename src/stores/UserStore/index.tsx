@@ -13,7 +13,7 @@ export function UserStoreProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const fetchUser = async () => await window.fetch2.get("/api/users/me")
-            .then((res) => setUser(res.data.user));
+            .then((res: Fetch2Response) => setUser(res.data));
 
         if (localStorage.getItem("token")) fetchUser()
             .then(() => setLoading(false))

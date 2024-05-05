@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
 export interface ErrorModalProps {
-    onClick: () => void;
+    onClick?: () => void;
     children: ReactNode;
 }

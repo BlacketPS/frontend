@@ -1,16 +1,5 @@
-import { PublicUser } from "blacket-types";
 import { HTMLAttributes } from "react";
-
-export interface LeaderboardUser extends PublicUser {
-    id: string;
-    username: string;
-    titleId: string;
-    color: string;
-    tokens: number | null;
-    experience: number | null;
-    avatar: string;
-    customAvatar: string | null;
-}
+import { PublicUser } from "blacket-types";
 
 export enum PlacementType {
     TOKEN = "tokens",
@@ -20,7 +9,7 @@ export enum PlacementType {
 export interface PlacementProps {
     type: PlacementType;
     placement: number;
-    user: LeaderboardUser;
+    user: PublicUser;
 }
 
 export interface FilterButtonProps extends HTMLAttributes<HTMLDivElement> {

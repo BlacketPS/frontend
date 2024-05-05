@@ -6,7 +6,7 @@ export default function Loading({ error, message }: { error?: boolean, message: 
             <Background />
 
             <Loader
-                motionless={error}
+                motionless={true}
                 image={!error ? "/content/blooks/Console.gif" : "/content/blooks/Error.png"}
                 message={!error ? `Loading ${message}...` : `Failed to load ${message}.`}
             />

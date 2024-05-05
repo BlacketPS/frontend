@@ -1,6 +1,5 @@
+import { AuthEntity } from "blacket-types";
+
 export interface LoginResponse extends Fetch2Response {
-    data: {
-        token: string;
-        codeRequired?: boolean;
-    };
+    data: AuthEntity;
 }

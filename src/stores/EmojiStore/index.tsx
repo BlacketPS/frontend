@@ -19,7 +19,7 @@ export function EmojiStoreProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const fetchData = async () => await window.fetch2.get("/api/data/emojis")
-            .then((res) => setEmojis(res.data.emojis));
+            .then((res: Fetch2Response) => setEmojis(res.data));
 
         fetchData()
             .then(() => setLoading(false))

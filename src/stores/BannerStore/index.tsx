@@ -19,7 +19,7 @@ export function BannerStoreProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const fetchData = async () => await window.fetch2.get("/api/data/banners")
-            .then((res) => setBanners(res.data.badges));
+            .then((res: Fetch2Response) => setBanners(res.data));
 
         fetchData()
             .then(() => setLoading(false))

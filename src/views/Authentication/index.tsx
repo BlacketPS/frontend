@@ -9,7 +9,6 @@ import { Input, ErrorContainer } from "@components/index";
 import { AgreeHolder, OtpModal, SubmitButton } from "./components/index";
 
 import { AuthenticationType, AuthenticationProps } from "./authentication.d";
-import { LoginResponse } from "@controllers/auth/useLogin/useLogin.d";
 
 import styles from "./authentication.module.scss";
 
@@ -41,11 +40,13 @@ export default function Authentication({ type }: AuthenticationProps) {
         if (type === AuthenticationType.LOGIN) {
             setLoading("Logging in");
             login(username, password)
-                .then((res: LoginResponse) => {
-                    if (res.data.codeRequired) createModal(<OtpModal username={username} password={password} />);
-                    else navigate("/dashboard");
+                .then(() => navigate("/dashboard"))
+                .catch((err: Fetch2Response) => {
+                    if (err.status === 401) return createModal(<OtpModal username={username} password={password} />);
+
+                    if (err?.data?.message) setError(err.data.message);
+                    else setError("Something went wrong.");
                 })
-                .catch((err: Fetch2Response) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
                 .finally(() => setLoading(false));
         } else if (type === AuthenticationType.REGISTER) {
             if (!checked) return setError("You must agree to our Privacy Policy and Terms of Service.");

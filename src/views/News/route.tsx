@@ -1,0 +1,11 @@
+import News from "./index";
+
+export default {
+    name: "News",
+    path: "/news",
+    component: <News />,
+    title: `News | ${import.meta.env.VITE_INFORMATION_NAME}`,
+    description: `Get the latest updates on ${import.meta.env.VITE_INFORMATION_NAME}.`,
+    sidebar: true,
+    topRight: []
+} as BlacketRoute;

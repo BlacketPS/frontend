@@ -2,6 +2,7 @@ import { ComponentType } from "react";
 import { Socket } from "socket.io-client";
 
 import { HeaderProps } from "@components/Header/header.d";
+import { TopRightContent } from "@components/TopRight/topRight.d";
 
 declare global {
     interface BlacketRoute {
@@ -13,6 +14,7 @@ declare global {
         background: boolean,
         header: HeaderProps,
         sidebar: boolean,
+        topRight: string[TopRightContent],
         dontUseBody: boolean,
         pageHeader: string
     }

@@ -12,7 +12,7 @@ const router = createBrowserRouter([{
     element: <StoreWrapper>
         <Outlet />
     </StoreWrapper>,
-    children: Object.values(routes).map((route) => useCreateRoute(route as BlacketRoute))
+    children: Object.values(routes).map((route: BlacketRoute) => useCreateRoute(route))
 }]);
 
 export default function App() {

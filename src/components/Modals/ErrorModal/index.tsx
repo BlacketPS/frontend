@@ -15,6 +15,7 @@ export default function ErrorModal({ onClick, children }: ErrorModalProps) {
             <Modal.ModalButtonContainer>
                 <GenericButton onClick={() => {
                     if (onClick) onClick();
+
                     closeModal();
                 }}>Okay</GenericButton>
             </Modal.ModalButtonContainer>

@@ -19,7 +19,7 @@ export function RarityStoreProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const fetchData = async () => await window.fetch2.get("/api/data/rarities")
-            .then((res) => setRarities(res.data.rarities));
+            .then((res: Fetch2Response) => setRarities(res.data));
 
         fetchData()
             .then(() => setLoading(false))

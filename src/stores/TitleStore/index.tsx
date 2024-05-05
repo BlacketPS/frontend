@@ -19,7 +19,7 @@ export function TitleStoreProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const fetchData = async () => await window.fetch2.get("/api/data/titles")
-            .then((res) => setTitles(res.data.titles));
+            .then((res: Fetch2Response) => setTitles(res.data));
 
         fetchData()
             .then(() => setLoading(false))

@@ -19,7 +19,7 @@ export function BadgeStoreProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const fetchData = async () => await window.fetch2.get("/api/data/badges")
-            .then((res) => setBadges(res.data.badges));
+            .then((res: Fetch2Response) => setBadges(res.data));
 
         fetchData()
             .then(() => setLoading(false))

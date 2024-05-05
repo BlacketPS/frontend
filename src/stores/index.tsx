@@ -18,33 +18,36 @@ import { LeaderboardStoreProvider } from "./LeaderboardStore";
 export default function StoreWrapper({ children }: { children: ReactNode }) {
     return (
         <ConfigStoreProvider>
-            <LoadingStoreProvider>
-                <SocketStoreProvider>
-                    <ModalStoreProvider>
-                        <UserStoreProvider>
-                            <BlookStoreProvider>
-                                <RarityStoreProvider>
-                                    <PackStoreProvider>
-                                        <ItemStoreProvider>
-                                            <TitleStoreProvider>
-                                                <BannerStoreProvider>
-                                                    <BadgeStoreProvider>
-                                                        <EmojiStoreProvider>
-                                                            <LeaderboardStoreProvider>
+            <LeaderboardStoreProvider>
+                <LoadingStoreProvider>
+                    <BlookStoreProvider>
+                        <RarityStoreProvider>
+                            <PackStoreProvider>
+                                <ItemStoreProvider>
+                                    <TitleStoreProvider>
+                                        <BannerStoreProvider>
+                                            <BadgeStoreProvider>
+                                                <EmojiStoreProvider>
+                                                    <SocketStoreProvider>
+                                                        <UserStoreProvider>
+                                                            <ModalStoreProvider>
+
+
                                                                 {children}
-                                                            </LeaderboardStoreProvider>
-                                                        </EmojiStoreProvider>
-                                                    </BadgeStoreProvider>
-                                                </BannerStoreProvider>
-                                            </TitleStoreProvider>
-                                        </ItemStoreProvider>
-                                    </PackStoreProvider>
-                                </RarityStoreProvider>
-                            </BlookStoreProvider>
-                        </UserStoreProvider>
-                    </ModalStoreProvider>
-                </SocketStoreProvider>
-            </LoadingStoreProvider>
+
+                                                            </ModalStoreProvider>
+                                                        </UserStoreProvider>
+                                                    </SocketStoreProvider>
+                                                </EmojiStoreProvider>
+                                            </BadgeStoreProvider>
+                                        </BannerStoreProvider>
+                                    </TitleStoreProvider>
+                                </ItemStoreProvider>
+                            </PackStoreProvider>
+                        </RarityStoreProvider>
+                    </BlookStoreProvider>
+                </LoadingStoreProvider>
+            </LeaderboardStoreProvider>
         </ConfigStoreProvider>
     );
 }

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useModal } from "@stores/ModalStore";
 import { useLogin } from "@controllers/auth/useLogin/index";
-import { Modal, Button, Input, ErrorContainer } from "@components/index";
+import { Modal, Button, Form, Input, ErrorContainer } from "@components/index";
 
 export default function OtpModal({ username, password }: { username: string, password: string }) {
     const [loading, setLoading] = useState<boolean>(false);
@@ -20,12 +20,12 @@ export default function OtpModal({ username, password }: { username: string, pas
             <Modal.ModalHeader>OTP Required</Modal.ModalHeader>
             <Modal.ModalBody>Please fill out your OTP code below to login.</Modal.ModalBody>
 
-            <form>
+            <Form>
                 <Input icon="fas fa-key" placeholder="OTP / 2FA Code" value={otpCode} onChange={(e) => {
                     setOTPCode(e.target.value);
                     setError("");
                 }} autoComplete="off" />
-            </form>
+            </Form>
 
             {error !== "" && <ErrorContainer>{error}</ErrorContainer>}
 
