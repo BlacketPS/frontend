@@ -16,6 +16,7 @@ import {
     DisableOTPModal
 } from "./components/index";
 import useTitleIdToText from "@functions/resources/useTitleIdToText";
+import useFontIdToName from "@functions/resources/useFontIdToName";
 import styles from "./settings.module.scss";
 
 export enum FriendRequestSetting {
@@ -31,12 +32,16 @@ export default function Settings() {
     const { user } = useUser();
 
     const titleText = useTitleIdToText(user.titleId);
+    const fontName = useFontIdToName(user.fontId);
 
     const [modalAnimation, setModalAnimation] = useState<boolean>(localStorage.getItem("DISABLE_MODAL_ANIMATION") ? false : true);
 
     const friendRequestsButton = () => {
         setLoading("Changing settings");
-        changeSetting("friendRequests", user.settings.friendRequests === FriendRequestSetting.ON ? FriendRequestSetting.MUTUAL : user.settings.friendRequests === FriendRequestSetting.MUTUAL ? FriendRequestSetting.OFF : user.settings.friendRequests === FriendRequestSetting.OFF ? FriendRequestSetting.ON : FriendRequestSetting.ON)
+        changeSetting({
+            key: "friendRequests",
+            value: user.settings.friendRequests === FriendRequestSetting.ON ? FriendRequestSetting.MUTUAL : user.settings.friendRequests === FriendRequestSetting.MUTUAL ? FriendRequestSetting.OFF : user.settings.friendRequests === FriendRequestSetting.OFF ? FriendRequestSetting.ON : FriendRequestSetting.ON
+        })
             .then(() => setLoading(false))
             .catch(() => createModal(<Modal.ErrorModal>Failed to change settings.</Modal.ErrorModal>))
             .finally(() => setLoading(false));
@@ -60,6 +65,7 @@ export default function Settings() {
                 <div><b>ID:</b> {user.id}</div>
                 <div><b>Username:</b> {user.username}</div>
                 <div><b>Title:</b> {titleText}</div>
+                <div style={{ display: "inline-flex" }}><b>Font: </b> <div style={{ fontFamily: fontName, marginLeft: 7 }}>{fontName}</div></div>
                 <div><b>Joined:</b> {`${new Date(user.createdAt).toLocaleDateString()} ${new Date(user.createdAt).toLocaleTimeString()}`}</div>
 
                 <Button.ClearButton onClick={() => createModal(<Modal.LogoutModal />)}>Logout</Button.ClearButton>
@@ -81,6 +87,7 @@ export default function Settings() {
                 <Button.ClearButton onClick={friendRequestsButton}>Friend Requests: {
                     user.settings.friendRequests === 1 ? "On" : user.settings.friendRequests === 2 ? "Off" : user.settings.friendRequests === 3 ? "Mutual" : "Unknown"
                 }</Button.ClearButton>
+                <Button.ClearButton>👅 𝓕𝓻𝓮𝓪𝓴𝔂 𝓜𝓸𝓭𝓮: Off</Button.ClearButton>
             </SettingsContainer>
 
             <SettingsContainer header={{ icon: "fas fa-palette", text: "Theme (will be changed)" }}>

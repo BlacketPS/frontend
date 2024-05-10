@@ -72,4 +72,9 @@
     transform: translateY(-4px);
     transition: transform .6s cubic-bezier(.3, .7, .4, 1);
     background-color: var(--secondary-color);
+
+    .buttonInsideIcon {
+        font-size: 20px;
+        margin-right: 7px;
+    }
 }

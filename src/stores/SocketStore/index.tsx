@@ -1,15 +1,14 @@
 import { ReactNode, createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Socket, io } from "socket.io-client";
-
 import styles from "./tooManyConnections.module.scss";
 
-interface SocketStoreContext {
-    socket: Socket | null,
-    connected: boolean,
-    initializeSocket: () => void
-}
+import { type SocketStoreContext } from "./socket.d";
 
-const SocketStoreContext = createContext<SocketStoreContext>({ socket: null, connected: false, initializeSocket: () => { } });
+const SocketStoreContext = createContext<SocketStoreContext>({
+    socket: null,
+    connected: false,
+    initializeSocket: () => { }
+});
 
 export function useSocket() {
     return useContext(SocketStoreContext);
@@ -35,9 +34,12 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
             setConnected(false);
 
             console.info("[Blacket] Disconnected from WebSocket server.");
-            console.info("[Blacket] Reconnecting to WebSocket server...");
 
-            initializeSocket();
+            if (localStorage.getItem("token")) {
+                console.info("[Blacket] Reconnecting to WebSocket server...");
+
+                initializeSocket();
+            }
         });
 
         socket.on("too-many-connections", () => {
@@ -48,7 +50,7 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
             socket.close();
         });
 
-        socket.onAny((_: unknown, event: string, data: object) => {
+        socket.onAny((event: string, data: object) => {
             if (import.meta.env.MODE === "development") console.log({ event, data });
         });
 

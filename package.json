@@ -11,6 +11,7 @@
   "dependencies": {
     "@namhong2001/react-textfit": "^2.0.0",
     "@stylistic/eslint-plugin": "^1.7.0",
+    "@types/prismjs": "^1.26.4",
     "@types/qrcode": "^1.5.5",
     "@types/react-helmet-async": "^1.0.3",
     "@types/react-tooltip": "^4.2.4",
@@ -26,6 +27,7 @@
     "react-tooltip": "^5.26.3",
     "sass": "^1.75.0",
     "slate": "^0.102.0",
+    "slate-history": "^0.100.0",
     "slate-react": "^0.102.0",
     "socket.io-client": "^4.7.5",
     "terser": "^5.30.3"

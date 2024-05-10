@@ -85,15 +85,28 @@
 
 .bottom {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
     justify-content: space-evenly;
     width: 100%;
     margin-top: auto;
+    gap: 15px;
 
     @media only screen and (max-width: 850px) {
         margin-bottom: 15px;
     }
+}
+
+.bottomItems {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 85%;
+}
+
+.visitStoreButton {
+    width: 85%;
 }
 
 .bottomPage {
@@ -153,7 +166,7 @@
     color: var(--accent-color);
     cursor: pointer;
     font-family: "Titan One", sans-serif;
-    font-size: 30px;
+    font-size: 25px;
     line-height: 49px;
     margin-left: 5px;
     outline: none;

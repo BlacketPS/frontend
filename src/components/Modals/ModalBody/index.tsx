@@ -1,7 +1,7 @@
-import { ReactNode } from "react";
-
 import styles from "./modalBody.module.scss";
 
-export default function ModalBody({ children, ...props }: { children: ReactNode }) {
+import { ModalBodyProps } from "./modalBody.d";
+
+export default function ModalBody({ children, ...props }: ModalBodyProps) {
     return <div className={styles.text} {...props}>{children}</div>;
 }

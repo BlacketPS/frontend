@@ -22,8 +22,6 @@ export default function EnableOTPModal() {
     const { user } = useUser();
 
     useEffect(() => {
-        if (qrCodeImage !== "") return;
-
         generate()
             .then((res: GenerateResponse) => {
                 toDataURL(`otpauth://totp/${user.username}?secret=${res.data.otpSecret}&issuer=${import.meta.env.VITE_INFORMATION_NAME}`)
@@ -31,7 +29,7 @@ export default function EnableOTPModal() {
                     .catch(() => setError("Unable to generate QR code."));
             })
             .catch(() => setError("Unable to generate QR code."));
-    }, [qrCodeImage, user.username, generate]);
+    }, []);
 
     return (
         <>

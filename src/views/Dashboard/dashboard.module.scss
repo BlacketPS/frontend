@@ -1,0 +1,306 @@
+.parentHolder {
+    height: 100vh;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(5, 1fr);
+    grid-column-gap: 10px;
+    grid-row-gap: 10px;
+
+    &>.section {
+        // background-color: rgba(0, 0, 0, 0.125);
+        border-radius: 7px;
+        margin: 10px;
+        filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+
+        &:nth-child(1) {
+            background-color: rgba(0, 0, 0, 0.125);
+            padding: 10px 15px 0 15px;
+            grid-area: 1 / 1 / 2 / 2;
+        }
+
+        &:nth-child(2) {
+            background-color: rgba(0, 0, 0, 0.125);
+            display: flex;
+            justify-content: space-evenly;
+            align-items: center;
+            grid-area: 1 / 2 / 2 / 6;
+            height: 195px;
+
+            @media screen and (max-width: 1375px) {
+                display: none;
+            }
+        }
+
+        &:nth-child(3) {
+            grid-area: 2 / 1 / 6 / 3;
+        }
+
+        &:nth-child(4) {
+            grid-area: 2 / 5 / 6 / 6;
+        }
+
+        &:nth-child(5) {
+            grid-area: 4 / 3 / 2 / 5;
+        }
+
+        &:nth-child(6) {
+            grid-area: 4 / 3 / 6 / 5;
+        }
+    }
+}
+
+@media (max-width: 1375px) {
+    .parentHolder {
+        display: flex;
+        flex-direction: column;
+
+        &>.section {
+            height: fit-content;
+        }
+    }
+}
+
+.userTopProfile {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+
+    @media (max-width: 475px) {
+        flex-direction: column;
+        justify-content: center;
+    }
+}
+
+.userBannerBlook {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    @media screen and (max-width: 475px) {
+        flex-direction: column;
+        align-items: center;
+        margin-left: unset;
+    }
+
+    &>img {
+        height: 110px;
+        filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    }
+}
+
+.bannerLevel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: space-between;
+    margin-left: 10px;
+
+    @media screen and (max-width: 475px) {
+        margin-left: unset;
+    }
+}
+
+.levelBarContainer {
+    height: 20px;
+    position: relative;
+    margin-top: 20px;
+}
+
+.levelBar {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    overflow: hidden;
+    background-color: rgba(0, 0, 0, 0.15);
+
+    &>div {
+        background: linear-gradient(#fcd843, #fcd843 50%, #feb31a 50%, #feb31a);
+        height: 100%;
+        width: 100%;
+        transform-origin: left center;
+    }
+}
+
+.levelStarContainer {
+    width: 40px;
+    height: 40px;
+    position: absolute;
+    left: -10px;
+    top: calc(50% - 20px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    &>img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    &>div {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: var(--accent-color);
+        font-family: "Titan One", sans-serif;
+        -webkit-text-stroke: 1.5px #000;
+        font-size: 20px;
+    }
+}
+
+.userBanner {
+    transform: translateY(5px);
+    display: flex;
+    position: relative;
+
+    &>img {
+        width: 300px;
+        height: fit-content;
+    }
+
+    &>p {
+        position: absolute;
+        left: 50%;
+        transform: translate(-50%, -60%);
+
+        &:nth-child(2) {
+            font-weight: 600;
+            font-size: 1.5rem;
+        }
+
+        &:nth-child(3) {
+            top: 45%;
+            font-size: 0.9rem;
+        }
+    }
+}
+
+.userBadges {
+    padding: 10px;
+    margin: 5px 10px 5px 10px;
+    display: flex;
+    justify-content: left;
+    flex-flow: wrap;
+    gap: 10px;
+
+    @media screen and (max-width: 475px) {
+        justify-content: space-evenly;
+    }
+
+    &>div {
+        width: auto;
+        height: 30px;
+        padding: 7.5px;
+        box-shadow: inset 0 -5px rgba(0, 0, 0, 0.2);
+        background-color: var(--primary-color);
+        border-radius: 7px;
+        display: flex;
+        align-items: center;
+
+        &>img {
+            width: 100%;
+            height: 100%;
+            margin-bottom: 5px;
+        }
+    }
+}
+
+.topRightButton {
+    width: 180px;
+    height: 90%;
+    margin: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    border-radius: 7px;
+    text-decoration: none;
+    color: var(--accent-color);
+    background-color: var(--primary-color);
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    cursor: pointer;
+    transition: transform 0.2s;
+
+    &:hover {
+        transform: scale(0.95);
+    }
+
+    &:active {
+        transform: scale(0.9);
+    }
+
+    &>i {
+        font-size: 4.25rem;
+    }
+
+    &>div,
+    a {
+        margin-top: 20px;
+        font-size: 1.4rem;
+        font-weight: 600;
+        text-align: center;
+    }
+}
+
+.statsContainer {
+    border-radius: 5px;
+    background-color: var(--primary-color);
+    width: 100%;
+    height: 100%;
+    padding: 2px 15px;
+    box-shadow: inset 0 -7px rgba(0, 0, 0, 0.2);
+    box-sizing: border-box;
+    color: #fff;
+    position: relative;
+}
+
+.friendsContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 20px;
+    height: 100%;
+}
+
+.friendsTop {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    &>p {
+        font-size: 2.1rem;
+        margin: 10px 0;
+        font-family: "Titan One", sans-serif;
+    }
+
+    &>div {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-top: 10px;
+
+        &>div {
+            font-family: "Nunito", sans-serif;
+            font-size: 1rem;
+
+            &:last-child {
+                min-width: unset;
+                font-size: 1.25rem;
+                width: 40px;
+            }
+        }
+    }
+}
+
+.holdFriends {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.125);
+    height: 100%;
+    padding: 10px;
+    border-radius: 5px;
+}

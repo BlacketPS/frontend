@@ -13,7 +13,7 @@ export default function Category({ header, internalName, children }: CategoryPro
     const { changeSetting } = useSettings();
 
     const toggleOpenedState = () => {
-        changeSetting("categoriesClosed", !openedState ? user.settings.categoriesClosed.filter((category: string) => category !== internalName) : [...user.settings.categoriesClosed, internalName])
+        changeSetting({ key: "categoriesClosed", value: !openedState ? user.settings.categoriesClosed.filter((category: string) => category !== internalName) : [...user.settings.categoriesClosed, internalName] })
             .then(() => setOpenedState(!openedState));
     };
 

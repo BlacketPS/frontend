@@ -1,15 +1,29 @@
-import { GenericButtonProps } from "./genericButton.d";
-
+import { Link } from "react-router-dom";
 import styles from "./genericButton.module.scss";
 
-export default function GenericButton({ className = "", backgroundColor, children, ...props }: GenericButtonProps) {
+import { GenericButtonProps } from "./genericButton.d";
+
+export default function GenericButton({ to, icon, className = "", backgroundColor, children, ...props }: GenericButtonProps) {
     if (className !== "") className = ` ${className}`;
 
-    return (
+    if (!to) return (
         <div className={`${styles.button}${className}`} role="button" {...props}>
             <div className={styles.buttonShadow} />
             <div style={{ backgroundColor: backgroundColor && backgroundColor }} className={styles.buttonEdge} />
-            <div style={{ backgroundColor: backgroundColor && backgroundColor }} className={styles.buttonInside}>{children}</div>
+            <div style={{ backgroundColor: backgroundColor && backgroundColor }} className={styles.buttonInside}>
+                {icon && <i className={`${styles.buttonInsideIcon} ${icon}`} />}
+                {children}
+            </div>
         </div>
+    );
+    else return (
+        <Link to={to} className={`${styles.button}${className}`} {...props}>
+            <div className={styles.buttonShadow} />
+            <div style={{ backgroundColor: backgroundColor && backgroundColor }} className={styles.buttonEdge} />
+            <div style={{ backgroundColor: backgroundColor && backgroundColor }} className={styles.buttonInside}>
+                {icon && <i className={`${styles.buttonInsideIcon} ${icon}`} />}
+                {children}
+            </div>
+        </Link>
     );
 }

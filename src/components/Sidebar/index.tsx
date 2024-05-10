@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
+import { Button } from "@components/index";
 
 import styles from "./sidebar.module.scss";
 
@@ -77,7 +78,7 @@ export default function Sidebar() {
         ],
         bottom: [
             {
-                icon: "fas fa-user",
+                icon: "fas fa-heart",
                 text: "Credits",
                 link: "/credits"
             },
@@ -121,13 +122,17 @@ export default function Sidebar() {
                 ))}
 
                 <div className={styles.bottom}>
-                    {pages.bottom.map((page, index) => (
-                        <Link key={index} className={styles.bottomPage} to={page.link} data-tooltip-id={page.link}>
-                            <Tooltip id={page.link} place="top">{page.text}</Tooltip>
+                    <div className={styles.bottomItems}>
+                        {pages.bottom.map((page, index) => (
+                            <Link key={index} className={styles.bottomPage} to={page.link} data-tooltip-id={page.link}>
+                                <Tooltip id={page.link} place="top">{page.text}</Tooltip>
 
-                            <i className={`${styles.bottomPageIcon} ${page.icon}`} />
-                        </Link>
-                    ))}
+                                <i className={`${styles.bottomPageIcon} ${page.icon}`} />
+                            </Link>
+                        ))}
+                    </div>
+
+                    <Button.GenericButton to="/store" icon="fas fa-cart-shopping" className={styles.visitStoreButton} backgroundColor="#2b22c2">Visit Store</Button.GenericButton>
                 </div>
             </div>
 
@@ -153,13 +158,17 @@ export default function Sidebar() {
                 ))}
 
                 <div className={styles.bottom}>
-                    {pages.bottom.map((page, index) => (
-                        <Link key={index} className={styles.bottomPage} onClick={() => setMobileSidebarOpen(false)} to={page.link} data-tooltip-id={page.link}>
-                            <Tooltip id={page.link} place="top">{page.text}</Tooltip>
+                    <div className={styles.bottomItems}>
+                        {pages.bottom.map((page, index) => (
+                            <Link key={index} className={styles.bottomPage} onClick={() => setMobileSidebarOpen(false)} to={page.link} data-tooltip-id={page.link}>
+                                <Tooltip id={page.link} place="top">{page.text}</Tooltip>
 
-                            <i className={`${styles.bottomPageIcon} ${page.icon}`} />
-                        </Link>
-                    ))}
+                                <i className={`${styles.bottomPageIcon} ${page.icon}`} />
+                            </Link>
+                        ))}
+                    </div>
+
+                    <Button.GenericButton to="/store" icon="fas fa-cart-shopping" className={styles.visitStoreButton} backgroundColor="#2b22c2">Visit Store</Button.GenericButton>
                 </div>
             </div>
         </>

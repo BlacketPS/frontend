@@ -20,7 +20,7 @@ export default function Market() {
 
     const toggleInstantOpen = () => {
         setLoading("Changing settings");
-        changeSetting("openPacksInstantly", !user.settings.openPacksInstantly)
+        changeSetting({ key: "openPacksInstantly", value: !user.settings.openPacksInstantly })
             .then(() => setLoading(false))
             .catch(() => createModal(<Modal.ErrorModal>Failed to change settings.</Modal.ErrorModal>))
             .finally(() => setLoading(false));

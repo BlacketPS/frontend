@@ -25,9 +25,9 @@ export default function Leaderboard() {
 
         setLoading("Loading leaderboard");
         getLeaderboard()
-            .catch((error: Fetch2Response) => createModal(<Modal.ErrorModal onClick={() => history.back()}>{error.data.message}</Modal.ErrorModal>))
+            .catch((err: Fetch2Response) => createModal(<Modal.ErrorModal onClick={() => history.back()}>{err.data.message}</Modal.ErrorModal>))
             .finally(() => setLoading(false));
-    }, [createModal, getLeaderboard, leaderboard, setLoading]);
+    }, []);
 
     const switchSort = () => sortBy === PlacementType.TOKEN ? setSortBy(PlacementType.EXPERIENCE) : setSortBy(PlacementType.TOKEN);
 

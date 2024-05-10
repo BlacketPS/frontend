@@ -8,6 +8,7 @@ export function useUser() {
 }
 
 export function UserStoreProvider({ children }: { children: ReactNode }) {
+    const [error, setError] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
     const [user, setUser] = useState<any | null>(null);
 
@@ -17,12 +18,18 @@ export function UserStoreProvider({ children }: { children: ReactNode }) {
 
         if (localStorage.getItem("token")) fetchUser()
             .then(() => setLoading(false))
-            .catch(() => localStorage.removeItem("token"));
+            .catch(() => {
+                setError(true);
+
+                setTimeout(() => setLoading(false), 2000);
+
+                localStorage.removeItem("token");
+            });
         else {
             setUser(null);
             setLoading(false);
         }
     }, []);
 
-    return <UserStoreContext.Provider value={{ user, setUser }}>{!loading ? children : <Loading message="user data" />}</UserStoreContext.Provider>;
+    return <UserStoreContext.Provider value={{ user, setUser }}>{!loading ? children : <Loading error={error} message={!error ? "user data" : "user data, logging out.."} />}</UserStoreContext.Provider>;
 }

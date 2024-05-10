@@ -5,7 +5,7 @@ import { useModal } from "@stores/ModalStore/index";
 import { usePack } from "@stores/PackStore/index";
 import { useBlook } from "@stores/BlookStore/index";
 import { Modal } from "@components/index";
-import { BlooksHolder, SetHolder, Blook, RightBlook, RightButton } from "./components";
+import { BlooksHolder, SetHolder, Blook, RightBlook, RightButton, SellBlooksModal } from "./components";
 import styles from "./blooks.module.scss";
 
 import { Blook as BlookType, Pack } from "blacket-types";
@@ -20,7 +20,7 @@ export default function Blooks() {
 
     useEffect(() => {
         if (blooks.length < 1) createModal(<Modal.ErrorModal onClick={history.back}>This server has no blooks.</Modal.ErrorModal>);
-    }, [blooks, createModal]);
+    }, []);
 
     const nonPackBlooks = blooks.map((blook: BlookType) => !blook.packId);
 
@@ -47,9 +47,7 @@ export default function Blooks() {
             {Object.keys(user.blooks).length > 0 && <RightBlook blook={selectedBlook} owned={user.blooks[selectedBlook.id]} noBlooksOwned={Object.keys(user.blooks).length < 1} />}
 
             {Object.keys(user.blooks).length > 0 && <div className={styles.rightButtonContainer}>
-                {
-                    // <RightButton onClick={() => createModal(<SellBlooksModal blook={selectedBlook} />)}>Sell</RightButton>
-                }
+               <RightButton onClick={() => createModal(<SellBlooksModal blook={selectedBlook} />)}>Sell</RightButton>
             </div>}
         </>
     );

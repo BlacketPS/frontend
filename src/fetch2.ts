@@ -36,4 +36,4 @@ window.fetch2 = {
     put: fetchInterceptor(HTTPMethod.PUT),
     delete: fetchInterceptor(HTTPMethod.DELETE),
     patch: fetchInterceptor(HTTPMethod.PATCH)
-} as any;
+};

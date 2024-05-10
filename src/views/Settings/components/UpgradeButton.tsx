@@ -1,14 +1,8 @@
-import { useNavigate } from "react-router-dom";
 import { Button } from "@components/index";
 import styles from "../settings.module.scss";
 
 import { UpgradeButtonProps } from "../settings.d";
 
-export default function UpgradeButton({ children, onClick, ...props }: UpgradeButtonProps) {
-    const navigate = useNavigate();
-
-    return <Button.GenericButton className={styles.upgradeButton} onClick={() => {
-        if (onClick) onClick();
-        else navigate("/store");
-    }} {...props}>{children}</Button.GenericButton>;
+export default function UpgradeButton({ children, ...props }: UpgradeButtonProps) {
+    return <Button.GenericButton to="/store" icon="fas fa-arrow-up" className={styles.upgradeButton} {...props}>{children}</Button.GenericButton>;
 }

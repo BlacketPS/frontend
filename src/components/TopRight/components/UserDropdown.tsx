@@ -2,12 +2,15 @@ import { Link } from "react-router-dom";
 import { useModal } from "@stores/ModalStore/index";
 import { Modal } from "@components/index";
 import getAvatarURL from "@functions/resources/getAvatarURL";
+import useFontIdToName from "@functions/resources/useFontIdToName";
 import styles from "../topRight.module.scss";
 
 import { UserDropdownProps } from "../topRight.d";
 
 export default function UserDropdown({ user }: UserDropdownProps) {
     const { createModal } = useModal();
+
+    const fontName = useFontIdToName(user.fontId);
 
     return (
         <div className={styles.userContainer}>
@@ -16,7 +19,10 @@ export default function UserDropdown({ user }: UserDropdownProps) {
 
                 <div className={
                     user.color === "rainbow" ? "rainbow" : ""
-                } style={{ color: user.color }}>{user.username}</div>
+                } style={{
+                    color: user.color,
+                    fontFamily: fontName
+                }}>{user.username}</div>
             </div>
 
             <i className={`${styles.userDropdownIcon} fas fa-angle-down`} />

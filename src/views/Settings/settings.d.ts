@@ -7,6 +7,4 @@ export interface SettingsContainerProps extends HTMLAttributes<HTMLDivElement> {
     };
 }
 
-export interface UpgradeButtonProps extends HTMLAttributes<HTMLDivElement> {
-    onClick?: () => void;
-}
+export interface UpgradeButtonProps extends HTMLAttributes<HTMLDivElement> { }

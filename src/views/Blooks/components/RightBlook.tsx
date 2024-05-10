@@ -22,8 +22,8 @@ export default function RightBlook({ blook, owned, noBlooksOwned }: RightBlookPr
             <div className={styles.rightTopText}>
                 <Textfit mode="single" max={window.innerWidth > 1000 ? 40 : 27} className={styles.rightBlookName}>{blook.name}</Textfit>
                 <div style={{
-                    color: rarities.find((r: Rarity) => r.id === (blook.rarity)).color
-                }} className={styles.rightBlookRarity}>{rarities.find((r: Rarity) => r.id === blook.rarity).name}</div>
+                    color: rarities.find((r: Rarity) => r.id === (blook.rarityId)).color
+                }} className={styles.rightBlookRarity}>{rarities.find((r: Rarity) => r.id === blook.rarityId).name}</div>
             </div>
 
             <div className={styles.rightBlookImage}>
