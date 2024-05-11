@@ -1,14 +1,15 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useModal } from "@stores/ModalStore/index";
-import { Modal, Form, Input, Button } from "@components/index";
+import { Modal, Form, Input, Button, ErrorContainer } from "@components/index";
 
-export default function LookupUserModal() {
-    const [user, setUser] = useState<string>("");
+import { LookupUserModalProps } from "../dashboard.d";
+
+export default function LookupUserModal({ onClick }: LookupUserModalProps) {
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
+    const [username, setUsername] = useState<string>("");
 
     const { closeModal } = useModal();
-
-    const navigate = useNavigate();
 
     return (
         <>
@@ -18,16 +19,24 @@ export default function LookupUserModal() {
             <Modal.ModalBody>Which user's statistics do you wish to lookup?</Modal.ModalBody>
 
             <Form>
-                <Input icon="fas fa-user" placeholder="Username" value={user} onChange={(e) => {
-                    setUser(e.target.value);
-                }} autoComplete="off" />
+                <Input icon="fas fa-user" placeholder="Username" value={username} onChange={(e) => {
+                    setUsername(e.target.value);
+                    setError("");
+                }} maxLength={64} autoComplete="off" />
             </Form>
 
-            <Modal.ModalButtonContainer>
-                <Button.GenericButton onClick={() => {
-                    navigate(`/dashboard?name=${user}`);
+            {error !== "" && <ErrorContainer>{error}</ErrorContainer>}
 
-                    closeModal();
+            <Modal.ModalButtonContainer loading={loading}>
+                <Button.GenericButton onClick={() => {
+                    if (username.trim() === "") return setError("Where's the username?");
+                    if (username.includes("%")) return setError("Percent signs are not allowed in usernames.");
+
+                    setLoading(true);
+                    onClick(username)
+                        .then(() => closeModal())
+                        .catch((err: Fetch2Response) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
+                        .finally(() => setLoading(false));
                 }}>Lookup</Button.GenericButton>
                 <Button.GenericButton onClick={() => closeModal()}>Cancel</Button.GenericButton>
             </Modal.ModalButtonContainer>

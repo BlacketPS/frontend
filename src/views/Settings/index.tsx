@@ -31,9 +31,6 @@ export default function Settings() {
     const { changeSetting } = useSettings();
     const { user } = useUser();
 
-    const titleText = useTitleIdToText(user.titleId);
-    const fontName = useFontIdToName(user.fontId);
-
     const [modalAnimation, setModalAnimation] = useState<boolean>(localStorage.getItem("DISABLE_MODAL_ANIMATION") ? false : true);
 
     const friendRequestsButton = () => {
@@ -56,6 +53,9 @@ export default function Settings() {
             setModalAnimation(false);
         }
     };
+
+    const titleText = useTitleIdToText(user?.titleId);
+    const fontName = useFontIdToName(user?.fontId);
 
     if (!user) return <Navigate to="/login" />;
 
@@ -87,10 +87,9 @@ export default function Settings() {
                 <Button.ClearButton onClick={friendRequestsButton}>Friend Requests: {
                     user.settings.friendRequests === 1 ? "On" : user.settings.friendRequests === 2 ? "Off" : user.settings.friendRequests === 3 ? "Mutual" : "Unknown"
                 }</Button.ClearButton>
-                <Button.ClearButton>👅 𝓕𝓻𝓮𝓪𝓴𝔂 𝓜𝓸𝓭𝓮: Off</Button.ClearButton>
             </SettingsContainer>
 
-            <SettingsContainer header={{ icon: "fas fa-palette", text: "Theme (will be changed)" }}>
+            <SettingsContainer header={{ icon: "fas fa-palette", text: "Theme" }}>
                 <Tooltip id="modalAnimation" place="right">This will disable the zoom in out animation on popups.</Tooltip>
                 <Button.ClearButton data-tooltip-id="modalAnimation" onClick={modalAnimationButton}>Modal Animation: {modalAnimation ? "On" : "Off"}</Button.ClearButton>
 

@@ -17,6 +17,7 @@ import { BadgeStoreProvider } from "./BadgeStore";
 import { EmojiStoreProvider } from "./EmojiStore";
 import { ChatStoreProvider } from "./ChatStore";
 import { ContextMenuStoreProvider } from "./ContextMenuStore";
+import { CachedUserStoreProvider } from "./CachedUserStore";
 
 export default function StoreWrapper({ children }: { children: ReactNode }) {
     return (
@@ -32,17 +33,19 @@ export default function StoreWrapper({ children }: { children: ReactNode }) {
                                             <BannerStoreProvider>
                                                 <BadgeStoreProvider>
                                                     <EmojiStoreProvider>
-                                                        <SocketStoreProvider>
-                                                            <UserStoreProvider>
-                                                                <ModalStoreProvider>
-                                                                    <ChatStoreProvider>
-                                                                        <ContextMenuStoreProvider>
-                                                                            {children}
-                                                                        </ContextMenuStoreProvider>
-                                                                    </ChatStoreProvider>
-                                                                </ModalStoreProvider>
-                                                            </UserStoreProvider>
-                                                        </SocketStoreProvider>
+                                                        <CachedUserStoreProvider>
+                                                            <SocketStoreProvider>
+                                                                <UserStoreProvider>
+                                                                    <ModalStoreProvider>
+                                                                        <ChatStoreProvider>
+                                                                            <ContextMenuStoreProvider>
+                                                                                {children}
+                                                                            </ContextMenuStoreProvider>
+                                                                        </ChatStoreProvider>
+                                                                    </ModalStoreProvider>
+                                                                </UserStoreProvider>
+                                                            </SocketStoreProvider>
+                                                        </CachedUserStoreProvider>
                                                     </EmojiStoreProvider>
                                                 </BadgeStoreProvider>
                                             </BannerStoreProvider>

@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { useSearchParams, Navigate, Link } from "react-router-dom";
+import { useSearchParams, useNavigate, Navigate, Link } from "react-router-dom";
 import { useLoading } from "@stores/LoadingStore/index";
 import { useModal } from "@stores/ModalStore";
 import { useUser } from "@stores/UserStore/index";
+import { useCachedUser } from "@stores/CachedUserStore/index";
 import { useUsers } from "@controllers/users/useUsers/index";
 import { Button } from "@components/index";
 import { LookupUserModal } from "./components";
@@ -17,38 +18,79 @@ export default function Dashboard() {
     const { setLoading } = useLoading();
     const { createModal } = useModal();
     const { user } = useUser();
+    const { cachedUsers, addCachedUserWithData } = useCachedUser();
 
     const { getUser } = useUsers();
 
     const [searchParams] = useSearchParams();
 
+    const navigate = useNavigate();
+
     const [viewingUser, setViewingUser] = useState<object | null>(null);
+
+    const viewUser = (username: string) => new Promise<void>((resolve, reject) => {
+        const cachedUser = cachedUsers.find((user) => user.username.toLowerCase() === username.toLowerCase() || user.id === username);
+
+        if (cachedUser) {
+            if (cachedUser.id !== user.id) {
+                setViewingUser(cachedUser);
+
+                navigate(`/dashboard?name=${cachedUser.username}`);
+            } else {
+                setViewingUser(null);
+
+                navigate("/dashboard");
+            }
+
+            resolve();
+        } else getUser(username)
+            .then((res) => {
+                if (res.data.id !== user.id) {
+                    setViewingUser(res);
+
+                    addCachedUserWithData(res.data);
+
+                    navigate(`/dashboard?name=${res.data.username}`);
+                } else {
+                    setViewingUser(null);
+
+                    navigate("/dashboard");
+                }
+
+                resolve();
+            })
+            .catch((err: Fetch2Response) => {
+                reject(err);
+            });
+    });
 
     useEffect(() => {
         if (!searchParams.get("name")) return;
 
         setLoading(true);
 
-        getUser(searchParams.get("name") as string)
-            .then((res) => {
-                if (res.data.id !== user.id) setViewingUser(res);
+        viewUser(searchParams.get("name") as string)
+            .catch(() => {
+                setViewingUser(null);
+
+                navigate("/dashboard");
             })
-            .catch(() => setViewingUser(null))
             .finally(() => setLoading(false));
     }, []);
 
-    const titleText = useTitleIdToText(user.titleId);
-    const fontName = useFontIdToName(user.fontId);
+    const titleText = useTitleIdToText(user?.titleId);
+    const fontName = useFontIdToName(user?.fontId);
+
+    if (!user) return <Navigate to="/login" />;
 
     const topButtons: TopButton[] = [
-        { icon: "fas fa-magnifying-glass", text: "Lookup User", onClick: () => createModal(<LookupUserModal />) },
+        { icon: "fas fa-magnifying-glass", text: "Lookup User", onClick: () => createModal(<LookupUserModal onClick={viewUser} />) },
+        { icon: "fas fa-star", text: "Daily Rewards", onClick: () => { } },
         { icon: "fas fa-scale-balanced", text: "Trading Plaza", link: "/trading-plaza" },
         { icon: "fas fa-heart", text: "Credits", link: "/credits" },
         { icon: "fab fa-discord", text: "Discord", link: "https://discord.gg/5setU8ye6j" },
         { icon: "fab fa-github", text: "GitHub", link: "https://github.com/XOTlC/Blacket" }
     ];
-
-    if (!user) return <Navigate to="/login" />;
 
     return (
         <div className={styles.parentHolder}>
@@ -59,7 +101,12 @@ export default function Dashboard() {
                         <div className={styles.bannerLevel}>
                             <div className={styles.userBanner}>
                                 <img src={"/content/banners/Default.png"} alt="User Banner" />
-                                <p style={{ fontFamily: fontName }}>{user.username}</p>
+                                <p className={
+                                    user.color === "rainbow" ? "rainbow" : ""
+                                } style={{
+                                    color: user.color,
+                                    fontFamily: fontName
+                                }}>{user.username}</p>
                                 <p>{titleText}</p>
                             </div>
                             <div className={styles.levelBarContainer}>
@@ -72,6 +119,20 @@ export default function Dashboard() {
                                 </div>
                             </div>
                         </div>
+                        <div className={styles.smallButtonContainer}>
+                            {topButtons.map((button, index) => (
+                                <Button.GenericButton
+                                    key={index}
+                                    to={button.link}
+                                    backgroundColor="var(--primary-color)"
+                                    className={styles.smallButton}
+                                    icon={button.icon}
+                                    onClick={button.onClick}
+                                >
+                                    {button.text}
+                                </Button.GenericButton>
+                            ))}
+                        </div>
                     </div>
 
                     <div className={styles.userBadges}>
@@ -83,7 +144,7 @@ export default function Dashboard() {
             </div>
             <div className={styles.section}>
                 {topButtons.map((button, index) => (
-                    button.link ? <Link to={button.link} className={styles.topRightButton}>
+                    button.link ? <Link key={index} to={button.link} className={styles.topRightButton}>
                         <i className={button.icon} />
                         <div>{button.text}</div>
                     </Link> : <div key={index} className={styles.topRightButton} onClick={button.onClick}>
@@ -115,8 +176,33 @@ export default function Dashboard() {
                 </div>
             </div>
             <div className={styles.section}>
-                <div className={styles.statsContainer}>
-                    <p>auction listings</p>
+                <div className={`${styles.statsContainer} ${styles.auctionContainer}`}>
+                    <div className={styles.yourLiveAuctions}>
+                        <div className={styles.auction}>
+                            <img src="/content/blooks/Default.png" alt="Auction Item" />
+                            <div className={styles.auctionInfo}>
+                                <p>Item Name</p>
+                                <p>Current Bid: 0</p>
+                                <p>Time Remaining: 0:00</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* <div className={styles.auctionStats}>
+                        <div>
+                            <p>Auctions Listed</p>
+                            <span>2<div className={`${styles.auctionStatMod} ${styles.profit}`}><i className="fas fa-circle-up" />+2 past 7d</div></span>
+                        </div>
+
+                        <div>
+                            <p>Profit Gained</p>
+                            <span>14,231<div className={`${styles.auctionStatMod} ${styles.loss}`}><i className="fas fa-circle-down" />-6,520 past 7d</div></span>
+                        </div>
+
+                        <div>
+                            <p>other</p>
+                        </div>
+                    </div> */}
                 </div>
             </div>
             <div className={styles.section}>
@@ -124,6 +210,6 @@ export default function Dashboard() {
                     guild
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

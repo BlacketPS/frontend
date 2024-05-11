@@ -166,7 +166,6 @@
     cursor: pointer;
     text-decoration: none;
     width: fit-content;
-    font-weight: 700;
     gap: 5px;
 }
 
@@ -374,7 +373,6 @@
 
 .replyingToUsername {
     color: var(--accent-color);
-    font-weight: 700;
 }
 
 .replyingToMessage {
@@ -463,6 +461,5 @@
 
     & > p {
         color: var(--accent-color);
-        font-weight: 700;
     }
 }

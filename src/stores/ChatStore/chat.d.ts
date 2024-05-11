@@ -1,8 +1,7 @@
-import { Message, User } from "blacket-types";
+import { Message } from "blacket-types";
 
 export interface ChatStoreContext {
     messages: Message[];
-    cachedUsers: User[];
     usersTyping: { userId: string, startedTypingAt: number }[];
     replyingTo: Message | null;
     setReplyingTo: (message: Message | null) => void;

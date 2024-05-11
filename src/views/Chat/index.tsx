@@ -1,15 +1,15 @@
 import { memo } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useUser } from "@stores/UserStore/index";
+import { useCachedUser } from "@stores/CachedUserStore/index";
 import { useChat } from "@stores/ChatStore/index";
 import { useContextMenu } from "@stores/ContextMenuStore/index";
 import { ChatContainer, ChatMessagesContainer, ChatMessage, InputContainer } from "./components";
 
-import { Message, User } from "blacket-types";
-
 export default memo(function Chat() {
     const { user } = useUser();
-    const { messages, cachedUsers, replyingTo, setReplyingTo } = useChat();
+    const { cachedUsers } = useCachedUser();
+    const { messages, replyingTo, setReplyingTo } = useChat();
     const { openContextMenu } = useContextMenu();
 
     const navigate = useNavigate();
@@ -23,7 +23,7 @@ export default memo(function Chat() {
                     {messages.map((message: any) => <ChatMessage
                         key={message.id}
                         id={message.id}
-                        author={cachedUsers.find((user: User) => user.id === message.authorId) || user}
+                        author={cachedUsers.find((user) => user.id === message.authorId) || user}
                         newUser={
                             messages[messages.indexOf(message) + 1] && messages[messages.indexOf(message) + 1].authorId !== message.authorId ||
                             messages[messages.indexOf(message) + 1] && messages[messages.indexOf(message) + 1].createdAt - message.createdAt > 300000 ||
@@ -31,7 +31,7 @@ export default memo(function Chat() {
                         }
                         createdAt={message.createdAt}
                         replyingTo={message.replyingTo}
-                        replyingToAuthor={cachedUsers.find((user: User) => user.id === message.replyingTo?.authorId) || user}
+                        replyingToAuthor={cachedUsers.find((user) => user.id === message.replyingTo?.authorId) || user}
                         mentionsMe={message.mentions.includes(user.id) || (message.replyingTo && message.replyingTo.authorId === user.id)}
                         isSending={message.nonce}
                         rawMessage={message}

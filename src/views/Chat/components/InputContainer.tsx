@@ -1,5 +1,6 @@
 import { memo, useState } from "react";
 import { useChat } from "@stores/ChatStore/index";
+import { useCachedUser } from "@stores/CachedUserStore/index";
 import UsersTypingContainer from "./UsersTypingContainer";
 import MarkdownPreview from "./MarkdownPreview";
 import styles from "../chat.module.scss";
@@ -7,7 +8,8 @@ import styles from "../chat.module.scss";
 import { BlacketEditor, InputContainerProps } from "../chat.d";
 
 export default memo(function InputContainer({ placeholder, maxLength }: InputContainerProps) {
-    const { cachedUsers, sendMessage, startTyping, usersTyping, replyingTo, setReplyingTo } = useChat();
+    const { sendMessage, startTyping, usersTyping, replyingTo, setReplyingTo } = useChat();
+    const {cachedUsers} = useCachedUser();
 
     const [editor, setEditor] = useState<BlacketEditor | null>(null);
     const [content, setContent] = useState<string>("");

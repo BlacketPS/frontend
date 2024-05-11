@@ -16,8 +16,6 @@ export function FontStoreProvider({ children }: { children: ReactNode }) {
     const [fonts, setFonts] = useState<Font[]>([]);
 
     useEffect(() => {
-        const elements: HTMLStyleElement[] = [];
-
         const fetchData = async () => await window.fetch2.get("/api/data/fonts")
             .then((res: Fetch2Response) => {
                 setFonts(res.data);
@@ -28,13 +26,12 @@ export function FontStoreProvider({ children }: { children: ReactNode }) {
         fetchData()
             .then((res: Font[]) => {
                 for (const font of res) {
-                    const element = document.createElement("style");
-                    element.innerHTML = `@font-face { font-family: ${!font.name.includes(" ") ? font.name : `"${font.name}"`}; src: url("${font.resource}"); }`;
+                    const fontFace = new FontFace(font.name, `url("${font.resource}")`);
 
-                    elements.push(element);
+                    document.fonts.add(fontFace);
+
+                    fontFace.load();
                 }
-
-                for (const element of elements) document.head.appendChild(element);
 
                 setLoading(false);
             })
@@ -42,8 +39,6 @@ export function FontStoreProvider({ children }: { children: ReactNode }) {
                 if (res.status !== 403) setError(true);
                 else setError(res.data.message);
             });
-
-        return () => elements.forEach((element) => element.remove());
     }, []);
 
     return <FontStoreContext.Provider value={{ fonts, setFonts }}>{!loading ? children : <Loading error={error} message="fonts" />}</FontStoreContext.Provider>;

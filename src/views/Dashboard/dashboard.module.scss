@@ -32,19 +32,23 @@
         }
 
         &:nth-child(3) {
-            grid-area: 2 / 1 / 6 / 3;
+            grid-area: 2 / 1 / 6 / 2;
         }
 
         &:nth-child(4) {
             grid-area: 2 / 5 / 6 / 6;
+
+            @media screen and (max-width: 1375px) {
+                display: none;
+            }
         }
 
         &:nth-child(5) {
-            grid-area: 4 / 3 / 2 / 5;
+            grid-area: 4 / 2 / 2 / 5;
         }
 
         &:nth-child(6) {
-            grid-area: 4 / 3 / 6 / 5;
+            grid-area: 4 / 2 / 6 / 5;
         }
     }
 }
@@ -167,7 +171,6 @@
         transform: translate(-50%, -60%);
 
         &:nth-child(2) {
-            font-weight: 600;
             font-size: 1.5rem;
         }
 
@@ -201,7 +204,7 @@
         align-items: center;
 
         &>img {
-            width: 100%;
+            width: auto;
             height: 100%;
             margin-bottom: 5px;
         }
@@ -240,9 +243,29 @@
     a {
         margin-top: 20px;
         font-size: 1.4rem;
-        font-weight: 600;
         text-align: center;
     }
+}
+
+.smallButtonContainer {
+    @media not (max-width: 1375px) {
+        display: none;
+    }
+
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+
+    @media (max-width: 475px) {
+        margin-top: 20px;
+        justify-content: center;
+    }
+}
+
+.smallButton {
+    flex: 1;
+    min-width: fit-content;
 }
 
 .statsContainer {
@@ -303,4 +326,103 @@
     height: 100%;
     padding: 10px;
     border-radius: 5px;
+}
+
+.auctionContainer {
+    padding: 10px;
+
+    display: flex;
+    gap: 20px;
+
+    &>div {
+        width: 100%;
+    }
+}
+
+.auctionStats {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: fit-content;
+
+    &>div {
+        padding: 10px 15px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+
+        &>p {
+            margin: 0 0 5px 0;
+            font-size: 1.2rem;
+            text-decoration: underline;
+        }
+
+        &>span {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+    }
+}
+
+.auctionStatMod {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 0.65rem;
+    padding: 3px 10px;
+    border-radius: 10px;
+    border: 2px solid rgba(0, 0, 0, 0.3);
+    transition: .2s ease;
+
+    &:hover {
+        cursor: pointer;
+        scale: 1.05;
+    }
+
+    &.profit {
+        background-color: rgba(0, 255, 0, 0.3);
+    }
+
+    &.loss {
+        background-color: rgba(255, 0, 0, 0.3);
+    }
+}
+
+.yourLiveAuctions {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+
+    &>.auction {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        padding: 10px;
+        border-radius: 5px;
+        background-color: rgba(0, 0, 0, 0.125);
+        box-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
+
+        &>img {
+            width: auto;
+            height: 120px;
+        }
+
+        &>div {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+
+            &>p {
+                margin: 0;
+                font-size: 1.2rem;
+            }
+
+            &>span {
+                font-size: 1rem;
+                color: rgba(255, 255, 255, 0.7);
+            }
+        }
+    }
 }

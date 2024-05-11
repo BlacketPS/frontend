@@ -27,6 +27,10 @@
     text-decoration: none;
     -webkit-user-select: none;
     user-select: none;
+
+    @media only screen and (max-width: 600px) {
+        font-size: 25px;
+    }
 }
 
 .headerRight {

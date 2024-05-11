@@ -4,3 +4,7 @@ export interface TopButton {
     link?: string;
     onClick?: () => void;
 }
+
+export interface LookupUserModalProps {
+    onClick: (username: string) => Promise<void>;
+}

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import { Modal } from "@components/index";
 
 import { Modals, type ModalStoreContext } from "./modal.d";
@@ -35,6 +35,11 @@ export function ModalStoreProvider({ children }: { children: ReactNode }) {
             setClosing(false);
         }, 500);
     };
+
+    useEffect(() => {
+        if (modals.length > 0) document.body.style.overflow = "hidden";
+        else document.body.style.removeProperty("overflow");
+    }, [modals]);
 
     return (
         <ModalStoreContext.Provider value={{ modals, setModals, createModal, closeModal }}>

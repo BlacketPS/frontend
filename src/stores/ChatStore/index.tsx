@@ -1,14 +1,14 @@
-import { createContext, useContext, useEffect, useState, useRef, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode } from "react";
 import { useSocket } from "@stores/SocketStore/index";
 import { useUser } from "@stores/UserStore/index";
+import { useCachedUser } from "@stores/CachedUserStore/index";
 import { useMessages } from "@controllers/chat/messages/useMessages/index";
 
 import { UserTyping, type ChatStoreContext } from "./chat.d";
-import { Message, User } from "blacket-types";
+import { Message } from "blacket-types";
 
 const ChatStoreContext = createContext<ChatStoreContext>({
     messages: [],
-    cachedUsers: [],
     usersTyping: [],
     replyingTo: null,
     setReplyingTo: () => { },
@@ -24,17 +24,14 @@ export function useChat() {
 export function ChatStoreProvider({ children }: { children: ReactNode }) {
     const { connected, socket } = useSocket();
     const { user } = useUser();
+    const { addCachedUser } = useCachedUser();
 
     const { getMessages } = useMessages();
 
     const [messages, setMessages] = useState<Message[]>([]);
-    const [cachedUsers, setCachedUsers] = useState<User[]>([]);
     const [replyingTo, setReplyingTo] = useState<Message | null>(null);
     const [usersTyping, setUsersTyping] = useState<UserTyping[]>([]);
     const [typingTimeout, setTypingTimeout] = useState<number | null>(null);
-
-    const cachedUsersRef = useRef(cachedUsers);
-    cachedUsersRef.current = cachedUsers;
 
     const fetchMessages = async (room: number) => {
         const messages = await getMessages(room, 50)
@@ -44,13 +41,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
         const userMap = new Map<string, boolean>();
         messages.forEach((message) => userMap.set(message.authorId, true));
 
-        await Promise.all(Array.from(userMap.keys()).map((userId) => {
-            if (!cachedUsers.find((user) => user.id === userId)) {
-                return window.fetch2.get(`/api/users/${userId}`)
-                    .then((res: Fetch2Response) => setCachedUsers((previousCachedUsers) => [...previousCachedUsers, res.data]))
-                    .catch(() => { });
-            }
-        }));
+        for (const user of Array.from(userMap.keys())) addCachedUser(user);
 
         setMessages(messages);
 
@@ -98,11 +89,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
 
             if (data.authorId === user.id) return;
 
-            if (!cachedUsersRef.current.find((cachedUser) => cachedUser.id === data.authorId)) {
-                await window.fetch2.get(`/api/users/${data.authorId}`)
-                    .then((res: Fetch2Response) => setCachedUsers((previousCachedUsers) => [...previousCachedUsers, res.data]))
-                    .catch(() => { });
-            }
+            addCachedUser(data.authorId);
 
             setMessages((previousMessages) => [data, ...previousMessages]);
             setUsersTyping((previousUsersTyping) => previousUsersTyping.filter((user) => user.userId !== data.authorId));
@@ -111,11 +98,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
         socket?.on("chat-typing-started", (data: any) => {
             if (data.userId === user.id) return;
 
-            if (!cachedUsersRef.current.find((cachedUser) => cachedUser.id === data.userId)) {
-                window.fetch2.get(`/api/users/${data.userId}`)
-                    .then((res: Fetch2Response) => setCachedUsers((previousCachedUsers) => [...previousCachedUsers, res.data]))
-                    .catch(() => { });
-            }
+            addCachedUser(data.userId);
 
             data.startedTypingAt = Date.now();
 
@@ -179,7 +162,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
     }, [connected, user]); */
 
     return <ChatStoreContext.Provider value={{
-        messages, cachedUsers, usersTyping, replyingTo, setReplyingTo,
+        messages, usersTyping, replyingTo, setReplyingTo,
         fetchMessages, sendMessage, startTyping
     }}>{children}</ChatStoreContext.Provider>;
 }

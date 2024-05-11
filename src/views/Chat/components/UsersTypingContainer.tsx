@@ -1,11 +1,11 @@
 import { memo } from "react";
-import { useChat } from "@stores/ChatStore/index";
+import { useCachedUser } from "@stores/CachedUserStore/index";
 import styles from "../chat.module.scss";
 
 import { UsersTypingProps } from "../chat.d";
 
 export default memo(function UsersTypingContainer({ usersTyping }: UsersTypingProps) {
-    const { cachedUsers } = useChat();
+    const { cachedUsers } = useCachedUser();
 
     const users = cachedUsers.filter((user) => usersTyping.some((typingUser) => typingUser.userId === user.id));
 
