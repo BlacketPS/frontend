@@ -86,7 +86,6 @@ export default function Dashboard() {
     const topButtons: TopButton[] = [
         { icon: "fas fa-magnifying-glass", text: "Lookup User", onClick: () => createModal(<LookupUserModal onClick={viewUser} />) },
         { icon: "fas fa-star", text: "Daily Rewards", onClick: () => { } },
-        { icon: "fas fa-scale-balanced", text: "Trading Plaza", link: "/trading-plaza" },
         { icon: "fas fa-heart", text: "Credits", link: "/credits" },
         { icon: "fab fa-discord", text: "Discord", link: "https://discord.gg/5setU8ye6j" },
         { icon: "fab fa-github", text: "GitHub", link: "https://github.com/XOTlC/Blacket" }
@@ -154,8 +153,64 @@ export default function Dashboard() {
                 ))}
             </div>
             <div className={styles.section}>
+                <div className={styles.containerHeader}>
+                    <div className={styles.containerHeaderInside}>
+                        Stats
+                    </div>
+                </div>
                 <div className={styles.statsContainer}>
-                    <p>stats</p>
+                    <div className={styles.statsContainerHolder}>
+                        <div className={styles.statContainer}>
+                            <div className={styles.statHeader}>
+                                <img src="/content/statsId.png" />
+                                User ID
+                            </div>
+                            <div className={styles.statDivider} />
+                            <div className={styles.statValue}>
+                                {user.id}
+                            </div>
+                        </div>
+                        <div className={styles.statContainer}>
+                            <div className={styles.statHeader}>
+                                <img src="/content/statsToken.png" />
+                                Tokens
+                            </div>
+                            <div className={styles.statDivider} />
+                            <div className={styles.statValue}>
+                                {user.tokens.toLocaleString()}
+                            </div>
+                        </div>
+                        <div className={styles.statContainer}>
+                            <div className={styles.statHeader}>
+                                <img src="/content/statsUnlocks.png" />
+                                Blooks Unlocked
+                            </div>
+                            <div className={styles.statDivider} />
+                            <div className={styles.statValue}>
+                                {Object.keys(user.blooks).length.toLocaleString()} / 0
+                            </div>
+                        </div>
+                        <div className={styles.statContainer}>
+                            <div className={styles.statHeader}>
+                                <img src="/content/statsPack.png" />
+                                Packs Opened
+                            </div>
+                            <div className={styles.statDivider} />
+                            <div className={styles.statValue}>
+                                {user.statistics.packsOpened.toLocaleString()}
+                            </div>
+                        </div>
+                        <div className={styles.statContainer}>
+                            <div className={styles.statHeader}>
+                                <img src="/content/statsMessages.png" />
+                                Messages Sent
+                            </div>
+                            <div className={styles.statDivider} />
+                            <div className={styles.statValue}>
+                                {user.statistics.messagesSent.toLocaleString()}
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div className={styles.section}>
@@ -177,6 +232,11 @@ export default function Dashboard() {
             </div>
             <div className={styles.section}>
                 <div className={`${styles.statsContainer} ${styles.auctionContainer}`}>
+                    <div className={styles.containerHeader}>
+                        <div className={styles.containerHeaderInside}>
+                            Auctions
+                        </div>
+                    </div>
                     <div className={styles.yourLiveAuctions}>
                         <div className={styles.auction}>
                             <img src="/content/blooks/Default.png" alt="Auction Item" />
@@ -187,8 +247,8 @@ export default function Dashboard() {
                             </div>
                         </div>
                     </div>
-
-                    {/* <div className={styles.auctionStats}>
+{/*
+                    <div className={styles.auctionStats}>
                         <div>
                             <p>Auctions Listed</p>
                             <span>2<div className={`${styles.auctionStatMod} ${styles.profit}`}><i className="fas fa-circle-up" />+2 past 7d</div></span>

@@ -80,7 +80,6 @@ export default function Settings() {
             <SettingsContainer header={{ icon: "fas fa-pencil-alt", text: "Edit Info" }}>
                 <Button.ClearButton onClick={() => createModal(<ChangeUsernameModal />)}>Change Username</Button.ClearButton>
                 <Button.ClearButton onClick={() => createModal(<ChangePasswordModal />)}>Change Password</Button.ClearButton>
-                <Button.ClearButton onClick={() => createModal(user.settings.otpEnabled ? <DisableOTPModal /> : <EnableOTPModal />)}>{user.settings.otpEnabled ? "Disable" : "Enable"} OTP / 2FA</Button.ClearButton>
             </SettingsContainer>
 
             <SettingsContainer header={{ icon: "fas fa-cog", text: "General" }}>
@@ -119,6 +118,7 @@ export default function Settings() {
             </SettingsContainer>
 
             <SettingsContainer header={{ icon: "fas fa-lock", text: "Privacy" }}>
+                <Button.ClearButton onClick={() => createModal(user.settings.otpEnabled ? <DisableOTPModal /> : <EnableOTPModal />)}>{user.settings.otpEnabled ? "Disable" : "Enable"} OTP / 2FA</Button.ClearButton>
                 <Link to="/terms">Terms of Service</Link>
                 <Link to="/privacy">Privacy Policy</Link>
             </SettingsContainer>

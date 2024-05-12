@@ -117,33 +117,38 @@
         border-radius: unset;
         width: 100%;
         position: fixed;
-        top: 0;
-        left: 0;
-        transform: none;
-        // animation: .5s ease slideIn forwards;
+        top: unset;
+        left: unset;
+        bottom: 0;
+        transform: unset;
 
-        // @keyframes slideIn {
-        //     0% {
-        //         bottom: -50%;
-        //     }
 
-        //     100% {
-        //         bottom: 0;
-        //     }
-        // }
+        &[data-animated="true"] {
+            animation: .5s ease slideIn forwards;
 
-        // &[data-closing="true"] {
-        //     animation: .5s ease slideOut forwards;
+            @keyframes slideIn {
+                0% {
+                    bottom: -50%;
+                }
 
-        //     @keyframes slideOut {
-        //         0% {
-        //             bottom: 0;
-        //         }
+                100% {
+                    bottom: 0;
+                }
+            }
+        }
 
-        //         100% {
-        //             bottom: -50%;
-        //         }
-        //     }
-        // }
+        &[data-closing="true"] {
+            animation: .5s ease slideOut forwards;
+
+            @keyframes slideOut {
+                0% {
+                    bottom: 0;
+                }
+
+                100% {
+                    bottom: -50%;
+                }
+            }
+        }
     }
 }
