@@ -11,6 +11,7 @@ module.exports = {
     plugins: ["@typescript-eslint/eslint-plugin", "@stylistic", "react-refresh"],
     rules: {
         // TypeScript Rules
+        "@typescript-eslint/ban-ts-comment": "off",
         "@typescript-eslint/interface-name-prefix": "off",
         "@typescript-eslint/explicit-function-return-type": "off",
         "@typescript-eslint/explicit-module-boundary-types": "off",
@@ -22,6 +23,7 @@ module.exports = {
 
         // Blacket Rules
         "max-depth": "error",
+        "prefer-spread": "off",
         "@stylistic/quotes": ["error", "double"],
         "@stylistic/arrow-parens": ["error", "always"],
         "@stylistic/arrow-spacing": "error",

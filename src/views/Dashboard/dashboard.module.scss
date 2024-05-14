@@ -118,7 +118,9 @@
     background-color: rgba(0, 0, 0, 0.15);
 
     &>div {
-        background: linear-gradient(#fcd843, #fcd843 50%, #feb31a 50%, #feb31a);
+        // background: linear-gradient(#fcd843, #fcd843 50%, #feb31a 50%, #feb31a);
+        // light blue instead
+        background: linear-gradient(#00bfff, #00bfff 50%, #00a8ff 50%, #00a8ff);
         height: 100%;
         width: 100%;
         transform-origin: left center;
@@ -145,8 +147,8 @@
 
     &>div {
         position: absolute;
-        top: 50%;
-        left: 50%;
+        top: 48%;
+        left: 54%;
         transform: translate(-50%, -50%);
         color: var(--accent-color);
         font-family: "Titan One", sans-serif;
