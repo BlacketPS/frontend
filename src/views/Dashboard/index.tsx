@@ -86,9 +86,7 @@ export default function Dashboard() {
     const topButtons: TopButton[] = [
         { icon: "fas fa-magnifying-glass", text: "Lookup User", onClick: () => createModal(<LookupUserModal onClick={viewUser} />) },
         { icon: "fas fa-star", text: "Daily Rewards", onClick: () => { } },
-        { icon: "fas fa-heart", text: "Credits", link: "/credits" },
-        { icon: "fab fa-discord", text: "Discord", link: "https://discord.gg/5setU8ye6j" },
-        { icon: "fab fa-github", text: "GitHub", link: "https://github.com/XOTlC/Blacket" }
+        { icon: "fas fa-shopping-cart", text: "Store", link: "/store" }
     ];
 
     return (

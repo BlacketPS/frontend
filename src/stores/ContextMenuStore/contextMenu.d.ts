@@ -20,6 +20,7 @@ export interface ContextMenuContext {
 }
 
 export interface ContainerProps {
+    visible: boolean;
     top: CSSProperties["top"];
     left: CSSProperties["left"];
     children: ReactNode;

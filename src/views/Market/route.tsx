@@ -8,5 +8,5 @@ export default {
     description: "Purchase packs and items and unlock blooks.",
     sidebar: true,
     topRight: ["tokens"],
-    pageHeader: "Market"
+    dontUseBody: true
 } as BlacketRoute;

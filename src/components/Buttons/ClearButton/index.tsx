@@ -1,9 +1,11 @@
-import { ClearButtonProps } from "./clearButton.d";
-
+import { Link } from "react-router-dom";
 import styles from "./clearButton.module.scss";
 
-export default function ClearButton({ className = "", children, ...props }: ClearButtonProps) {
+import { ClearButtonProps } from "./clearButton.d";
+
+export default function ClearButton({ to, className = "", children, ...props }: ClearButtonProps) {
     if (className !== "") className = ` ${className}`;
 
-    return <div className={`${styles.clearButton}${className}`} role="button" {...props}>{children}</div>;
+    if (!to) return <div className={`${styles.clearButton}${className}`} role="button" {...props}>{children}</div>;
+    else return <Link to={to} className={`${styles.clearButton}${className}`} {...props}>{children}</Link>;
 }

@@ -108,6 +108,15 @@ function particleType(e) {
     }
 }
 
+function clamp(e, t, a) {
+    return e < t ? t : e > a ? a : e;
+}
+
+let hue = 0,
+    hueDirection = 1;
+let lightness = 1,
+    lightnessDirection = -1;
+
 const particleClass = new Class({
     Extends: GameObjects.Image,
     initialize: function () {
@@ -117,7 +126,30 @@ const particleClass = new Class({
     },
     spawn: function (x, y, scale, velAngle, velSpeed, gravity, angle, lifespan, texture, color) {
         this.setTexture(texture);
-        this.setTint(parseInt(color.replace("#", "").substring(0, 6), 16));
+
+        if (color === "iridescent") {
+            if (hue > 360 || hue < 0) hueDirection *= -1;
+            if (lightness <= 0.4 || lightness >= 1) lightnessDirection *= -1;
+
+            hue += 0.06 * hueDirection;
+            lightness += 0.005 * lightnessDirection;
+
+            const color = Phaser.Display.Color.HSVToRGB(clamp(hue / 360, 0, 1), lightness, 1);
+            this.setTint(Phaser.Display.Color.GetColor(color.r, color.g, color.b));
+        } else if (color === "mystical") {
+            if (lightness <= 0.5 || lightness >= 1) lightnessDirection *= -1;
+
+            lightness += 0.005 * lightnessDirection;
+
+            const color = Phaser.Display.Color.HSVToRGB(275.7 / 360, lightness, 1);
+            this.setTint(Phaser.Display.Color.GetColor(color.r, color.g, color.b));
+        } else if (color === "rainbow") {
+            if (hue > 360 || hue < 0) hueDirection *= -1;
+            hue += 0.06 * hueDirection;
+
+            const color = Phaser.Display.Color.HSVToRGB(clamp(hue / 360, 0, 1), 1, 1);
+            this.setTint(Phaser.Display.Color.GetColor(color.r, color.g, color.b));
+        } else this.setTint(parseInt(color.replace("#", "").substring(0, 6), 16));
         this.setActive(true);
         this.setVisible(true);
         this.setPosition(x, y);
@@ -148,7 +180,6 @@ export default class Particles extends Scene {
     }
 
     preload() {
-        this.load.setCORS("anonymous");
         this.load.image("particle-1", "/content/particles/1.png", { width: 25, height: 25 });
         this.load.image("particle-2", "/content/particles/2.png", { width: 25, height: 25 });
         this.load.image("particle-3", "/content/particles/3.png", { width: 25, height: 25 });
@@ -216,6 +247,44 @@ export default class Particles extends Scene {
                     for (let u = 0; u < 3; u++) {
                         const d = data.particles.get();
                         d && d.spawn.apply(d, Object.values(particleType(u % 2 == 0 ? "left-diamond" : "right-diamond")).concat(`particle-${randomInt(1, 8)}`, this.color));
+                    }
+
+                    break;
+                }
+
+                case 6: {
+                    for (let v = 0; v < 3; v++) {
+                        const b = data.particles.get();
+                        b && b.spawn.apply(b, Object.values(particleType("top")).concat(`particle-${randomInt(1, 8)}`, this.color));
+                    }
+
+                    for (let u = 0; u < 3; u++) {
+                        const d = data.particles.get();
+                        d && d.spawn.apply(d, Object.values(particleType(u % 2 == 0 ? "left-diamond" : "right-diamond")).concat(`particle-${randomInt(1, 8)}`, this.color));
+                    }
+
+                    break;
+                }
+
+                case 7: {
+                    for (let h = 0; h < 2; h++) {
+                        const m = data.particles.get();
+                        m && m.spawn.apply(m, Object.values(particleType(h % 2 == 0 ? "left-bottom" : "right-bottom")).concat(`particle-${randomInt(1, 8)}`, this.color));
+                    }
+
+                    for (let g = 0; g < 2; g++) {
+                        const y = data.particles.get();
+                        y && y.spawn.apply(y, Object.values(particleType(g % 2 == 0 ? "left-shower" : "right-shower")).concat(`particle-${randomInt(1, 8)}`, this.color));
+                    }
+
+                    for (let v = 0; v < 3; v++) {
+                        const b = data.particles.get();
+                        b && b.spawn.apply(b, Object.values(particleType("top")).concat(`particle-${randomInt(1, 8)}`, this.color));
+                    }
+
+                    for (let w = 0; w < 3; w++) {
+                        const x = data.particles.get();
+                        x && x.spawn.apply(x, Object.values(particleType(w % 2 == 0 ? "left-diamond" : "right-diamond")).concat(`particle-${randomInt(1, 8)}`, this.color));
                     }
 
                     break;

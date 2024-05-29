@@ -7,7 +7,7 @@ import styles from "../chat.module.scss";
 
 import { BlacketEditor, InputContainerProps } from "../chat.d";
 
-export default memo(function InputContainer({ placeholder, maxLength }: InputContainerProps) {
+export default memo(function InputContainer({ placeholder, _maxLength }: InputContainerProps) {
     const { sendMessage, startTyping, usersTyping, replyingTo, setReplyingTo } = useChat();
     const {cachedUsers} = useCachedUser();
 

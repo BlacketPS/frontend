@@ -18,29 +18,45 @@ export function ContextMenuStoreProvider({ children }: { children: ReactNode }) 
     const [cursorPosition, setCursorPosition] = useState<{ x: number; y: number; }>({ x: 0, y: 0 });
     const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
 
+    // visible so the contextmenu doesn't flicker on initial render
+    const [visible, setVisible] = useState<boolean>(false);
+
     const contextMenuRef = useRef<HTMLDivElement>(null);
 
-    const openContextMenu = (items: ContextMenu["items"]) => {
-        if (window.innerWidth <= 768) return setContextMenu({ items });
-        else setContextMenu({ items, x: cursorPosition.x, y: cursorPosition.y });
+    const openContextMenu = async (items: ContextMenu["items"]) => {
+        if (window.innerWidth <= 768) {
+            setVisible(true);
 
-        // need a setTimeout here else it will not set the context menu position correctly do not remove
-        setTimeout(() => {
-            if (!contextMenuRef.current) return;
+            return setContextMenu({ items });
+        }
 
-            const contextMenuRect = contextMenuRef.current.getBoundingClientRect();
+        setContextMenu({ items, x: cursorPosition.x, y: cursorPosition.y });
 
-            if (contextMenuRect.right > window.innerWidth) setContextMenu({ items, x: cursorPosition.x - contextMenuRect.width, y: cursorPosition.y });
-            if (contextMenuRect.bottom > window.innerHeight) setContextMenu({ items, x: cursorPosition.x, y: cursorPosition.y - contextMenuRect.height });
-        });
+        while (!contextMenuRef.current) await new Promise((resolve) => setTimeout(resolve, 0));
+
+        const contextMenuRect = contextMenuRef.current.getBoundingClientRect();
+
+        const { innerWidth, innerHeight } = window;
+        const { width, height } = contextMenuRect;
+
+        const x = Math.min(cursorPosition.x, innerWidth - width);
+        const y = Math.min(cursorPosition.y, innerHeight - height);
+
+        setContextMenu({ items, x, y });
+
+        if (!visible) setVisible(true);
     };
 
-    const closeContextMenu = () => setContextMenu(null);
+    const closeContextMenu = () => {
+        setVisible(false);
+
+        setContextMenu(null);
+    };
 
     useEffect(() => {
         window.addEventListener("mousemove", (e) => setCursorPosition({ x: e.clientX, y: e.clientY }));
 
-        const handleClickOutside = (e: MouseEvent) => (contextMenuRef.current && contextMenuRef.current.contains(e.target as Node) || closeContextMenu());
+        const handleClickOutside = (e: MouseEvent) => (contextMenuRef.current && contextMenuRef.current.contains(e.target as Node) || e.button === 0 && closeContextMenu());
 
         window.addEventListener("mousedown", handleClickOutside);
 
@@ -53,7 +69,7 @@ export function ContextMenuStoreProvider({ children }: { children: ReactNode }) 
 
     return (
         <ContextMenuContext.Provider value={{ contextMenu, setContextMenu, openContextMenu, closeContextMenu }}>
-            {contextMenu && <Container ref={contextMenuRef} top={contextMenu.y} left={contextMenu.x}>
+            {contextMenu && <Container ref={contextMenuRef} visible={visible} top={contextMenu.y} left={contextMenu.x}>
                 {contextMenu.items.map((item, index) => item.divider ? <Divider key={index} /> : item && <Item key={index} icon={item.icon} color={item.color} onClick={() => {
                     if (item.onClick) item.onClick();
 

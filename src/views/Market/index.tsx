@@ -1,44 +1,19 @@
 import { useState, useEffect, useRef, RefObject } from "react";
-import { Navigate } from "react-router-dom";
 import { useLoading } from "@stores/LoadingStore";
-import { useUser } from "@stores/UserStore";
-import { useModal } from "@stores/ModalStore";
+import { useUser } from "@stores/UserStore/index";
+import { useModal } from "@stores/ModalStore/index";
 import { usePack } from "@stores/PackStore/index";
+import { useRarity } from "@stores/RarityStore/index";
+import { useBlook } from "@stores/BlookStore/index";
 import { useSettings } from "@controllers/settings/useSettings";
-import { Modal, Button } from "@components/index";
-import { OpenPackModal, Category, Pack } from "./components";
+import { SidebarBody, PageHeader, Modal, Button } from "@components/index";
+import { OpenPackModal, Category, Pack, OpenPackContainer } from "./components";
 import { Game, Scale, WEBGL } from "phaser";
 import Particles from "./functions/PackParticles";
 import styles from "./market.module.scss";
 
-import { Pack as PackType } from "blacket-types";
-
-type ParticlesScene = Phaser.Scene & {
-    initParticles: () => void;
-    game: Game;
-};
-
-type Config = {
-    type: number;
-    parent: string | HTMLDivElement | null;
-    width: string;
-    height: string;
-    transparent: boolean;
-    scale: { mode: number; autoCenter: number };
-    physics: { default: string };
-    scene: ParticlesScene;
-};
-
-type GameState = {
-    type: number;
-    parent: string;
-    width: string;
-    height: string;
-    transparent: boolean;
-    scale: { mode: number; autoCenter: number; };
-    physics: { default: string; };
-    scene: ParticlesScene;
-};
+import { Blook, Pack as PackType } from "blacket-types";
+import { ParticlesScene, Config, GameState, BigButtonClickType } from "./market.d";
 
 const useGame = (config: Config, containerRef: RefObject<HTMLDivElement>) => {
     const [game, setGame] = useState<Game | null>(null);
@@ -62,6 +37,15 @@ const useGame = (config: Config, containerRef: RefObject<HTMLDivElement>) => {
 };
 
 export default function Market() {
+    const { setLoading } = useLoading();
+    const { createModal } = useModal();
+    const { user } = useUser();
+    const { packs } = usePack();
+    const { rarities } = useRarity();
+    const { blooks } = useBlook();
+
+    const { changeSetting } = useSettings();
+
     const [game, setGame] = useState<GameState>({
         type: WEBGL,
         parent: "phaser-market",
@@ -75,18 +59,16 @@ export default function Market() {
             initParticles: () => { }
         } as ParticlesScene
     });
+    const [currentPack, setCurrentPack] = useState<any | null>(null);
     const [openingPack, setOpeningPack] = useState<boolean>(false);
+
+    const [unlockedBlook, setUnlockedBlook] = useState<Blook | null>(null);
+
+    const [bigButtonEvent, setBigButtonEvent] = useState<BigButtonClickType>(BigButtonClickType.CLOSE);
 
     const gameRef = useRef<HTMLDivElement>(null);
 
     useGame(game, gameRef);
-
-    const { setLoading } = useLoading();
-    const { createModal } = useModal();
-    const { user } = useUser();
-    const { packs } = usePack();
-
-    const { changeSetting } = useSettings();
 
     const toggleInstantOpen = () => {
         setLoading("Changing settings");
@@ -96,53 +78,83 @@ export default function Market() {
             .finally(() => setLoading(false));
     };
 
-    const purchasePack = () => new Promise<void>((resolve, reject) => {
+    const purchasePack = () => new Promise<void>((resolve, _reject) => {
         setGame({
             type: WEBGL, parent: "phaser-market", width: "100%", height: "100%", transparent: true,
             scale: { mode: Scale.NONE, autoCenter: Scale.CENTER_BOTH },
             physics: { default: "arcade" },
-            scene: new Particles(1, "#ffffff") as ParticlesScene
+            scene: new Particles(1, "iridescent") as ParticlesScene
         });
-        setOpeningPack(true);
+        setBigButtonEvent(BigButtonClickType.OPEN);
+        setCurrentPack(packs[0]);
 
         resolve();
     });
 
     const handleBigClick = async () => {
-        await new Promise((r) => setTimeout(r, 500));
-        game?.scene.game.events.emit("start-particles", 1);
+        switch (bigButtonEvent) {
+            case BigButtonClickType.OPEN:
+                setOpeningPack(true);
+
+                setBigButtonEvent(BigButtonClickType.NONE);
+
+                await new Promise((r) => setTimeout(r, 500));
+                game?.scene.game.events.emit("start-particles", 5);
+
+                await new Promise((r) => setTimeout(r, 750));
+                setBigButtonEvent(BigButtonClickType.CLOSE);
+
+                break;
+            case BigButtonClickType.CLOSE:
+                setCurrentPack(null);
+                setOpeningPack(false);
+
+                break;
+            case BigButtonClickType.NONE:
+                break;
+        }
     };
 
     return (
         <>
-            <div className={styles.buttonHolder}>
-                <Button.LittleButton onClick={toggleInstantOpen}>Instant Open: {user.settings.openPacksInstantly ? "On" : "Off"}</Button.LittleButton>
-            </div>
+            <SidebarBody>
+                <PageHeader>Market</PageHeader>
 
-            <Category header={`Packs (${packs.length})`} internalName="MARKET_PACKS">
-                <div className={styles.packsWrapper}>
-                    {packs.map((pack: PackType) => <Pack key={pack.id} pack={pack} onClick={() => {
-                        if (!user.settings.openPacksInstantly) createModal(<OpenPackModal
-                            packId={pack.id}
-                            userTokens={user.tokens}
-                            onYesButton={() => purchasePack()} />
-                        );
-                        else purchasePack();
-                    }} />)}
+                <div className={styles.buttonHolder}>
+                    <Button.LittleButton onClick={toggleInstantOpen}>Instant Open: {user.settings.openPacksInstantly ? "On" : "Off"}</Button.LittleButton>
                 </div>
-            </Category>
 
-            <Category header="Weekly Shop" internalName="MARKET_WEEKLY_SHOP">
-                There are no items in the weekly shop.
-            </Category>
+                <Category header={`Packs (${packs.length})`} internalName="MARKET_PACKS">
+                    <div className={styles.packsWrapper}>
+                        {packs.map((pack: PackType) => <Pack key={pack.id} pack={pack} onClick={() => {
+                            if (!user.settings.openPacksInstantly) createModal(<OpenPackModal
+                                packId={pack.id}
+                                userTokens={user.tokens}
+                                onYesButton={() => purchasePack()} />
+                            );
+                            else purchasePack();
+                        }} />)}
+                    </div>
+                </Category>
 
-            <Category header="Item Shop" internalName="MARKET_ITEM_SHOP">
-                There are no items in the item shop.
-            </Category>
+                <Category header="Weekly Shop" internalName="MARKET_WEEKLY_SHOP">
+                    There are no items in the weekly shop.
+                </Category>
 
-            <button onClick={handleBigClick}>Big Button</button>
+                <Category header="Item Shop" internalName="MARKET_ITEM_SHOP">
+                    There are no items in the item shop.
+                </Category>
+            </SidebarBody>
 
-            {openingPack && <div ref={gameRef} className={styles.phaserContainer} />}
+            {
+                currentPack && <div className={styles.openModal} style={{
+                    background: `radial-gradient(circle, ${currentPack.innerColor} 0%, ${currentPack.outerColor} 100%)`
+                }}>
+                    <div ref={gameRef} className={styles.phaserContainer} />
+                    <OpenPackContainer opening={openingPack} image={currentPack.image} />
+                    <div style={{ cursor: bigButtonEvent === BigButtonClickType.NONE ? "unset" : "" }} className={styles.openBigButton} onClick={handleBigClick} />
+                </div>
+            }
         </>
     );
 }

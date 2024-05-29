@@ -25,3 +25,14 @@ config.json
 *.njsproj
 *.sln
 *.sw?
+
+public/**/*
+!public/favicon.ico
+!public/blooks/Console.gif
+!public/blooks/Default.png
+!public/blooks/Error.png
+!public/blooks/Information.png
+!public/blooks/Loading.png
+!public/blooks/Warning.png
+!public/blooks/backgrounds/Default.png
+!public/banners/Default.png

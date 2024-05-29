@@ -68,6 +68,11 @@ export default function Settings() {
                 <div style={{ display: "inline-flex" }}><b>Font: </b> <div style={{ fontFamily: fontName, marginLeft: 7 }}>{fontName}</div></div>
                 <div><b>Joined:</b> {`${new Date(user.createdAt).toLocaleDateString()} ${new Date(user.createdAt).toLocaleTimeString()}`}</div>
 
+                <Button.ClearButton to={
+                    `https://discord.com/oauth2/authorize?client_id=${import.meta.env.VITE_DISCORD_CLIENT_ID}&response_type=code&redirect_uri=${
+                        encodeURI(window.location.origin + window.location.pathname + "/link-discord")
+                    }&scope=identify`
+                }>Link Discord</Button.ClearButton>
                 <Button.ClearButton onClick={() => createModal(<Modal.LogoutModal />)}>Logout</Button.ClearButton>
             </SettingsContainer>
 
