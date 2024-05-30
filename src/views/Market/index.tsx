@@ -78,7 +78,7 @@ export default function Market() {
             .finally(() => setLoading(false));
     };
 
-    const purchasePack = () => new Promise<void>((resolve, _reject) => {
+    const purchasePack = (pack: PackType) => new Promise<void>((resolve, _reject) => {
         setGame({
             type: WEBGL, parent: "phaser-market", width: "100%", height: "100%", transparent: true,
             scale: { mode: Scale.NONE, autoCenter: Scale.CENTER_BOTH },
@@ -86,7 +86,7 @@ export default function Market() {
             scene: new Particles(1, "iridescent") as ParticlesScene
         });
         setBigButtonEvent(BigButtonClickType.OPEN);
-        setCurrentPack(packs[0]);
+        setCurrentPack(pack);
 
         resolve();
     });
@@ -130,9 +130,9 @@ export default function Market() {
                             if (!user.settings.openPacksInstantly) createModal(<OpenPackModal
                                 packId={pack.id}
                                 userTokens={user.tokens}
-                                onYesButton={() => purchasePack()} />
+                                onYesButton={() => purchasePack(pack)} />
                             );
-                            else purchasePack();
+                            else purchasePack(pack);
                         }} />)}
                     </div>
                 </Category>
