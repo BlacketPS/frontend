@@ -40,8 +40,20 @@ export default defineConfig({
         rollupOptions: {
             output: {
                 manualChunks: (id: string) => {
-                    if (id.includes("node_modules")) return "vendor";
-                    else return "main";
+                    switch (true) {
+                        case id.includes("react"):
+                            return "vendor-react";
+                        case id.includes("phaser"):
+                            return "vendor-phaser";
+                        case id.includes("prismjs"):
+                            return "vendor-prismjs";
+                        case id.includes("slate"):
+                            return "vendor-slate";
+                        case id.includes("node_modules"):
+                            return "vendor-other";
+                        default:
+                            return "main";
+                    }
                 },
                 chunkFileNames: "[name].[hash].js",
                 entryFileNames: "[name].[hash].js",
