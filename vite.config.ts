@@ -40,7 +40,10 @@ export default defineConfig({
         rollupOptions: {
             output: {
                 manualChunks: (id: string) => {
-                    switch (true) {
+                    // after we started importing phaser externally, we no longer need to split up vendor, in fact it slows down loadtime.
+                    if (id.includes("node_modules")) return "vendor";
+                    return "main";
+                    /* switch (true) {
                         case id.includes("react"):
                             return "vendor-react";
                         case id.includes("prismjs"):
@@ -51,7 +54,7 @@ export default defineConfig({
                             return "vendor-other";
                         default:
                             return "main";
-                    }
+                    } */
                 },
                 chunkFileNames: "[name].[hash].js",
                 entryFileNames: "[name].[hash].js",
