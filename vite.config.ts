@@ -43,8 +43,6 @@ export default defineConfig({
                     switch (true) {
                         case id.includes("react"):
                             return "vendor-react";
-                        case id.includes("phaser"):
-                            return "vendor-phaser";
                         case id.includes("prismjs"):
                             return "vendor-prismjs";
                         case id.includes("slate"):

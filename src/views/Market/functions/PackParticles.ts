@@ -1,7 +1,7 @@
 // @ts-nocheck i really dont want to define types for this file because its a pain in the ass and for some reason class doesn't exist in phaser as a type but it really does exist
 // if someone can figure out how to get this to work with typescript please make a pull request
 
-import { Class, GameObjects, Scene } from "phaser";
+const { Class, GameObjects, Scene } = window.Phaser;
 
 let data = {};
 

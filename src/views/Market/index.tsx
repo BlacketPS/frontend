@@ -8,7 +8,8 @@ import { useBlook } from "@stores/BlookStore/index";
 import { useSettings } from "@controllers/settings/useSettings";
 import { SidebarBody, PageHeader, Modal, Button } from "@components/index";
 import { OpenPackModal, Category, Pack, OpenPackContainer } from "./components";
-import { Game, Scale, WEBGL } from "phaser";
+// @ts-expect-error too big for the bundle so import it externally
+const { Game, Scale, WEBGL } = window.Phaser;
 import Particles from "./functions/PackParticles";
 import styles from "./market.module.scss";
 
@@ -16,7 +17,7 @@ import { Blook, Pack as PackType } from "blacket-types";
 import { ParticlesScene, Config, GameState, BigButtonClickType } from "./market.d";
 
 const useGame = (config: Config, containerRef: RefObject<HTMLDivElement>) => {
-    const [game, setGame] = useState<Game | null>(null);
+    const [game, setGame] = useState<typeof Game | null>(null);
     const oldConfig = useRef<Config | null>(null);
 
     useEffect(() => {
@@ -55,7 +56,7 @@ export default function Market() {
         scale: { mode: Scale.NONE, autoCenter: Scale.CENTER_BOTH },
         physics: { default: "arcade" },
         scene: {
-            game: {} as Game,
+            game: {} as typeof Game,
             initParticles: () => { }
         } as ParticlesScene
     });
