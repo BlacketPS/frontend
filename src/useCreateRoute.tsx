@@ -5,7 +5,7 @@ export default function useCreateRoute(route: BlacketRoute) {
     if (!route.background) route.background = true;
 
     return {
-        id: route.name,
+        id: route.path,
         path: route.path,
         element: <>
             <Helmet>

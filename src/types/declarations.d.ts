@@ -6,7 +6,6 @@ import { TopRightContent } from "@components/TopRight/topRight.d";
 
 declare global {
     interface BlacketRoute {
-        name: string,
         path: string,
         component: JSX.Element,
         title: string,

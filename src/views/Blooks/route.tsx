@@ -1,7 +1,6 @@
 import Blooks from "./index";
 
 export default {
-    name: "Blooks",
     path: "/blooks",
     component: <Blooks />,
     title: `Blooks | ${import.meta.env.VITE_INFORMATION_NAME}`,

@@ -1,7 +1,6 @@
 import Dashboard from "./index";
 
 export default {
-    name: "Dashboard",
     path: "/dashboard",
     component: <Dashboard />,
     title: `Dashboard | ${import.meta.env.VITE_INFORMATION_NAME}`,

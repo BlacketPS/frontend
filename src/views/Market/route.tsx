@@ -1,7 +1,6 @@
 import Market from "./index";
 
 export default {
-    name: "Market",
     path: "/market",
     component: <Market />,
     title: `Market | ${import.meta.env.VITE_INFORMATION_NAME}`,
