@@ -9,7 +9,7 @@ import { Button } from "@components/index";
 import { LookupUserModal } from "./components";
 import useTitleIdToText from "@functions/resources/useTitleIdToText";
 import useFontIdToName from "@functions/resources/useFontIdToName";
-import getAvatarURL from "@functions/resources/getAvatarURL";
+import useGetAvatarURL from "@functions/resources/useGetAvatarURL";
 import styles from "./dashboard.module.scss";
 
 import { TopButton } from "./dashboard.d";
@@ -78,6 +78,7 @@ export default function Dashboard() {
             .finally(() => setLoading(false));
     }, []);
 
+    const avatarURL = useGetAvatarURL(user);
     const titleText = useTitleIdToText(user?.titleId);
     const fontName = useFontIdToName(user?.fontId);
 
@@ -94,10 +95,10 @@ export default function Dashboard() {
             <div className={styles.section}>
                 <div className={styles.userTopProfile}>
                     <div className={styles.userBannerBlook}>
-                        <img src={getAvatarURL(user.avatar)} alt="User Avatar" />
+                        <img src={avatarURL} alt="User Avatar" />
                         <div className={styles.bannerLevel}>
                             <div className={styles.userBanner}>
-                                <img src={"/content/banners/Default.png"} alt="User Banner" />
+                                <img src={"https://cdn.blacket.org/static/content/banners/Default.png"} alt="User Banner" />
                                 <p className={
                                     user.color === "rainbow" ? "rainbow" : ""
                                 } style={{
@@ -111,7 +112,7 @@ export default function Dashboard() {
                                     <div />
                                 </div>
                                 <div className={styles.levelStarContainer}>
-                                    <img src="https://ac.blooket.com/dashboard/assets/LevelStar-tmvShqvY.svg" alt="Level Star" />
+                                    <img src="https://cdn.blacket.org/static/content/levelStar.png" alt="Level Star" />
                                     <div>0</div>
                                 </div>
                             </div>
@@ -160,7 +161,7 @@ export default function Dashboard() {
                     <div className={styles.statsContainerHolder}>
                         <div className={styles.statContainer}>
                             <div className={styles.statHeader}>
-                                <img src="/content/statsId.png" />
+                                <img src="https://cdn.blacket.org/static/content/icons/dashboardStatsUserID.png" />
                                 User ID
                             </div>
                             <div className={styles.statDivider} />
@@ -170,7 +171,7 @@ export default function Dashboard() {
                         </div>
                         <div className={styles.statContainer}>
                             <div className={styles.statHeader}>
-                                <img src="/content/statsToken.png" />
+                                <img src="https://cdn.blacket.org/static/content/icons/dashboardStatsTokens.png" />
                                 Tokens
                             </div>
                             <div className={styles.statDivider} />
@@ -180,7 +181,7 @@ export default function Dashboard() {
                         </div>
                         <div className={styles.statContainer}>
                             <div className={styles.statHeader}>
-                                <img src="/content/statsUnlocks.png" />
+                                <img src="https://cdn.blacket.org/static/content/icons/dashboardStatsBlooksUnlocked.png" />
                                 Blooks Unlocked
                             </div>
                             <div className={styles.statDivider} />
@@ -190,7 +191,7 @@ export default function Dashboard() {
                         </div>
                         <div className={styles.statContainer}>
                             <div className={styles.statHeader}>
-                                <img src="/content/statsPack.png" />
+                                <img src="https://cdn.blacket.org/static/content/icons/dashboardStatsPacksOpened.png" />
                                 Packs Opened
                             </div>
                             <div className={styles.statDivider} />
@@ -200,7 +201,7 @@ export default function Dashboard() {
                         </div>
                         <div className={styles.statContainer}>
                             <div className={styles.statHeader}>
-                                <img src="/content/statsMessages.png" />
+                                <img src="https://cdn.blacket.org/static/content/icons/dashboardStatsMessagesSent.png" />
                                 Messages Sent
                             </div>
                             <div className={styles.statDivider} />
@@ -229,45 +230,11 @@ export default function Dashboard() {
                 </div>
             </div>
             <div className={styles.section}>
-                <div className={`${styles.statsContainer} ${styles.auctionContainer}`}>
-                    <div className={styles.containerHeader}>
-                        <div className={styles.containerHeaderInside}>
-                            Auctions
-                        </div>
-                    </div>
-                    <div className={styles.yourLiveAuctions}>
-                        <div className={styles.auction}>
-                            <img src="/content/blooks/Default.png" alt="Auction Item" />
-                            <div className={styles.auctionInfo}>
-                                <p>Item Name</p>
-                                <p>Current Bid: 0</p>
-                                <p>Time Remaining: 0:00</p>
-                            </div>
-                        </div>
-                    </div>
-{/*
-                    <div className={styles.auctionStats}>
-                        <div>
-                            <p>Auctions Listed</p>
-                            <span>2<div className={`${styles.auctionStatMod} ${styles.profit}`}><i className="fas fa-circle-up" />+2 past 7d</div></span>
-                        </div>
-
-                        <div>
-                            <p>Profit Gained</p>
-                            <span>14,231<div className={`${styles.auctionStatMod} ${styles.loss}`}><i className="fas fa-circle-down" />-6,520 past 7d</div></span>
-                        </div>
-
-                        <div>
-                            <p>other</p>
-                        </div>
-                    </div> */}
-                </div>
+                auction
             </div>
             <div className={styles.section}>
-                <div className={styles.guildContainer}>
-                    guild
-                </div>
+                guild
             </div>
-        </div >
+        </div>
     );
 }

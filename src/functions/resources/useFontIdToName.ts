@@ -2,8 +2,10 @@ import { useFont } from "@stores/FontStore/index";
 
 import { Font } from "blacket-types";
 
-export default function useFontIdToName(fontId: number): string {
+export default function useFontIdToName(fontId: number | null = null): string {
     const { fonts } = useFont();
+
+    if (!fontId) return "Nunito";
 
     const fontName = fonts.find((font: Font) => font.id === fontId)?.name;
 

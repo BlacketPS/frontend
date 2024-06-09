@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, RefObject } from "react";
 import { useLoading } from "@stores/LoadingStore";
 import { useUser } from "@stores/UserStore/index";
+import { useResource } from "@stores/ResourceStore";
 import { useModal } from "@stores/ModalStore/index";
 import { usePack } from "@stores/PackStore/index";
 import { useRarity } from "@stores/RarityStore/index";
@@ -41,6 +42,7 @@ export default function Market() {
     const { setLoading } = useLoading();
     const { createModal } = useModal();
     const { user } = useUser();
+    const { resourceIdToPath } = useResource();
     const { packs } = usePack();
     const { rarities } = useRarity();
     const { blooks } = useBlook();
@@ -152,7 +154,7 @@ export default function Market() {
                     background: `radial-gradient(circle, ${currentPack.innerColor} 0%, ${currentPack.outerColor} 100%)`
                 }}>
                     <div ref={gameRef} className={styles.phaserContainer} />
-                    <OpenPackContainer opening={openingPack} image={currentPack.image} />
+                    <OpenPackContainer opening={openingPack} image={resourceIdToPath(currentPack.imageId)} />
                     <div style={{ cursor: bigButtonEvent === BigButtonClickType.NONE ? "unset" : "" }} className={styles.openBigButton} onClick={handleBigClick} />
                 </div>
             }

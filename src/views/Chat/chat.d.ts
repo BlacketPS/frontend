@@ -1,7 +1,7 @@
 import { HTMLAttributes, ReactNode } from "react";
 import { UserTyping } from "@stores/ChatStore/chat.d";
 
-import { Message, PublicUser } from "blacket-types";
+import { Message, User } from "blacket-types";
 import { Editor } from "slate";
 
 export interface ChatMessagesContainerProps extends HTMLAttributes<HTMLUListElement> {
@@ -10,11 +10,11 @@ export interface ChatMessagesContainerProps extends HTMLAttributes<HTMLUListElem
 
 export interface ChatMessageProps {
     id: number;
-    author: PublicUser | null;
+    author: User | null;
     newUser: boolean;
     createdAt: number;
     replyingTo: Message | null;
-    replyingToAuthor: PublicUser | null;
+    replyingToAuthor: User | null;
     mentionsMe: boolean;
     isSending: boolean;
     rawMessage: Message;

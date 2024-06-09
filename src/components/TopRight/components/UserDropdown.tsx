@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useModal } from "@stores/ModalStore/index";
 import { Modal } from "@components/index";
-import getAvatarURL from "@functions/resources/getAvatarURL";
+import getAvatarURL from "@functions/resources/useGetAvatarURL";
 import useFontIdToName from "@functions/resources/useFontIdToName";
 import styles from "../topRight.module.scss";
 

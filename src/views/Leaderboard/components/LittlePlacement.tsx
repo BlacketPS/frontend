@@ -1,13 +1,15 @@
 import { Link, useNavigate } from "react-router-dom";
 import Textfit from "react-textfit";
 import cardinalToOrdinal from "@functions/core/cardinalToOrdinal";
-import getAvatarURL from "@functions/resources/getAvatarURL";
+import useGetAvatarURL from "@functions/resources/useGetAvatarURL";
 import styles from "../leaderboard.module.scss";
 
 import { PlacementProps, PlacementType } from "../leaderboard.d";
 
 export default function LittlePlacement({ type, placement, user }: PlacementProps) {
     const navigate = useNavigate();
+
+    const avatarURL = useGetAvatarURL(user);
 
     return (
         <Link to={`/dashboard?name=${user.username}`} className={styles.otherStandingHolder} onClick={(e) => {
@@ -19,7 +21,7 @@ export default function LittlePlacement({ type, placement, user }: PlacementProp
                     <div className={styles.otherStandingSuffix}>{cardinalToOrdinal(placement)}</div>
 
                     <div className={styles.otherStandingAvatar}>
-                        <img src={getAvatarURL(user)} draggable={false} />
+                        <img src={avatarURL} draggable={false} />
                     </div>
 
                     <div className={styles.otherStandingUsername}>

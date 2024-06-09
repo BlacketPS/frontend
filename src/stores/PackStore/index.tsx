@@ -17,7 +17,7 @@ export function PackStoreProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const fetchData = async () => await window.fetch2.get("/api/data/packs")
-            .then((res) => setPacks(res.data));
+            .then((res) => setPacks((res.data as Pack[]).sort((a, b) => a.priority - b.priority)));
 
         fetchData()
             .then(() => setLoading(false))

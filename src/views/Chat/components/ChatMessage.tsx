@@ -4,7 +4,7 @@ import { useChat } from "@stores/ChatStore/index";
 import { useSpring, animated } from "react-spring";
 import { useDrag } from "@use-gesture/react";
 import MarkdownPreview from "./MarkdownPreview";
-import getAvatarURL from "@functions/resources/getAvatarURL";
+import useGetAvatarURL from "@functions/resources/useGetAvatarURL";
 import useFontIdToName from "@functions/resources/useFontIdToName";
 import timestamps from "@functions/core/timestamps";
 import styles from "../chat.module.scss";
@@ -42,6 +42,8 @@ export default memo(function ChatMessage({ id, author, newUser, createdAt, reply
         if (messageRef.current) setMessageHeight(messageRef.current.clientHeight);
     }, [messageRef]);
 
+    const authorAvatarURL = useGetAvatarURL(author);
+    const replyingToAvatarURL = useGetAvatarURL(replyingToAuthor);
     const fontName = useFontIdToName(author?.fontId);
 
     if (author) return (
@@ -83,7 +85,7 @@ export default memo(function ChatMessage({ id, author, newUser, createdAt, reply
                 }}>
                     <img src="/content/replyingToArrow.png" />
 
-                    <img src={getAvatarURL(replyingToAuthor.avatar)} className={styles.replyingToAvatar} />
+                    <img src={replyingToAvatarURL} />
 
                     <div className={`
                         ${styles.replyingToUsername}
@@ -106,7 +108,7 @@ export default memo(function ChatMessage({ id, author, newUser, createdAt, reply
 
                         userContextMenu(e);
                     }}>
-                        <img className={styles.avatar} src={getAvatarURL(author.avatar)} />
+                        <img className={styles.avatar} src={authorAvatarURL} />
                     </Link>}
 
                     <div className={styles.messageContentContainer}>

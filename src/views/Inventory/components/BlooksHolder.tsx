@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import styles from "../blooks.module.scss";
+import styles from "../inventory.module.scss";
 
 export default function BlooksHolder({ children }: { children: ReactNode }) {
     return (

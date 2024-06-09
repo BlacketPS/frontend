@@ -33,7 +33,7 @@ export default function OpenPackModal({ packId, userTokens, onYesButton }: OpenP
     else return (
         <>
             <Tooltip id="tooltip" place="left">
-                {blooks.map((blook: Blook) => blook.packId === pack.id && <div key={blook.id}>
+                {blooks.sort((a, b) => a.priority - b.priority).map((blook) => blook.packId === pack.id && <div key={blook.id}>
                     {blook.name}: {blook.chance}%
                 </div>)}
             </Tooltip>

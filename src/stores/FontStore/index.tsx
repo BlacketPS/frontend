@@ -1,4 +1,5 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react";
+import {useResource} from "@stores/ResourceStore/index";
 import Loading from "../../views/Loading";
 
 import { type FontStoreContext } from "./font.d";
@@ -15,6 +16,8 @@ export function FontStoreProvider({ children }: { children: ReactNode }) {
     const [loading, setLoading] = useState<boolean>(true);
     const [fonts, setFonts] = useState<Font[]>([]);
 
+    const { resourceIdToPath } = useResource();
+
     useEffect(() => {
         const fetchData = async () => await window.fetch2.get("/api/data/fonts")
             .then((res: Fetch2Response) => {
@@ -26,7 +29,7 @@ export function FontStoreProvider({ children }: { children: ReactNode }) {
         fetchData()
             .then((res: Font[]) => {
                 for (const font of res) {
-                    const fontFace = new FontFace(font.name, `url("${font.resource}")`);
+                    const fontFace = new FontFace(font.name, `url("${resourceIdToPath(font.resourceId)}")`);
 
                     document.fonts.add(fontFace);
 

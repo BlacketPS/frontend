@@ -1,7 +1,7 @@
 import { Button } from "@components/index";
-import styles from "../blooks.module.scss";
+import styles from "../inventory.module.scss";
 
-import { RightButtonProps } from "../blooks.d";
+import { RightButtonProps } from "../inventory";
 
 export default function RightButton({ children, ...props }: RightButtonProps) {
     return (

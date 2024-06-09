@@ -12,10 +12,10 @@
 
     @media only screen and (max-width: 685px) {
         top: unset;
-        bottom: 15px;
-        height: calc(45% - 30px);
+        bottom: 0px;
+        height: calc(50% - 15px);
         width: 95%;
-        z-index: 5
+        bottom: 15px;
     }
 }
 
@@ -71,6 +71,11 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, 60px);
     grid-gap: 10px;
+
+    &[data-nothing="true"] {
+        margin-top: 10px;
+        grid-template-columns: unset;
+    }
 }
 
 .blook {
@@ -163,16 +168,29 @@
     }
 
     @media only screen and (max-width: 685px) {
-        right: calc(50% - 150px);
-        top: 4%;
-        transform: scale(0.75);
+        top: 15px;
+        transform: unset;
+        width: 95%;
+        height: calc(50% - 30px);
+        right: unset;
+        left: 2.5%;
     }
 }
 
+.rightSideContent {
+    transition: transform .6s cubic-bezier(.3, .7, .4, 1);
+}
+
 .rightBlookBackground {
-    width: 100%;
-    height: 100%;
     user-select: none;
+
+    &>img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        -o-object-fit: contain;
+        border-radius: 10px;
+    }
 }
 
 .rightTopText {
@@ -180,7 +198,7 @@
     top: 15px;
     left: 5%;
     width: 90%;
-    font-family: Titan One, sans-serif;
+    font-family: "Titan One", sans-serif;
     color: var(--accent-color);
     text-align: center;
 
@@ -190,14 +208,25 @@
         width: 95%
     }
 
+    @media only screen and (max-width: 685px) {
+        top: 10px;
+        bottom: 15px;
+        left: 5%;
+        text-align: left;
+    }
+
     .rightBlookName {
         text-shadow: 0 3px 3px rgba(0, 0, 0, .2);
         width: 100%;
         height: 50px;
-        text-align: center;
 
         @media only screen and (max-width: 1000px) {
             height: 30px;
+        }
+
+        @media only screen and (max-width: 685px) {
+            width: 90%;
+            text-shadow: 0 0 4px rgba(0, 0, 0, 1);
         }
     }
 
@@ -207,6 +236,10 @@
 
         @media only screen and (max-width: 1000px) {
             font-size: 20px;
+        }
+
+        @media only screen and (max-width: 685px) {
+            width: 90%;
         }
     }
 }
@@ -224,11 +257,21 @@
         width: 143px;
     }
 
+    @media only screen and (max-width: 685px) {
+        bottom: 50px;
+        height: 150px;
+        left: 5%;
+    }
+
     &>img {
         width: 100%;
         height: 100%;
         -o-object-fit: contain;
         object-fit: contain;
+
+        @media only screen and (max-width: 685px) {
+            width: unset;
+        }
     }
 }
 
@@ -247,17 +290,27 @@
         bottom: 15px;
         font-size: 20px
     }
+
+    @media only screen and (max-width: 685px) {
+        text-align: left;
+        text-shadow: 0 0 4px rgba(0, 0, 0, 1);
+    }
 }
 
 .rightShadow {
     width: 100%;
     position: absolute;
-    bottom: 0;
+    bottom: 6px;
     left: 0;
     height: 50px;
-    box-shadow: inset 0 -9px rgba(0, 0, 0, .2);
+    box-shadow: inset 0 -9px rgba(0, 0, 0, .25);
     border-bottom-left-radius: 10px;
     border-bottom-right-radius: 10px;
+    transition: transform .6s cubic-bezier(.3, .7, .4, 1);
+
+    @media only screen and (max-width: 685px) {
+        bottom: 0;
+    }
 }
 
 .rightButtonContainer {
@@ -272,13 +325,11 @@
 
     @media only screen and (max-width: 1000px) {
         top: calc(50% + 180px);
-        width: 300px
+        width: 300px;
     }
 
     @media only screen and (max-width: 685px) {
-        top: calc(18% + 180px);
-        right: 5%;
-        width: 90%
+        display: none;
     }
 }
 
@@ -331,3 +382,8 @@
     font-size: 20px;
 }
 
+.noBlooks {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--accent-color);
+}

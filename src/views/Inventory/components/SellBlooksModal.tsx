@@ -4,7 +4,7 @@ import { useUser } from "@stores/UserStore";
 import { useSellBlooks } from "@controllers/blooks/useSellBlooks/index";
 import { Modal, Button, Form, Input, ErrorContainer } from "@components/index";
 
-import { SellBlooksModalProps } from "../blooks.d";
+import { SellBlooksModalProps } from "../inventory";
 
 export default function SellBlooksModal({ blook }: SellBlooksModalProps) {
     const [loading, setLoading] = useState<boolean>(false);

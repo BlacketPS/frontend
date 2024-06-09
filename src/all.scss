@@ -26,12 +26,6 @@
         width: 16px;
     }
 
-    @media not screen and (max-width: 850px) {
-        &::-webkit-scrollbar-track-piece:start {
-            margin-top: 55px;
-        }
-    }
-
     &::-webkit-scrollbar-track {
         background: var(--primary-color);
     }
@@ -62,6 +56,18 @@ body {
     padding: 0;
     max-width: 100%;
     overflow-x: hidden;
+
+    &[has-top-right="true"] {
+        &::-webkit-scrollbar-track-piece:start {
+            margin-top: 55px;
+        }
+    }
+
+    @media only screen and (max-width: 850px) {
+        &::-webkit-scrollbar-track-piece:start {
+            margin-top: 55px;
+        }
+    }
 }
 
 a {
@@ -118,9 +124,9 @@ a {
 }
 
 .mention {
-    color: hsl(235 calc( 1 * 86.2%) 88.6% / 1);
+    color: hsl(235 calc(1 * 86.2%) 88.6% / 1);
     font-weight: bold;
     padding: 1px;
     border-radius: 3px;
-    background: hsl(235 calc( 1 * 85.6%) 64.7% / 0.3);
+    background: hsl(235 calc(1 * 85.6%) 64.7% / 0.3);
 }

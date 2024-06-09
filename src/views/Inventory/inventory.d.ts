@@ -4,13 +4,13 @@ import { GenericButtonProps } from "@components/Buttons/GenericButton/genericBut
 import { Blook } from "blacket-types";
 
 export interface BlookProps extends HTMLAttributes<HTMLDivElement> {
-    blook: any;
+    blook: Blook;
     locked: boolean;
     quantity: number;
 }
 
-export interface RightBlookProps {
-    blook: any;
+export interface RightBlookProps extends HTMLAttributes<HTMLDivElement> {
+    blook: Blook;
     owned: boolean;
     noBlooksOwned: boolean;
 }
@@ -19,6 +19,7 @@ export interface RightButtonProps extends GenericButtonProps { }
 
 export interface SetHolderProps extends HTMLAttributes<HTMLDivElement> {
     name: string;
+    nothing: boolean;
 }
 
 export interface SellBlooksModalProps {

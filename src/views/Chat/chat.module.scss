@@ -23,6 +23,10 @@
     &[data-above-input="true"] {
         height: calc(100% - 95px);
     }
+
+    &::-webkit-scrollbar-track-piece:start {
+        margin-top: 55px;
+    }
 }
 
 .messageHolder {

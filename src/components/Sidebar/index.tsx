@@ -50,20 +50,15 @@ export default function Sidebar() {
                 link: "/market"
             },
             {
-                icon: "fas fa-suitcase",
-                text: "Blooks",
-                link: "/blooks"
+                icon: "fas fa-box-open",
+                text: "Inventory",
+                link: "/inventory"
             },
             {
                 icon: "fas fa-building-columns",
                 text: "Auction House",
                 link: "/auction-house",
                 textSizeOverride: 17
-            },
-            {
-                icon: "fas fa-box-open",
-                text: "Inventory",
-                link: "/inventory"
             },
             {
                 icon: "fas fa-cog",
