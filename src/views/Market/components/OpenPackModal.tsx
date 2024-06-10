@@ -42,7 +42,7 @@ export default function OpenPackModal({ packId, userTokens, onYesButton }: OpenP
                 <i className={`${styles.packRatesIcon} far fa-question-circle`} data-tooltip-id="tooltip" />
                 {pack.name} Pack
             </Modal.ModalHeader>
-            <Modal.ModalBody>Would you like to purchase this pack for <img className={styles.tokenPrice} src="/content/token.png" /> {pack.price} tokens?</Modal.ModalBody>
+            <Modal.ModalBody>Would you like to purchase this pack for <img className={styles.tokenPrice} src="https://cdn.blacket.org/static/content/token.png" /> {pack.price} tokens?</Modal.ModalBody>
 
             {error !== "" && <ErrorContainer>{error}</ErrorContainer>}
 

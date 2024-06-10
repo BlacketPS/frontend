@@ -25,7 +25,7 @@ export default function Error({ code, reason }: ErrorProps) {
                         {code === ErrorCode.MAINTENANCE ? "Oops!" : code === ErrorCode.BLACKLISTED ? "Uh oh..." : code === ErrorCode.UNKNOWN ? "Something went wrong" : ""}
                     </div>
 
-                    <img className={styles.image} src={code !== ErrorCode.UNKNOWN ? `/content/${code}.png` : "/content/error.png"} draggable={false} />
+                    <img className={styles.image} src={code !== ErrorCode.UNKNOWN ? `https://cdn.blacket.org/static/content/${code}.png` : "https://cdn.blacket.org/static/content/error.png"} draggable={false} />
 
                     <div className={styles.bottom}>
                         {code === ErrorCode.MAINTENANCE ? <>

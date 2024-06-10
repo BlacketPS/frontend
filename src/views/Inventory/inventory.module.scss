@@ -49,7 +49,7 @@
     opacity: .15;
     width: 100%;
     height: 100%;
-    background-image: url("/content/blookTile.png");
+    background-image: url("https://cdn.blacket.org/static/content/blookTile.png");
 }
 
 .setTopText {
@@ -157,7 +157,6 @@
     transform: translateY(-50%);
     right: 2.5%;
     width: 400px;
-    overflow: hidden;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -168,12 +167,13 @@
     }
 
     @media only screen and (max-width: 685px) {
-        top: 15px;
+        top: 25px;
         transform: unset;
-        width: 95%;
-        height: calc(50% - 30px);
         right: unset;
-        left: 2.5%;
+        left: unset;
+        margin-inline: auto;
+        position: relative;
+        height: calc(45% - 25px);
     }
 }
 
@@ -185,11 +185,16 @@
     user-select: none;
 
     &>img {
-        width: 100%;
         height: 100%;
-        object-fit: contain;
-        -o-object-fit: contain;
+        width: 100%;
+        object-fit: fill;
         border-radius: 10px;
+
+        @media only screen and (max-width: 685px) {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+        }
     }
 }
 
@@ -258,9 +263,11 @@
     }
 
     @media only screen and (max-width: 685px) {
-        bottom: 50px;
-        height: 150px;
-        left: 5%;
+        width: unset;
+        height: 50%;
+        bottom: 20%;
+        left: 50%;
+        transform: translateX(-50%);
     }
 
     &>img {
@@ -277,7 +284,7 @@
 
 .rightBottomText {
     position: absolute;
-    bottom: 15px;
+    bottom: 25px;
     left: 5%;
     width: 90%;
     font-family: "Titan One", sans-serif;
@@ -295,6 +302,20 @@
         text-align: left;
         text-shadow: 0 0 4px rgba(0, 0, 0, 1);
     }
+}
+
+.rightButtonMobile {
+    display: none;
+
+    @media only screen and (max-width: 685px) {
+        display: unset;
+        min-width: 40px;
+        width: 40px;
+        position: absolute;
+        top: 15px;
+        right: 4%;
+    }
+
 }
 
 .rightShadow {
@@ -315,18 +336,12 @@
 
 .rightButtonContainer {
     position: absolute;
-    top: calc(50% + 200px);
-    right: 2.5%;
-    width: 400px;
+    top: 100%;
+    width: 100%;
     display: flex;
     flex-direction: row;
     align-items: center;
     justify-content: space-evenly;
-
-    @media only screen and (max-width: 1000px) {
-        top: calc(50% + 180px);
-        width: 300px;
-    }
 
     @media only screen and (max-width: 685px) {
         display: none;

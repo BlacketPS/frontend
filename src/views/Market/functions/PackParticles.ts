@@ -180,13 +180,13 @@ export default class Particles extends Scene {
     }
 
     preload() {
-        this.load.image("particle-1", "/content/particles/1.png", { width: 25, height: 25 });
-        this.load.image("particle-2", "/content/particles/2.png", { width: 25, height: 25 });
-        this.load.image("particle-3", "/content/particles/3.png", { width: 25, height: 25 });
-        this.load.image("particle-4", "/content/particles/4.png", { width: 30, height: 30 });
-        this.load.image("particle-5", "/content/particles/5.png", { width: 30, height: 30 });
-        this.load.image("particle-6", "/content/particles/6.png", { width: 30, height: 30 });
-        this.load.image("particle-7", "/content/particles/7.png", { width: 30, height: 30 });
+        this.load.image("particle-1", "https://cdn.blacket.org/static/content/particles/1.png", { width: 25, height: 25 });
+        this.load.image("particle-2", "https://cdn.blacket.org/static/content/particles/2.png", { width: 25, height: 25 });
+        this.load.image("particle-3", "https://cdn.blacket.org/static/content/particles/3.png", { width: 25, height: 25 });
+        this.load.image("particle-4", "https://cdn.blacket.org/static/content/particles/4.png", { width: 30, height: 30 });
+        this.load.image("particle-5", "https://cdn.blacket.org/static/content/particles/5.png", { width: 30, height: 30 });
+        this.load.image("particle-6", "https://cdn.blacket.org/static/content/particles/6.png", { width: 30, height: 30 });
+        this.load.image("particle-7", "https://cdn.blacket.org/static/content/particles/7.png", { width: 30, height: 30 });
     }
 
     create() {

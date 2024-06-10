@@ -1,12 +1,13 @@
 import { useResource } from "@stores/ResourceStore/index";
 import { useRarity } from "@stores/RarityStore/index";
+import { Button } from "@components/index";
 import Textfit from "react-textfit";
 import styles from "../inventory.module.scss";
 
 import { RightBlookProps } from "../inventory";
 import { Rarity } from "blacket-types";
 
-export default function RightBlook({ blook, owned, noBlooksOwned, ...props }: RightBlookProps) {
+export default function RightBlook({ blook, owned, noBlooksOwned, children, ...props }: RightBlookProps) {
     const { resourceIdToPath } = useResource();
     const { rarities } = useRarity();
 
@@ -36,8 +37,18 @@ export default function RightBlook({ blook, owned, noBlooksOwned, ...props }: Ri
                 </div>
 
                 <div className={styles.rightBottomText}>{owned?.toLocaleString() || 0} Owned</div>
+
+                <Button.GenericButton
+                    className={styles.rightButtonMobile}
+                    backgroundColor="var(--primary-color)"
+                >
+                    <i className="fas fa-cog" />
+                </Button.GenericButton>
+
                 <div className={styles.rightShadow} />
             </div>
+
+            {children}
         </div>
     );
 }

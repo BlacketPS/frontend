@@ -23,7 +23,7 @@ export default function BigPlacement({ type, placement, user }: PlacementProps) 
                 </div>
 
                 <div className={styles[`score${place[placementKey]}`]}>
-                    <img src={`/content/${type === PlacementType.TOKEN ? "token" : "experience"}.png`} /> {user[type]?.toLocaleString()}
+                    <img src={`https://cdn.blacket.org/static/content/${type === PlacementType.TOKEN ? "token" : "experience"}.png`} /> {user[type]?.toLocaleString()}
                 </div>
 
                 <div className={styles[`place${place[placementKey]}`]} >

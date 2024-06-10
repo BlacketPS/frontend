@@ -7,7 +7,7 @@ export default function RightButton({ children, ...props }: RightButtonProps) {
     return (
         <Button.GenericButton backgroundColor="var(--primary-color)" className={styles.rightButton} {...props}>
             <div className={styles.rightButtonInside}>
-                <img src="/content/token.png" />
+                <img src="https://cdn.blacket.org/static/content/token.png" />
                 {children}
             </div>
         </Button.GenericButton>

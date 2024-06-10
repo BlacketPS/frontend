@@ -11,7 +11,7 @@ export default function Blook({ blook, locked, quantity, ...props }: BlookProps)
 
     return (
         <div data-locked={locked} className={styles.blook} {...props}>
-            <img src={resourceIdToPath(blook.imageId) || "/content/blooks/Error.png"} data-locked={locked} alt={blook.name} draggable={false} />
+            <img src={resourceIdToPath(blook.imageId) || "https://cdn.blacket.org/static/content/blooks/Error.png"} data-locked={locked} alt={blook.name} draggable={false} />
             {!locked && <div style={{
                 backgroundColor: rarities.find((r: Rarity) => r.id === blook.rarityId).color
             }} className={styles.blookQuantity}>{quantity.toLocaleString()}</div>}

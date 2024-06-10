@@ -85,7 +85,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
         fetchMessages(0);
 
         socket?.on("chat-messages-create", async (data: Message) => {
-            if (data.mentions.includes(user.id) || (data.replyingTo && data.replyingTo.authorId === user.id)) new Audio("/content/mention.ogg").play();
+            if (data.mentions.includes(user.id) || (data.replyingTo && data.replyingTo.authorId === user.id)) new Audio("https://cdn.blacket.org/static/content/mention.ogg").play();
 
             if (data.authorId === user.id) return;
 
@@ -127,7 +127,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
         fetchMessages(0);
 
         socket.on("messages-create", (data) => {
-            if (data.message.mentions.includes(user.id) || (data.message.replyingTo && data.message.replyingTo.author.id === user.id)) new Audio("/content/mention.ogg").play();
+            if (data.message.mentions.includes(user.id) || (data.message.replyingTo && data.message.replyingTo.author.id === user.id)) new Audio("https://cdn.blacket.org/static/content/mention.ogg").play();
 
             if (data.message.author.id === user.id) return;
 

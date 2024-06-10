@@ -1,7 +1,7 @@
 import { LoaderProps } from "./loader.d";
 import styles from "./loader.module.scss";
 
-export default function Loader({ image = "/content/blooks/Default.png", motionless = false, noModal = false, message, className = "" }: LoaderProps) {
+export default function Loader({ image = "https://cdn.blacket.org/static/content/blooks/Default.png", motionless = false, noModal = false, message, className = "" }: LoaderProps) {
     if (className !== "") className = ` ${className}`;
 
     if (!noModal) return (

@@ -7,7 +7,7 @@ export default function Loading({ error, message }: { error?: boolean, message: 
 
             <Loader
                 motionless={true}
-                image={!error ? "/content/blooks/Console.gif" : "/content/blooks/Error.png"}
+                image={!error ? "https://cdn.blacket.org/static/content/blooks/Console.gif" : "https://cdn.blacket.org/static/content/blooks/Error.png"}
                 message={!error ? `Loading ${message}...` : `Failed to load ${message}.`}
             />
         </>

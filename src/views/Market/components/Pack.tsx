@@ -14,7 +14,7 @@ export default function Pack({ pack, onClick }: PackProps) {
             </div>
 
             <div className={styles.packBottom}>
-                <img src="/content/token.png" />
+                <img src="https://cdn.blacket.org/static/content/token.png" />
                 {pack.price}
             </div>
         </div>

@@ -43,15 +43,11 @@ export default function Inventory() {
                 </SetHolder>}
             </BlooksHolder>
 
-            {Object.keys(user.blooks).length > 0 && selectedBlook && <RightBlook blook={selectedBlook} owned={user.blooks[selectedBlook.id]} noBlooksOwned={Object.keys(user.blooks).length < 1} onClick={() => {
-                if (window.innerWidth > 685) return;
-
-                createModal(<SellBlooksModal blook={selectedBlook} />);
-            }} />}
-
-            {Object.keys(user.blooks).length > 0 && selectedBlook && <div className={styles.rightButtonContainer}>
-                <RightButton onClick={() => createModal(<SellBlooksModal blook={selectedBlook} />)}>Sell</RightButton>
-            </div>}
+            {Object.keys(user.blooks).length > 0 && selectedBlook && <RightBlook blook={selectedBlook} owned={user.blooks[selectedBlook.id]} noBlooksOwned={Object.keys(user.blooks).length < 1}>
+                {Object.keys(user.blooks).length > 0 && selectedBlook && <div className={styles.rightButtonContainer}>
+                    <RightButton onClick={() => createModal(<SellBlooksModal blook={selectedBlook} />)}>Sell</RightButton>
+                </div>}
+            </RightBlook>}
         </>
     );
 }
