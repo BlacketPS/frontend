@@ -16,7 +16,8 @@ export default defineConfig({
             "@controllers": "/src/controllers",
             "@functions": "/src/functions",
             "@stores": "/src/stores"
-        }
+        },
+        preserveSymlinks: true
     },
     server: {
         proxy: {
@@ -40,21 +41,8 @@ export default defineConfig({
         rollupOptions: {
             output: {
                 manualChunks: (id: string) => {
-                    // after we started importing phaser externally, we no longer need to split up vendor, in fact it slows down loadtime.
                     if (id.includes("node_modules")) return "vendor";
                     return "main";
-                    /* switch (true) {
-                        case id.includes("react"):
-                            return "vendor-react";
-                        case id.includes("prismjs"):
-                            return "vendor-prismjs";
-                        case id.includes("slate"):
-                            return "vendor-slate";
-                        case id.includes("node_modules"):
-                            return "vendor-other";
-                        default:
-                            return "main";
-                    } */
                 },
                 chunkFileNames: "[name].[hash].js",
                 entryFileNames: "[name].[hash].js",

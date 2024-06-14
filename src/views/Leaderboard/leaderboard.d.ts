@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { PublicUser } from "blacket-types";
+import { User } from "blacket-types";
 
 export enum PlacementType {
     TOKEN = "tokens",
@@ -9,7 +9,7 @@ export enum PlacementType {
 export interface PlacementProps {
     type: PlacementType;
     placement: number;
-    user: PublicUser;
+    user: User;
 }
 
 export interface FilterButtonProps extends HTMLAttributes<HTMLDivElement> {

@@ -42,7 +42,7 @@ export default function RightBlook({ blook, owned, noBlooksOwned, children, ...p
                     className={styles.rightButtonMobile}
                     backgroundColor="var(--primary-color)"
                 >
-                    <i className="fas fa-cog" />
+                    <i className="fas fa-bars" />
                 </Button.GenericButton>
 
                 <div className={styles.rightShadow} />

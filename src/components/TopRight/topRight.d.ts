@@ -1,4 +1,4 @@
-import { PublicUser } from "blacket-types";
+import { User } from "blacket-types";
 
 export enum TopRightContent {
     TOKENS = "tokens"
@@ -9,9 +9,9 @@ export interface TopRightProps {
 }
 
 export interface TokenBalanceProps {
-    user: PublicUser
+    user: User;
 }
 
 export interface UserDropdownProps {
-    user: PublicUser
+    user: User;
 }

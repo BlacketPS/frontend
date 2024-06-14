@@ -19,11 +19,7 @@ import useTitleIdToText from "@functions/resources/useTitleIdToText";
 import useFontIdToName from "@functions/resources/useFontIdToName";
 import styles from "./settings.module.scss";
 
-export enum FriendRequestSetting {
-    ON = 1,
-    OFF = 2,
-    MUTUAL = 3
-}
+import { SettingFriendRequest } from "blacket-types";
 
 export default function Settings() {
     const { setLoading } = useLoading();
@@ -37,7 +33,7 @@ export default function Settings() {
         setLoading("Changing settings");
         changeSetting({
             key: "friendRequests",
-            value: user.settings.friendRequests === FriendRequestSetting.ON ? FriendRequestSetting.MUTUAL : user.settings.friendRequests === FriendRequestSetting.MUTUAL ? FriendRequestSetting.OFF : user.settings.friendRequests === FriendRequestSetting.OFF ? FriendRequestSetting.ON : FriendRequestSetting.ON
+            value: user.settings.friendRequests === SettingFriendRequest.ON ? SettingFriendRequest.MUTUAL : user.settings.friendRequests === SettingFriendRequest.MUTUAL ? SettingFriendRequest.OFF : user.settings.friendRequests === SettingFriendRequest.OFF ? SettingFriendRequest.ON : SettingFriendRequest.ON
         })
             .then(() => setLoading(false))
             .catch(() => createModal(<Modal.ErrorModal>Failed to change settings.</Modal.ErrorModal>))
@@ -69,8 +65,7 @@ export default function Settings() {
                 <div><b>Joined:</b> {`${new Date(user.createdAt).toLocaleDateString()} ${new Date(user.createdAt).toLocaleTimeString()}`}</div>
 
                 <Button.ClearButton to={
-                    `https://discord.com/oauth2/authorize?client_id=${import.meta.env.VITE_DISCORD_CLIENT_ID}&response_type=code&redirect_uri=${
-                        encodeURI(window.location.origin + window.location.pathname + "/link-discord")
+                    `https://discord.com/oauth2/authorize?client_id=${import.meta.env.VITE_DISCORD_CLIENT_ID}&response_type=code&redirect_uri=${encodeURI(window.location.origin + window.location.pathname + "/link-discord")
                     }&scope=identify`
                 }>Link Discord</Button.ClearButton>
                 <Button.ClearButton onClick={() => createModal(<Modal.LogoutModal />)}>Logout</Button.ClearButton>

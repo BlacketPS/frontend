@@ -24,7 +24,7 @@ export function ResourceStoreProvider({ children }: { children: ReactNode }) {
             .catch(() => setError(true));
     }, []);
 
-    const resourceIdToPath = (id: number) => resources?.find((resource: Resource) => resource.id === id)?.path ?? null;
+    const resourceIdToPath = (id: number) => resources?.find((resource: Resource) => resource.id === id)?.path ?? "";
 
     return <ResourceStoreContext.Provider value={{ resources, setResources, resourceIdToPath }}>{!loading ? children : <Loading error={error} message="resources" />}</ResourceStoreContext.Provider>;
 }
