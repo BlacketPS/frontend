@@ -1,23 +1,18 @@
 import { useState } from "react";
 import { Tooltip } from "react-tooltip";
 import { useModal } from "@stores/ModalStore/index";
-import { usePack } from "@stores/PackStore/index";
 import { useBlook } from "@stores/BlookStore";
 import { Modal, Button, ErrorContainer } from "@components/index";
 import styles from "../market.module.scss";
 
 import { OpenPackModalProps } from "../market.d";
-import { Blook, Pack } from "blacket-types";
 
-export default function OpenPackModal({ packId, userTokens, onYesButton }: OpenPackModalProps) {
+export default function OpenPackModal({ pack, userTokens, onYesButton }: OpenPackModalProps) {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
 
     const { closeModal } = useModal();
-    const { packs } = usePack();
     const { blooks } = useBlook();
-
-    const pack: Pack = packs.find((pack: Pack) => pack.id === packId) as Pack;
 
     if (userTokens < pack.price) return (
         <>
@@ -49,7 +44,7 @@ export default function OpenPackModal({ packId, userTokens, onYesButton }: OpenP
             <Modal.ModalButtonContainer loading={loading}>
                 <Button.GenericButton onClick={() => {
                     setLoading(true);
-                    onYesButton()
+                    onYesButton({ packId: pack.id })
                         .then(() => closeModal())
                         .catch((err: Fetch2Response) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
                         .finally(() => setLoading(false));

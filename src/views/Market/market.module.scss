@@ -298,3 +298,246 @@
     z-index: -1;
     filter: brightness(1.5);
 }
+
+.openPackBlookContainer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0);
+    width: 400px;
+    border-radius: 10px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    text-align: center;
+    overflow: hidden;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    box-shadow: 0 0 4px #00000026;
+    background-color: var(--background-color);
+
+    @media only screen and (max-width: 650px) {
+        width: 300px;
+    }
+}
+
+.openPackBlookBackground {
+    width: 100%;
+    height: 100%;
+}
+
+.openPackBlookBlook {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    outline: none;
+    display: flex;
+    justify-content: flex-end;
+    position: absolute;
+    bottom: 85px;
+    left: 105px;
+    width: 190px;
+
+    &>img {
+        width: 100%;
+        height: 100%;
+        -o-object-fit: contain;
+        object-fit: contain;
+    }
+
+    @media only screen and (max-width: 650px) {
+        bottom: 64px;
+        left: 90.5px;
+        width: 120px;
+    }
+}
+
+.openPackBlookTopText {
+    position: absolute;
+    top: 15px;
+    left: 5%;
+    width: 90%;
+    font-family: "Titan One", sans-serif;
+    color: var(--accent-color);
+    text-align: center;
+}
+
+.openPackBlookBlookText {
+    text-shadow: 0 3px 3px rgba(0, 0, 0, .2);
+    width: 100%;
+    height: 50px;
+    text-align: center;
+}
+
+.openPackBlookRarityText {
+    font-size: 30px;
+    -webkit-text-stroke: #000 1.5px;
+
+    @media only screen and (max-width: 650px) {
+        font-size: 25px;
+    }
+}
+
+.openPackBlookBottomText {
+    position: absolute;
+    bottom: 15px;
+    left: 5%;
+    width: 90%;
+    font-family: "Titan One", sans-serif;
+    color: var(--accent-color);
+    text-align: center;
+    font-size: 30px;
+    text-shadow: 0 0 4px rgba(0, 0, 0, .4);
+}
+
+.openPackBlookShadow {
+    width: 100%;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    height: 50px;
+    box-shadow: inset 0 -9px #0003;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.openPackBlookContainerAnimation1,
+.openPackBlookContainerAnimation2 {
+    animation: uncommon .2s linear .5s forwards;
+
+    @keyframes uncommon {
+        0% {
+            transform: translate(-50%, -50%) scale(0)
+        }
+
+        to {
+            transform: translate(-50%, -50%) scale(1)
+        }
+    }
+}
+
+.openPackBlookContainerAnimation3 {
+    animation: epic 1.5s linear .5s forwards;
+
+    @keyframes epic {
+        0% {
+            transform: translate(calc(-50% - 25vw), calc(-50% - 25vh)) rotate(15deg) scale(.1)
+        }
+
+        25% {
+            transform: translate(calc(-50% - 25vw), calc(-50% - 25vh)) rotate(15deg) scale(.1)
+        }
+
+        25.1% {
+            transform: translate(calc(-50% + 25vw), calc(-50% + 25vh)) rotate(-15deg) scale(.2)
+        }
+
+        50% {
+            transform: translate(calc(-50% + 25vw), calc(-50% + 25vh)) rotate(-15deg) scale(.2)
+        }
+
+        50.1% {
+            transform: translate(calc(-50% - 25vw), calc(-50% + 25vh)) rotate(15deg) scale(.3)
+        }
+
+        75% {
+            transform: translate(calc(-50% - 25vw), calc(-50% + 25vh)) rotate(15deg) scale(.3)
+        }
+
+        75.1% {
+            transform: translate(calc(-50% + 25vw), calc(-50% - 25vh)) rotate(-15deg) scale(.4)
+        }
+
+        99.9% {
+            transform: translate(calc(-50% + 25vw), calc(-50% - 25vh)) rotate(-15deg) scale(.4)
+        }
+
+        to {
+            transform: translate(-50%, -50%) rotate(0) scale(1)
+        }
+    }
+}
+
+.openPackBlookContainerAnimation4 {
+    animation: legendary 2.5s ease-in 1s forwards;
+
+    @keyframes legendary {
+        0% {
+            transform: translate(calc(-50% - 25vw), calc(-50% - 100vh)) scale(.1)
+        }
+
+        35% {
+            transform: translate(calc(-50% - 25vw), calc(-50% + 100vh)) scale(.1)
+        }
+
+        35.1% {
+            transform: translate(calc(-50% + 25vw), calc(-50% - 100vh)) scale(.3)
+        }
+
+        70% {
+            transform: translate(calc(-50% + 25vw), calc(-50% + 100vh)) scale(.3)
+        }
+
+        70.1% {
+            transform: translate(-50%, calc(-50% - 100vh)) scale(1)
+        }
+
+        to {
+            transform: translate(-50%, -50%) scale(1)
+        }
+    }
+}
+
+.openPackBlookContainerAnimation5,
+.openPackBlookContainerAnimation6 {
+    animation: chroma 2s linear 1.5s forwards;
+
+    @keyframes chroma {
+        0% {
+            transform: translate(-50%, -50%) rotate(0) scale(0)
+        }
+
+        10% {
+            transform: translate(-50%, -50%) rotate(180deg) scale(.1)
+        }
+
+        20% {
+            transform: translate(-50%, -50%) rotate(1turn) scale(.2)
+        }
+
+        30% {
+            transform: translate(-50%, -50%) rotate(540deg) scale(.3)
+        }
+
+        40% {
+            transform: translate(-50%, -50%) rotate(2turn) scale(.4)
+        }
+
+        50% {
+            transform: translate(-50%, -50%) rotate(900deg) scale(.5)
+        }
+
+        60% {
+            transform: translate(-50%, -50%) rotate(3turn) scale(.6)
+        }
+
+        70% {
+            transform: translate(-50%, -50%) rotate(1260deg) scale(.7)
+        }
+
+        80% {
+            transform: translate(-50%, -50%) rotate(4turn) scale(.8)
+        }
+
+        90% {
+            transform: translate(-50%, -50%) rotate(1620deg) scale(.9)
+        }
+
+        to {
+            transform: translate(-50%, -50%) rotate(5turn) scale(1)
+        }
+    }
+}

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import styles from "../market.module.scss";
 
 import { OpenPackContainerProps } from "../market.d";

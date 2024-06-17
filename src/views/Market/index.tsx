@@ -7,14 +7,15 @@ import { usePack } from "@stores/PackStore/index";
 import { useRarity } from "@stores/RarityStore/index";
 import { useBlook } from "@stores/BlookStore/index";
 import { useSettings } from "@controllers/settings/useSettings";
+import { useOpenPack } from "@controllers/market/useOpenPack";
 import { SidebarBody, PageHeader, Modal, Button } from "@components/index";
-import { OpenPackModal, Category, Pack, OpenPackContainer } from "./components";
-// @ts-expect-error too big for the bundle so import it externally
+import { OpenPackModal, Category, Pack, OpenPackContainer, OpenPackBlook } from "./components";
+// @ts-expect-error phaser is too big for the bundle so import it externally since its only used once
 const { Game, Scale, WEBGL } = window.Phaser;
 import Particles from "./functions/PackParticles";
 import styles from "./market.module.scss";
 
-import { Blook, Pack as PackType } from "blacket-types";
+import { Blook, OpenPackDto, Pack as PackType } from "blacket-types";
 import { ParticlesScene, Config, GameState, BigButtonClickType } from "./market.d";
 
 const useGame = (config: Config, containerRef: RefObject<HTMLDivElement>) => {
@@ -48,6 +49,7 @@ export default function Market() {
     const { blooks } = useBlook();
 
     const { changeSetting } = useSettings();
+    const { openPack } = useOpenPack();
 
     const [game, setGame] = useState<GameState>({
         type: WEBGL,
@@ -81,28 +83,42 @@ export default function Market() {
             .finally(() => setLoading(false));
     };
 
-    const purchasePack = (pack: PackType) => new Promise<void>((resolve, _reject) => {
-        setGame({
-            type: WEBGL, parent: "phaser-market", width: "100%", height: "100%", transparent: true,
-            scale: { mode: Scale.NONE, autoCenter: Scale.CENTER_BOTH },
-            physics: { default: "arcade" },
-            scene: new Particles(1, "iridescent") as ParticlesScene
-        });
-        setBigButtonEvent(BigButtonClickType.OPEN);
-        setCurrentPack(pack);
+    const purchasePack = (dto: OpenPackDto) => new Promise<void>((resolve, reject) => {
+        if (user.settings.openPacksInstantly) setLoading(`Opening ${packs.find((pack) => pack.id === dto.packId)!.name} pack`);
 
-        resolve();
+        openPack(dto)
+            .then((res) => {
+                const blook = blooks.find((blook) => blook.id === res.data.id)!;
+                const rarity = rarities.find((rarity) => rarity.id === blook.rarityId)!;
+
+                setGame({
+                    type: WEBGL, parent: "phaser-market", width: "100%", height: "100%", transparent: true,
+                    scale: { mode: Scale.NONE, autoCenter: Scale.CENTER_BOTH },
+                    physics: { default: "arcade" },
+                    scene: new Particles(rarity.animationType, rarity.color) as ParticlesScene
+                });
+                setBigButtonEvent(BigButtonClickType.OPEN);
+                setCurrentPack(packs.find((pack: PackType) => pack.id === dto.packId));
+
+                resolve(setUnlockedBlook(blooks.find((blook) => blook.id === res.data.id)!));
+            })
+            .catch((err) => reject(err))
+            .finally(() => {
+                if (user.settings.openPacksInstantly) setLoading(false);
+            });
     });
 
     const handleBigClick = async () => {
         switch (bigButtonEvent) {
             case BigButtonClickType.OPEN:
+                if (!unlockedBlook) return;
+
                 setOpeningPack(true);
 
                 setBigButtonEvent(BigButtonClickType.NONE);
 
-                await new Promise((r) => setTimeout(r, 500));
-                game?.scene.game.events.emit("start-particles", 5);
+                await new Promise((r) => setTimeout(r, 250));
+                game?.scene.game.events.emit("start-particles", rarities.find((rarity) => rarity.id === unlockedBlook.rarityId)!.animationType);
 
                 await new Promise((r) => setTimeout(r, 750));
                 setBigButtonEvent(BigButtonClickType.CLOSE);
@@ -110,6 +126,7 @@ export default function Market() {
                 break;
             case BigButtonClickType.CLOSE:
                 setCurrentPack(null);
+                setUnlockedBlook(null);
                 setOpeningPack(false);
 
                 break;
@@ -129,13 +146,13 @@ export default function Market() {
 
                 <Category header={`Packs (${packs.length})`} internalName="MARKET_PACKS">
                     <div className={styles.packsWrapper}>
-                        {packs.map((pack: PackType) => <Pack key={pack.id} pack={pack} onClick={() => {
+                        {packs.map((pack) => <Pack key={pack.id} pack={pack} onClick={() => {
                             if (!user.settings.openPacksInstantly) createModal(<OpenPackModal
-                                packId={pack.id}
+                                pack={pack}
                                 userTokens={user.tokens}
-                                onYesButton={() => purchasePack(pack)} />
-                            );
-                            else purchasePack(pack);
+                                onYesButton={() => purchasePack({ packId: pack.id })}
+                            />);
+                            else purchasePack({ packId: pack.id });
                         }} />)}
                     </div>
                 </Category>
@@ -155,6 +172,9 @@ export default function Market() {
                 }}>
                     <div ref={gameRef} className={styles.phaserContainer} />
                     <OpenPackContainer opening={openingPack} image={resourceIdToPath(currentPack.imageId)} />
+                    {unlockedBlook && <OpenPackBlook blook={unlockedBlook} animate={
+                        bigButtonEvent !== BigButtonClickType.OPEN
+                    } />}
                     <div style={{ cursor: bigButtonEvent === BigButtonClickType.NONE ? "unset" : "" }} className={styles.openBigButton} onClick={handleBigClick} />
                 </div>
             }
