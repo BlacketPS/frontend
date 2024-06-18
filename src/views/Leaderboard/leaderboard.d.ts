@@ -8,7 +8,7 @@ export enum PlacementType {
 
 export interface PlacementProps {
     type: PlacementType;
-    placement: number;
+    placement: 1 | 2 | 3;
     user: User;
 }
 

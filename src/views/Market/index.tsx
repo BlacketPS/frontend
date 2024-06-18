@@ -84,6 +84,10 @@ export default function Market() {
     };
 
     const purchasePack = (dto: OpenPackDto) => new Promise<void>((resolve, reject) => {
+        if (user.settings.openPacksInstantly && user.tokens < packs.find((pack) => pack.id === dto.packId)!.price) {
+            return reject(createModal(<Modal.ErrorModal>You do not have enough tokens to purchase this pack.</Modal.ErrorModal>));
+        }
+
         if (user.settings.openPacksInstantly) setLoading(`Opening ${packs.find((pack) => pack.id === dto.packId)!.name} pack`);
 
         openPack(dto)
@@ -109,18 +113,20 @@ export default function Market() {
     });
 
     const handleBigClick = async () => {
+        if (!unlockedBlook) return;
+
+        const rarity = rarities.find((rarity) => rarity.id === unlockedBlook.rarityId)!;
+
         switch (bigButtonEvent) {
             case BigButtonClickType.OPEN:
-                if (!unlockedBlook) return;
-
                 setOpeningPack(true);
 
                 setBigButtonEvent(BigButtonClickType.NONE);
 
                 await new Promise((r) => setTimeout(r, 250));
-                game?.scene.game.events.emit("start-particles", rarities.find((rarity) => rarity.id === unlockedBlook.rarityId)!.animationType);
+                game?.scene.game.events.emit("start-particles", rarity.animationType);
 
-                await new Promise((r) => setTimeout(r, 750));
+                await new Promise((r) => setTimeout(r, rarity.animationType < 3 ? 650 : 1250));
                 setBigButtonEvent(BigButtonClickType.CLOSE);
 
                 break;
