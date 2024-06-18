@@ -181,6 +181,16 @@ export default function Dashboard() {
                         </div>
                         <div className={styles.statContainer}>
                             <div className={styles.statHeader}>
+                                <img src="https://cdn.blacket.org/static/content/icons/dashboardStatsExperience.png" />
+                                Experience
+                            </div>
+                            <div className={styles.statDivider} />
+                            <div className={styles.statValue}>
+                                {user.experience.toLocaleString()}
+                            </div>
+                        </div>
+                        <div className={styles.statContainer}>
+                            <div className={styles.statHeader}>
                                 <img src="https://cdn.blacket.org/static/content/icons/dashboardStatsBlooksUnlocked.png" />
                                 Blooks Unlocked
                             </div>

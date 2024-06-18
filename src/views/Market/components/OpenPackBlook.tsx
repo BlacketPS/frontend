@@ -6,7 +6,7 @@ import styles from "../market.module.scss";
 
 import { OpenPackBlookProps } from "../market.d";
 
-export default function OpenPackBlook({ blook, animate }: OpenPackBlookProps) {
+export default function OpenPackBlook({ blook, animate, isNew }: OpenPackBlookProps) {
     const { resourceIdToPath } = useResource();
     const { rarities } = useRarity();
 
@@ -31,7 +31,7 @@ export default function OpenPackBlook({ blook, animate }: OpenPackBlookProps) {
                 </div>
             </div>
             <div className={styles.openPackBlookBottomText}>
-                {blook.chance}%
+                {blook.chance}%{isNew ? " - NEW!" : ""}
             </div>
             <div className={styles.openPackBlookShadow} />
         </div>

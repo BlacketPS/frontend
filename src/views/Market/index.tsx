@@ -180,7 +180,7 @@ export default function Market() {
                     <OpenPackContainer opening={openingPack} image={resourceIdToPath(currentPack.imageId)} />
                     {unlockedBlook && <OpenPackBlook blook={unlockedBlook} animate={
                         bigButtonEvent !== BigButtonClickType.OPEN
-                    } />}
+                    } isNew={user.blooks?.[unlockedBlook.id] === 1} />}
                     <div style={{ cursor: bigButtonEvent === BigButtonClickType.NONE ? "unset" : "" }} className={styles.openBigButton} onClick={handleBigClick} />
                 </div>
             }

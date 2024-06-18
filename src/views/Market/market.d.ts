@@ -57,4 +57,5 @@ export interface OpenPackContainerProps {
 export interface OpenPackBlookProps {
     blook: Blook;
     animate: boolean;
+    isNew: boolean;
 }

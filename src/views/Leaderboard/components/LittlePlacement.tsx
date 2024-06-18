@@ -4,9 +4,9 @@ import cardinalToOrdinal from "@functions/core/cardinalToOrdinal";
 import useGetAvatarURL from "@functions/resources/useGetAvatarURL";
 import styles from "../leaderboard.module.scss";
 
-import { PlacementProps, PlacementType } from "../leaderboard.d";
+import { LittlePlacementProps, PlacementType } from "../leaderboard.d";
 
-export default function LittlePlacement({ type, placement, user }: PlacementProps) {
+export default function LittlePlacement({ type, placement, user }: LittlePlacementProps) {
     const navigate = useNavigate();
 
     const avatarURL = useGetAvatarURL(user);

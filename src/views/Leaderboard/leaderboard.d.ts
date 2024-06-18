@@ -6,9 +6,15 @@ export enum PlacementType {
     EXPERIENCE = "experience"
 }
 
-export interface PlacementProps {
+export interface BigPlacementProps {
     type: PlacementType;
     placement: 1 | 2 | 3;
+    user: User;
+}
+
+export interface LittlePlacementProps {
+    type: PlacementType;
+    placement: number;
     user: User;
 }
 

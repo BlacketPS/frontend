@@ -4,9 +4,9 @@ import cardinalToOrdinal from "@functions/core/cardinalToOrdinal";
 import useGetAvatarURL from "@functions/resources/useGetAvatarURL";
 import styles from "../leaderboard.module.scss";
 
-import { PlacementProps, PlacementType } from "../leaderboard.d";
+import { BigPlacementProps, PlacementType } from "../leaderboard.d";
 
-export default function BigPlacement({ type, placement, user }: PlacementProps) {
+export default function BigPlacement({ type, placement, user }: BigPlacementProps) {
     const avatarURL = useGetAvatarURL(user);
 
     return (
@@ -15,7 +15,7 @@ export default function BigPlacement({ type, placement, user }: PlacementProps) 
                 <div className={styles[`username${placement}`]}>
                     <Textfit className={
                         user.color === "rainbow" ? "rainbow" : ""
-                    } style={{ color: user.color }} max={100} mode="single">{user.username}</Textfit>
+                    } style={{ color: user.color }} max={75} mode="single">{user.username}</Textfit>
                 </div>
 
                 <div className={styles[`score${placement}`]}>

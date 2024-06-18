@@ -37,15 +37,16 @@ export default function Leaderboard() {
             <FilterButton onClick={switchSort}>{sortBy === PlacementType.TOKEN ? "Tokens" : "Experience"}</FilterButton>
 
             <div className={styles.wrapper}>
-                {leaderboard[sortBy === PlacementType.TOKEN ? "tokens" : "experience"].slice(0, 3).map((user: any, i: number) => <BigPlacement key={i} type={sortBy} placement={i + 1} user={user} />)}
+                {leaderboard[sortBy === PlacementType.TOKEN ? "tokens" : "experience"].slice(0, 3).map((user, i) => <BigPlacement key={i} type={sortBy} placement={i + 1 as 1 | 2 | 3} user={user} />)}
 
                 <div className={styles.otherStandings}>
                     <FilterButton mobile={true} onClick={switchSort}>{sortBy === PlacementType.TOKEN ? "Tokens" : "Experience"}</FilterButton>
 
                     <div className={styles.otherTopThreeStandings}>
-                        {leaderboard[sortBy === PlacementType.TOKEN ? "tokens" : "experience"].slice(0, 3).map((user: any, i: number) => <LittlePlacement key={i} type={sortBy} placement={i + 1} user={user} />)}
+                        {leaderboard[sortBy === PlacementType.TOKEN ? "tokens" : "experience"].slice(0, 3).map((user, i: number) => <LittlePlacement key={i} type={sortBy} placement={i + 1} user={user} />)}
                     </div>
-                    {leaderboard[sortBy === PlacementType.TOKEN ? "tokens" : "experience"].slice(3).map((user: any, i: number) => <LittlePlacement key={i} type={sortBy} placement={i + 4} user={user} />)}
+
+                    {leaderboard[sortBy === PlacementType.TOKEN ? "tokens" : "experience"].slice(3).map((user, i: number) => <LittlePlacement key={i} type={sortBy} placement={i + 4} user={user} />)}
                 </div>
             </div>
         </>
