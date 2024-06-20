@@ -13,12 +13,15 @@ import useGetAvatarURL from "@functions/resources/useGetAvatarURL";
 import styles from "./dashboard.module.scss";
 
 import { TopButton } from "./dashboard.d";
+import StatContainer from "./components/StatContainer";
+import { useBlook } from "@stores/BlookStore";
 
 export default function Dashboard() {
     const { setLoading } = useLoading();
     const { createModal } = useModal();
     const { user } = useUser();
     const { cachedUsers, addCachedUserWithData } = useCachedUser();
+    const { blooks } = useBlook();
 
     const { getUser } = useUsers();
 
@@ -159,66 +162,12 @@ export default function Dashboard() {
                 </div>
                 <div className={styles.statsContainer}>
                     <div className={styles.statsContainerHolder}>
-                        <div className={styles.statContainer}>
-                            <div className={styles.statHeader}>
-                                <img src="https://cdn.blacket.org/static/content/icons/dashboardStatsUserID.png" />
-                                User ID
-                            </div>
-                            <div className={styles.statDivider} />
-                            <div className={styles.statValue}>
-                                {user.id}
-                            </div>
-                        </div>
-                        <div className={styles.statContainer}>
-                            <div className={styles.statHeader}>
-                                <img src="https://cdn.blacket.org/static/content/icons/dashboardStatsTokens.png" />
-                                Tokens
-                            </div>
-                            <div className={styles.statDivider} />
-                            <div className={styles.statValue}>
-                                {user.tokens.toLocaleString()}
-                            </div>
-                        </div>
-                        <div className={styles.statContainer}>
-                            <div className={styles.statHeader}>
-                                <img src="https://cdn.blacket.org/static/content/icons/dashboardStatsExperience.png" />
-                                Experience
-                            </div>
-                            <div className={styles.statDivider} />
-                            <div className={styles.statValue}>
-                                {user.experience.toLocaleString()}
-                            </div>
-                        </div>
-                        <div className={styles.statContainer}>
-                            <div className={styles.statHeader}>
-                                <img src="https://cdn.blacket.org/static/content/icons/dashboardStatsBlooksUnlocked.png" />
-                                Blooks Unlocked
-                            </div>
-                            <div className={styles.statDivider} />
-                            <div className={styles.statValue}>
-                                {Object.keys(user.blooks).length.toLocaleString()} / 0
-                            </div>
-                        </div>
-                        <div className={styles.statContainer}>
-                            <div className={styles.statHeader}>
-                                <img src="https://cdn.blacket.org/static/content/icons/dashboardStatsPacksOpened.png" />
-                                Packs Opened
-                            </div>
-                            <div className={styles.statDivider} />
-                            <div className={styles.statValue}>
-                                {user.statistics.packsOpened.toLocaleString()}
-                            </div>
-                        </div>
-                        <div className={styles.statContainer}>
-                            <div className={styles.statHeader}>
-                                <img src="https://cdn.blacket.org/static/content/icons/dashboardStatsMessagesSent.png" />
-                                Messages Sent
-                            </div>
-                            <div className={styles.statDivider} />
-                            <div className={styles.statValue}>
-                                {user.statistics.messagesSent.toLocaleString()}
-                            </div>
-                        </div>
+                        <StatContainer title="User ID" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsUserID.png" value={user.id} />
+                        <StatContainer title="Tokens" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsTokens.png" value={user.tokens.toLocaleString()} />
+                        <StatContainer title="Experience" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsExperience.png" value={user.experience.toLocaleString()} />
+                        <StatContainer title="Blooks Unlocked" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsBlooksUnlocked.png" value={`${Object.keys(user.blooks).length.toLocaleString()} / ${blooks.length.toLocaleString()}`} />
+                        <StatContainer title="Packs Opened" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsPacksOpened.png" value={user.statistics.packsOpened.toLocaleString()} />
+                        <StatContainer title="Messages Sent" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsMessagesSent.png" value={user.statistics.messagesSent.toLocaleString()} />
                     </div>
                 </div>
             </div>
