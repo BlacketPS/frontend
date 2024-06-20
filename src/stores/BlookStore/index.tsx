@@ -1,12 +1,7 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import Loading from "../../views/Loading";
-
+import { type BlookStoreContext } from "./blook.d";
 import { Blook } from "blacket-types";
-
-interface BlookStoreContext {
-    blooks: Blook[],
-    setBlooks: (blooks: Blook[]) => void
-}
 
 const BlookStoreContext = createContext<BlookStoreContext>({ blooks: [], setBlooks: () => { } });
 
