@@ -23,6 +23,8 @@ export default function Dashboard() {
     const { cachedUsers, addCachedUserWithData } = useCachedUser();
     const { blooks } = useBlook();
 
+    if (!user) return <Navigate to="/login" />;
+
     const { getUser } = useUsers();
 
     const [searchParams] = useSearchParams();
@@ -84,8 +86,6 @@ export default function Dashboard() {
     const avatarURL = useGetAvatarURL(user);
     const titleText = useTitleIdToText(user?.titleId);
     const fontName = useFontIdToName(user?.fontId);
-
-    if (!user) return <Navigate to="/login" />;
 
     const topButtons: TopButton[] = [
         { icon: "fas fa-magnifying-glass", text: "Lookup User", onClick: () => createModal(<LookupUserModal onClick={viewUser} />) },

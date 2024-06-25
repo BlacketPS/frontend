@@ -3,7 +3,6 @@ import { useRarity } from "@stores/RarityStore/index";
 import styles from "../inventory.module.scss";
 
 import { BlookProps } from "../inventory";
-import { Rarity } from "blacket-types";
 
 export default function Blook({ blook, locked, quantity, ...props }: BlookProps) {
     const { resourceIdToPath } = useResource();
@@ -13,7 +12,7 @@ export default function Blook({ blook, locked, quantity, ...props }: BlookProps)
         <div data-locked={locked} className={styles.blook} {...props}>
             <img src={resourceIdToPath(blook.imageId) || "https://cdn.blacket.org/static/content/blooks/Error.png"} data-locked={locked} alt={blook.name} draggable={false} />
             {!locked && <div style={{
-                backgroundColor: rarities.find((r: Rarity) => r.id === blook.rarityId)?.color
+                backgroundColor: rarities.find((r) => r.id === blook.rarityId)?.color
             }} className={styles.blookQuantity}>{quantity.toLocaleString()}</div>}
 
             {locked && <i className={`fas fa-lock ${styles.blookLock}`} />}

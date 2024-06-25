@@ -28,9 +28,15 @@ export default function OpenPackModal({ pack, userTokens, onYesButton }: OpenPac
     else return (
         <>
             <Tooltip id="tooltip" place="left">
-                {blooks.sort((a, b) => a.priority - b.priority).map((blook) => blook.packId === pack.id && <div key={blook.id}>
-                    {blook.name}: {blook.chance}%
-                </div>)}
+                {blooks
+                    .filter((blook) => {
+                        return blook.onlyOnDay === null || blook.onlyOnDay === new Date().getDay() + 1;
+                    })
+                    .sort((a, b) => a.priority - b.priority)
+                    .map((blook) => blook.packId === pack.id && <div key={blook.id}>
+                        {blook.name}: {blook.chance}%
+                    </div>)
+                }
             </Tooltip>
 
             <Modal.ModalHeader>

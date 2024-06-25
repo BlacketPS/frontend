@@ -110,7 +110,7 @@
 
     .blookQuantity {
         position: absolute;
-        font-family: Titan One, sans-serif;
+        font-family: "Titan One", sans-serif;
         font-size: 12px;
         -webkit-text-stroke: #000000 1px;
         border-radius: 7px;
@@ -153,6 +153,53 @@
             transform: scale(1);
         }
     }
+}
+
+.item {
+    width: 60px;
+    height: 70px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    outline: none;
+    will-change: transform;
+    transition: transform .2s;
+
+    .itemsLeft {
+        font-family: "Titan One", sans-serif;
+        font-size: 12px;
+        -webkit-text-stroke: #000000 1px;
+        border-radius: 7px;
+        padding: 0 5px;
+        height: 14px;
+        line-height: 14px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 10px;
+    }
+
+    &:hover {
+        transform: scale(0.95);
+    }
+
+    &:active {
+        transform: scale(0.9);
+    }
+
+    &>img {
+        width: 55px;
+        object-fit: contain;
+        -o-object-fit: contain;
+    }
+
 }
 
 .rightSide {

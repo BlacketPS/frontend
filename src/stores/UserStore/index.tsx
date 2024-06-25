@@ -1,7 +1,9 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import Loading from "../../views/Loading";
 
-const UserStoreContext = createContext<{ user: any, setUser: any }>({ user: null, setUser: () => { } });
+import { PrivateUser } from "blacket-types";
+
+const UserStoreContext = createContext<{ user: PrivateUser | null, setUser: (user: PrivateUser | null) => void }>({ user: null, setUser: () => { } });
 
 export function useUser() {
     return useContext(UserStoreContext);
@@ -10,7 +12,7 @@ export function useUser() {
 export function UserStoreProvider({ children }: { children: ReactNode }) {
     const [error, setError] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
-    const [user, setUser] = useState<any | null>(null);
+    const [user, setUser] = useState<PrivateUser | null>(null);
 
     useEffect(() => {
         const fetchUser = async () => await window.fetch2.get("/api/users/me")

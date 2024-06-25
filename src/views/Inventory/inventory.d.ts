@@ -1,7 +1,7 @@
 import { HTMLAttributes } from "react";
 
 import { GenericButtonProps } from "@components/Buttons/GenericButton/genericButton";
-import { Blook } from "blacket-types";
+import { Blook, Item } from "blacket-types";
 
 export interface BlookProps extends HTMLAttributes<HTMLDivElement> {
     blook: Blook;
@@ -9,9 +9,14 @@ export interface BlookProps extends HTMLAttributes<HTMLDivElement> {
     quantity: number;
 }
 
+export interface ItemProps extends HTMLAttributes<HTMLDivElement> {
+    item: Item;
+    usesLeft: number;
+}
+
 export interface RightBlookProps extends HTMLAttributes<HTMLDivElement> {
     blook: Blook;
-    owned: boolean;
+    owned: number;
     noBlooksOwned: boolean;
 }
 

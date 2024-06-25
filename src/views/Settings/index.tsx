@@ -27,6 +27,8 @@ export default function Settings() {
     const { changeSetting } = useSettings();
     const { user } = useUser();
 
+    if (!user) return <Navigate to="/login" />;
+
     const [modalAnimation, setModalAnimation] = useState<boolean>(localStorage.getItem("DISABLE_MODAL_ANIMATION") ? false : true);
 
     const friendRequestsButton = () => {
@@ -52,8 +54,6 @@ export default function Settings() {
 
     const titleText = useTitleIdToText(user?.titleId);
     const fontName = useFontIdToName(user?.fontId);
-
-    if (!user) return <Navigate to="/login" />;
 
     return (
         <div className={styles.container}>

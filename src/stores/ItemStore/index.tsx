@@ -1,12 +1,14 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import Loading from "../../views/Loading";
 
+import { Item } from "blacket-types";
+
 interface ItemStoreContext {
-    items: any,
-    setItems: (blooks: any) => void
+    items: Item[],
+    setItems: (items: Item[]) => void;
 }
 
-const ItemStoreContext = createContext<ItemStoreContext>({ items: null, setItems: () => { } });
+const ItemStoreContext = createContext<ItemStoreContext>({ items: [], setItems: () => { } });
 
 export function useItem() {
     return useContext(ItemStoreContext);
@@ -15,7 +17,7 @@ export function useItem() {
 export function ItemStoreProvider({ children }: { children: ReactNode }) {
     const [error, setError] = useState<boolean>(false);
     const [loading, setLoading] = useState<boolean>(true);
-    const [items, setItems] = useState<any | null>(null);
+    const [items, setItems] = useState<Item[]>([]);
 
     useEffect(() => {
         const fetchData = async () => await window.fetch2.get("/api/data/items")

@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, RefObject } from "react";
+import { Navigate } from "react-router-dom";
 import { useLoading } from "@stores/LoadingStore";
 import { useUser } from "@stores/UserStore/index";
 import { useResource } from "@stores/ResourceStore";
@@ -47,6 +48,8 @@ export default function Market() {
     const { packs } = usePack();
     const { rarities } = useRarity();
     const { blooks } = useBlook();
+
+    if (!user) return <Navigate to="/login" />;
 
     const { changeSetting } = useSettings();
     const { openPack } = useOpenPack();
@@ -106,7 +109,10 @@ export default function Market() {
 
                 resolve(setUnlockedBlook(blooks.find((blook) => blook.id === res.data.id)!));
             })
-            .catch((err) => reject(err))
+            .catch((err) => {
+                if (user.settings.openPacksInstantly) createModal(<Modal.ErrorModal>{err?.data?.message || "Something went wrong."}</Modal.ErrorModal>);
+                reject(err);
+            })
             .finally(() => {
                 if (user.settings.openPacksInstantly) setLoading(false);
             });

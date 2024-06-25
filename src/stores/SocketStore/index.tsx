@@ -57,6 +57,10 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
         if (import.meta.env.MODE === "development") window.socket = socket;
 
         socketRef.current = socket;
+
+        return () => {
+            socket.close();
+        };
     }, []);
 
     useEffect(() => {

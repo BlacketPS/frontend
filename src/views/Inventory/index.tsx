@@ -1,19 +1,23 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { usePack } from "@stores/PackStore/index";
 import { useBlook } from "@stores/BlookStore/index";
-import { BlooksHolder, SetHolder, Blook, RightBlook, RightButton, SellBlooksModal } from "./components";
+import { useItem } from "@stores/ItemStore/index";
+import { BlooksHolder, SetHolder, Blook, Item, RightBlook, RightButton, SellBlooksModal } from "./components";
 import styles from "./inventory.module.scss";
 
-import { Blook as BlookType, Pack } from "blacket-types";
+import { Blook as BlookType } from "blacket-types";
 
 export default function Inventory() {
     const { createModal } = useModal();
     const { user } = useUser();
     const { packs } = usePack();
     const { blooks } = useBlook();
+    const { items } = useItem();
+
+    if (!user) return <Navigate to="/login" />;
 
     // i have to make a const for this i have no idea why but if i don't it just sometimes can't find a blook theres 0 reason for it but using a const works! i love typescript
     const randomBlookIdFromMyBlooks = Object.keys(user.blooks)[Math.floor(Math.random() * Object.keys(user.blooks).length)];
@@ -27,12 +31,14 @@ export default function Inventory() {
         setSelectedBlook(blook);
     };
 
-    if (!user) return <Navigate to="/login" />;
-
     return (
         <>
             <BlooksHolder>
-                {packs.map((pack: Pack) => <SetHolder key={pack.id} name={`${pack.name} Pack`} nothing={blooks.filter((blook) => blook.packId === pack.id).length === 0}>
+                {user.items.length > 0 && <SetHolder nothing={false} name="Items">
+                    {user.items.map((item) => <Item key={item.itemId} item={items.find((i) => i.id === item.itemId)!} usesLeft={user.items.find((i) => i.itemId === item.itemId)!.usesLeft} />)}
+                </SetHolder>}
+
+                {packs.map((pack) => <SetHolder key={pack.id} name={`${pack.name} Pack`} nothing={blooks.filter((blook) => blook.packId === pack.id).length === 0}>
                     {blooks.filter((blook) => blook.packId === pack.id).length > 0 ?
                         blooks.sort((a, b) => a.priority - b.priority).map((blook) => blook.packId === pack.id && <Blook key={blook.id} blook={blook} locked={!user.blooks[blook.id]} quantity={user.blooks[blook.id]} onClick={() => selectBlook(blook)} />)
                         : <div className={styles.noBlooks}>There are no blooks in this pack.</div>}
