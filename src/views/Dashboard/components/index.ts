@@ -1,5 +1,7 @@
 import LookupUserModal from "./LookupUserModal";
+import StatContainer from "./StatContainer";
 
 export {
-    LookupUserModal
+    LookupUserModal,
+    StatContainer
 };

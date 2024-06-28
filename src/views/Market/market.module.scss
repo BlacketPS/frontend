@@ -38,6 +38,7 @@
     display: flex;
     overflow-y: auto;
     margin: 0 0 0 5%;
+    flex-direction: column;
 
     // &[data-opened="true"] {
     //     animation: openCategory 1.2s cubic-bezier(.32,.77,.84,1.02) forwards;

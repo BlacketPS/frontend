@@ -1,7 +1,7 @@
+import { SearchBox } from "@components/index";
+
 export default function AuctionHouse() {
     return (
-        <h1>
-            wip
-        </h1>
+        <SearchBox />
     );
 }

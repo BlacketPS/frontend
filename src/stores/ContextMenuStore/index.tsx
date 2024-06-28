@@ -70,7 +70,7 @@ export function ContextMenuStoreProvider({ children }: { children: ReactNode }) 
     return (
         <ContextMenuContext.Provider value={{ contextMenu, setContextMenu, openContextMenu, closeContextMenu }}>
             {contextMenu && <Container ref={contextMenuRef} visible={visible} top={contextMenu.y} left={contextMenu.x}>
-                {contextMenu.items.map((item, index) => item.divider ? <Divider key={index} /> : item && <Item key={index} icon={item.icon} color={item.color} onClick={() => {
+                {contextMenu.items.map((item, index) => item.divider ? <Divider key={index} /> : item && <Item key={index} icon={item.icon} image={item.image} color={item.color} onClick={() => {
                     if (item.onClick) item.onClick();
 
                     closeContextMenu();

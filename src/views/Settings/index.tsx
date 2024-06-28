@@ -86,6 +86,7 @@ export default function Settings() {
                 <Button.ClearButton onClick={friendRequestsButton}>Friend Requests: {
                     user.settings.friendRequests === 1 ? "On" : user.settings.friendRequests === 2 ? "Off" : user.settings.friendRequests === 3 ? "Mutual" : "Unknown"
                 }</Button.ClearButton>
+                <Button.ClearButton onClick={() => createModal(user.settings.otpEnabled ? <DisableOTPModal /> : <EnableOTPModal />)}>{user.settings.otpEnabled ? "Disable" : "Enable"} OTP / 2FA</Button.ClearButton>
             </SettingsContainer>
 
             <SettingsContainer header={{ icon: "fas fa-palette", text: "Theme" }}>
@@ -118,7 +119,6 @@ export default function Settings() {
             </SettingsContainer>
 
             <SettingsContainer header={{ icon: "fas fa-lock", text: "Privacy" }}>
-                <Button.ClearButton onClick={() => createModal(user.settings.otpEnabled ? <DisableOTPModal /> : <EnableOTPModal />)}>{user.settings.otpEnabled ? "Disable" : "Enable"} OTP / 2FA</Button.ClearButton>
                 <Link to="/terms">Terms of Service</Link>
                 <Link to="/privacy">Privacy Policy</Link>
             </SettingsContainer>

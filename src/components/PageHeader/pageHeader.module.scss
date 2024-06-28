@@ -2,5 +2,10 @@
     font-family: "Titan One", sans-serif;
     font-size: 44px;
     color: var(--accent-color);
-    margin: 15px 5% 10px;
+    margin: 15px 5% 15px;
+
+    @media (max-width: 768px) {
+        font-size: 36px;
+        margin: 15px 5% 20px;
+    }
 }

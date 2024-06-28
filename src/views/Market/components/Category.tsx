@@ -8,13 +8,15 @@ import { CategoryProps } from "../market.d";
 export default function Category({ header, internalName, children }: CategoryProps) {
     const { user } = useUser();
 
+    if (!user) return null;
+
     const [openedState, setOpenedState] = useState(user.settings.categoriesClosed.includes(internalName) ? false : true);
 
     const { changeSetting } = useSettings();
 
     const toggleOpenedState = () => changeSetting({
         key: "categoriesClosed", value: !openedState
-            ? user.settings.categoriesClosed.filter((category: string) => category !== internalName)
+            ? user.settings.categoriesClosed.filter((category) => category !== internalName)
             : [...user.settings.categoriesClosed, internalName]
     })
         .then(() => setOpenedState(!openedState));

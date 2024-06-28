@@ -9,7 +9,7 @@ import { useRarity } from "@stores/RarityStore/index";
 import { useBlook } from "@stores/BlookStore/index";
 import { useSettings } from "@controllers/settings/useSettings";
 import { useOpenPack } from "@controllers/market/useOpenPack";
-import { SidebarBody, PageHeader, Modal, Button } from "@components/index";
+import { SidebarBody, PageHeader, Modal, Button, SearchBox } from "@components/index";
 import { OpenPackModal, Category, Pack, OpenPackContainer, OpenPackBlook } from "./components";
 // @ts-expect-error phaser is too big for the bundle so import it externally since its only used once
 const { Game, Scale, WEBGL } = window.Phaser;
@@ -17,7 +17,7 @@ import Particles from "./functions/PackParticles";
 import styles from "./market.module.scss";
 
 import { Blook, OpenPackDto, Pack as PackType } from "blacket-types";
-import { ParticlesScene, Config, GameState, BigButtonClickType } from "./market.d";
+import { ParticlesScene, Config, GameState, BigButtonClickType, SearchOptions } from "./market.d";
 
 const useGame = (config: Config, containerRef: RefObject<HTMLDivElement>) => {
     const [game, setGame] = useState<typeof Game | null>(null);
@@ -73,6 +73,8 @@ export default function Market() {
     const [unlockedBlook, setUnlockedBlook] = useState<Blook | null>(null);
 
     const [bigButtonEvent, setBigButtonEvent] = useState<BigButtonClickType>(BigButtonClickType.CLOSE);
+
+    const [search, setSearch] = useState<SearchOptions>({ query: localStorage.getItem("MARKET_SEARCH_QUERY") ?? "", onlyPurchasable: localStorage.getItem("MARKET_SEARCH_ONLY_PURCHASABLE") ? true : false });
 
     const gameRef = useRef<HTMLDivElement>(null);
 
@@ -156,16 +158,39 @@ export default function Market() {
                     <Button.LittleButton onClick={toggleInstantOpen}>Instant Open: {user.settings.openPacksInstantly ? "On" : "Off"}</Button.LittleButton>
                 </div>
 
+                <SearchBox
+                    placeholder="Search for a pack..."
+                    containerProps={{
+                        style: { margin: "20px auto 10px" }
+                    }}
+                    buttons={[
+                        { icon: !search.onlyPurchasable ? "fas fa-eye" : "fas fa-eye-slash", tooltip: "Only Purchasable", onClick: () => setSearch({ ...search, onlyPurchasable: !search.onlyPurchasable }) },
+                        { icon: "fas fa-times", tooltip: "Reset Search", onClick: () => localStorage.removeItem("MARKET_SEARCH_QUERY") }
+                    ]}
+                    value={search.query}
+                    onChange={(e) => {
+                        localStorage.setItem("MARKET_SEARCH_QUERY", e.target.value);
+
+                        setSearch({
+                            ...search,
+                            query: e.target.value
+                        });
+                    }}
+                />
+
                 <Category header={`Packs (${packs.length})`} internalName="MARKET_PACKS">
                     <div className={styles.packsWrapper}>
-                        {packs.map((pack) => <Pack key={pack.id} pack={pack} onClick={() => {
-                            if (!user.settings.openPacksInstantly) createModal(<OpenPackModal
-                                pack={pack}
-                                userTokens={user.tokens}
-                                onYesButton={() => purchasePack({ packId: pack.id })}
-                            />);
-                            else purchasePack({ packId: pack.id });
-                        }} />)}
+                        {packs.map((pack) =>
+                            pack.name.toLowerCase().includes(search.query.toLowerCase())
+                            && (!search.onlyPurchasable || user.tokens >= pack.price)
+                            && <Pack key={pack.id} pack={pack} onClick={() => {
+                                if (!user.settings.openPacksInstantly) createModal(<OpenPackModal
+                                    pack={pack}
+                                    userTokens={user.tokens}
+                                    onYesButton={() => purchasePack({ packId: pack.id })}
+                                />);
+                                else purchasePack({ packId: pack.id });
+                            }} />)}
                     </div>
                 </Category>
 

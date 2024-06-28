@@ -34,6 +34,11 @@ export enum BigButtonClickType {
     NONE = 3
 }
 
+export interface SearchOptions {
+    query: string;
+    onlyPurchasable: boolean;
+}
+
 export interface CategoryProps extends HTMLAttributes<HTMLDivElement> {
     header: string;
     internalName: string;

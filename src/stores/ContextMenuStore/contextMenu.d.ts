@@ -4,6 +4,7 @@ export interface ContextMenu {
     items: Array<{
         divider?: boolean;
         icon?: string;
+        image?: string;
         color?: string;
         onClick?: () => void;
         label?: string;
@@ -28,6 +29,7 @@ export interface ContainerProps {
 
 export interface ItemProps {
     icon?: string;
+    image?: string;
     color?: string;
     children: ReactNode;
     onClick: () => void;

@@ -13,7 +13,7 @@ export default function Item({ item, usesLeft, ...props }: ItemProps) {
             <img src={resourceIdToPath(item.imageId) || "https://cdn.blacket.org/static/content/blooks/Error.png"} alt={item.name} draggable={false} />
 
             <div style={{
-                backgroundColor: rarities.find((r) => r.id === item.rarityId)?.color
+                backgroundColor: rarities.find((r) => r.id === item.rarityId)!.color
             }} className={styles.itemsLeft}>{usesLeft.toLocaleString()} Left</div>
         </div>
     );

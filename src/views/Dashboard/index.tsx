@@ -4,17 +4,17 @@ import { useLoading } from "@stores/LoadingStore/index";
 import { useModal } from "@stores/ModalStore";
 import { useUser } from "@stores/UserStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
+import { useBlook } from "@stores/BlookStore/index";
 import { useUsers } from "@controllers/users/useUsers/index";
 import { Button } from "@components/index";
-import { LookupUserModal } from "./components";
+import { LookupUserModal, StatContainer } from "./components";
 import useTitleIdToText from "@functions/resources/useTitleIdToText";
 import useFontIdToName from "@functions/resources/useFontIdToName";
 import useGetAvatarURL from "@functions/resources/useGetAvatarURL";
 import styles from "./dashboard.module.scss";
 
 import { TopButton } from "./dashboard.d";
-import StatContainer from "./components/StatContainer";
-import { useBlook } from "@stores/BlookStore";
+import { PublicUser } from "blacket-types";
 
 export default function Dashboard() {
     const { setLoading } = useLoading();
@@ -31,7 +31,7 @@ export default function Dashboard() {
 
     const navigate = useNavigate();
 
-    const [viewingUser, setViewingUser] = useState<object | null>(null);
+    const [viewingUser, setViewingUser] = useState<PublicUser | null>(null);
 
     const viewUser = (username: string) => new Promise<void>((resolve, reject) => {
         const cachedUser = cachedUsers.find((user) => user.username.toLowerCase() === username.toLowerCase() || user.id === username);
@@ -51,7 +51,7 @@ export default function Dashboard() {
         } else getUser(username)
             .then((res) => {
                 if (res.data.id !== user.id) {
-                    setViewingUser(res);
+                    setViewingUser(res.data);
 
                     addCachedUserWithData(res.data);
 
@@ -74,7 +74,7 @@ export default function Dashboard() {
 
         setLoading(true);
 
-        viewUser(searchParams.get("name") as string)
+        viewUser(searchParams.get("name")!)
             .catch(() => {
                 setViewingUser(null);
 

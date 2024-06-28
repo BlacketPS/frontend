@@ -4,6 +4,7 @@ import LogoutModal from "./LogoutModal";
 import ModalBody from "./ModalBody";
 import ModalButtonContainer from "./ModalButtonContainer";
 import ModalHeader from "./ModalHeader";
+import ModalToggleContainer from "./ModalToggleContainer";
 
 export {
     ErrorModal,
@@ -11,5 +12,6 @@ export {
     LogoutModal,
     ModalBody,
     ModalButtonContainer,
-    ModalHeader
+    ModalHeader,
+    ModalToggleContainer
 };
