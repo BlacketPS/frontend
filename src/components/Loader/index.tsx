@@ -6,7 +6,7 @@ export default function Loader({ image = "https://cdn.blacket.org/static/content
 
     if (!noModal) return (
         <div className={styles.loadingModal}>
-            <div className={`${styles.loader}${className}`} style={message ? { marginBottom: 50 } : {}}>
+            <div className={`${styles.loader}${className}`} style={message ? { marginBottom: 100 } : {}}>
                 <div className={styles.loaderShadow} />
 
                 <img className={styles.loaderBlook} data-motionless={motionless} src={image} draggable={false} />

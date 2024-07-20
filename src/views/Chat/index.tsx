@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useUser } from "@stores/UserStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
@@ -9,12 +9,16 @@ import { ChatContainer, ChatMessagesContainer, ChatMessage, InputContainer } fro
 export default memo(function Chat() {
     const { user } = useUser();
     const { cachedUsers } = useCachedUser();
-    const { messages, replyingTo, setReplyingTo } = useChat();
+    const { messages, replyingTo, setReplyingTo, resetMentions } = useChat();
     const { openContextMenu } = useContextMenu();
 
     const navigate = useNavigate();
 
     if (!user) return <Navigate to="/login" />;
+
+    useEffect(() => {
+        resetMentions();
+    }, []);
 
     return (
         <>

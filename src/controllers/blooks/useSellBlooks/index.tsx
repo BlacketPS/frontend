@@ -1,20 +1,23 @@
 import { useUser } from "@stores/UserStore/index";
-import { useBlook } from "@stores/BlookStore/index";
+import { useData } from "@stores/DataStore/index";
 
-import { Blook, SellBlookDto } from "blacket-types";
+import { NotFound, BlooksSellBlookDto } from "blacket-types";
 
 export function useSellBlooks() {
     const { user, setUser } = useUser();
-    const { blooks } = useBlook();
+    const { blooks } = useData();
 
-    const sellBlooks = (dto: SellBlookDto) => new Promise<Fetch2Response>((resolve, reject) => window.fetch2.put("/api/blooks/sell-blooks", dto)
+    if (!user) throw new Error(NotFound.UNKNOWN_USER);
+
+    const sellBlooks = (dto: BlooksSellBlookDto) => new Promise<Fetch2Response>((resolve, reject) => window.fetch2.put("/api/blooks/sell-blooks", dto)
         .then((res: Fetch2Response) => {
             const userBlooks = user.blooks;
 
             userBlooks[dto.blookId] -= dto.quantity;
             if (userBlooks[dto.blookId] < 1) delete userBlooks[dto.blookId];
 
-            const blook = blooks.find((b: Blook) => b.id === dto.blookId) as Blook;
+            const blook = blooks.find((b) => b.id === dto.blookId);
+            if (!blook) return reject("Blook not found");
 
             setUser({ ...user, blooks: userBlooks, tokens: user.tokens + blook.price * dto.quantity });
 

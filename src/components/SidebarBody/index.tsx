@@ -1,6 +1,7 @@
-import { ReactNode } from "react";
 import styles from "./sidebarBody.module.scss";
 
-export default function SidebarBody({ children }: { children: ReactNode }) {
-    return <div className={styles.sidebarBody}>{children}</div>;
+import { SidebarBodyProps } from "./sidebarBody.d";
+
+export default function SidebarBody({ pushOnMobile, children }: SidebarBodyProps) {
+    return <div className={styles.sidebarBody} data-push={pushOnMobile}>{children}</div>;
 }

@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { Blook, OpenPackDto, Pack } from "blacket-types";
+import { Blook, MarketOpenPackDto, Pack } from "blacket-types";
 
 export type ParticlesScene = Phaser.Scene & {
     initParticles: () => void;
@@ -51,7 +51,7 @@ export interface PackProps extends HTMLAttributes<HTMLDivElement> {
 export interface OpenPackModalProps {
     pack: Pack;
     userTokens: number;
-    onYesButton: (dto: OpenPackDto) => Promise;
+    onYesButton: (dto: MarketOpenPackDto) => Promise;
 }
 
 export interface OpenPackContainerProps {

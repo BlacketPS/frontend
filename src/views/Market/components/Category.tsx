@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useUser } from "@stores/UserStore/index";
-import { useSettings } from "@controllers/settings/useSettings";
+import { useSettings } from "@controllers/settings/useSettings/index";
 import styles from "../market.module.scss";
 
 import { CategoryProps } from "../market.d";

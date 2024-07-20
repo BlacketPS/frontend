@@ -16,12 +16,13 @@ export function ConfigStoreProvider({ children }: { children: ReactNode }) {
 
     useEffect(() => {
         const fetchData = async () => await window.fetch2.get("/api")
-            .then((res: Fetch2Response) => setConfig(res.data));
+            .then((res) => setConfig(res.data));
 
         fetchData()
             .then(() => setLoading(false))
             .catch((res: Fetch2Response) => {
-                if (res.status !== 403) setError(true);
+                if (res.status !== 403 && res.status !== 429) setError(true);
+                else if (res.status === 429) setError("too many requests");
                 else setError(res.data.message);
             });
     }, []);

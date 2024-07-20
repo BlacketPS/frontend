@@ -18,10 +18,12 @@ const fetchInterceptor = (method: HTTPMethod) => (url: string, body: JSON) => ne
     body: JSON.stringify(body)
 })
     .then(async (response: Response) => {
+        let data;
+
         try {
-            var data = await response.json();
+            data = await response.json();
         } catch {
-            var data = null;
+            data = null;
         }
 
         if (!response.ok) reject({ ok: false, status: response.status, data });

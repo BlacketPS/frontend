@@ -1,14 +1,19 @@
 import { useUser } from "@stores/UserStore/index";
 
-import { EnableOtpDto } from "blacket-types";
+import { NotFound, SettingsEnableOtpDto } from "blacket-types";
 
 export function useEnable() {
     const { user, setUser } = useUser();
 
-    const enable = (dto: EnableOtpDto) => new Promise<Fetch2Response>((resolve, reject) => window.fetch2.patch("/api/settings/otp/enable", dto)
-        .then((res: Fetch2Response) => {
-            setUser({ ...user, settings: { ...user.settings, otpEnabled: true } });
+    if (!user) throw new Error(NotFound.UNKNOWN_USER);
 
+    const enable = (dto: SettingsEnableOtpDto) => new Promise<Fetch2Response>((resolve, reject) => window.fetch2.patch("/api/settings/otp/enable", dto)
+        .then((res: Fetch2Response) => {
+            const settings = user.settings;
+            settings.otpEnabled = true;
+
+            setUser({ ...user, settings });
+            
             resolve(res);
         })
         .catch(reject));

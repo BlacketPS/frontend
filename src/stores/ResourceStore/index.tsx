@@ -1,5 +1,4 @@
-import { ReactNode, createContext, useContext, useEffect, useState } from "react";
-import Loading from "../../views/Loading";
+import { ReactNode, createContext, useContext, useState, useCallback } from "react";
 
 import { type ResourceStoreContext } from "./resource.d";
 import { Resource } from "blacket-types";
@@ -11,20 +10,9 @@ export function useResource() {
 }
 
 export function ResourceStoreProvider({ children }: { children: ReactNode }) {
-    const [error, setError] = useState<boolean>(false);
-    const [loading, setLoading] = useState<boolean>(true);
     const [resources, setResources] = useState<Resource[]>([]);
 
-    useEffect(() => {
-        const fetchData = async () => await window.fetch2.get("/api/data/resources")
-            .then((res: Fetch2Response) => setResources(res.data));
+    const resourceIdToPath = useCallback((id: number) => resources.find((resource) => resource.id === id)?.path ?? "", [resources]);
 
-        fetchData()
-            .then(() => setLoading(false))
-            .catch(() => setError(true));
-    }, []);
-
-    const resourceIdToPath = (id: number) => resources?.find((resource: Resource) => resource.id === id)?.path ?? "";
-
-    return <ResourceStoreContext.Provider value={{ resources, setResources, resourceIdToPath }}>{!loading ? children : <Loading error={error} message="resources" />}</ResourceStoreContext.Provider>;
+    return <ResourceStoreContext.Provider value={{ resources, setResources, resourceIdToPath }}>{children}</ResourceStoreContext.Provider>;
 }

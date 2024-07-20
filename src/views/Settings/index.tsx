@@ -4,7 +4,8 @@ import { Tooltip } from "react-tooltip";
 import { useLoading } from "@stores/LoadingStore";
 import { useModal } from "@stores/ModalStore";
 import { useSettings } from "@controllers/settings/useSettings/index";
-import { useUser } from "@stores/UserStore";
+import { useUser } from "@stores/UserStore/index";
+import { useData } from "@stores/DataStore/index";
 import { Modal, Button } from "@components/index";
 import {
     SettingsContainer,
@@ -15,8 +16,6 @@ import {
     EnableOTPModal,
     DisableOTPModal
 } from "./components/index";
-import useTitleIdToText from "@functions/resources/useTitleIdToText";
-import useFontIdToName from "@functions/resources/useFontIdToName";
 import styles from "./settings.module.scss";
 
 import { SettingFriendRequest } from "blacket-types";
@@ -26,6 +25,7 @@ export default function Settings() {
     const { createModal } = useModal();
     const { changeSetting } = useSettings();
     const { user } = useUser();
+    const { fontIdToName, titleIdToText } = useData();
 
     if (!user) return <Navigate to="/login" />;
 
@@ -52,16 +52,13 @@ export default function Settings() {
         }
     };
 
-    const titleText = useTitleIdToText(user?.titleId);
-    const fontName = useFontIdToName(user?.fontId);
-
     return (
         <div className={styles.container}>
             <SettingsContainer header={{ icon: "fas fa-user", text: "Profile" }}>
                 <div><b>ID:</b> {user.id}</div>
                 <div><b>Username:</b> {user.username}</div>
-                <div><b>Title:</b> {titleText}</div>
-                <div style={{ display: "inline-flex" }}><b>Font: </b> <div style={{ fontFamily: fontName, marginLeft: 7 }}>{fontName}</div></div>
+                <div><b>Title:</b> {titleIdToText(user.titleId)}</div>
+                <div style={{ display: "inline-flex" }}><b>Font: </b> <div style={{ fontFamily: fontIdToName(user.fontId), marginLeft: 7 }}>{fontIdToName(user.fontId)}</div></div>
                 <div><b>Joined:</b> {`${new Date(user.createdAt).toLocaleDateString()} ${new Date(user.createdAt).toLocaleTimeString()}`}</div>
 
                 <Button.ClearButton to={

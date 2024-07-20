@@ -1,12 +1,13 @@
 import { memo, useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useChat } from "@stores/ChatStore/index";
+import { useUser } from "@stores/UserStore/index";
+import { useData } from "@stores/DataStore/index";
 import { useSpring, animated } from "react-spring";
 import { useDrag } from "@use-gesture/react";
 import MarkdownPreview from "./MarkdownPreview";
-import useGetAvatarURL from "@functions/resources/useGetAvatarURL";
-import useFontIdToName from "@functions/resources/useFontIdToName";
 import timestamps from "@functions/core/timestamps";
+import { ImageOrVideo } from "@components/index";
 import styles from "../chat.module.scss";
 
 import { ChatMessageProps } from "../chat.d";
@@ -16,6 +17,8 @@ export default memo(function ChatMessage({ id, author, newUser, createdAt, reply
     if (!userContextMenu || isSending) userContextMenu = () => { };
 
     const { setReplyingTo } = useChat();
+    const { getUserAvatarPath } = useUser();
+    const { fontIdToName } = useData();
 
     const messagePosition = useSpring<{ x: number }>({ x: 0 });
     const bindMessage = useDrag((params) => {
@@ -42,9 +45,9 @@ export default memo(function ChatMessage({ id, author, newUser, createdAt, reply
         if (messageRef.current) setMessageHeight(messageRef.current.clientHeight);
     }, [messageRef]);
 
-    const authorAvatarURL = useGetAvatarURL(author);
-    const replyingToAvatarURL = useGetAvatarURL(replyingToAuthor);
-    const fontName = useFontIdToName(author?.fontId);
+    const authorAvatarURL = getUserAvatarPath(author);
+    const replyingToAvatarURL = getUserAvatarPath(replyingToAuthor);
+    const fontName = fontIdToName(author?.fontId);
 
     if (author) return (
         <animated.span ref={messageRef} {...bindMessage()} className={styles.messageHolder} style={{
@@ -85,7 +88,7 @@ export default memo(function ChatMessage({ id, author, newUser, createdAt, reply
                 }}>
                     <img src="https://cdn.blacket.org/static/content/replyingToArrow.png" />
 
-                    <img src={replyingToAvatarURL} />
+                    <ImageOrVideo src={replyingToAvatarURL} />
 
                     <div className={`
                         ${styles.replyingToUsername}
@@ -108,7 +111,7 @@ export default memo(function ChatMessage({ id, author, newUser, createdAt, reply
 
                         userContextMenu(e);
                     }}>
-                        <img className={styles.avatar} src={authorAvatarURL} />
+                        <ImageOrVideo className={styles.avatar} src={authorAvatarURL} />
                     </Link>}
 
                     <div className={styles.messageContentContainer}>
@@ -122,9 +125,9 @@ export default memo(function ChatMessage({ id, author, newUser, createdAt, reply
                         ${styles.messageUsername}
                         ${author.color === "rainbow" ? "rainbow" : ""}
                     `} style={{
-                        color: author.color,
-                        fontFamily: fontName
-                     }} onClick={(e) => {
+                                    color: author.color,
+                                    fontFamily: fontName
+                                }} onClick={(e) => {
                                     if (window.innerWidth <= 850) e.preventDefault();
                                 }}>
                                 {author.username}

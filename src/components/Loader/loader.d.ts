@@ -4,6 +4,6 @@ export interface LoaderProps extends HTMLAttributes<HTMLDivElement> {
     image?: string;
     motionless?: boolean;
     noModal?: boolean;
-    message?: string;
+    message?: any;
     className?: string;
 }

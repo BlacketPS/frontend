@@ -1,7 +1,7 @@
 import { useResource } from "@stores/ResourceStore/index";
 import { useContextMenu } from "@stores/ContextMenuStore/index";
-import { useRarity } from "@stores/RarityStore/index";
-import { Button } from "@components/index";
+import { useData } from "@stores/DataStore/index";
+import { Button, ImageOrVideo } from "@components/index";
 import Textfit from "react-textfit";
 import styles from "../inventory.module.scss";
 
@@ -10,7 +10,7 @@ import { RightBlookProps } from "../inventory";
 export default function RightBlook({ blook, owned, noBlooksOwned, children, ...props }: RightBlookProps) {
     const { resourceIdToPath } = useResource();
     const { openContextMenu, closeContextMenu } = useContextMenu();
-    const { rarities } = useRarity();
+    const { rarities } = useData();
 
     if (noBlooksOwned) return null;
 
@@ -18,7 +18,7 @@ export default function RightBlook({ blook, owned, noBlooksOwned, children, ...p
         <div className={styles.rightSide} {...props}>
             <div className={styles.rightSideContent}>
                 <div className={styles.rightBlookBackground}>
-                    <img src={resourceIdToPath(blook.backgroundId) || "https://cdn.blacket.org/static/content/blooks/backgrounds/Default.png"} alt="Blook Background" draggable={false} />
+                    <ImageOrVideo src={resourceIdToPath(blook.backgroundId) || "https://cdn.blacket.org/static/content/blooks/backgrounds/Default.png"} alt="Blook Background" draggable={false} />
                 </div>
                 <div className={styles.rightTopText}>
                     <Textfit mode="single" min={0} max={window.innerWidth > 1000 ? 40 : 25} className={styles.rightBlookName}>{blook.name}</Textfit>
@@ -28,7 +28,7 @@ export default function RightBlook({ blook, owned, noBlooksOwned, children, ...p
                 </div>
 
                 <div className={styles.rightBlookImage}>
-                    <img src={resourceIdToPath(blook.imageId) || "https://cdn.blacket.org/static/content/blooks/Error.png"} alt={blook.name} />
+                    <ImageOrVideo src={resourceIdToPath(blook.imageId) || "https://cdn.blacket.org/static/content/blooks/Error.png"} alt={blook.name} />
                 </div>
 
                 <div className={styles.rightBottomText}>{owned?.toLocaleString() || 0} Owned</div>

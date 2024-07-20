@@ -1,12 +1,12 @@
 import { useResource } from "@stores/ResourceStore/index";
-import { useRarity } from "@stores/RarityStore/index";
+import { useData } from "@stores/DataStore/index";
 import styles from "../inventory.module.scss";
 
 import { ItemProps } from "../inventory.d";
 
 export default function Item({ item, usesLeft, ...props }: ItemProps) {
     const { resourceIdToPath } = useResource();
-    const { rarities } = useRarity();
+    const { rarities } = useData();
 
     return (
         <div className={styles.item} {...props}>

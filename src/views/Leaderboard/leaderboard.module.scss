@@ -173,6 +173,15 @@
         top: 7.5px;
         width: 65px;
         height: 65px;
+        object-fit: content;
+    }
+
+    &>video {
+        position: relative;
+        top: 7.5px;
+        width: 65px;
+        height: 65px;
+        object-fit: content;
     }
 }
 
@@ -197,6 +206,13 @@
     width: 18vw;
 
     &>img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        -o-object-fit: contain;
+    }
+
+    &>video {
         width: 100%;
         height: 100%;
         object-fit: contain;
@@ -229,6 +245,15 @@
         top: 5px;
         width: 50px;
         height: 50px;
+        object-fit: content;
+    }
+
+    &>video {
+        position: relative;
+        top: 5px;
+        width: 50px;
+        height: 50px;
+        object-fit: content;
     }
 }
 
@@ -285,6 +310,15 @@
         top: 2px;
         width: 35px;
         height: 35px;
+        object-fit: content;
+    }
+
+    &>video {
+        position: relative;
+        top: 2px;
+        width: 35px;
+        height: 35px;
+        object-fit: content;
     }
 }
 
@@ -309,6 +343,13 @@
     width: 9.3vw;
 
     &>img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        -o-object-fit: contain;
+    }
+
+    &>video {
         width: 100%;
         height: 100%;
         object-fit: contain;
@@ -408,6 +449,14 @@
         height: 25px;
         width: 25px;
     }
+
+    &>video {
+        position: relative;
+        top: 5px;
+        right: 5px;
+        height: 25px;
+        width: 25px;
+    }
 }
 
 .otherStandingBottomButton {
@@ -459,6 +508,12 @@
         object-fit: contain;
         -o-object-fit: contain;
     }
+
+    &>video {
+        height: 90%;
+        object-fit: contain;
+        -o-object-fit: contain;
+    }
 }
 
 .otherStandingUsername {
@@ -481,6 +536,14 @@
     margin-right: 20px;
 
     &>img {
+        position: relative;
+        top: 10px;
+        left: 5px;
+        height: 40px;
+        width: 40px;
+    }
+
+    &>video {
         position: relative;
         top: 10px;
         left: 5px;

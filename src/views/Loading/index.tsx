@@ -1,6 +1,8 @@
 import { Background, Loader } from "@components/index";
 
-export default function Loading({ error, message }: { error?: boolean, message: string }) {
+import { LoadingProps } from "./loading.d";
+
+export default function Loading({ error, children }: LoadingProps) {
     return (
         <>
             <Background />
@@ -8,7 +10,7 @@ export default function Loading({ error, message }: { error?: boolean, message: 
             <Loader
                 motionless={true}
                 image={!error ? "https://cdn.blacket.org/static/content/blooks/Console.gif" : "https://cdn.blacket.org/static/content/blooks/Error.png"}
-                message={!error ? `Loading ${message}...` : `Failed to load ${message}.`}
+                message={children}
             />
         </>
     );

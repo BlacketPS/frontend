@@ -4,11 +4,14 @@ import { Tooltip } from "react-tooltip";
 import { Button } from "@components/index";
 
 import styles from "./sidebar.module.scss";
+import { useChat } from "@stores/ChatStore";
 
 export default function Sidebar() {
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
     const location = useLocation().pathname.split("/")[1];
+
+    const { mentions } = useChat();
 
     const pages = {
         left: [
@@ -147,7 +150,7 @@ export default function Sidebar() {
                         <div className={styles.pageText} style={{ fontSize: page.textSizeOverride || 20 }}>{page.text}</div>
 
                         {page.isChat && <div className={styles.notificationIndicator}>
-                            <div>5</div>
+                            <div>{mentions}</div>
                         </div>}
                     </Link>
                 ))}

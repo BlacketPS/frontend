@@ -5,6 +5,7 @@ import ErrorContainer from "./ErrorContainer";
 import Form from "./Form";
 import Header from "./Header";
 import HeaderBody from "./HeaderBody";
+import ImageOrVideo from "./ImageOrVideo";
 import Input from "./Input";
 import Loader from "./Loader";
 import * as Modal from "./Modals";
@@ -23,6 +24,7 @@ export {
     Form,
     Header,
     HeaderBody,
+    ImageOrVideo,
     Input,
     Loader,
     Modal,

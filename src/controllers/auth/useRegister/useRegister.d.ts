@@ -1,5 +1,5 @@
-import { AuthEntity } from "blacket-types";
+import { AuthAuthEntity } from "blacket-types";
 
 export interface RegisterResponse extends Fetch2Response {
-    data: AuthEntity;
+    data: AuthAuthEntity;
 }

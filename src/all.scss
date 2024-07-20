@@ -57,6 +57,13 @@ body {
     max-width: 100%;
     overflow-x: hidden;
 
+    position: absolute;
+    top: 0;
+    left: 0;
+    min-width: 100vw;
+    min-height: 100vh;
+    z-index: -1;
+
     &[has-top-right="true"] {
         &::-webkit-scrollbar-track-piece:start {
             margin-top: 55px;

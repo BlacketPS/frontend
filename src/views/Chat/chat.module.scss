@@ -360,7 +360,28 @@
         }
     }
 
+    &>video:nth-child(1) {
+        width: 41.25px;
+        height: 15px;
+        opacity: 0.5;
+        margin-top: 10px;
+
+        @media (max-width: 768px) {
+            width: 25.25px;
+            height: 10px;
+        }
+    }
+
     &>img:nth-child(2) {
+        width: auto;
+        height: 20px;
+
+        @media (max-width: 768px) {
+            height: 15px;
+        }
+    }
+
+    &>video:nth-child(2) {
         width: auto;
         height: 20px;
 

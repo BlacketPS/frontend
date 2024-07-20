@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Tooltip } from "react-tooltip";
 import { useModal } from "@stores/ModalStore/index";
-import { useBlook } from "@stores/BlookStore";
+import { useData } from "@stores/DataStore/index";
 import { Modal, Button, ErrorContainer } from "@components/index";
 import styles from "../market.module.scss";
 
@@ -12,7 +12,7 @@ export default function OpenPackModal({ pack, userTokens, onYesButton }: OpenPac
     const [error, setError] = useState<string>("");
 
     const { closeModal } = useModal();
-    const { blooks } = useBlook();
+    const { blooks } = useData();
 
     if (userTokens < pack.price) return (
         <>

@@ -12,5 +12,9 @@
         // transform: translateX(-50%);
         width: 100%;
         height: calc(100% - 55px);
+
+        &[data-push="true"] {
+            top: 110px;
+        }
     }
 }

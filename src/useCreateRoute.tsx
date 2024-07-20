@@ -22,7 +22,7 @@ export default function useCreateRoute(route: BlacketRoute) {
 
             {route.header ? !route.dontUseBody ? <HeaderBody>
                 {route.component}
-            </HeaderBody> : route.component : route.sidebar ? !route.dontUseBody ? <SidebarBody>
+            </HeaderBody> : route.component : route.sidebar ? !route.dontUseBody ? <SidebarBody pushOnMobile={route.topRight && route.topRight.length > 0}>
                 {route.pageHeader && <PageHeader>{route.pageHeader}</PageHeader>}
 
                 {route.component}

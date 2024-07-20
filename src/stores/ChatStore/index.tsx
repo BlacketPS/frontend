@@ -14,7 +14,9 @@ const ChatStoreContext = createContext<ChatStoreContext>({
     setReplyingTo: () => { },
     fetchMessages: () => { },
     sendMessage: () => { },
-    startTyping: () => { }
+    startTyping: () => { },
+    mentions: 0,
+    resetMentions: () => { }
 });
 
 export function useChat() {
@@ -32,6 +34,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
     const [replyingTo, setReplyingTo] = useState<Message | null>(null);
     const [usersTyping, setUsersTyping] = useState<UserTyping[]>([]);
     const [typingTimeout, setTypingTimeout] = useState<number | null>(null);
+    const [mentions, setMentions] = useState(0);
 
     const fetchMessages = async (room: number) => {
         const messages = await getMessages(room, 50)
@@ -39,7 +42,11 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
             .catch(() => []);
 
         const userMap = new Map<string, boolean>();
-        messages.forEach((message) => userMap.set(message.authorId, true));
+        messages.forEach((message) => {
+            userMap.set(message.authorId, true);
+            if (message.mentions.includes(user?.id)
+                || (message.replyingTo && message.replyingTo.authorId === user?.id)) setMentions((previousMentions) => previousMentions + 1);
+        });
 
         for (const user of Array.from(userMap.keys())) addCachedUser(user);
 
@@ -51,7 +58,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
     const sendMessage = async (content: string) => {
         const nonce = ((Math.floor(Date.now() / 1000).toString()) + Math.floor(1000000 + Math.random() * 9000000)).toString();
 
-        setMessages((previousMessages: any) => [{ id: nonce, authorId: user.id, content, mentions: [], replyingTo, createdAt: new Date(Date.now()).toISOString(), nonce }, ...previousMessages]);
+        setMessages((previousMessages: any) => [{ id: nonce, authorId: user?.id, content, mentions: [], replyingTo, createdAt: new Date(Date.now()).toISOString(), nonce }, ...previousMessages]);
         setTypingTimeout(null);
         setReplyingTo(null);
 
@@ -79,13 +86,19 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
         setTypingTimeout(Date.now());
     };
 
+    const resetMentions = () => setMentions(0);
+
     useEffect(() => {
         if (!connected || !user) return;
 
         fetchMessages(0);
 
         socket?.on("chat-messages-create", async (data: Message) => {
-            if (data.mentions.includes(user.id) || (data.replyingTo && data.replyingTo.authorId === user.id)) new Audio("https://cdn.blacket.org/static/content/mention.ogg").play();
+            if (data.mentions.includes(user.id)
+                || (data.replyingTo && data.replyingTo.authorId === user.id)) {
+                new Audio("https://cdn.blacket.org/static/content/mention.ogg").play();
+                setMentions((previousMentions) => previousMentions + 1);
+            }
 
             if (data.authorId === user.id) return;
 
@@ -163,6 +176,6 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
 
     return <ChatStoreContext.Provider value={{
         messages, usersTyping, replyingTo, setReplyingTo,
-        fetchMessages, sendMessage, startTyping
+        fetchMessages, sendMessage, startTyping, mentions, resetMentions 
     }}>{children}</ChatStoreContext.Provider>;
 }

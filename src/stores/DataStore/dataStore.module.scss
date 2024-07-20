@@ -1,0 +1,29 @@
+.progressBarContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.progressBar {
+    width: 200px;
+    background-color: var(--secondary-color);
+    border-radius: 5px;
+}
+
+.progress {
+    height: 20px;
+    background-color: var(--accent-color);
+    border-radius: 5px;
+}
+
+.error {
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: -70px;
+}
+
+.subError {
+    opacity: 0.5;
+    font-size: 0.8rem;
+}

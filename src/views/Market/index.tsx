@@ -4,9 +4,7 @@ import { useLoading } from "@stores/LoadingStore";
 import { useUser } from "@stores/UserStore/index";
 import { useResource } from "@stores/ResourceStore";
 import { useModal } from "@stores/ModalStore/index";
-import { usePack } from "@stores/PackStore/index";
-import { useRarity } from "@stores/RarityStore/index";
-import { useBlook } from "@stores/BlookStore/index";
+import { useData } from "@stores/DataStore/index";
 import { useSettings } from "@controllers/settings/useSettings";
 import { useOpenPack } from "@controllers/market/useOpenPack";
 import { SidebarBody, PageHeader, Modal, Button, SearchBox } from "@components/index";
@@ -16,7 +14,7 @@ const { Game, Scale, WEBGL } = window.Phaser;
 import Particles from "./functions/PackParticles";
 import styles from "./market.module.scss";
 
-import { Blook, OpenPackDto, Pack as PackType } from "blacket-types";
+import { Blook, MarketOpenPackDto, Pack as PackType } from "blacket-types";
 import { ParticlesScene, Config, GameState, BigButtonClickType, SearchOptions } from "./market.d";
 
 const useGame = (config: Config, containerRef: RefObject<HTMLDivElement>) => {
@@ -45,9 +43,7 @@ export default function Market() {
     const { createModal } = useModal();
     const { user } = useUser();
     const { resourceIdToPath } = useResource();
-    const { packs } = usePack();
-    const { rarities } = useRarity();
-    const { blooks } = useBlook();
+    const { packs, rarities, blooks } = useData();
 
     if (!user) return <Navigate to="/login" />;
 
@@ -88,7 +84,7 @@ export default function Market() {
             .finally(() => setLoading(false));
     };
 
-    const purchasePack = (dto: OpenPackDto) => new Promise<void>((resolve, reject) => {
+    const purchasePack = (dto: MarketOpenPackDto) => new Promise<void>((resolve, reject) => {
         if (user.settings.openPacksInstantly && user.tokens < packs.find((pack) => pack.id === dto.packId)!.price) {
             return reject(createModal(<Modal.ErrorModal>You do not have enough tokens to purchase this pack.</Modal.ErrorModal>));
         }
@@ -151,7 +147,7 @@ export default function Market() {
 
     return (
         <>
-            <SidebarBody>
+            <SidebarBody pushOnMobile={true}>
                 <PageHeader>Market</PageHeader>
 
                 <div className={styles.buttonHolder}>
@@ -159,7 +155,7 @@ export default function Market() {
                 </div>
 
                 <SearchBox
-                    placeholder="Search for a pack..."
+                    placeholder="Search for a pack or shop item..."
                     containerProps={{
                         style: { margin: "20px auto 10px" }
                     }}

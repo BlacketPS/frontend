@@ -1,10 +1,10 @@
 import styles from "../topRight.module.scss";
 
-import { TokenBalanceProps } from "../topRight.d";
+import { BalanceProps } from "../topRight.d";
 
-export default function TokenBalance({ user }: TokenBalanceProps) {
+export default function TokenBalance({ user }: BalanceProps) {
     return (
-        <div className={styles.tokenBalance}>
+        <div className={styles.balance}>
             <img src="https://cdn.blacket.org/static/content/token.png" draggable={false} />
             {user.tokens.toLocaleString()}
         </div>

@@ -1,6 +1,6 @@
 import { useResource } from "@stores/ResourceStore/index";
 import { useContextMenu } from "@stores/ContextMenuStore/index";
-import { useRarity } from "@stores/RarityStore/index";
+import { useData } from "@stores/DataStore/index";
 import { Button } from "@components/index";
 import Textfit from "react-textfit";
 import styles from "../inventory.module.scss";
@@ -10,7 +10,7 @@ import { RightItemProps } from "../inventory";
 export default function RightItem({ item, usesLeft, children, ...props }: RightItemProps) {
     const { resourceIdToPath } = useResource();
     const { openContextMenu, closeContextMenu } = useContextMenu();
-    const { rarities } = useRarity();
+    const { rarities } = useData();
 
     return (
         <div className={styles.rightSide} {...props}>

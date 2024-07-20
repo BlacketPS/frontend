@@ -1,14 +1,16 @@
 import { useUser } from "@stores/UserStore/index";
-import { usePack } from "@stores/PackStore/index";
+import { useData } from "@stores/DataStore/index";
 
-import { OpenPackDto } from "blacket-types";
+import { NotFound, MarketOpenPackDto } from "blacket-types";
 import { OpenPackResponse } from "./useOpenPack.d";
 
 export function useOpenPack() {
     const { user, setUser } = useUser();
-    const { packs } = usePack();
+    const { packs } = useData();
 
-    const openPack = (dto: OpenPackDto) => new Promise<OpenPackResponse>((resolve, reject) => window.fetch2.post("/api/market/open-pack", dto)
+    if (!user) throw new Error(NotFound.UNKNOWN_USER);
+
+    const openPack = (dto: MarketOpenPackDto) => new Promise<OpenPackResponse>((resolve, reject) => window.fetch2.post("/api/market/open-pack", dto)
         .then((res: OpenPackResponse) => {
             const userBlooks = user.blooks;
 

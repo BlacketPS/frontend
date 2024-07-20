@@ -1,17 +1,18 @@
-import { User } from "blacket-types";
+import { PrivateUser } from "blacket-types";
 
 export enum TopRightContent {
-    TOKENS = "tokens"
+    TOKENS = "tokens",
+    EXPERIENCE = "experience"
 }
 
 export interface TopRightProps {
     content: string[TopRightContent];
 }
 
-export interface TokenBalanceProps {
-    user: User;
+export interface BalanceProps {
+    user: PrivateUser;
 }
 
 export interface UserDropdownProps {
-    user: User;
+    user: PrivateUser;
 }

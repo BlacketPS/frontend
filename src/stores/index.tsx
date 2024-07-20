@@ -7,15 +7,7 @@ import { LeaderboardStoreProvider } from "./LeaderboardStore";
 import { SocketStoreProvider } from "./SocketStore";
 import { ModalStoreProvider } from "./ModalStore";
 import { UserStoreProvider } from "./UserStore";
-import { BlookStoreProvider } from "./BlookStore";
-import { RarityStoreProvider } from "./RarityStore";
-import { PackStoreProvider } from "./PackStore";
-import { ItemStoreProvider } from "./ItemStore";
-import { TitleStoreProvider } from "./TitleStore";
-import { FontStoreProvider } from "./FontStore";
-import { BannerStoreProvider } from "./BannerStore";
-import { BadgeStoreProvider } from "./BadgeStore";
-import { EmojiStoreProvider } from "./EmojiStore";
+import { DataStoreProvider } from "./DataStore";
 import { ChatStoreProvider } from "./ChatStore";
 import { ContextMenuStoreProvider } from "./ContextMenuStore";
 import { CachedUserStoreProvider } from "./CachedUserStore";
@@ -37,18 +29,10 @@ export default function StoreWrapper({ children }: { children: ReactNode }) {
                 [LoadingStoreProvider, {}],
                 [LeaderboardStoreProvider, {}],
                 [ResourceStoreProvider, {}],
-                [BlookStoreProvider, {}],
-                [RarityStoreProvider, {}],
-                [PackStoreProvider, {}],
-                [ItemStoreProvider, {}],
-                [TitleStoreProvider, {}],
-                [FontStoreProvider, {}],
-                [BannerStoreProvider, {}],
-                [BadgeStoreProvider, {}],
-                [EmojiStoreProvider, {}],
+                [UserStoreProvider, {}],
+                [DataStoreProvider, {}],
                 [CachedUserStoreProvider, {}],
                 [SocketStoreProvider, {}],
-                [UserStoreProvider, {}],
                 [ModalStoreProvider, {}],
                 [ChatStoreProvider, {}],
                 [ContextMenuStoreProvider, {}]

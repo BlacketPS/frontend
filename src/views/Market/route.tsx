@@ -6,6 +6,6 @@ export default {
     title: `Market | ${import.meta.env.VITE_INFORMATION_NAME}`,
     description: "Purchase packs and items and unlock blooks.",
     sidebar: true,
-    topRight: ["tokens"],
+    topRight: ["tokens", "experience"],
     dontUseBody: true
 } as BlacketRoute;

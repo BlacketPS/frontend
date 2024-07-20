@@ -2,9 +2,7 @@ import { useCallback, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
-import { usePack } from "@stores/PackStore/index";
-import { useBlook } from "@stores/BlookStore/index";
-import { useItem } from "@stores/ItemStore/index";
+import { useData } from "@stores/DataStore/index";
 import { SearchBox } from "@components/index";
 import { ChangeFilterModal, SetHolder, Blook, Item, RightBlook, RightItem, RightButton, SellBlooksModal } from "./components";
 import styles from "./inventory.module.scss";
@@ -15,9 +13,7 @@ import { SearchOptions } from "./inventory.d";
 export default function Inventory() {
     const { createModal } = useModal();
     const { user } = useUser();
-    const { packs } = usePack();
-    const { blooks } = useBlook();
-    const { items } = useItem();
+    const { packs, blooks, items } = useData();
 
     if (!user) return <Navigate to="/login" />;
 

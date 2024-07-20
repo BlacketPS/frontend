@@ -4,13 +4,10 @@ import { useLoading } from "@stores/LoadingStore/index";
 import { useModal } from "@stores/ModalStore";
 import { useUser } from "@stores/UserStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
-import { useBlook } from "@stores/BlookStore/index";
+import { useData } from "@stores/DataStore/index";
 import { useUsers } from "@controllers/users/useUsers/index";
-import { Button } from "@components/index";
+import { Button, ImageOrVideo } from "@components/index";
 import { LookupUserModal, StatContainer } from "./components";
-import useTitleIdToText from "@functions/resources/useTitleIdToText";
-import useFontIdToName from "@functions/resources/useFontIdToName";
-import useGetAvatarURL from "@functions/resources/useGetAvatarURL";
 import styles from "./dashboard.module.scss";
 
 import { TopButton } from "./dashboard.d";
@@ -19,9 +16,9 @@ import { PublicUser } from "blacket-types";
 export default function Dashboard() {
     const { setLoading } = useLoading();
     const { createModal } = useModal();
-    const { user } = useUser();
+    const { user, getUserAvatarPath } = useUser();
     const { cachedUsers, addCachedUserWithData } = useCachedUser();
-    const { blooks } = useBlook();
+    const { blooks, fontIdToName, titleIdToText } = useData();
 
     if (!user) return <Navigate to="/login" />;
 
@@ -83,9 +80,7 @@ export default function Dashboard() {
             .finally(() => setLoading(false));
     }, []);
 
-    const avatarURL = useGetAvatarURL(user);
-    const titleText = useTitleIdToText(user?.titleId);
-    const fontName = useFontIdToName(user?.fontId);
+    const fontName = fontIdToName(user.fontId);
 
     const topButtons: TopButton[] = [
         { icon: "fas fa-magnifying-glass", text: "Lookup User", onClick: () => createModal(<LookupUserModal onClick={viewUser} />) },
@@ -98,7 +93,7 @@ export default function Dashboard() {
             <div className={styles.section}>
                 <div className={styles.userTopProfile}>
                     <div className={styles.userBannerBlook}>
-                        <img src={avatarURL} alt="User Avatar" />
+                        <ImageOrVideo src={getUserAvatarPath(user)} alt="User Avatar" />
                         <div className={styles.bannerLevel}>
                             <div className={styles.userBanner}>
                                 <img src={"https://cdn.blacket.org/static/content/banners/Default.png"} alt="User Banner" />
@@ -108,7 +103,7 @@ export default function Dashboard() {
                                     color: user.color,
                                     fontFamily: fontName
                                 }}>{user.username}</p>
-                                <p>{titleText}</p>
+                                <p>{titleIdToText(user.titleId)}</p>
                             </div>
                             <div className={styles.levelBarContainer}>
                                 <div className={styles.levelBar}>

@@ -1,5 +1,5 @@
-import { LeaderboardEntity } from "blacket-types";
+import { LeaderboardLeaderboardEntity } from "blacket-types";
 
 export interface LeaderboardResponse extends Fetch2Response {
-    data: LeaderboardEntity;
+    data: LeaderboardLeaderboardEntity;
 }

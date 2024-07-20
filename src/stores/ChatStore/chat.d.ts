@@ -8,6 +8,8 @@ export interface ChatStoreContext {
     fetchMessages: (room: number) => void;
     sendMessage: (content: string) => void;
     startTyping: () => void;
+    mentions: number;
+    resetMentions: () => void;
 }
 
 export interface UserTyping {

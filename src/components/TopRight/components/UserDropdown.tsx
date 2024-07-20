@@ -1,27 +1,27 @@
 import { Link } from "react-router-dom";
 import { useModal } from "@stores/ModalStore/index";
-import { Modal } from "@components/index";
-import getAvatarURL from "@functions/resources/useGetAvatarURL";
-import useFontIdToName from "@functions/resources/useFontIdToName";
+import { useUser } from "@stores/UserStore/index";
+import { useData } from "@stores/DataStore/index";
+import { ImageOrVideo, Modal } from "@components/index";
 import styles from "../topRight.module.scss";
 
 import { UserDropdownProps } from "../topRight.d";
 
 export default function UserDropdown({ user }: UserDropdownProps) {
     const { createModal } = useModal();
-
-    const fontName = useFontIdToName(user.fontId);
+    const { getUserAvatarPath } = useUser();
+    const { fontIdToName } = useData();
 
     return (
         <div className={styles.userContainer}>
             <div className={styles.userLeft}>
-                <img src={getAvatarURL(user)} draggable={false} />
+                <ImageOrVideo src={getUserAvatarPath(user)} draggable={false} />
 
                 <div className={
                     user.color === "rainbow" ? "rainbow" : ""
                 } style={{
                     color: user.color,
-                    fontFamily: fontName
+                    fontFamily: fontIdToName(user.fontId)
                 }}>{user.username}</div>
             </div>
 

@@ -1,13 +1,14 @@
 import { Link } from "react-router-dom";
 import Textfit from "react-textfit";
+import { useUser } from "@stores/UserStore/index";
 import cardinalToOrdinal from "@functions/core/cardinalToOrdinal";
-import useGetAvatarURL from "@functions/resources/useGetAvatarURL";
+import { ImageOrVideo } from "@components/index";
 import styles from "../leaderboard.module.scss";
 
 import { BigPlacementProps, PlacementType } from "../leaderboard.d";
 
 export default function BigPlacement({ type, placement, user }: BigPlacementProps) {
-    const avatarURL = useGetAvatarURL(user);
+    const { getUserAvatarPath } = useUser();
 
     return (
         <Link to={`/dashboard?name=${user.username}`} className={styles[`placement${placement}`]}>
@@ -28,7 +29,7 @@ export default function BigPlacement({ type, placement, user }: BigPlacementProp
                 </div>
 
                 <div className={styles[`avatar${placement}`]}>
-                    <img src={avatarURL} draggable={false} />
+                    <ImageOrVideo src={getUserAvatarPath(user)} draggable={false} />
                 </div>
             </div>
         </Link>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useModal } from "@stores/ModalStore/index";
-import { useRarity } from "@stores/RarityStore/index";
+import { useData } from "@stores/DataStore/index";
 import { Modal, Button, Dropdown, Toggle } from "@components/index";
 
 import { ChangeFilterModalProps } from "../inventory.d";
@@ -11,7 +11,7 @@ export default function ChangeFilterModal({ onSave }: ChangeFilterModalProps) {
     const [onlyOwned, setOnlyOwned] = useState<boolean>(localStorage.getItem("INVENTORY_SEARCH_ONLY_OWNED") === "true" ? true : false);
 
     const { closeModal } = useModal();
-    const { rarities } = useRarity();
+    const { rarities } = useData();
 
     return (
         <>
