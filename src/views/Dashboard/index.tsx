@@ -11,7 +11,7 @@ import { LookupUserModal, StatContainer } from "./components";
 import styles from "./dashboard.module.scss";
 
 import { TopButton } from "./dashboard.d";
-import { PublicUser } from "blacket-types";
+import { PrivateUser, PublicUser } from "blacket-types";
 
 export default function Dashboard() {
     const { setLoading } = useLoading();
@@ -28,7 +28,7 @@ export default function Dashboard() {
 
     const navigate = useNavigate();
 
-    const [viewingUser, setViewingUser] = useState<PublicUser | null>(null);
+    const [viewingUser, setViewingUser] = useState<PublicUser | PrivateUser>(user);
 
     const viewUser = (username: string) => new Promise<void>((resolve, reject) => {
         const cachedUser = cachedUsers.find((user) => user.username.toLowerCase() === username.toLowerCase() || user.id === username);
@@ -39,7 +39,7 @@ export default function Dashboard() {
 
                 navigate(`/dashboard?name=${cachedUser.username}`);
             } else {
-                setViewingUser(null);
+                setViewingUser(user);
 
                 navigate("/dashboard");
             }
@@ -54,16 +54,14 @@ export default function Dashboard() {
 
                     navigate(`/dashboard?name=${res.data.username}`);
                 } else {
-                    setViewingUser(null);
+                    setViewingUser(user);
 
                     navigate("/dashboard");
                 }
 
                 resolve();
             })
-            .catch((err: Fetch2Response) => {
-                reject(err);
-            });
+            .catch((err) => reject(err));
     });
 
     useEffect(() => {
@@ -73,14 +71,12 @@ export default function Dashboard() {
 
         viewUser(searchParams.get("name")!)
             .catch(() => {
-                setViewingUser(null);
+                setViewingUser(user);
 
                 navigate("/dashboard");
             })
             .finally(() => setLoading(false));
     }, []);
-
-    const fontName = fontIdToName(user.fontId);
 
     const topButtons: TopButton[] = [
         { icon: "fas fa-magnifying-glass", text: "Lookup User", onClick: () => createModal(<LookupUserModal onClick={viewUser} />) },
@@ -93,7 +89,7 @@ export default function Dashboard() {
             <div className={styles.section}>
                 <div className={styles.userTopProfile}>
                     <div className={styles.userBannerBlook}>
-                        <ImageOrVideo src={getUserAvatarPath(user)} alt="User Avatar" />
+                        <ImageOrVideo src={getUserAvatarPath(viewingUser)} alt="User Avatar" />
                         <div className={styles.bannerLevel}>
                             <div className={styles.userBanner}>
                                 <img src={"https://cdn.blacket.org/static/content/banners/Default.png"} alt="User Banner" />
@@ -101,9 +97,9 @@ export default function Dashboard() {
                                     user.color === "rainbow" ? "rainbow" : ""
                                 } style={{
                                     color: user.color,
-                                    fontFamily: fontName
-                                }}>{user.username}</p>
-                                <p>{titleIdToText(user.titleId)}</p>
+                                    fontFamily: fontIdToName(viewingUser.fontId)
+                                }}>{viewingUser.username}</p>
+                                <p>{titleIdToText(viewingUser.titleId)}</p>
                             </div>
                             <div className={styles.levelBarContainer}>
                                 <div className={styles.levelBar}>
@@ -133,7 +129,7 @@ export default function Dashboard() {
 
                     <div className={styles.userBadges}>
                         <div>
-                            <img src="https://blacket.org/content/badges/Tester.png" />
+                            <img src="https://blacket.org/content/badges/Tester.webp" />
                         </div>
                     </div>
                 </div>
@@ -157,12 +153,12 @@ export default function Dashboard() {
                 </div>
                 <div className={styles.statsContainer}>
                     <div className={styles.statsContainerHolder}>
-                        <StatContainer title="User ID" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsUserID.png" value={user.id} />
-                        <StatContainer title="Tokens" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsTokens.png" value={user.tokens.toLocaleString()} />
-                        <StatContainer title="Experience" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsExperience.png" value={user.experience.toLocaleString()} />
-                        <StatContainer title="Blooks Unlocked" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsBlooksUnlocked.png" value={`${Object.keys(user.blooks).length.toLocaleString()} / ${blooks.length.toLocaleString()}`} />
-                        <StatContainer title="Packs Opened" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsPacksOpened.png" value={user.statistics.packsOpened.toLocaleString()} />
-                        <StatContainer title="Messages Sent" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsMessagesSent.png" value={user.statistics.messagesSent.toLocaleString()} />
+                        <StatContainer title="User ID" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsUserID.png" value={viewingUser.id} />
+                        <StatContainer title="Tokens" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsTokens.png" value={viewingUser.tokens.toLocaleString()} />
+                        <StatContainer title="Experience" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsExperience.png" value={viewingUser.experience.toLocaleString()} />
+                        <StatContainer title="Blooks Unlocked" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsBlooksUnlocked.png" value={`${Object.keys(viewingUser.blooks).length.toLocaleString()} / ${blooks.length.toLocaleString()}`} />
+                        <StatContainer title="Packs Opened" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsPacksOpened.png" value={viewingUser.statistics.packsOpened.toLocaleString()} />
+                        <StatContainer title="Messages Sent" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsMessagesSent.png" value={viewingUser.statistics.messagesSent.toLocaleString()} />
                     </div>
                 </div>
             </div>

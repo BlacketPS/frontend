@@ -1,5 +1,5 @@
 import { HTMLAttributes, ReactNode } from "react";
-import { UserTyping } from "@stores/ChatStore/chat.d";
+import { UserTyping } from "@stores/ChatStore/chatStore";
 
 import { Message, User } from "blacket-types";
 import { Editor } from "slate";

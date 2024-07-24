@@ -1,11 +1,11 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode, useCallback } from "react";
 import { useSocket } from "@stores/SocketStore/index";
 import { useUser } from "@stores/UserStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
 import { useMessages } from "@controllers/chat/messages/useMessages/index";
 
-import { UserTyping, type ChatStoreContext } from "./chat.d";
-import { Message } from "blacket-types";
+import { TypingUser, type ChatStoreContext } from "./chatStore.d";
+import { Message, PublicUser, SocketMessageType } from "blacket-types";
 
 const ChatStoreContext = createContext<ChatStoreContext>({
     messages: [],
@@ -32,7 +32,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
 
     const [messages, setMessages] = useState<Message[]>([]);
     const [replyingTo, setReplyingTo] = useState<Message | null>(null);
-    const [usersTyping, setUsersTyping] = useState<UserTyping[]>([]);
+    const [usersTyping, setUsersTyping] = useState<TypingUser[]>([]);
     const [typingTimeout, setTypingTimeout] = useState<number | null>(null);
     const [mentions, setMentions] = useState(0);
 
@@ -88,91 +88,57 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
 
     const resetMentions = () => setMentions(0);
 
+    const onChatMessageCreate = useCallback((data: Message) => {
+        if (!user) return;
+
+        if (data.mentions.includes(user.id)
+            || (data.replyingTo && data.replyingTo.authorId === user?.id)) {
+            new Audio(import.meta.env.VITE_CDN_URL + "/content/mention.ogg").play();
+            setMentions((previousMentions) => previousMentions + 1);
+        }
+
+        if (data.authorId === user?.id) return;
+
+        addCachedUser(data.authorId);
+
+        setMessages((previousMessages) => [data, ...previousMessages]);
+        setUsersTyping((previousUsersTyping) => previousUsersTyping.filter((user) => user.userId !== data.authorId));
+    }, [user]);
+
+    const onChatStartTyping = useCallback((data: TypingUser) => {
+        if (!user) return;
+
+        if (data.userId === user.id) return;
+
+        addCachedUser(data.userId);
+
+        data.startedTypingAt = Date.now();
+
+        setUsersTyping((previousUsersTyping) => {
+            if (previousUsersTyping.some((user) => user.userId === data.userId)) return previousUsersTyping.map((user) => user.userId === data.userId ? data : user);
+
+            return [...previousUsersTyping, data];
+        });
+    }, [user]);
+
     useEffect(() => {
-        if (!connected || !user) return;
+        if (!connected || !user || !socket) return;
 
         fetchMessages(0);
 
-        socket?.on("chat-messages-create", async (data: Message) => {
-            if (data.mentions.includes(user.id)
-                || (data.replyingTo && data.replyingTo.authorId === user.id)) {
-                new Audio("https://cdn.blacket.org/static/content/mention.ogg").play();
-                setMentions((previousMentions) => previousMentions + 1);
-            }
+        socket.on(SocketMessageType.CHAT_MESSAGES_CREATE, onChatMessageCreate);
 
-            if (data.authorId === user.id) return;
-
-            addCachedUser(data.authorId);
-
-            setMessages((previousMessages) => [data, ...previousMessages]);
-            setUsersTyping((previousUsersTyping) => previousUsersTyping.filter((user) => user.userId !== data.authorId));
-        });
-
-        socket?.on("chat-typing-started", (data: any) => {
-            if (data.userId === user.id) return;
-
-            addCachedUser(data.userId);
-
-            data.startedTypingAt = Date.now();
-
-            setUsersTyping((previousUsersTyping) => {
-                if (previousUsersTyping.some((user) => user.userId === data.userId)) return previousUsersTyping.map((user) => user.userId === data.userId ? data : user);
-
-                return [...previousUsersTyping, data];
-            });
-        });
+        socket.on(SocketMessageType.CHAT_TYPING_STARTED, onChatStartTyping);
 
         const typingInterval = setInterval(() => setUsersTyping((previousUsersTyping) => previousUsersTyping.filter((user) => Date.now() - user.startedTypingAt < 2500)), 1000);
 
         return () => {
-            socket?.off("chat-messages-create");
-            socket?.off("chat-typing-started");
+            socket.off(SocketMessageType.CHAT_MESSAGES_CREATE, onChatMessageCreate);
+            socket.off(SocketMessageType.CHAT_TYPING_STARTED, onChatStartTyping);
 
             clearInterval(typingInterval);
         };
     }, [connected]);
-
-    /* useEffect(() => {
-        if (!connected) return;
-
-        if (!user || user.initialized) return;
-
-        fetchMessages(0);
-
-        socket.on("messages-create", (data) => {
-            if (data.message.mentions.includes(user.id) || (data.message.replyingTo && data.message.replyingTo.author.id === user.id)) new Audio("https://cdn.blacket.org/static/content/mention.ogg").play();
-
-            if (data.message.author.id === user.id) return;
-
-            setMessages(previousMessages => [data.message, ...previousMessages]);
-            setUsersTyping(previousUsersTyping => previousUsersTyping.filter(user => user.id !== data.message.author.id));
-        });
-
-        socket.on("messages-send", (data) => setMessages(previousMessages => previousMessages.map(message => message.nonce === data.nonce ? { ...message, id: data.id, mentions: data.mentions, nonce: undefined } : message)));
-
-        socket.on("messages-typing-started", (data) => setUsersTyping(previousUsersTyping => {
-            if (data.user.id === user.id) return previousUsersTyping;
-
-            data.user.startedTypingAt = Date.now();
-
-            if (previousUsersTyping.some(user => user.id === data.user.id)) return previousUsersTyping.map(user => user.id === data.user.id ? data.user : user);
-
-            return [...previousUsersTyping, data.user];
-        }));
-
-        const typingInterval = setInterval(() => setUsersTyping(previousUsersTyping => previousUsersTyping.filter(user => Date.now() - user.startedTypingAt < 2500)), 1000);
-
-        setUser({ ...user, initialized: true });
-
-        return () => {
-            socket.off("messages-create");
-            socket.off("messages-send");
-            socket.off("messages-typing-started");
-
-            clearInterval(typingInterval);
-            clearTimeout(typingTimeout);
-        }
-    }, [connected, user]); */
 
     return <ChatStoreContext.Provider value={{
         messages, usersTyping, replyingTo, setReplyingTo,

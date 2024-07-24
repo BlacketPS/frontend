@@ -1,8 +1,8 @@
 import { createContext, useContext, useState, useRef, ReactNode } from "react";
 import { useUsers } from "@controllers/users/useUsers";
 
-import { type CachedUserStoreContext } from "./cachedUser.d";
-import { PrivateUser } from "blacket-types";
+import { type CachedUserStoreContext } from "./cachedUserStore.d";
+import { PublicUser } from "blacket-types";
 
 const CachedUserStoreContext = createContext<CachedUserStoreContext>({
     cachedUsers: [],
@@ -16,7 +16,7 @@ export function useCachedUser() {
 }
 
 export function CachedUserStoreProvider({ children }: { children: ReactNode }) {
-    const [cachedUsers, setCachedUsers] = useState<PrivateUser[]>([]);
+    const [cachedUsers, setCachedUsers] = useState<PublicUser[]>([]);
 
     const cachedUsersRef = useRef(cachedUsers);
     cachedUsersRef.current = cachedUsers;
@@ -33,7 +33,7 @@ export function CachedUserStoreProvider({ children }: { children: ReactNode }) {
             .catch(() => { });
     };
 
-    const addCachedUserWithData = (user: PrivateUser) => {
+    const addCachedUserWithData = (user: PublicUser) => {
         if (cachedUsersRef.current.find((cachedUser) => cachedUser.id === user.id)) return;
 
         setCachedUsers((previousCachedUsers) => [...previousCachedUsers, user]);

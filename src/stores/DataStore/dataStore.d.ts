@@ -1,4 +1,4 @@
-import { Banner, Blook, Emoji, Font, Item, Pack, Rarity, Title } from "blacket-types";
+import { Banner, Blook, Emoji, Font, Item, ItemShop, Pack, Rarity, Title } from "blacket-types";
 
 export interface DataStoreContext {
     badges: any[];
@@ -13,13 +13,15 @@ export interface DataStoreContext {
     setFonts: (fonts: Font[]) => void;
     items: Item[];
     setItems: (items: Item[]) => void;
+    itemShop: ItemShop[];
+    setItemShop: (itemShop: ItemShop[]) => void;
     packs: Pack[];
     setPacks: (packs: Pack[]) => void;
     rarities: Rarity[];
     setRarities: (rarities: Rarity[]) => void;
     titles: Title[];
     setTitles: (titles: Title[]) => void;
-    
+
     titleIdToText: (id: number) => string;
     fontIdToName: (id: number) => string;
 }

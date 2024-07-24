@@ -12,7 +12,7 @@ export interface ChatStoreContext {
     resetMentions: () => void;
 }
 
-export interface UserTyping {
+export interface TypingUser {
     userId: string;
     startedTypingAt: number;
 }

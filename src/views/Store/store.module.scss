@@ -1,0 +1,128 @@
+.rightSide {
+    position: fixed;
+    right: 2.5%;
+    top: 0;
+    width: 250px;
+    height: 100vh;
+    user-select: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+
+    @media screen and (max-width: 1010px) {
+        display: none;
+    }
+}
+
+.rightSideStore {
+    position: absolute;
+    height: 400px;
+
+}
+
+.rightSideBlook {
+    position: absolute;
+    margin-top: 90px;
+    margin-left: 30px;
+    width: 70px;
+    height: 85px;
+    transform: rotate(10deg);
+}
+
+.container {
+    margin: 25px 0 35px 1%;
+    width: calc(95.5% - 280px);
+    padding-bottom: 20px;
+
+    @media screen and (max-width: 1010px) {
+        margin: 25px 5% 35px;
+        width: 90%;
+    }
+}
+
+.headerContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    width: 100%;
+    text-align: center;
+
+    @media screen and (max-width: 768px) {
+        display: none;
+    }
+}
+
+.headerBigText {
+    font-size: 3rem;
+    font-family: "Titan One";
+    width: 95%;
+
+    @media screen and (max-width: 768px) {
+        font-size: 1.5rem;
+    }
+}
+
+.headerSmallText {
+    font-size: 1.5rem;
+    opacity: 0.5;
+    width: 90%;
+    margin-top: 10px;
+
+    @media screen and (max-width: 768px) {
+        font-size: 1rem;
+    }
+}
+
+.category {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    flex-direction: column;
+    text-align: left;
+    padding: 10px 20px 10px 20px;
+    background-color: var(--primary-color);
+    border-radius: 7px;
+    box-shadow: inset 0 -5px rgba(0, 0, 0, 0.2), 0 0 3px rgba(0, 0, 0, 0.15);
+
+    @media screen and (max-width: 768px) {
+        text-align: center;
+    }
+}
+
+.categoryTitle {
+    font-size: 3rem;
+    font-family: "Titan One";
+}
+
+.categorySubTitle {
+    font-size: 1rem;
+    margin-top: 3px;
+}
+
+.categoryDivider {
+    width: 100%;
+    height: 5px;
+    opacity: .1;
+    border-radius: 7px;
+    background-color: var(--accent-color);
+    margin-top: 10px;
+}
+
+.categoryProducts {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    margin-top: 15px;
+}
+
+.product {
+    width: 30%;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border: 1px solid #e0e0e0;
+    border-radius: 5px;
+}

@@ -1,11 +1,11 @@
-import { ReactNode, createContext, useCallback, useContext, useEffect, useState } from "react";
+import { Dispatch, ReactNode, SetStateAction, createContext, useContext, useEffect, useState } from "react";
 import { useResource } from "@stores/ResourceStore/index";
 import { useUser } from "@stores/UserStore/index";
 import Loading from "../../views/Loading";
 import styles from "./dataStore.module.scss";
 
 import { type DataStoreContext } from "./dataStore.d";
-import { Banner, Blook, Emoji, Font, Item, Pack, Rarity, Resource, Title } from "blacket-types";
+import { Banner, Blook, Emoji, Font, Item, ItemShop, Pack, Rarity, Title } from "blacket-types";
 
 const DataStoreContext = createContext<DataStoreContext>({
     badges: [],
@@ -20,6 +20,8 @@ const DataStoreContext = createContext<DataStoreContext>({
     setFonts: () => { },
     items: [],
     setItems: () => { },
+    itemShop: [],
+    setItemShop: () => { },
     packs: [],
     setPacks: () => { },
     rarities: [],
@@ -44,6 +46,7 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
     const [emojis, setEmojis] = useState<Emoji[]>([]);
     const [fonts, setFonts] = useState<Font[]>([]);
     const [items, setItems] = useState<Item[]>([]);
+    const [itemShop, setItemShop] = useState<ItemShop[]>([]);
     const [packs, setPacks] = useState<Pack[]>([]);
     const [rarities, setRarities] = useState<Rarity[]>([]);
     const [titles, setTitles] = useState<Title[]>([]);
@@ -53,7 +56,7 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
 
     const [completed, setCompleted] = useState<number>(0);
     const [fetchedResources, setFetchedResources] = useState<boolean>(false);
-    const max = 10 + (localStorage.getItem("token") ? 1 : 0);
+    const max = 11 + (localStorage.getItem("token") ? 1 : 0);
 
     useEffect(() => {
         window.fetch2.get("/api/data/resources")
@@ -69,33 +72,25 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         if (!fetchedResources) return;
 
-        window.fetch2.get("/api/data/badges")
-            .then((res) => {
-                setBadges(res.data);
-                setCompleted((completed) => completed + 1);
-            })
-            .catch((res) => setError(res));
-        window.fetch2.get("/api/data/banners")
-            .then((res) => {
-                setBanners(res.data);
-                setCompleted((completed) => completed + 1);
-            })
-            .catch((res) => setError(res));
-        window.fetch2.get("/api/data/blooks")
-            .then((res) => {
-                setBlooks(res.data);
-                setCompleted((completed) => completed + 1);
-            })
-            .catch(() => setError(true));
-        window.fetch2.get("/api/data/emojis")
-            .then((res) => {
-                setEmojis(res.data);
-                setCompleted((completed) => completed + 1);
-            })
-            .catch((res) => setError(res));
+        // we need to cast here bcuz it assumses every entry in the array is a string or a setter, but actually the first is always a string and the second is always a setter
+        ([
+            ["badges", setBadges],
+            ["banners", setBanners],
+            ["blooks", setBlooks],
+            ["emojis", setEmojis],
+            ["items", setItems],
+            ["item-shop", setItemShop],
+            ["packs", setPacks],
+            ["rarities", setRarities],
+            ["titles", setTitles]] as [string, Dispatch<SetStateAction<any[]>>][]).forEach(([key, setter]) => window.fetch2.get(`/api/data/${key}`)
+                .then((res) => {
+                    setter(res.data);
+                    setCompleted((completed) => completed + 1);
+                })
+                .catch((res) => setError(res)));
+
         window.fetch2.get("/api/data/fonts")
             .then(async (res) => {
-                console.log(resources);
                 for (const font of res.data) {
                     const fontFace = new FontFace(font.name, `url("${resourceIdToPath(font.resourceId)}")`);
 
@@ -106,30 +101,6 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
 
                 setFonts(res.data);
 
-                setCompleted((completed) => completed + 1);
-            })
-            .catch((res) => setError(res));
-        window.fetch2.get("/api/data/items")
-            .then((res) => {
-                setItems(res.data);
-                setCompleted((completed) => completed + 1);
-            })
-            .catch((res) => setError(res));
-        window.fetch2.get("/api/data/packs")
-            .then((res) => {
-                setPacks(res.data);
-                setCompleted((completed) => completed + 1);
-            })
-            .catch((res) => setError(res));
-        window.fetch2.get("/api/data/rarities")
-            .then((res) => {
-                setRarities(res.data);
-                setCompleted((completed) => completed + 1);
-            })
-            .catch((res) => setError(res));
-        window.fetch2.get("/api/data/titles")
-            .then((res) => {
-                setTitles(res.data);
                 setCompleted((completed) => completed + 1);
             })
             .catch((res) => setError(res));
@@ -166,6 +137,7 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
         emojis, setEmojis,
         fonts, setFonts,
         items, setItems,
+        itemShop, setItemShop,
         packs, setPacks,
         rarities, setRarities,
         titles, setTitles,
@@ -181,7 +153,7 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
                 }} />
             </div>
         </div>
-        {error ? <div className={styles.error}>
+        {error ? <div className={styles.error}>2
             Failed to load game data.
             <div className={styles.subError}>
                 {error.data?.message ?? error.message} Please report this issue to a developer.

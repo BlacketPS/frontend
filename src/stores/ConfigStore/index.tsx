@@ -1,5 +1,5 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react";
-import { type ConfigStoreContext, Config } from "./config.d";
+import { type ConfigStoreContext, Config } from "./configStore.d";
 import { ErrorCode } from "../../views/Error/error.d";
 import Error from "../../views/Error/index";
 
