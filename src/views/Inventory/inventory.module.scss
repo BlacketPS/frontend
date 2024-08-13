@@ -349,6 +349,7 @@
         bottom: 20%;
         left: 50%;
         transform: translateX(-50%);
+        justify-content: center;
     }
 
     &>img {
@@ -394,6 +395,7 @@
         bottom: 28%;
         left: 50%;
         transform: translateX(-50%);
+        justify-content: center;
     }
 
     &>img {
@@ -527,7 +529,6 @@
             width: 28px;
             height: 28px;
             margin-right: 7px;
-            margin-top: 3px;
 
             @media only screen and (max-width: 1000px) {
                 width: 22px;

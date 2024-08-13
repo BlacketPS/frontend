@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useModal } from "@stores/ModalStore/index";
 import { useUser } from "@stores/UserStore";
 import { useSellBlooks } from "@controllers/blooks/useSellBlooks/index";
@@ -9,12 +9,20 @@ import { SellBlooksModalProps } from "../inventory";
 export default function SellBlooksModal({ blook }: SellBlooksModalProps) {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
-    const [quantity, setQuantity] = useState<number>(1);
+    const [quantity, setQuantity] = useState<string>("1");
 
     const { sellBlooks } = useSellBlooks();
 
     const { closeModal } = useModal();
     const { user } = useUser();
+
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        inputRef.current?.focus();
+    }, []);
+
+    if (!user) return null;
 
     return (
         <>
@@ -24,8 +32,15 @@ export default function SellBlooksModal({ blook }: SellBlooksModalProps) {
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                 <Form style={{ width: "75px" }}>
-                    <Input value={quantity} style={{ fontSize: "25px" }} onChange={(e) => {
-                        setQuantity(parseInt(e.target.value));
+                    <Input ref={inputRef} value={quantity} style={{ fontSize: "25px" }} onChange={(e) => {
+                        const value = e.target.value;
+                        const parsedValue = parseInt(value);
+
+                        if (value.match(/[^0-9]/)) return;
+                        if (parsedValue < 1 && value !== "") return;
+                        if (parsedValue > user.blooks[blook.id]) return setQuantity(user.blooks[blook.id].toString());
+
+                        setQuantity(e.target.value);
                         setError("");
                     }} autoComplete="off" />
                 </Form>
@@ -37,7 +52,7 @@ export default function SellBlooksModal({ blook }: SellBlooksModalProps) {
             <Modal.ModalButtonContainer loading={loading}>
                 <Button.GenericButton onClick={() => {
                     setLoading(true);
-                    sellBlooks({ blookId: blook.id, quantity })
+                    sellBlooks({ blookId: blook.id, quantity: parseInt(quantity) })
                         .then(() => closeModal())
                         .catch((err: Fetch2Response) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
                         .finally(() => setLoading(false));

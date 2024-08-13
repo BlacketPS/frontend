@@ -15,6 +15,7 @@ import Sidebar from "./Sidebar";
 import SidebarBody from "./SidebarBody";
 import Toggle from "./Toggle";
 import TopRight from "./TopRight";
+import Username from "./Username";
 
 export {
     Background,
@@ -33,5 +34,6 @@ export {
     Sidebar,
     SidebarBody,
     Toggle,
-    TopRight
+    TopRight,
+    Username
 };

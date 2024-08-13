@@ -3,53 +3,56 @@
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     grid-template-rows: repeat(5, 1fr);
-    grid-column-gap: 10px;
-    grid-row-gap: 10px;
+    grid-column-gap: 1vh;
+    grid-row-gap: 1vh;
+
+    @media screen and (max-width: 475px) {
+        grid-column-gap: 10px;
+        grid-row-gap: 10px;
+    }
 
     &>.section {
         // background-color: rgba(0, 0, 0, 0.125);
-        border-radius: 7px;
-        margin: 10px;
-        filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+        border-radius: 0.7vh;
+        margin: 1vh;
+        filter: drop-shadow(0 0.4vh 0.4vh rgba(0, 0, 0, 0.25));
+    }
+}
 
-        &:nth-child(1) {
-            background-color: rgba(0, 0, 0, 0.125);
-            padding: 10px 15px 0 15px;
-            grid-area: 1 / 1 / 2 / 2;
-        }
+.userSection {
+    background-color: rgba(0, 0, 0, 0.125);
+    padding: 2vh 2vh 0 2vh;
+    // grid-area: 1 / 1 / 2 / 2;
+    grid-area: 1 / 1 / 2 / 3;
 
-        &:nth-child(2) {
-            background-color: rgba(0, 0, 0, 0.125);
-            display: flex;
-            justify-content: space-evenly;
-            align-items: center;
-            grid-area: 1 / 2 / 2 / 5;
-            height: 195px;
+    @media screen and (max-width: 475px) {
+        padding: 10px 15px 0 15px;
+    }
+}
 
-            @media screen and (max-width: 1350px) {
-                display: none;
-            }
-        }
+.statsSection {
+    // grid-area: 2 / 1 / 6 / 2;
+    // grid-area: 2 / 1 / 6 / 3;
+    grid-area: 1 / 3 / 2 / 5;
+}
 
-        &:nth-child(3) {
-            grid-area: 2 / 1 / 6 / 2;
-        }
+.auctionSection {
+    grid-area: 4 / 3 / 2 / 1;
+}
 
-        &:nth-child(4) {
-            grid-area: 1 / 5 / 6 / 6;
+.guildSection {
+    grid-area: 4 / 3 / 6 / 1;
+}
 
-            @media screen and (max-width: 1350px) {
-                display: none;
-            }
-        }
+.inventorySection {
+    grid-area: 6 / 3 / 2 / 5;
+}
 
-        &:nth-child(5) {
-            grid-area: 4 / 2 / 2 / 5;
-        }
+.friendsSection {
+    grid-area: 1 / 5 / 6 / 6;
 
-        &:nth-child(6) {
-            grid-area: 4 / 2 / 6 / 5;
-        }
+    @media screen and (max-width: 1350px) {
+        display: none;
     }
 }
 
@@ -67,35 +70,51 @@
 .userTopProfile {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    gap: 1vh;
 
     @media (max-width: 475px) {
         flex-direction: column;
         justify-content: center;
+    }
+
+    &:last-child {
+        padding-bottom: 0.5vh;
     }
 }
 
 .userBannerBlook {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 1vh;
 
     @media screen and (max-width: 475px) {
         flex-direction: column;
         align-items: center;
         margin-left: unset;
     }
+}
 
-    &>img {
+.userAvatar {
+    height: 11vh;
+    max-width: 10vh;
+    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    cursor: pointer;
+    transition: transform 0.2s;
+
+    @media screen and (max-width: 475px) {
         height: 110px;
-        width: 100px;
-        filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+        max-width: 100px;
     }
 
-    &>video {
-        height: 110px;
-        width: 100px;
-        filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    &:hover {
+        transform: scale(0.95);
+    }
+
+    &:active {
+        transform: scale(0.9);
     }
 }
 
@@ -104,7 +123,7 @@
     flex-direction: column;
     height: 100%;
     justify-content: space-between;
-    margin-left: 10px;
+    margin-left: 1vh;
 
     @media screen and (max-width: 475px) {
         margin-left: unset;
@@ -112,21 +131,25 @@
 }
 
 .levelBarContainer {
-    height: 20px;
+    height: 2vh;
     position: relative;
-    margin-top: 20px;
+    margin-top: 2vh;
+
+    @media screen and (max-width: 475px) {
+        height: 20px;
+        margin-top: 20px;
+    }
 }
 
 .levelBar {
     width: 100%;
     height: 100%;
-    border-radius: 10px;
+    border-radius: 1vh;
     overflow: hidden;
     background-color: rgba(0, 0, 0, 0.15);
 
     &>div {
         // background: linear-gradient(#fcd843, #fcd843 50%, #feb31a 50%, #feb31a);
-        // light blue instead
         background: linear-gradient(#00bfff, #00bfff 50%, #00a8ff 50%, #00a8ff);
         height: 100%;
         width: 100%;
@@ -135,14 +158,21 @@
 }
 
 .levelStarContainer {
-    width: 40px;
-    height: 40px;
+    width: 4vh;
+    height: 4vh;
     position: absolute;
-    left: -10px;
-    top: calc(50% - 20px);
+    left: -1vh;
+    top: calc(50% - 2vh);
     display: flex;
     justify-content: center;
     align-items: center;
+
+    @media screen and (max-width: 475px) {
+        width: 40px;
+        height: 40px;
+        left: -10px;
+        top: calc(50% - 20px);
+    }
 
     &>img {
         position: absolute;
@@ -159,49 +189,95 @@
         transform: translate(-50%, -50%);
         color: var(--accent-color);
         font-family: "Titan One", sans-serif;
-        -webkit-text-stroke: 1.5px #000;
-        font-size: 20px;
+        -webkit-text-stroke: 0.15vh #000;
+        font-size: 2vh;
+
+        @media screen and (max-width: 475px) {
+            font-size: 1.5rem;
+            -webkit-text-stroke: 1.5px #000;
+        }
     }
 }
 
 .userBanner {
-    transform: translateY(5px);
+    transform: translateY(0.5vh);
     display: flex;
     position: relative;
 
+    @media screen and (max-width: 475px) {
+        transform: translateY(5px);
+    }
+
     &>img {
-        width: 300px;
+        width: 30vh;
         height: fit-content;
+
+        @media screen and (max-width: 475px) {
+            width: 300px;
+        }
     }
 
     &>video {
-        width: 300px;
+        width: 30vh;
         height: fit-content;
-    }
 
-    &>p {
-        position: absolute;
-        left: 50%;
-        transform: translate(-50%, -60%);
-
-        &:nth-child(2) {
-            font-size: 1.5rem;
-        }
-
-        &:nth-child(3) {
-            top: 45%;
-            font-size: 0.9rem;
+        @media screen and (max-width: 475px) {
+            width: 300px;
         }
     }
 }
 
+.userInfoContainer {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    height: 100%;
+}
+
+.usernameAndTitleContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-bottom: 1vh;
+    gap: 0.5vh;
+
+    @media screen and (max-width: 475px) {
+        gap: 5px;
+        padding-bottom: 10px;
+    }
+}
+
+.username {
+    height: 3vh;
+    font-size: 2.5vh;
+
+    @media screen and (max-width: 475px) {
+        font-size: 1.4rem;
+    }
+}
+
+.title {
+    height: 2vh;
+    margin-top: -0.8vh;
+    font-size: 1.5vh;
+
+    @media screen and (max-width: 475px) {
+        margin-top: -8px;
+        font-size: 0.9rem;
+    }
+}
+
 .userBadges {
-    padding: 10px;
-    margin: 5px 10px 5px 10px;
+    padding: 1vh;
     display: flex;
     justify-content: left;
     flex-flow: wrap;
-    gap: 10px;
+    gap: 1vh;
 
     @media screen and (max-width: 475px) {
         justify-content: space-evenly;
@@ -209,44 +285,153 @@
 
     &>div {
         width: auto;
-        height: 30px;
-        padding: 7.5px;
-        box-shadow: inset 0 -5px rgba(0, 0, 0, 0.2);
+        height: 3vh;
+        padding: 0.75vh;
+        box-shadow: inset 0 -0.5vh rgba(0, 0, 0, 0.2);
         background-color: var(--primary-color);
-        border-radius: 7px;
+        border-radius: 0.7vh;
         display: flex;
         align-items: center;
+
+        @media screen and (max-width: 475px) {
+            height: 30px;
+            padding: 7.5px;
+            box-shadow: inset 0 -5px rgba(0, 0, 0, 0.2);
+            border-radius: 7px;
+        }
 
         &>img {
             width: auto;
             height: 100%;
-            margin-bottom: 5px;
+            margin-bottom: 0.5vh;
+
+            @media screen and (max-width: 475px) {
+                margin-bottom: 5px;
+            }
         }
 
         &>video {
             width: auto;
             height: 100%;
-            margin-bottom: 5px;
+            margin-bottom: 0.5vh;
+
+            @media screen and (max-width: 475px) {
+                margin-bottom: 5px;
+            }
         }
     }
 }
 
-.topRightButton {
-    width: 180px;
-    height: 90%;
-    margin: 10px;
+.discordContainer {
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    margin: 1vh 1vh 2vh 1vh;
+    gap: 1vh;
+
+    @media screen and (max-width: 675px) {
+        flex-direction: column;
+        align-items: center;
+        margin: 10px 10px 20px 10px;
+        gap: 10px;
+    }
+
+    &>span {
+        font-size: 3vh;
+        font-weight: 700;
+
+        @media screen and (max-width: 475px) {
+            font-size: 1.5rem;
+        }
+    }
+}
+
+.discordAvatarContainer {
+    position: relative;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-direction: column;
-    border-radius: 7px;
-    font-weight: 700;
-    text-decoration: none;
-    color: var(--accent-color);
+    padding: 0.5vh;
+
+    @media screen and (max-width: 475px) {
+        padding: 5px;
+    }
+
+    &>img {
+        width: 5vh;
+        height: 5vh;
+        border-radius: 50%;
+
+        @media screen and (max-width: 475px) {
+            width: 50px;
+            height: 50px;
+        }
+    }
+
+    &>i {
+        background: var(--primary-color);
+        position: absolute;
+        border-radius: 50%;
+        height: 1.2vh;
+        width: 1.2vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0.5vh;
+        bottom: 2.5%;
+        right: 2.5%;
+        font-size: 1.2vh;
+
+        @media screen and (max-width: 475px) {
+            height: 12px;
+            width: 12px;
+            padding: 5px;
+            font-size: 12px;
+        }
+    }
+}
+
+.smallButtonContainer {
+    display: flex;
+    gap: 1.5vh;
+    flex-wrap: wrap;
+    margin-top: 2.5vh;
+    justify-content: center;
+    align-items: center;
+
+    @media (max-width: 475px) {
+        gap: 15px;
+        margin-top: 25px;
+        margin-bottom: 15px;
+        padding-left: unset;
+        justify-content: center;
+    }
+}
+
+.smallButton {
+    width: fit-content;
+    padding: 0.5vh 1.5vh;
+    border-radius: 0.7vh;
     background-color: var(--primary-color);
-    filter: drop-shadow(0px 4px 4px rgba(0, 0, 0, 0.25));
+    box-shadow: inset 0 -0.5vh rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.7vh;
+    font-size: 2vh;
+    font-weight: 700;
+    padding-bottom: 1vh;
     cursor: pointer;
     transition: transform 0.2s;
+
+    @media screen and (max-width: 475px) {
+        gap: 7px;
+        padding: 5px 15px;
+        padding-bottom: 10px;
+        border-radius: 7px;
+        box-shadow: inset 0 -5px rgba(0, 0, 0, 0.2);
+        font-size: 20px;
+    }
 
     &:hover {
         transform: scale(0.95);
@@ -255,50 +440,27 @@
     &:active {
         transform: scale(0.9);
     }
-
-    &>i {
-        font-size: 4.25rem;
-    }
-
-    &>div,
-    a {
-        margin-top: 20px;
-        font-size: 1.4rem;
-        text-align: center;
-    }
-}
-
-.smallButtonContainer {
-    @media not (max-width: 1350px) {
-        display: none;
-    }
-
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-    flex-wrap: wrap;
-
-    @media (max-width: 475px) {
-        margin-top: 20px;
-        justify-content: center;
-    }
-}
-
-.smallButton {
-    flex: 1;
-    min-width: fit-content;
 }
 
 .containerHeader {
     position: absolute;
-    top: -18px;
-    left: -7px;
-    height: 35px;
-    box-shadow: inset 0 -7px rgba(0, 0, 0, 0.2);
+    top: -1.8vh;
+    left: 1vh;
+    height: 3.5vh;
+    box-shadow: inset 0 -0.7vh rgba(0, 0, 0, 0.2);
     background-color: var(--primary-color);
-    padding: 4px 4px 8px;
-    border-radius: 7px;
+    padding: 0.4vh 0.4vh 0.8vh;
+    border-radius: 0.7vh;
     z-index: 1;
+
+    @media screen and (max-width: 475px) {
+        padding: 4px 4px 8px;
+        border-radius: 7px;
+        box-shadow: inset 0 -7px rgba(0, 0, 0, 0.2);
+        left: 10px;
+        height: 35px;
+        top: -18px;
+    }
 }
 
 .containerHeaderInside {
@@ -309,46 +471,72 @@
     width: 100%;
     box-sizing: border-box;
     background: var(--primary-color);
-    padding: 0 10px 5px;
-    border-radius: 7px;
+    padding: 0 1vh 0.5vh;
+    border-radius: 0.7vh;
     font-family: "Titan One", sans-serif;
     color: var(--accent-color);
-    font-size: 25px;
+    font-size: 2.5vh;
+
+    @media screen and (max-width: 475px) {
+        font-size: 25px;
+        padding: 0 10px 5px;
+        border-radius: 7px;
+    }
 }
 
 .statsContainer {
-    border-radius: 5px;
+    border-radius: 0.5vh;
     background-color: var(--primary-color);
     width: 100%;
     height: 100%;
-    padding: 40px 15px;
-    box-shadow: inset 0 -7px rgba(0, 0, 0, 0.2);
+    padding: 4vh 1.5vh;
+    box-shadow: inset 0 -0.7vh rgba(0, 0, 0, 0.2);
     box-sizing: border-box;
     color: var(--accent-color);
+    overflow-y: auto;
+
+    @media screen and (max-width: 475px) {
+        border-radius: 5px;
+        box-shadow: inset 0 -7px rgba(0, 0, 0, 0.2);
+        padding: 40px 15px;
+    }
 }
 
 .statsContainerHolder {
     width: 100%;
-    gap: 10px;
+    gap: 1vh;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+
+    @media screen and (max-width: 475px) {
+        gap: 10px;
+    }
 }
 
 .statContainer {
-    height: 65px;
-    width: calc(50% - 45px);
+    height: 6.5vh;
+    width: calc(50% - 4.5vh);
     display: flex;
     justify-content: center;
     align-items: center;
     flex-flow: column;
     text-align: center;
-    gap: 10px;
-    box-shadow: inset 0 -7px rgba(0, 0, 0, 0.2);
-    border-radius: 7px;
+    gap: 1vh;
+    box-shadow: inset 0 -0.7vh rgba(0, 0, 0, 0.2);
+    border-radius: 0.7vh;
     background-color: var(--secondary-color);
     line-height: 1;
-    padding: 5px 20px 15px 20px;
+    padding: 0.5vh 2vh 1.5vh 2vh;
+
+    @media screen and (max-width: 475px) {
+        padding: 5px 20px 15px 20px;
+        gap: 10px;
+        box-shadow: inset 0 -7px rgba(0, 0, 0, 0.2);
+        border-radius: 7px;
+        height: 65px;
+        width: calc(50% - 45px);
+    }
 
     @media screen and (max-width: 1350px) {
         width: 100%;
@@ -365,45 +553,72 @@
 
 .statHeader {
     font-family: "Titan One", sans-serif;
-    font-size: 1rem;
-    text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+    font-size: 1.8vh;
+    text-shadow: 0 0 0.3vh rgba(0, 0, 0, 0.5);
 
     // I DONT LIKE THIS BECAUSE OF LACK OF SUPPORT
-    -webkit-text-stroke: .5px #000;
+    -webkit-text-stroke: .05vh #000;
+
+    @media screen and (max-width: 475px) {
+        font-size: 1rem;
+        text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
+        -webkit-text-stroke: .5px #000;
+    }
 
     &>img {
         position: relative;
-        top: 4px;
-        right: 5px;
-        width: 20px;
+        top: 0.4vh;
+        right: 0.5vh;
+        width: 2vh;
+
+        @media screen and (max-width: 475px) {
+            top: 4px;
+            right: 5px;
+            width: 20px;
+        }
     }
 
     &>video {
         position: relative;
-        top: 4px;
-        right: 5px;
-        width: 20px;
+        top: 0.4vh;
+        right: 0.5vh;
+        width: 2vh;
+
+        @media screen and (max-width: 475px) {
+            top: 4px;
+            right: 5px;
+            width: 20px;
+        }
     }
 }
 
 .statDivider {
     width: 100%;
-    height: 3px;
+    height: 0.3vh;
     background-color: var(--accent-color);
     opacity: 0.1;
-    border-radius: 7px;
+    border-radius: 0.7vh;
+
+    @media screen and (max-width: 475px) {
+        height: 3px;
+        border-radius: 7px;
+    }
 }
 
 .statValue {
-    font-size: 1rem;
+    font-size: 1.75vh;
     font-weight: 700;
+
+    @media screen and (max-width: 475px) {
+        font-size: 1rem;
+    }
 }
 
 .friendsContainer {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    gap: 20px;
+    gap: 2vh;
     height: 100%;
 }
 
@@ -413,27 +628,16 @@
     align-items: center;
 
     &>p {
-        font-size: 2.1rem;
-        margin: 10px 0;
+        font-size: 4vh;
+        margin: 1vh 0;
         font-family: "Titan One", sans-serif;
     }
 
     &>div {
         display: flex;
         align-items: center;
-        gap: 10px;
-        margin-top: 10px;
-
-        &>div {
-            font-family: "Nunito", sans-serif;
-            font-size: 1rem;
-
-            &:last-child {
-                min-width: unset;
-                font-size: 1.25rem;
-                width: 40px;
-            }
-        }
+        gap: 1vh;
+        margin-top: 1vh;
     }
 }
 
@@ -443,6 +647,7 @@
     align-items: center;
     background-color: rgba(0, 0, 0, 0.125);
     height: 100%;
-    padding: 10px;
-    border-radius: 5px;
+    padding: 1vh;
+    border-radius: 0.5vh;
+    font-size: 1.5vh;
 }

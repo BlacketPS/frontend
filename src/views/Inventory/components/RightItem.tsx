@@ -16,7 +16,7 @@ export default function RightItem({ item, usesLeft, children, ...props }: RightI
         <div className={styles.rightSide} {...props}>
             <div className={styles.rightSideContent}>
                 <div className={styles.rightBlookBackground}>
-                    <img src={"https://cdn.blacket.org/static/content/blooks/backgrounds/Default.png"} alt="Blook Background" draggable={false} />
+                    <img src={window.constructCDNUrl("/content/blooks/backgrounds/Default.png")} alt="Item Background" draggable={false} />
                 </div>
 
                 <div className={styles.rightTopText}>
@@ -27,12 +27,12 @@ export default function RightItem({ item, usesLeft, children, ...props }: RightI
                 </div>
 
                 <div className={styles.rightItemImage}>
-                    <img src={resourceIdToPath(item.imageId) || "https://cdn.blacket.org/static/content/blooks/Error.png"} alt={item.name} />
+                    <img src={resourceIdToPath(item.imageId)} alt={item.name} />
                 </div>
 
                 <div className={styles.rightBottomText}>
                     <Textfit className={styles.rightBottomDescription} max={35} min={0} mode="multi">{item.description}</Textfit>
-                    {usesLeft?.toLocaleString() || 0} Uses Left
+                    {usesLeft?.toLocaleString() || 0} Use{usesLeft !== 1 ? "s": ""} Left
                 </div>
 
                 <Button.GenericButton

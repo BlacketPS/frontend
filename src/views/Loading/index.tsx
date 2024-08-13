@@ -9,7 +9,7 @@ export default function Loading({ error, children }: LoadingProps) {
 
             <Loader
                 motionless={true}
-                image={!error ? "https://cdn.blacket.org/static/content/blooks/Console.gif" : "https://cdn.blacket.org/static/content/blooks/Error.png"}
+                image={!error ? window.constructCDNUrl("/content/blooks/Console.gif") : window.errorImage}
                 message={children}
             />
         </>

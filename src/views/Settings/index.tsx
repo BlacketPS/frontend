@@ -6,7 +6,7 @@ import { useModal } from "@stores/ModalStore";
 import { useSettings } from "@controllers/settings/useSettings/index";
 import { useUser } from "@stores/UserStore/index";
 import { useData } from "@stores/DataStore/index";
-import { Modal, Button } from "@components/index";
+import { Modal, Button, Dropdown } from "@components/index";
 import {
     SettingsContainer,
     PlanText,
@@ -60,11 +60,14 @@ export default function Settings() {
                 <div><b>Title:</b> {titleIdToText(user.titleId)}</div>
                 <div style={{ display: "inline-flex" }}><b>Font: </b> <div style={{ fontFamily: fontIdToName(user.fontId), marginLeft: 7 }}>{fontIdToName(user.fontId)}</div></div>
                 <div><b>Joined:</b> {`${new Date(user.createdAt).toLocaleDateString()} ${new Date(user.createdAt).toLocaleTimeString()}`}</div>
+                {user.discord && <div><b>Discord:</b> {user.discord.username}</div>}
 
-                <Button.ClearButton to={
+                <div className={styles.settingsContainerDivider} style={{ margin: "10px 0" }} />
+
+                {!user.discord && <Button.ClearButton to={
                     `https://discord.com/oauth2/authorize?client_id=${import.meta.env.VITE_DISCORD_CLIENT_ID}&response_type=code&redirect_uri=${encodeURI(window.location.origin + window.location.pathname + "/link-discord")
                     }&scope=identify`
-                }>Link Discord</Button.ClearButton>
+                }>Link Discord</Button.ClearButton>}
                 <Button.ClearButton onClick={() => createModal(<Modal.LogoutModal />)}>Logout</Button.ClearButton>
             </SettingsContainer>
 
@@ -72,6 +75,18 @@ export default function Settings() {
                 <PlanText>Basic</PlanText>
 
                 <UpgradeButton>Upgrade</UpgradeButton>
+
+                <div className={styles.settingsContainerDivider} style={{ margin: "15px 0" }} />
+
+                <div>
+                    <b>Payment Method:</b> {user.paymentMethods.length > 0 ? <>
+                        <i className="fas fa-credit-card" style={{ marginLeft: 5, marginRight: 3 }} /> {user.paymentMethods.find((method) => method.primary)?.cardBrand} {user.paymentMethods.find((method) => method.primary)?.lastFour}
+                    </> : "None"}
+                </div>
+                <div style={{ marginTop: 5 }}>
+                    {user.paymentMethods.length < 1 && <Button.ClearButton onClick={() => createModal(<Modal.AddPaymentMethodModal />)}>Add Payment Method</Button.ClearButton>}
+                    {user.paymentMethods.length > 0 && <Button.ClearButton onClick={() => createModal(<Modal.PaymentMethodsModal />)}>Manage Payment Methods</Button.ClearButton>}
+                </div>
             </SettingsContainer>
 
             <SettingsContainer header={{ icon: "fas fa-pencil-alt", text: "Edit Info" }}>

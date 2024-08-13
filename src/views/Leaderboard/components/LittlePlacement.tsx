@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Textfit from "react-textfit";
 import { useUser } from "@stores/UserStore/index";
 import cardinalToOrdinal from "@functions/core/cardinalToOrdinal";
-import { ImageOrVideo } from "@components/index";
+import { ImageOrVideo, Username } from "@components/index";
 import styles from "../leaderboard.module.scss";
 
 import { LittlePlacementProps, PlacementType } from "../leaderboard.d";
@@ -26,9 +26,9 @@ export default function LittlePlacement({ type, placement, user }: LittlePlaceme
                     </div>
 
                     <div className={styles.otherStandingUsername}>
-                        <Textfit className={
-                            user.color === "rainbow" ? "rainbow" : ""
-                        } style={{ color: user.color }} max={36} mode="single">{user.username}</Textfit>
+                        <Textfit min={0} max={36} mode="single">
+                            <Username user={user} />
+                        </Textfit>
                     </div>
 
                     <div className={styles.otherStandingScore}>

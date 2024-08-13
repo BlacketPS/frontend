@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useModal } from "@stores/ModalStore/index";
 import { useDisable } from "@controllers/settings/otp/useDisable/index";
 import { Modal, Button, Form, Input, ErrorContainer } from "@components/index";
@@ -6,12 +6,17 @@ import { Modal, Button, Form, Input, ErrorContainer } from "@components/index";
 export default function DisableOTPModal() {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
-
     const [otpCode, setOTPCode] = useState<string>("");
+
+    const inputRef = useRef<HTMLInputElement>(null);
 
     const { disable } = useDisable();
 
     const { closeModal } = useModal();
+
+    useEffect(() => {
+        inputRef.current?.focus();
+    }, []);
 
     return (
         <>
@@ -19,7 +24,12 @@ export default function DisableOTPModal() {
             <Modal.ModalBody>Please fill out the form below to disable OTP.</Modal.ModalBody>
 
             <Form>
-                <Input icon="fas fa-key" placeholder="OTP / 2FA Code" value={otpCode} onChange={(e) => {
+                <Input ref={inputRef} icon="fas fa-key" placeholder="OTP / 2FA Code" value={otpCode} onChange={(e) => {
+                    const value = e.target.value;
+
+                    if (value.match(/[^0-9]/)) return;
+                    if (value.length > 6) return;
+
                     setOTPCode(e.target.value);
                     setError("");
                 }} autoComplete="off" />

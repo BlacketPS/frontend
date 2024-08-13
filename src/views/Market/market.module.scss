@@ -95,6 +95,10 @@
 .buttonHolder {
     display: flex;
     margin: 15px 5% 10px;
+
+    @media only screen and (max-width: 850px) {
+        justify-content: center;
+    }
 }
 
 .packsWrapper {

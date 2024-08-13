@@ -59,6 +59,10 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
     const max = 11 + (localStorage.getItem("token") ? 1 : 0);
 
     useEffect(() => {
+        if (!loading) return;
+        if (fetchedResources) return;
+        if (completed >= max) return;
+
         window.fetch2.get("/api/data/resources")
             .then((res) => {
                 setResources(res.data);
@@ -67,12 +71,13 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
                 setFetchedResources(true);
             })
             .catch((res) => setError(res));
-    }, []);
+    }, [loading]);
 
     useEffect(() => {
+        if (!loading) return;
         if (!fetchedResources) return;
+        if (completed >= max) return;
 
-        // we need to cast here bcuz it assumses every entry in the array is a string or a setter, but actually the first is always a string and the second is always a setter
         ([
             ["badges", setBadges],
             ["banners", setBanners],
@@ -121,11 +126,13 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
             setUser(null);
             setCompleted((completed) => completed + 1);
         }
-    }, [resources]);
+    }, [loading, resources]);
 
     useEffect(() => {
+        if (!loading) return;
+
         if (completed >= max) setLoading(false);
-    }, [completed]);
+    }, [loading, completed]);
 
     const fontIdToName = (id: number) => fonts.find((font) => font.id === id)?.name ?? fonts[0].name;
     const titleIdToText = (id: number) => titles.find((title) => title.id === id)?.name ?? "Unknown";
@@ -153,7 +160,7 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
                 }} />
             </div>
         </div>
-        {error ? <div className={styles.error}>2
+        {error ? <div className={styles.error}>
             Failed to load game data.
             <div className={styles.subError}>
                 {error.data?.message ?? error.message} Please report this issue to a developer.

@@ -161,7 +161,10 @@ export default function Market() {
                     }}
                     buttons={[
                         { icon: !search.onlyPurchasable ? "fas fa-eye" : "fas fa-eye-slash", tooltip: "Only Purchasable", onClick: () => setSearch({ ...search, onlyPurchasable: !search.onlyPurchasable }) },
-                        { icon: "fas fa-times", tooltip: "Reset Search", onClick: () => localStorage.removeItem("MARKET_SEARCH_QUERY") }
+                        { icon: "fas fa-times", tooltip: "Reset Search", onClick: () => {
+                            localStorage.removeItem("MARKET_SEARCH_QUERY");
+                            setSearch({ ...search, query: "" });
+                        }}
                     ]}
                     value={search.query}
                     onChange={(e) => {

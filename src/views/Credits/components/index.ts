@@ -1,5 +1,5 @@
-import Credit from "./Credit";
+import CreditContainer from "./CreditContainer";
 
 export {
-    Credit
+    CreditContainer
 };

@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useModal } from "@stores/ModalStore/index";
 import { useUser } from "@stores/UserStore/index";
 import { useGenerate } from "@controllers/auth/otp/useGenerate/index";
@@ -15,13 +15,19 @@ export default function EnableOTPModal() {
     const [qrCodeImage, setQRCodeImage] = useState<string>("");
     const [otpCode, setOTPCode] = useState<string>("");
 
+    const inputRef = useRef<HTMLInputElement>(null);
+
     const { generate } = useGenerate();
     const { enable } = useEnable();
 
     const { closeModal } = useModal();
     const { user } = useUser();
 
+    if (!user) return null;
+
     useEffect(() => {
+        inputRef.current?.focus();
+
         generate()
             .then((res: GenerateResponse) => {
                 toDataURL(`otpauth://totp/${user.username}?secret=${res.data.otpSecret}&issuer=${import.meta.env.VITE_INFORMATION_NAME}`)
@@ -39,7 +45,12 @@ export default function EnableOTPModal() {
             {qrCodeImage !== "" ? <img src={qrCodeImage} style={{ marginBottom: "10px", borderRadius: "10px" }} /> : <Modal.ModalBody>Loading QR code...</Modal.ModalBody>}
 
             <Form>
-                <Input icon="fas fa-key" placeholder="OTP / 2FA Code" value={otpCode} onChange={(e) => {
+                <Input ref={inputRef} icon="fas fa-key" placeholder="OTP / 2FA Code" value={otpCode} onChange={(e) => {
+                    const value = e.target.value;
+
+                    if (value.match(/[^0-9]/)) return;
+                    if (value.length > 6) return;
+
                     setOTPCode(e.target.value);
                     setError("");
                 }} autoComplete="off" />

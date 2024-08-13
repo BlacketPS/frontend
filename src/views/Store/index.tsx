@@ -1,9 +1,12 @@
+import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
-import { ImageOrVideo } from "@components/index";
 import Textfit from "@namhong2001/react-textfit";
+import { ImageOrVideo, Input } from "@components/index";
+import { Category } from "./components/index";
 import { useUser } from "@stores/UserStore/index";
 import styles from "./store.module.scss";
+import { Product } from "./store.d";
 
 const blooks = [
     "/content/blooks/Bia.webm"
@@ -22,15 +25,21 @@ export default function Store() {
             case (hour < 5):
                 return `Why are you still awake ${username}? Welcome to the Store!`;
             case (hour < 12):
-                return `Good Morning ${username}, Welcome to the Store!`;
+                return `Good morning ${username}, Welcome to the Store!`;
             case (hour < 18):
-                return `Good Afternoon ${username}, Welcome to the Store!`;
+                return `Good afternoon ${username}, Welcome to the Store!`;
             case (hour < 22):
-                return `Good Evening ${username}, Welcome to the Store!`;
+                return `Good evening ${username}, Welcome to the Store!`;
             default:
-                return `Good Night ${username}, Welcome to the Store!`;
+                return `Good night ${username}, Welcome to the Store!`;
         }
     };
+
+    const [products, setProducts] = useState<Product[]>([
+        { name: "Blacket Plus", monthly: true, price: 2.99, lifetime: 39.99, image: "https://cdn.blacket.org/static/content/badges/Plus.png", colors: ["#071d8b", "#3d8def"], type: "Plan" },
+        { name: "1Hr Booster", price: 9.99, image: "https://blacket.org/content/items/1%20Hour%20Booster.webp", colors: ["#0d96d6", "#61ecff"], type: "Item" },
+        { name: "3Hr Booster", price: 14.99, image: "https://blacket.org/content/items/3%20Hour%20Booster.webp", colors: ["#d68213", "#edd557"], type: "Item" }
+    ]);
 
     return (
         <>
@@ -42,19 +51,43 @@ export default function Store() {
                     </div>
                 </div>
 
-                <div className={styles.category}>
-                    <div className={styles.categoryTitle}>Plans</div>
-                    <div className={styles.categorySubTitle}>Purchase a plan to unlock new features!</div>
-                    <div className={styles.categoryDivider} />
-                    <div className={styles.categoryProducts}>
-                        <div className={styles.product}>
-                            <div className={styles.productImage} />
-                            <div className={styles.productTitle}>Premium</div>
-                            <div className={styles.productDescription}>Unlock new features and support the developers!</div>
-                            <div className={styles.productPrice}>$5.00</div>
-                        </div>
-                    </div>
-                </div>
+                <Category title="Plans" subTitle="Purchase a plan to unlock new features!">
+                    {
+                        products.filter((product) => product.type === "Plan").map((product, i) => (
+                            <div key={i} className={styles.product} style={{ background: `linear-gradient(15deg, ${product.colors[0]}, ${product.colors[1]})` }}>
+                                <ImageOrVideo className={styles.productImage} src={product.image} />
+                                <div className={styles.productText}>
+                                    <div className={styles.productTitle}>{product.name}</div>
+                                    <div className={styles.productPrice}>${product.price}{product.monthly && " monthly"}</div>
+                                    {product.lifetime && <div className={styles.productSubPrice}>${product.lifetime} lifetime</div>}
+                                </div>
+
+                                {Array.from({ length: 3 }, (_, i) => (
+                                    <div key={i} className={styles.shine} />
+                                ))}
+                            </div>
+                        ))
+                    }
+                </Category>
+
+                <Category title="Items" subTitle="Enchant your experience by adventuring with your wallet into our godlike items and recieve benefits in return to enhance your Blacket Rewrite experience!">
+                    {
+                        products.filter((product) => product.type === "Item").map((product, i) => (
+                            <div key={i} className={styles.product} style={{ background: `linear-gradient(15deg, ${product.colors[0]}, ${product.colors[1]})` }}>
+                                <ImageOrVideo className={styles.productImage} src={product.image} />
+                                <div className={styles.productText}>
+                                    <div className={styles.productTitle}>{product.name}</div>
+                                    <div className={styles.productPrice}>${product.price}{product.monthly && " monthly"}</div>
+                                    {product.lifetime && <div className={styles.productSubPrice}>${product.lifetime} lifetime</div>}
+                                </div>
+
+                                {Array.from({ length: 3 }, (_, i) => (
+                                    <div key={i} className={styles.shine} />
+                                ))}
+                            </div>
+                        ))
+                    }
+                </Category>
             </div>
 
             <Tooltip id="store" place="bottom">What are you looking to purchase today?</Tooltip>
@@ -63,5 +96,5 @@ export default function Store() {
                 <img className={styles.rightSideStore} src={import.meta.env.VITE_CDN_URL + "/content/store.png"} alt="Store" data-tooltip-id="store" />
             </div>
         </>
-    );
+    ); 
 }

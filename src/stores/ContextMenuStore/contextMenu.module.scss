@@ -16,6 +16,16 @@
         box-shadow: unset;
         padding: 5px 0 5px 0;
         border-radius: unset;
+        animation: slideInFromBottom .3s ease;
+
+        @keyframes slideInFromBottom {
+            0% {
+                transform: translateY(100%);
+            }
+            100% {
+                transform: translateY(0);
+            }
+        }
     }
 }
 
@@ -73,6 +83,16 @@
         width: 100%;
         height: 100%;
         overflow: auto;
-        background-color: rgba(0, 0, 0, .6);
+        background-color: rgba(0, 0, 0, 0);
+        animation: fadeBackgroundIn .3s ease forwards;
+
+        @keyframes fadeBackgroundIn {
+            0% {
+                background-color: rgba(0, 0, 0, 0);
+            }
+            100% {
+                background-color: rgba(0, 0, 0, 0.6);
+            }
+        }
     }
 }

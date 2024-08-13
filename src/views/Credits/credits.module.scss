@@ -1,23 +1,33 @@
 .container {
-    align-content: center;
-    flex-direction: row;
-    padding-left: 5vw;
-    flex-wrap: wrap;
     display: flex;
-    gap: 2vw;
+    flex-direction: row;
+    justify-content: space-evenly;
+    margin: 20px 5% 10px;
+    flex-wrap: wrap;
+    gap: 10px;
+
+    @media screen and (max-width: 768px) {
+        flex-direction: column;
+        padding-bottom: 20px;
+    }
 }
 
 .creditContainer {
-    box-shadow: inset 0 -7px rgba(0, 0, 0, 0.2), 0 0 4px rgba(0, 0, 0, 0.15);
-    background-color: var(--primary-color);
-    transition: transform 0.2s;
-    border-radius: 10px;
-    align-items: center;
-    padding-left: 1%;
-    cursor: pointer;
     display: flex;
-    height: 19vh;
-    width: 42%;
+    flex-direction: row;
+    width: 450px;
+    height: 125px;
+    padding: 10px 10px 15px;
+    background-color: var(--primary-color);
+    border-radius: 7px;
+    text-decoration: none;
+    box-shadow: inset 0 -5px rgba(0, 0, 0, .2);
+    cursor: pointer;
+    transition: .2s transform;
+
+    @media screen and (max-width: 768px) {
+        width: auto;
+    }
 
     &:hover {
         transform: scale(0.95);
@@ -28,36 +38,49 @@
     }
 }
 
-.avatar {
-    height: calc(100% - 20px);
-    -o-object-fit: contain;
-    object-fit: contain;
-    position: relative;
-    top: -7px;
-}
-
-.creditUserContainer {
-    align-items: flex-start;
-    flex-direction: column;
-    margin-left: 4%;
-    margin-top: 5%;
+.creditAvatar {
     display: flex;
-    height: 100%;
-}
-
-.creditUserInfoContainer {
-    flex-direction: row;
+    justify-content: center;
     align-items: center;
-    display: flex;
-    gap: 5%;
+    width: 125px;
+    height: 100%;
 
-    h1 {
-        font-size: 2.1em;
-        margin: 0;
+    &>img {
+        width: 100%;
+        height: 100%;
+        -o-object-fit: contain;
+        object-fit: contain;
+    }
+
+    &>video {
+        width: 100%;
+        height: 100%;
+        -o-object-fit: contain;
+        object-fit: contain;
     }
 }
 
-.creditUserDescription {
-    white-space: unset !important;
-    font-size: 1.2em !important;
+.creditRightSide {
+    display: flex;
+    flex-direction: column;
+    justify-content: left;
+    margin-left: 7px;
+    flex-grow: 1;
+
+    @media screen and (max-width: 768px) {
+        margin-left: 10px;
+    }
+}
+
+.creditUsername {
+    font-size: 30px;
+}
+
+.creditDescription {
+    font-size: 15px;
+    margin-left: 2px;
+    overflow: hidden;
+    max-width: 300px;
+    height: 100%;
+    mask-image: linear-gradient(180deg, #000 40%, transparent);
 }

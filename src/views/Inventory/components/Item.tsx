@@ -10,7 +10,7 @@ export default function Item({ item, usesLeft, ...props }: ItemProps) {
 
     return (
         <div className={styles.item} {...props}>
-            <img src={resourceIdToPath(item.imageId) || "https://cdn.blacket.org/static/content/blooks/Error.png"} alt={item.name} draggable={false} />
+            <img src={resourceIdToPath(item.imageId)} alt={item.name} draggable={false} />
 
             <div style={{
                 backgroundColor: rarities.find((r) => r.id === item.rarityId)!.color

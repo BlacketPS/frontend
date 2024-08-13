@@ -1,6 +1,6 @@
 import { PublicUser } from "blacket-types";
 
-interface CreditProps {
+export interface CreditUser {
     user: PublicUser;
     description: string;
 }

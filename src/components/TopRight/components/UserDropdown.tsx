@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useModal } from "@stores/ModalStore/index";
 import { useUser } from "@stores/UserStore/index";
 import { useData } from "@stores/DataStore/index";
-import { ImageOrVideo, Modal } from "@components/index";
+import { ImageOrVideo, Modal, Username } from "@components/index";
 import styles from "../topRight.module.scss";
 
 import { UserDropdownProps } from "../topRight.d";
@@ -17,12 +17,7 @@ export default function UserDropdown({ user }: UserDropdownProps) {
             <div className={styles.userLeft}>
                 <ImageOrVideo src={getUserAvatarPath(user)} draggable={false} />
 
-                <div className={
-                    user.color === "rainbow" ? "rainbow" : ""
-                } style={{
-                    color: user.color,
-                    fontFamily: fontIdToName(user.fontId)
-                }}>{user.username}</div>
+                <Username user={user} />
             </div>
 
             <i className={`${styles.userDropdownIcon} fas fa-angle-down`} />
@@ -31,7 +26,7 @@ export default function UserDropdown({ user }: UserDropdownProps) {
                 <Link to="/settings">
                     <i className="fas fa-cog" /> Settings
                 </Link>
-
+                
                 <Link to="/login" onClick={(e) => {
                     e.preventDefault();
 

@@ -56,6 +56,7 @@ export default function Dropdown({ options, onPick, children }: DropdownProps) {
                     <div className={styles.itemList}>
                         {options.filter((option) => option.name.toLowerCase().includes(searchQuery.toLowerCase())).length > 0 ? options.filter((option) => option.name.toLowerCase().includes(searchQuery.toLowerCase())).map((option, i) => (
                             <div key={i} className={styles.itemListItem} onClick={() => {
+                                if (option.onClick) option.onClick();
                                 onPick(option.value);
 
                                 setDropdownOpen(false);

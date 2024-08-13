@@ -33,8 +33,10 @@ declare global {
             delete: (url: string, body: object) => Promise<Fetch2Response>;
             patch: (url: string, body: object) => Promise<Fetch2Response>;
         };
-
         socket: Socket;
+        
+        constructCDNUrl: (path: string) => string;
+        errorImage: string;
     }
 }
 

@@ -6,7 +6,7 @@
     position: absolute;
     top: 50px;
     left: 85px;
-    z-index: 1;
+    z-index: 0;
     transform: scale(.95);
 
     @media only screen and (max-width: 1400px) {
@@ -159,28 +159,22 @@
     transform: translateX(-50%);
 }
 
-.username1 {
-    font-family: "Titan One", sans-serif;
-}
-
 .score1 {
-    font-size: 60px;
-    height: 7.5vh;
-    top: 17vh;
+    top: 12vh;
+    font-family: "Nunito", sans-serif;
+    font-weight: 700;
 
     &>img {
         position: relative;
         top: 7.5px;
-        width: 65px;
-        height: 65px;
+        width: 45px;
         object-fit: content;
     }
 
     &>video {
         position: relative;
         top: 7.5px;
-        width: 65px;
-        height: 65px;
+        width: 45px;
         object-fit: content;
     }
 }
@@ -226,7 +220,6 @@
     width: 20vw;
     left: 50%;
     transform: translateX(-50%);
-    font-family: "Titan One", sans-serif;
 }
 
 .score2 {
@@ -235,24 +228,22 @@
     width: 20vw;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 50px;
-    height: 6vh;
-    top: 13.5vh;
+    top: 12vh;
     font-family: "Nunito", sans-serif;
+    font-weight: 700;
+    text-align: center;
 
     &>img {
         position: relative;
-        top: 5px;
-        width: 50px;
-        height: 50px;
+        top: 7.5px;
+        width: 45px;
         object-fit: content;
     }
 
     &>video {
         position: relative;
-        top: 5px;
-        width: 50px;
-        height: 50px;
+        top: 7.5px;
+        width: 45px;
         object-fit: content;
     }
 }
@@ -291,7 +282,6 @@
     width: 20vw;
     left: 50%;
     transform: translateX(-50%);
-    font-family: "Titan One", sans-serif;
 }
 
 .score3 {
@@ -300,24 +290,22 @@
     width: 20vw;
     left: 50%;
     transform: translateX(-50%);
-    font-size: 40px;
-    height: 5vh;
-    top: 11.75vh;
+    top: 12vh;
     font-family: "Nunito", sans-serif;
+    font-weight: 700;
+    text-align: center;
 
     &>img {
         position: relative;
-        top: 2px;
-        width: 35px;
-        height: 35px;
+        top: 7.5px;
+        width: 40px;
         object-fit: content;
     }
 
     &>video {
         position: relative;
-        top: 2px;
-        width: 35px;
-        height: 35px;
+        top: 7.5px;
+        width: 40px;
         object-fit: content;
     }
 }
@@ -534,6 +522,7 @@
     font-size: 32px;
     text-align: right;
     margin-right: 20px;
+    font-weight: 700;
 
     &>img {
         position: relative;

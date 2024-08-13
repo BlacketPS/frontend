@@ -339,9 +339,8 @@
     align-items: center;
     width: calc(100% - 25px);
     gap: 5px;
-    margin: 0 0 0 25px;
+    margin: 0 0 0 24px;
     font-size: 1rem;
-    border-radius: 5px;
     user-select: none;
     cursor: pointer;
     white-space: nowrap;
@@ -349,10 +348,11 @@
     overflow: hidden;
 
     &>img:nth-child(1) {
-        width: 41.25px;
-        height: 15px;
+        width: 42px;
+        height: 20px;
         opacity: 0.5;
         margin-top: 10px;
+        filter: invert(1);
 
         @media (max-width: 768px) {
             width: 25.25px;

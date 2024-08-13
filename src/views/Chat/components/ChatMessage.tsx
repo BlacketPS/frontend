@@ -86,7 +86,7 @@ export default memo(function ChatMessage({ id, author, newUser, createdAt, reply
                     message?.classList.add(styles.highlightedMessage);
                     setTimeout(() => message?.classList.remove(styles.highlightedMessage), 1500);
                 }}>
-                    <img src="https://cdn.blacket.org/static/content/replyingToArrow.png" />
+                    <img src={window.constructCDNUrl("/content/reply.svg")} />
 
                     <ImageOrVideo src={replyingToAvatarURL} />
 

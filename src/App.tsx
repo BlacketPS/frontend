@@ -16,5 +16,7 @@ const router = createBrowserRouter([{
 }]);
 
 export default function App() {
+    window.constructCDNUrl = (path: string) => `${import.meta.env.VITE_CDN_URL}${path}`;
+
     return <RouterProvider router={router} />;
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useModal } from "@stores/ModalStore/index";
 import { Modal, Form, Input, Button, ErrorContainer } from "@components/index";
 
@@ -9,7 +9,13 @@ export default function LookupUserModal({ onClick }: LookupUserModalProps) {
     const [error, setError] = useState<string>("");
     const [username, setUsername] = useState<string>("");
 
+    const inputRef = useRef<HTMLInputElement>(null);
+
     const { closeModal } = useModal();
+
+    useEffect(() => {
+        inputRef.current?.focus();
+    }, []);
 
     return (
         <>
@@ -19,7 +25,7 @@ export default function LookupUserModal({ onClick }: LookupUserModalProps) {
             <Modal.ModalBody>Which user's statistics do you wish to lookup?</Modal.ModalBody>
 
             <Form>
-                <Input icon="fas fa-user" placeholder="Username" value={username} onChange={(e) => {
+                <Input ref={inputRef} icon="fas fa-user" placeholder="Username" value={username} onChange={(e) => {
                     setUsername(e.target.value);
                     setError("");
                 }} maxLength={64} autoComplete="off" />

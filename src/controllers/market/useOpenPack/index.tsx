@@ -13,11 +13,14 @@ export function useOpenPack() {
     const openPack = (dto: MarketOpenPackDto) => new Promise<OpenPackResponse>((resolve, reject) => window.fetch2.post("/api/market/open-pack", dto)
         .then((res: OpenPackResponse) => {
             const userBlooks = user.blooks;
+            const statistics = user.statistics;
 
             if (!userBlooks[res.data.id]) userBlooks[res.data.id] = 1;
             else userBlooks[res.data.id]++;
 
-            setUser({ ...user, blooks: userBlooks, tokens: user.tokens - packs.find((pack) => pack.id === dto.packId)!.price });
+            statistics.packsOpened++;
+
+            setUser({ ...user, blooks: userBlooks, tokens: user.tokens - packs.find((pack) => pack.id === dto.packId)!.price, statistics });
 
             resolve(res);
         })
