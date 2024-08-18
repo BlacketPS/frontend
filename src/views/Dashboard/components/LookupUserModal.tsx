@@ -13,38 +13,39 @@ export default function LookupUserModal({ onClick }: LookupUserModalProps) {
 
     const { closeModal } = useModal();
 
+    const submit = () => {
+        if (username.trim() === "") return setError("Where's the username?");
+        if (username.includes("%")) return setError("Percent signs are not allowed in usernames.");
+
+        setLoading(true);
+        onClick(username)
+            .then(() => closeModal())
+            .catch((err: Fetch2Response) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
+            .finally(() => setLoading(false));
+    };
+
     useEffect(() => {
         inputRef.current?.focus();
     }, []);
 
     return (
         <>
-            <Modal.ModalHeader>
-                Lookup User
-            </Modal.ModalHeader>
+            <Modal.ModalHeader>Lookup User</Modal.ModalHeader>
             <Modal.ModalBody>Which user's statistics do you wish to lookup?</Modal.ModalBody>
 
-            <Form>
+            <Form onSubmit={submit}>
                 <Input ref={inputRef} icon="fas fa-user" placeholder="Username" value={username} onChange={(e) => {
                     setUsername(e.target.value);
                     setError("");
                 }} maxLength={64} autoComplete="off" />
-            </Form>
+            </Form >
 
-            {error !== "" && <ErrorContainer>{error}</ErrorContainer>}
+            {error !== "" && <ErrorContainer>{error}</ErrorContainer>
+            }
 
             <Modal.ModalButtonContainer loading={loading}>
-                <Button.GenericButton onClick={() => {
-                    if (username.trim() === "") return setError("Where's the username?");
-                    if (username.includes("%")) return setError("Percent signs are not allowed in usernames.");
-
-                    setLoading(true);
-                    onClick(username)
-                        .then(() => closeModal())
-                        .catch((err: Fetch2Response) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
-                        .finally(() => setLoading(false));
-                }}>Lookup</Button.GenericButton>
-                <Button.GenericButton onClick={() => closeModal()}>Cancel</Button.GenericButton>
+                <Button.GenericButton onClick={submit} type="submit">Lookup</Button.GenericButton>
+                <Button.GenericButton onClick={closeModal}>Cancel</Button.GenericButton>
             </Modal.ModalButtonContainer>
         </>
     );

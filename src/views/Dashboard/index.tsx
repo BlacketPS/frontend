@@ -103,7 +103,7 @@ export default function Dashboard() {
                     <div className={styles.smallButtonContainer}>
                         <SmallButton icon="fas fa-user-plus" onClick={() => createModal(<LookupUserModal onClick={viewUser} />)}>Lookup User</SmallButton>
                         {viewingUser.id === user.id && <SmallButton icon="fas fa-star" onClick={() => { }}>Daily Rewards</SmallButton>}
-                        <SmallButton icon="fas fa-cart-shopping" onClick={() => { 
+                        <SmallButton icon="fas fa-cart-shopping" onClick={() => {
                             navigate("/store");
                         }}>Store</SmallButton>
                         {viewingUser.id !== user.id && <SmallButton icon="fas fa-reply" onClick={() => {
@@ -114,9 +114,9 @@ export default function Dashboard() {
                     </div>
 
                     <div className={styles.userBadges}>
-                        <div>
-                            <img src="https://blacket.org/content/badges/Tester.webp" />
-                        </div>
+                        {viewingUser.badges.sort((a, b) => a.priority - b.priority).map((badge) => <div className={styles.badgeContainer} key={badge.id}>
+                            <ImageOrVideo src={resourceIdToPath(badge.imageId)} alt={badge.name} />
+                        </div>)}
                     </div>
 
                     {viewingUser.discord && <div className={styles.discordContainer}>

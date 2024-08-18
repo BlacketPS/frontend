@@ -34,10 +34,16 @@ export default function Leaderboard() {
 
     if (leaderboard) return (
         <>
-            <FilterButton onClick={switchSort}>{sortBy === PlacementType.TOKEN ? "Tokens" : "Experience"}</FilterButton>
+            {
+                // <FilterButton onClick={switchSort}>{sortBy === PlacementType.TOKEN ? "Tokens" : "Experience"}</FilterButton>
+            }
 
             <div className={styles.wrapper}>
-                {leaderboard[sortBy === PlacementType.TOKEN ? "tokens" : "experience"].slice(0, 3).map((user, i) => <BigPlacement key={i} type={sortBy} placement={i + 1 as 1 | 2 | 3} user={user} />)}
+                {
+                    // TODO: fix this and make this better later on
+
+                    // leaderboard[sortBy === PlacementType.TOKEN ? "tokens" : "experience"].slice(0, 3).map((user, i) => <BigPlacement key={i} type={sortBy} placement={i + 1 as 1 | 2 | 3} user={user} />)
+                }
 
                 <div className={styles.otherStandings}>
                     <FilterButton mobile={true} onClick={switchSort}>{sortBy === PlacementType.TOKEN ? "Tokens" : "Experience"}</FilterButton>

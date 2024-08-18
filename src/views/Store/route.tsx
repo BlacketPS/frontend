@@ -6,5 +6,6 @@ export default {
     title: `Store | ${import.meta.env.VITE_INFORMATION_NAME}`,
     description: "Purchase items from the store to enhance your experience.",
     sidebar: true,
-    topRight: []
+    topRight: [],
+    dontUseBody: true
 } as BlacketRoute;

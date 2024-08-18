@@ -19,7 +19,6 @@ const fetchInterceptor = (method: HTTPMethod) => (url: string, body: JSON) => ne
 })
     .then(async (response: Response) => {
         let data;
-
         try {
             data = await response.json();
         } catch {

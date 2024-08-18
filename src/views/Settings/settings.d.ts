@@ -7,4 +7,4 @@ export interface SettingsContainerProps extends HTMLAttributes<HTMLDivElement> {
     };
 }
 
-export interface UpgradeButtonProps extends HTMLAttributes<HTMLDivElement> { }
+export interface UpgradeButtonProps extends HTMLAttributes<HTMLAnchorElement> { }

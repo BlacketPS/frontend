@@ -80,12 +80,16 @@ body {
     }
 }
 
+button {
+    all: unset;
+}
+
 a {
     color: var(--accent-color);
 }
 
 .rainbow {
-    background: linear-gradient(90deg, red, #ff8000, #ff0, #0f0, #0ff, #00f, #f0f, red);
+    background: linear-gradient(90deg, red, orange, yellow, #0f0, #0ff, blue, #f0f, red);
     background-size: 200%;
     background-clip: text;
     -webkit-background-clip: text;

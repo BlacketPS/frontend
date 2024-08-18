@@ -150,57 +150,66 @@ export default function Market() {
             <SidebarBody pushOnMobile={true}>
                 <PageHeader>Market</PageHeader>
 
-                <div className={styles.buttonHolder}>
-                    <Button.LittleButton onClick={toggleInstantOpen}>Instant Open: {user.settings.openPacksInstantly ? "On" : "Off"}</Button.LittleButton>
-                </div>
-
-                <SearchBox
-                    placeholder="Search for a pack or shop item..."
-                    containerProps={{
-                        style: { margin: "20px auto 10px" }
-                    }}
-                    buttons={[
-                        { icon: !search.onlyPurchasable ? "fas fa-eye" : "fas fa-eye-slash", tooltip: "Only Purchasable", onClick: () => setSearch({ ...search, onlyPurchasable: !search.onlyPurchasable }) },
-                        { icon: "fas fa-times", tooltip: "Reset Search", onClick: () => {
-                            localStorage.removeItem("MARKET_SEARCH_QUERY");
-                            setSearch({ ...search, query: "" });
-                        }}
-                    ]}
-                    value={search.query}
-                    onChange={(e) => {
-                        localStorage.setItem("MARKET_SEARCH_QUERY", e.target.value);
-
-                        setSearch({
-                            ...search,
-                            query: e.target.value
-                        });
-                    }}
-                />
-
-                <Category header={`Packs (${packs.length})`} internalName="MARKET_PACKS">
-                    <div className={styles.packsWrapper}>
-                        {packs.map((pack) =>
-                            pack.name.toLowerCase().includes(search.query.toLowerCase())
-                            && (!search.onlyPurchasable || user.tokens >= pack.price)
-                            && <Pack key={pack.id} pack={pack} onClick={() => {
-                                if (!user.settings.openPacksInstantly) createModal(<OpenPackModal
-                                    pack={pack}
-                                    userTokens={user.tokens}
-                                    onYesButton={() => purchasePack({ packId: pack.id })}
-                                />);
-                                else purchasePack({ packId: pack.id });
-                            }} />)}
+                <div className={styles.leftSide}>
+                    <div className={styles.buttonHolder}>
+                        <Button.LittleButton onClick={toggleInstantOpen}>Instant Open: {user.settings.openPacksInstantly ? "On" : "Off"}</Button.LittleButton>
                     </div>
-                </Category>
 
-                <Category header="Weekly Shop" internalName="MARKET_WEEKLY_SHOP">
-                    There are no items in the weekly shop.
-                </Category>
+                    <SearchBox
+                        placeholder="Search for a pack or shop item..."
+                        containerProps={{
+                            style: { margin: "20px 5% 10px" }
+                        }}
+                        buttons={[
+                            { icon: !search.onlyPurchasable ? "fas fa-eye" : "fas fa-eye-slash", tooltip: "Only Purchasable", onClick: () => setSearch({ ...search, onlyPurchasable: !search.onlyPurchasable }) },
+                            {
+                                icon: "fas fa-times", tooltip: "Reset Search", onClick: () => {
+                                    localStorage.removeItem("MARKET_SEARCH_QUERY");
+                                    setSearch({ ...search, query: "" });
+                                }
+                            }
+                        ]}
+                        value={search.query}
+                        onChange={(e) => {
+                            localStorage.setItem("MARKET_SEARCH_QUERY", e.target.value);
 
-                <Category header="Item Shop" internalName="MARKET_ITEM_SHOP">
-                    There are no items in the item shop.
-                </Category>
+                            setSearch({
+                                ...search,
+                                query: e.target.value
+                            });
+                        }}
+                    />
+
+                    <Category header={`Packs (${packs.length})`} internalName="MARKET_PACKS">
+                        <div className={styles.packsWrapper}>
+                            {packs.map((pack) =>
+                                pack.name.toLowerCase().includes(search.query.toLowerCase())
+                                && (!search.onlyPurchasable || user.tokens >= pack.price)
+                                && <Pack key={pack.id} pack={pack} onClick={() => {
+                                    if (!user.settings.openPacksInstantly) createModal(<OpenPackModal
+                                        pack={pack}
+                                        userTokens={user.tokens}
+                                        onYesButton={() => purchasePack({ packId: pack.id })}
+                                    />);
+                                    else purchasePack({ packId: pack.id });
+                                }} />)}
+                        </div>
+                    </Category>
+
+                    <Category header="Weekly Shop" internalName="MARKET_WEEKLY_SHOP">
+                        There are no items in the weekly shop.
+                    </Category>
+
+                    <Category header="Item Shop" internalName="MARKET_ITEM_SHOP">
+                        There are no items in the item shop.
+                    </Category>
+                </div>
             </SidebarBody>
+
+            <div className={styles.rightSide}>
+                <img className={styles.rightSideBlook} src={window.constructCDNUrl("/content/mark.png")} alt="Blook" />
+                <img className={styles.rightSideStore} src={window.constructCDNUrl("/content/market.png")} alt="Market" />
+            </div>
 
             {
                 currentPack && <div className={styles.openModal} style={{

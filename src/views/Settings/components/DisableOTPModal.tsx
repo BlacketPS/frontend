@@ -14,6 +14,17 @@ export default function DisableOTPModal() {
 
     const { closeModal } = useModal();
 
+    const submit = () => {
+        if (otpCode.length !== 6) return;
+
+        setLoading(true);
+
+        disable({ otpCode })
+            .then(() => closeModal())
+            .catch((err: Fetch2Response) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
+            .finally(() => setLoading(false));
+    };
+
     useEffect(() => {
         inputRef.current?.focus();
     }, []);
@@ -23,7 +34,7 @@ export default function DisableOTPModal() {
             <Modal.ModalHeader>Disable OTP</Modal.ModalHeader>
             <Modal.ModalBody>Please fill out the form below to disable OTP.</Modal.ModalBody>
 
-            <Form>
+            <Form onSubmit={submit}>
                 <Input ref={inputRef} icon="fas fa-key" placeholder="OTP / 2FA Code" value={otpCode} onChange={(e) => {
                     const value = e.target.value;
 
@@ -38,13 +49,7 @@ export default function DisableOTPModal() {
             {error !== "" && <ErrorContainer>{error}</ErrorContainer>}
 
             <Modal.ModalButtonContainer loading={loading}>
-                <Button.GenericButton onClick={() => {
-                    setLoading(true);
-                    disable({ otpCode })
-                        .then(() => closeModal())
-                        .catch((err: Fetch2Response) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
-                        .finally(() => setLoading(false));
-                }}>Disable</Button.GenericButton>
+                <Button.GenericButton onClick={submit} type="submit">Disable</Button.GenericButton>
                 <Button.GenericButton onClick={() => closeModal()}>Cancel</Button.GenericButton>
             </Modal.ModalButtonContainer>
         </>

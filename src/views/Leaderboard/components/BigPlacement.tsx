@@ -20,12 +20,12 @@ export default function BigPlacement({ type, placement, user }: BigPlacementProp
                 </div>
 
                 <Textfit className={styles[`score${placement}`]} min={25} max={40} mode="single">
-                    <img src={`https://cdn.blacket.org/static/content/${type === PlacementType.TOKEN ? "token" : "experience"}.png`} /> {user[type]?.toLocaleString()}
+                    <img src={window.constructCDNUrl(`/content/${type === PlacementType.TOKEN ? "token" : "experience"}.png`)} /> {user[type]?.toLocaleString()}
                 </Textfit>
 
                 <div className={styles[`place${placement}`]}>
-                    <Textfit className={styles.placeText} min={0} max={85} mode="single">{placement}</Textfit>
-                    <Textfit className={styles.placeSuffix} min={0} max={30} mode="single">{cardinalToOrdinal(placement)}</Textfit>
+                    <div className={styles.placeText}>{placement}</div>
+                    <div className={styles.placeSuffix}>{cardinalToOrdinal(placement)}</div>
                 </div>
 
                 <div className={styles[`avatar${placement}`]}>

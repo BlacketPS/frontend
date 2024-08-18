@@ -7,7 +7,7 @@
     top: 50px;
     left: 85px;
     z-index: 0;
-    transform: scale(.95);
+    // transform: scale(.95);
 
     @media only screen and (max-width: 1400px) {
         top: 0;
@@ -16,6 +16,7 @@
     @media only screen and (max-width: 850px) {
         left: 0;
         top: 55px;
+        transform: scale(.95);
     }
 }
 
@@ -37,8 +38,8 @@
     margin-bottom: 10px;
 
     @media only screen and (min-width: 1400px) {
-        display: none;
-        visibility: hidden;
+        /* display: none;
+        visibility: hidden; */
     }
 }
 
@@ -349,7 +350,8 @@
     display: flex;
     flex-direction: column;
     position: absolute;
-    top: 96vh;
+    // top: 96vh;
+    top: 0;
     left: 10vw;
     width: 80vw;
     padding: 1vh 0 4vh;
@@ -368,13 +370,13 @@
 }
 
 .otherTopThreeStandings {
-    display: none;
+    // display: none;
 
-    @media only screen and (max-width: 1400px) {
-        display: flex;
-        visibility: visible;
-        flex-direction: column;
-    }
+    // @media only screen and (max-width: 1400px) {
+    display: flex;
+    visibility: visible;
+    flex-direction: column;
+    // }
 }
 
 .otherStandingHolder {

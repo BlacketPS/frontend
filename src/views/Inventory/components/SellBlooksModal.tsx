@@ -18,6 +18,14 @@ export default function SellBlooksModal({ blook }: SellBlooksModalProps) {
 
     const inputRef = useRef<HTMLInputElement>(null);
 
+    const submit = () => {
+        setLoading(true);
+        sellBlooks({ blookId: blook.id, quantity: parseInt(quantity) })
+            .then(() => closeModal())
+            .catch((err: Fetch2Response) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
+            .finally(() => setLoading(false));
+    };
+
     useEffect(() => {
         inputRef.current?.focus();
     }, []);
@@ -31,7 +39,7 @@ export default function SellBlooksModal({ blook }: SellBlooksModalProps) {
             <Modal.ModalBody>How many Blooks would you like to sell?</Modal.ModalBody>
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
-                <Form style={{ width: "75px" }}>
+                <Form style={{ width: "75px" }} onSubmit={submit}>
                     <Input ref={inputRef} value={quantity} style={{ fontSize: "25px" }} onChange={(e) => {
                         const value = e.target.value;
                         const parsedValue = parseInt(value);
@@ -50,14 +58,8 @@ export default function SellBlooksModal({ blook }: SellBlooksModalProps) {
             {error !== "" && <ErrorContainer>{error}</ErrorContainer>}
 
             <Modal.ModalButtonContainer loading={loading}>
-                <Button.GenericButton onClick={() => {
-                    setLoading(true);
-                    sellBlooks({ blookId: blook.id, quantity: parseInt(quantity) })
-                        .then(() => closeModal())
-                        .catch((err: Fetch2Response) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
-                        .finally(() => setLoading(false));
-                }}>Sell</Button.GenericButton>
-                <Button.GenericButton onClick={() => closeModal()}>Cancel</Button.GenericButton>
+                <Button.GenericButton onClick={submit} type="submit">Sell</Button.GenericButton>
+                <Button.GenericButton onClick={closeModal}>Cancel</Button.GenericButton>
             </Modal.ModalButtonContainer>
         </>
     );

@@ -25,6 +25,17 @@ export default function EnableOTPModal() {
 
     if (!user) return null;
 
+    const submit = () => {
+        if (otpCode.length !== 6) return;
+
+        setLoading(true);
+
+        enable({ otpCode })
+            .then(() => closeModal())
+            .catch((err: Fetch2Response) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
+            .finally(() => setLoading(false));
+    };
+
     useEffect(() => {
         inputRef.current?.focus();
 
@@ -44,7 +55,7 @@ export default function EnableOTPModal() {
 
             {qrCodeImage !== "" ? <img src={qrCodeImage} style={{ marginBottom: "10px", borderRadius: "10px" }} /> : <Modal.ModalBody>Loading QR code...</Modal.ModalBody>}
 
-            <Form>
+            <Form onSubmit={submit}>
                 <Input ref={inputRef} icon="fas fa-key" placeholder="OTP / 2FA Code" value={otpCode} onChange={(e) => {
                     const value = e.target.value;
 
@@ -59,14 +70,8 @@ export default function EnableOTPModal() {
             {error !== "" && <ErrorContainer>{error}</ErrorContainer>}
 
             <Modal.ModalButtonContainer loading={loading}>
-                <Button.GenericButton onClick={() => {
-                    setLoading(true);
-                    enable({ otpCode })
-                        .then(() => closeModal())
-                        .catch((err: Fetch2Response) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
-                        .finally(() => setLoading(false));
-                }}>Enable</Button.GenericButton>
-                <Button.GenericButton onClick={() => closeModal()}>Cancel</Button.GenericButton>
+                <Button.GenericButton onClick={submit} type="submit">Enable</Button.GenericButton>
+                <Button.GenericButton onClick={closeModal}>Cancel</Button.GenericButton>
             </Modal.ModalButtonContainer>
 
             <Modal.ModalBody>After scanning the QR code, please enter the OTP / 2FA code you get from it below.<br />If the code doesn't work, try rescanning the QR code.</Modal.ModalBody>
