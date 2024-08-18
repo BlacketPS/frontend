@@ -19,7 +19,7 @@ export default function Credits() {
         },
         {
             user: "zastix",
-            description: "blooket"
+            description: "very super cute ultimate cute cute cute cute girl girl cute"
         },
         {
             user: "Rin",
