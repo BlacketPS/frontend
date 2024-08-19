@@ -18,7 +18,7 @@ import {
 } from "./components/index";
 import styles from "./settings.module.scss";
 
-import { SettingFriendRequest } from "blacket-types";
+import { SettingFriendRequestEnum } from "blacket-types";
 
 export default function Settings() {
     const { setLoading } = useLoading();
@@ -35,7 +35,7 @@ export default function Settings() {
         setLoading("Changing settings");
         changeSetting({
             key: "friendRequests",
-            value: user.settings.friendRequests === SettingFriendRequest.ON ? SettingFriendRequest.MUTUAL : user.settings.friendRequests === SettingFriendRequest.MUTUAL ? SettingFriendRequest.OFF : user.settings.friendRequests === SettingFriendRequest.OFF ? SettingFriendRequest.ON : SettingFriendRequest.ON
+            value: user.settings.friendRequests === SettingFriendRequestEnum.ON ? SettingFriendRequestEnum.MUTUAL : user.settings.friendRequests === SettingFriendRequestEnum.MUTUAL ? SettingFriendRequestEnum.OFF : user.settings.friendRequests === SettingFriendRequestEnum.OFF ? SettingFriendRequestEnum.ON : SettingFriendRequestEnum.ON
         })
             .then(() => setLoading(false))
             .catch(() => createModal(<Modal.ErrorModal>Failed to change settings.</Modal.ErrorModal>))
@@ -96,7 +96,7 @@ export default function Settings() {
 
             <SettingsContainer header={{ icon: "fas fa-cog", text: "General" }}>
                 <Button.ClearButton onClick={friendRequestsButton}>Friend Requests: {
-                    user.settings.friendRequests === 1 ? "On" : user.settings.friendRequests === 2 ? "Off" : user.settings.friendRequests === 3 ? "Mutual" : "Unknown"
+                    user.settings.friendRequests === SettingFriendRequestEnum.ON ? "On" : user.settings.friendRequests === SettingFriendRequestEnum.OFF ? "Off" : user.settings.friendRequests === SettingFriendRequestEnum.MUTUAL ? "Mutual" : "Unknown"
                 }</Button.ClearButton>
                 <Button.ClearButton onClick={() => createModal(user.settings.otpEnabled ? <DisableOTPModal /> : <EnableOTPModal />)}>{user.settings.otpEnabled ? "Disable" : "Enable"} OTP / 2FA</Button.ClearButton>
             </SettingsContainer>
