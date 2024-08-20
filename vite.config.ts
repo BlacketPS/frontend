@@ -25,6 +25,11 @@ export default defineConfig({
                 target: process.env.VITE_BACKEND_URL,
                 changeOrigin: true,
                 ws: true
+            },
+            "/gateway": {
+                target: process.env.VITE_BACKEND_URL,
+                changeOrigin: true,
+                ws: true
             }
         }
     },
