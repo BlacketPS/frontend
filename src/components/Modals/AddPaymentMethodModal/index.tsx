@@ -72,8 +72,6 @@ export default function AddPaymentMethodModal() {
                         onChange={(e) => {
                             const value = e.target.value;
 
-                            console.log(squareCardRef);
-
                             if (value.match(/[^a-zA-Z ]/g)) return;
                             if (value.split(" ").length > 2) return;
 
