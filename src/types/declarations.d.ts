@@ -14,6 +14,7 @@ declare global {
         header: HeaderProps,
         sidebar: boolean,
         topRight: string[TopRightContent],
+        topRightDesktopOnly: boolean,
         dontUseBody: boolean,
         pageHeader: string
     }

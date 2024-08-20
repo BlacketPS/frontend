@@ -7,6 +7,7 @@ export enum TopRightContent {
 
 export interface TopRightProps {
     content: string[TopRightContent];
+    desktopOnly: boolean;
 }
 
 export interface BalanceProps {

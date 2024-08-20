@@ -7,6 +7,11 @@
     z-index: 5;
 
     @media only screen and (max-width: 850px) {
+        &[data-desktop-only="true"] {
+            display: none;
+            visibility: hidden;
+        }
+
         position: fixed;
         top: 55px;
         width: 100%;

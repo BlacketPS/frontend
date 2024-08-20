@@ -5,7 +5,7 @@ import styles from "./topRight.module.scss";
 import { TopRightProps } from "./topRight.d";
 import { useEffect } from "react";
 
-export default function TopRight({ content }: TopRightProps) {
+export default function TopRight({ content, desktopOnly = false }: TopRightProps) {
     const { user } = useUser();
 
     useEffect(() => {
@@ -19,7 +19,7 @@ export default function TopRight({ content }: TopRightProps) {
     if (!user) return null;
 
     if (user) return (
-        <div className={styles.container}>
+        <div className={styles.container} data-desktop-only={desktopOnly}>
             {content.includes("experience") && <ExperienceBalance user={user} />}
             {content.includes("tokens") && <TokenBalance user={user} />}
 
