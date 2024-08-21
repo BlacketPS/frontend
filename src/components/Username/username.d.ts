@@ -1,7 +1,7 @@
 import { CSSProperties, HTMLAttributes } from "react";
-import { PrivateUser, PublicUser } from "blacket-types";
+import { User, PrivateUser, PublicUser } from "blacket-types";
 
 export interface UsernameProps extends HTMLAttributes<HTMLSpanElement> {
-    user: Partial<PrivateUser | PublicUser>;
+    user: Partial<User | PrivateUser | PublicUser>;
     style?: CSSProperties;
 }
