@@ -56,7 +56,7 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
 
     const [completed, setCompleted] = useState<number>(0);
     const [fetchedResources, setFetchedResources] = useState<boolean>(false);
-    const max = 11 + (localStorage.getItem("token") ? 1 : 0);
+    const max = 10 + (localStorage.getItem("token") ? 1 : 0);
 
     useEffect(() => {
         if (!loading) return;
@@ -105,10 +105,7 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
                 }
 
                 setFonts(res.data);
-
-                setCompleted((completed) => completed + 1);
-            })
-            .catch((res) => setError(res));
+            });
 
         if (localStorage.getItem("token")) window.fetch2.get("/api/users/me")
             .then((res) => {
@@ -134,7 +131,7 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
         if (completed >= max) setLoading(false);
     }, [loading, completed]);
 
-    const fontIdToName = (id: number) => fonts.find((font) => font.id === id)?.name ?? fonts[0].name;
+    const fontIdToName = (id: number) => fonts.find((font) => font.id === id)?.name ?? "Nunito";
     const titleIdToText = (id: number) => titles.find((title) => title.id === id)?.name ?? "Unknown";
 
     return <DataStoreContext.Provider value={{
