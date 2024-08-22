@@ -14,7 +14,7 @@ const { Game, Scale, WEBGL } = window.Phaser;
 import Particles from "./functions/PackParticles";
 import styles from "./market.module.scss";
 
-import { Blook, MarketOpenPackDto, Pack as PackType } from "blacket-types";
+import { Blook, MarketOpenPackDto, Pack as PackType, RarityAnimationTypeEnum } from "blacket-types";
 import { ParticlesScene, Config, GameState, BigButtonClickType, SearchOptions } from "./market.d";
 
 const useGame = (config: Config, containerRef: RefObject<HTMLDivElement>) => {
@@ -130,7 +130,10 @@ export default function Market() {
                 await new Promise((r) => setTimeout(r, 250));
                 game?.scene.game.events.emit("start-particles", rarity.animationType);
 
-                await new Promise((r) => setTimeout(r, rarity.animationType < 3 ? 650 : 1250));
+                await new Promise((r) => setTimeout(r,
+                    rarity.animationType === RarityAnimationTypeEnum.UNCOMMON || rarity.animationType === RarityAnimationTypeEnum.RARE
+                        ? 650 : 1250
+                ));
                 setBigButtonEvent(BigButtonClickType.CLOSE);
 
                 break;

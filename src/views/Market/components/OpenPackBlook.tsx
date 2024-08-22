@@ -6,6 +6,7 @@ import Textfit from "@namhong2001/react-textfit";
 import styles from "../market.module.scss";
 
 import { OpenPackBlookProps } from "../market.d";
+import { RarityAnimationTypeEnum } from "blacket-types";
 
 export default function OpenPackBlook({ blook, animate, isNew }: OpenPackBlookProps) {
     const { resourceIdToPath } = useResource();
@@ -19,7 +20,7 @@ export default function OpenPackBlook({ blook, animate, isNew }: OpenPackBlookPr
 
     if (rarity) return (
         <div
-            className={`${styles.openPackBlookContainer} ${animate ? styles[`openPackBlookContainerAnimation${rarity.animationType}`] : ""}`}>
+            className={`${styles.openPackBlookContainer} ${animate ? styles[`openPackBlookContainerAnimation${Object.keys(RarityAnimationTypeEnum).indexOf(rarity.animationType) + 1}`] : ""}`}>
             <ImageOrVideo src={resourceIdToPath(blook.backgroundId)} className={styles.openPackBlookBackground} />
             <div className={styles.openPackBlookBlook}>
                 <ImageOrVideo src={resourceIdToPath(blook.imageId)} />

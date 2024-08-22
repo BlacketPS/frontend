@@ -210,14 +210,14 @@ export default class Particles extends Scene {
     update(e, t) {
         if (data.rarity && 0 !== this.numExplosions && (this.nextParticle -= t, this.nextParticle <= 0)) {
             switch (data.rarity) {
-                case 1: {
+                case "UNCOMMON": {
                     for (let i = 0; i < 2; i++) {
                         const n = data.particles.get();
                         n && n.spawn.apply(n, Object.values(particleType("center")).concat(`particle-${randomInt(1, 8)}`, this.color));
                     }
                     break;
                 }
-                case 2: {
+                case "RARE": {
                     for (let o = 0; o < 2; o++) {
                         const r = data.particles.get();
                         r && r.spawn.apply(r, Object.values(particleType(o % 2 == 0 ? "left-bottom" : "right-bottom")).concat(`particle-${randomInt(1, 8)}`, this.color));
@@ -225,7 +225,7 @@ export default class Particles extends Scene {
                     break;
                 }
 
-                case 3: {
+                case "EPIC": {
                     for (let s = 0; s < 2; s++) {
                         const i = data.particles.get();
                         i && i.spawn.apply(i, Object.values(particleType(s % 2 == 0 ? "left-shower" : "right-shower")).concat(`particle-${randomInt(1, 8)}`, this.color));
@@ -234,7 +234,7 @@ export default class Particles extends Scene {
                     break;
                 }
 
-                case 4: {
+                case "LEGENDARY": {
                     for (let l = 0; l < 3; l++) {
                         const c = data.particles.get();
                         c && c.spawn.apply(c, Object.values(particleType("top")).concat(`particle-${randomInt(1, 8)}`, this.color));
@@ -243,7 +243,7 @@ export default class Particles extends Scene {
                     break;
                 }
 
-                case 5: {
+                case "CHROMA": {
                     for (let u = 0; u < 3; u++) {
                         const d = data.particles.get();
                         d && d.spawn.apply(d, Object.values(particleType(u % 2 == 0 ? "left-diamond" : "right-diamond")).concat(`particle-${randomInt(1, 8)}`, this.color));
@@ -252,7 +252,7 @@ export default class Particles extends Scene {
                     break;
                 }
 
-                case 6: {
+                case "MYSTICAL": {
                     for (let v = 0; v < 3; v++) {
                         const b = data.particles.get();
                         b && b.spawn.apply(b, Object.values(particleType("top")).concat(`particle-${randomInt(1, 8)}`, this.color));
@@ -266,7 +266,7 @@ export default class Particles extends Scene {
                     break;
                 }
 
-                case 7: {
+                case "IRIDESCENT": {
                     for (let h = 0; h < 2; h++) {
                         const m = data.particles.get();
                         m && m.spawn.apply(m, Object.values(particleType(h % 2 == 0 ? "left-bottom" : "right-bottom")).concat(`particle-${randomInt(1, 8)}`, this.color));

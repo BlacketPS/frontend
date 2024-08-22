@@ -1,5 +1,5 @@
-import { Auction } from "blacket-types";
+import { AuctionsAuctionEntity } from "blacket-types";
 
 export interface AuctionProps {
-    auction: Auction;
+    auction: AuctionsAuctionEntity;
 }

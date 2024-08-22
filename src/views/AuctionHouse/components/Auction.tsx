@@ -34,15 +34,18 @@ export default function Auction({ auction }: AuctionProps) {
     const { resourceIdToPath } = useResource();
     const { blooks, items } = useData();
 
-    const item = blooks.find((blook) => blook.id === auction.itemId) || items.find((item) => item.id === auction.itemId);
+    const item = blooks.find((blook) => blook.id === auction.blookId) || items.find((item) => item.id === auction.itemId);
 
     if (!item) return null;
     if (!auction.seller) return null;
+
+    console.log(auction);
 
     return (
         <div className={styles.auction}>
             <div className={styles.auctionImageContainer}>
                 <ImageOrVideo src={resourceIdToPath(item.imageId)} alt={item.name} />
+                {auction.type === AuctionTypeEnum.ITEM && <div className={styles.auctionUsesLeft}>{auction.itemUsesLeft?.toLocaleString()} Use{auction.itemUsesLeft !== 1 ? "s" : ""} Left</div>}
             </div>
 
             <div className={styles.auctionInfo}>
@@ -55,15 +58,21 @@ export default function Auction({ auction }: AuctionProps) {
                             : auction.bids!.length > 0
                                 ? "Current Bid"
                                 : "Starting Bid"
-                    }: <img src={window.constructCDNUrl("/content/token.png")} alt="Token" draggable={false} /> <span>1</span>
+                    }: <img src={window.constructCDNUrl("/content/token.png")} alt="Token" draggable={false} /> <span>{
+                        auction.buyItNow
+                            ? auction.price.toLocaleString()
+                            : auction.bids!.length > 0
+                                ? auction.bids![auction.bids.length - 1].amount.toLocaleString()
+                                : auction.price.toLocaleString()
+                    }</span>
                 </div>
                 <div>Seller: <Username user={auction.seller} /></div>
-                {!auction.buyItNow && <div>Bids: <span>{auction.bids!.length}</span></div>}
+                {!auction.buyItNow && <div>Bids: <span>{auction.bids.length}</span></div>}
             </div>
 
             <div className={styles.auctionBadge}>{auction.buyItNow ? "BIN" : "AUCTION"}</div>
             <div className={styles.auctionTime}>
-                {formatTimeRemaining(auction.expiresAt)} <i className="fas fa-clock" />
+                {formatTimeRemaining(new Date(auction.expiresAt))} <i className="fas fa-clock" />
             </div>
         </div>
     );
