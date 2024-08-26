@@ -4,10 +4,10 @@ import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { useData } from "@stores/DataStore/index";
 import { SearchBox } from "@components/index";
-import { ChangeFilterModal, SetHolder, Blook, Item, RightBlook, RightItem, RightButton, SellBlooksModal } from "./components";
+import { ChangeFilterModal, SetHolder, Blook, Item, RightBlook, RightItem, RightButton, SellBlooksModal, AuctionModal } from "./components";
 import styles from "./inventory.module.scss";
 
-import { Blook as BlookType, Item as ItemType } from "blacket-types";
+import { AuctionTypeEnum, Blook as BlookType, Item as ItemType } from "blacket-types";
 import { SearchOptions } from "./inventory.d";
 
 export default function Inventory() {
@@ -133,14 +133,14 @@ export default function Inventory() {
             {Object.keys(user.blooks).length > 0 && selectedBlook && <RightBlook blook={selectedBlook} owned={user.blooks[selectedBlook.id]} noBlooksOwned={Object.keys(user.blooks).length < 1}>
                 {Object.keys(user.blooks).length > 0 && selectedBlook && <div className={styles.rightButtonContainer}>
                     <RightButton image="https://cdn.blacket.org/static/content/token.png" onClick={() => createModal(<SellBlooksModal blook={selectedBlook} />)}>Sell</RightButton>
-                    <RightButton icon="fas fa-building-columns">Auction</RightButton>
+                    <RightButton icon="fas fa-building-columns" onClick={() => createModal(<AuctionModal type={AuctionTypeEnum.BLOOK} blook={selectedBlook} />)}>Auction</RightButton>
                 </div>}
             </RightBlook>}
 
             {user.items.length > 0 && selectedItem && <RightItem item={selectedItem} usesLeft={user.items.find((i) => i.itemId === selectedItem.id)!.usesLeft}>
                 <div className={styles.rightButtonContainer}>
                     {selectedItem.canUse && <RightButton image="https://cdn.blacket.org/static/content/use.png">Use</RightButton>}
-                    {selectedItem.canAuction && <RightButton icon="fas fa-building-columns">Auction</RightButton>}
+                    {selectedItem.canAuction && <RightButton icon="fas fa-building-columns" onClick={() => createModal(<AuctionModal type={AuctionTypeEnum.ITEM} item={selectedItem} />)}>Auction</RightButton>}
                 </div>
             </RightItem>}
         </>

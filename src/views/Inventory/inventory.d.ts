@@ -1,7 +1,7 @@
 import { HTMLAttributes } from "react";
 
 import { GenericButtonProps } from "@components/Buttons/GenericButton/genericButton";
-import { Blook, Item } from "blacket-types";
+import { AuctionTypeEnum, Blook, Item } from "blacket-types";
 
 export interface SearchOptions {
     query: string;
@@ -47,4 +47,10 @@ export interface SetHolderProps extends HTMLAttributes<HTMLDivElement> {
 
 export interface SellBlooksModalProps {
     blook: Blook;
+}
+
+export interface AuctionModalProps {
+    type: AuctionTypeEnum;
+    blook?: Blook;
+    item?: Item;
 }

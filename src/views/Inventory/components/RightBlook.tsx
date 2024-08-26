@@ -3,11 +3,12 @@ import { useContextMenu } from "@stores/ContextMenuStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { useData } from "@stores/DataStore/index";
 import { Button, ImageOrVideo } from "@components/index";
-import { SellBlooksModal } from "../components";
+import { AuctionModal, SellBlooksModal } from "../components";
 import Textfit from "react-textfit";
 import styles from "../inventory.module.scss";
 
 import { RightBlookProps } from "../inventory";
+import { AuctionTypeEnum } from "blacket-types";
 
 export default function RightBlook({ blook, owned, noBlooksOwned, children, ...props }: RightBlookProps) {
     const { resourceIdToPath } = useResource();
@@ -47,7 +48,13 @@ export default function RightBlook({ blook, owned, noBlooksOwned, children, ...p
                                 createModal(<SellBlooksModal blook={blook} />);
                             }
                         },
-                        { label: "Auction", icon: "fas fa-building-columns" }
+                        {
+                            label: "Auction", icon: "fas fa-building-columns", onClick: () => {
+                                closeContextMenu();
+
+                                createModal(<AuctionModal type={AuctionTypeEnum.BLOOK} blook={blook} />);
+                            }
+                        }
                     ])}
                 >
                     <i className="fas fa-bars" />
