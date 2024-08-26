@@ -5,6 +5,5 @@ export default {
     component: <Chat />,
     title: `Chat | ${import.meta.env.VITE_INFORMATION_NAME}`,
     description: "Chat with other players.",
-    sidebar: true,
-    topRight: []
+    sidebar: true
 } as BlacketRoute;

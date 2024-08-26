@@ -35,7 +35,11 @@ declare global {
             patch: (url: string, body: object) => Promise<Fetch2Response>;
         };
         socket: Socket;
-        
+
+        emojis: {
+            [key: string]: string;
+        }[];
+
         constructCDNUrl: (path: string) => string;
         errorImage: string;
     }

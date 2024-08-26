@@ -490,17 +490,21 @@
 
 .otherStandingAvatar {
     height: 57.5px;
-    width: 50px;
+    // width: 50px;
     margin: 6.25px 10px;
 
+    @media only screen and (max-width: 850px) {
+        margin-right: 20px;
+    }
+
     &>img {
-        height: 90%;
+        height: 95%;
         object-fit: contain;
         -o-object-fit: contain;
     }
 
     &>video {
-        height: 90%;
+        height: 95%;
         object-fit: contain;
         -o-object-fit: contain;
     }

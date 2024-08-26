@@ -1,14 +1,13 @@
 import { memo, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useUser } from "@stores/UserStore/index";
-import { useCachedUser } from "@stores/CachedUserStore/index";
 import { useChat } from "@stores/ChatStore/index";
 import { useContextMenu } from "@stores/ContextMenuStore/index";
 import { ChatContainer, ChatMessagesContainer, ChatMessage, InputContainer } from "./components";
+import styles from "./chat.module.scss";
 
 export default memo(function Chat() {
     const { user } = useUser();
-    const { cachedUsers } = useCachedUser();
     const { messages, replyingTo, setReplyingTo, resetMentions } = useChat();
     const { openContextMenu } = useContextMenu();
 
@@ -24,21 +23,15 @@ export default memo(function Chat() {
         <>
             <ChatContainer>
                 <ChatMessagesContainer aboveInput={replyingTo ? true : false}>
-                    {messages.map((message: any) => <ChatMessage
+                    {messages.map((message) => <ChatMessage
                         key={message.id}
-                        id={message.id}
-                        author={cachedUsers.find((user) => user.id === message.authorId) || user}
+                        message={message}
                         newUser={
                             messages[messages.indexOf(message) + 1] && messages[messages.indexOf(message) + 1].authorId !== message.authorId ||
-                            messages[messages.indexOf(message) + 1] && messages[messages.indexOf(message) + 1].createdAt - message.createdAt > 300000 ||
                             messages.indexOf(message) === messages.length - 1
                         }
-                        createdAt={message.createdAt}
-                        replyingTo={message.replyingTo}
-                        replyingToAuthor={cachedUsers.find((user) => user.id === message.replyingTo?.authorId) || user}
                         mentionsMe={message.mentions.includes(user.id) || (message.replyingTo && message.replyingTo.authorId === user.id)}
                         isSending={message.nonce}
-                        rawMessage={message}
                         messageContextMenu={() => openContextMenu([
                             // message.authorId === user.id && { label: "Edit", icon: "fas fa-edit", onClick: () => console.log("edit") },
                             { label: "Reply", icon: "fas fa-reply", onClick: () => setReplyingTo(message) },
@@ -57,13 +50,13 @@ export default memo(function Chat() {
                             { divider: true },
                             { label: "Copy User ID", icon: "fas fa-copy", onClick: () => navigator.clipboard.writeText(message.authorId) }
                         ])}
-                    >
-                        {message.content}
-                    </ChatMessage>)}
+                    />)}
                 </ChatMessagesContainer>
 
                 <InputContainer placeholder="Message #global" maxLength={2048} />
             </ChatContainer>
+
+            <div className={styles.roomSidebar} />
         </>
     );
 });

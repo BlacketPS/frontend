@@ -8,7 +8,7 @@ export interface ChatMessagesContainerProps extends HTMLAttributes<HTMLUListElem
     aboveInput: boolean;
 }
 
-export interface ChatMessageProps {
+/* export interface ChatMessageProps {
     id: number;
     author: User | null;
     newUser: boolean;
@@ -21,6 +21,14 @@ export interface ChatMessageProps {
     messageContextMenu: (e) => void;
     userContextMenu: (e) => void;
     children: ReactNode;
+} */
+export interface ChatMessageProps {
+    message: Message;
+    newUser: boolean;
+    mentionsMe: boolean;
+    isSending: boolean;
+    messageContextMenu: (e) => void;
+    userContextMenu: (e) => void;
 }
 
 export interface AreYouSureLinkModalProps {
@@ -30,19 +38,15 @@ export interface AreYouSureLinkModalProps {
 export interface MarkdownPreviewProps {
     content?: ReactNode;
     color?: string;
-    onLeafChange?: (editor: any) => void;
     readOnly?: boolean;
+    getEditor?: (editor: any) => void;
     [key: string]: any;
 }
 
-export interface LeafProps {
+export interface ElementProps {
     attributes: any;
     children: any;
-    leaf: any;
-}
-
-export interface BlacketEditor extends Editor {
-    clearContent: () => void;
+    element: any;
 }
 
 export interface InputContainerProps {

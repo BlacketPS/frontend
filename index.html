@@ -6,12 +6,20 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.80.1/phaser.min.js"></script>
     <script type="module" src="/src/index.tsx" defer></script>
     <meta name="keywords"
-        content="blooket, blacket, private server, xotic, monkxy, unblooked, zastix, blacket private server, blooket private server">
+        content="blooket, blacket, private server, xotic, unblooked, zastix, blacket private server, blooket private server">
     <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=0">
 </head>
 
 <body>
     <div id="app"></div>
 </body>
+
+<script defer>
+    fetch("https://cdn.blacket.org/static/content/emojis.json")
+        .then((res) => res.json())
+        .then((emojis) => {
+            window.emojis = emojis;
+        });
+</script>
 
 </html>

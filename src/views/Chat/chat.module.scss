@@ -15,17 +15,17 @@
     overflow-x: hidden;
     display: flex;
     flex-direction: column-reverse;
-    width: 100%;
+    width: calc(100% - 200px);
     height: calc(100% - 60px);
     font-size: 20px;
     scroll-behavior: smooth;
 
-    &[data-above-input="true"] {
-        height: calc(100% - 95px);
+    @media (max-width: 768px) {
+        width: 100%;
     }
 
-    &::-webkit-scrollbar-track-piece:start {
-        margin-top: 55px;
+    &[data-above-input="true"] {
+        height: calc(100% - 95px);
     }
 }
 
@@ -73,9 +73,9 @@
     }
 
     @media (max-width: 768px) {
-        font-size: 1rem;
+        font-size: 1.5rem;
         padding-inline: unset;
-        line-height: 22.5px;
+        line-height: 35px;
     }
 
     &:hover .messageSmallTimestamp {
@@ -87,12 +87,15 @@
     0% {
         background-color: rgba(255, 255, 255, 0);
     }
+
     25% {
         background-color: rgba(255, 255, 255, 0.1);
     }
+
     75% {
         background-color: rgba(255, 255, 255, 0.1);
     }
+
     100% {
         background-color: rgba(255, 255, 255, 0);
     }
@@ -103,15 +106,12 @@
 }
 
 .avatar {
-    width: 100%;
-    height: 100%;
+    height: 95%;
     -o-object-fit: contain;
     object-fit: contain;
 
-
     @media (max-width: 768px) {
-        width: 75%;
-        height: 75%;
+        height: 90%;
     }
 }
 
@@ -140,13 +140,9 @@
 .messageContainer {
     display: flex;
 
-    /*&>div {
-        &:first-child {
-            &:is(:last-child) {
-                margin-left: 57px;
-            }
-        }
-    }*/
+    @media (max-width: 768px) {
+        padding-left: 10px;
+    }
 }
 
 .messageContentContainer {
@@ -159,8 +155,10 @@
     // left: -54.235px;
     width: 50px;
     height: 52.5px;
-    margin: 0 7px 0 0;
+    margin: 5px 7px 0 0;
     filter: drop-shadow(0px 0px 2px rgba(0, 0, 0, 0.5));
+    display: flex;
+    justify-content: center;
 }
 
 .messageUsername {
@@ -194,9 +192,8 @@
     transform: scale(0.9);
 
     @media (max-width: 768px) {
-        width: 56px;
-        transform: scale(0.8);
-        font-size: 0.7rem;
+        width: 70px;
+        font-size: 0.8rem;
     }
 }
 
@@ -224,15 +221,18 @@
 .messageForm {
     position: fixed;
     z-index: 5;
-    width: calc(100% - 20px);
+    width: calc(100% - 200px);
     display: flex;
-    align-items: center;
     gap: 1rem;
     flex-direction: column;
     background: var(--primary-color);
     padding: 10px;
     bottom: 0;
     // border-radius: 6px 6px 0px 0px
+
+    @media (max-width: 768px) {
+        width: calc(100% - 20px);
+    }
 }
 
 .messageInputContainer {
@@ -306,7 +306,7 @@
     width: calc(100% - 28px);
     background: var(--primary-color);
 
-    & > i {
+    &>i {
         color: var(--accent-color);
         font-size: 1.5rem;
         cursor: pointer;
@@ -355,44 +355,24 @@
         filter: invert(1);
 
         @media (max-width: 768px) {
-            width: 25.25px;
-            height: 10px;
-        }
-    }
-
-    &>video:nth-child(1) {
-        width: 41.25px;
-        height: 15px;
-        opacity: 0.5;
-        margin-top: 10px;
-
-        @media (max-width: 768px) {
-            width: 25.25px;
-            height: 10px;
+            width: 45.25px;
+            height: 25px;
         }
     }
 
     &>img:nth-child(2) {
         width: auto;
         height: 20px;
-
-        @media (max-width: 768px) {
-            height: 15px;
-        }
     }
 
     &>video:nth-child(2) {
         width: auto;
         height: 20px;
-
-        @media (max-width: 768px) {
-            height: 15px;
-        }
     }
 
     @media (max-width: 768px) {
-        font-size: 0.8rem;
-        margin: 0 0 0 30px;
+        font-size: 1rem;
+        margin: 0 0 0 34px;
     }
 }
 
@@ -433,58 +413,59 @@
     height: 1.375em;
 }
 
-.mentionList {
+.typingListContainer {
     display: flex;
-    position: absolute;
-    overflow-y: auto;
-    gap: 0;
-    flex-direction: column;
-    background-color: #1c1c1c;
-    width: 95%;
-    padding: 0;
-    border-radius: 0.3rem;
-    z-index: 10;
-    max-height: 0px;
-    transition: max-height 2s ease;
-
-    &::-webkit-scrollbar {
-        display: none;
-    }
-}
-
-.usersInMentionList {
-    position: relative;
-    gap: 0.2rem;
-    padding: 0.3rem;
-    max-height: 1000px;
-}
-
-.mentionUser {
-    display: flex;
-    align-items: center;
+    width: 98%;
+    background: var(--primary-color);
     gap: 5px;
-    padding: 0 10px;
-    width: calc(100% - 20px);
+    flex-direction: column;
+    justify-content: start;
+    z-index: 1;
+}
+
+.typingListItem {
+    display: flex;
+    flex-direction: row;
+    gap: 8px;
+    width: 100%;
+    height: 20px;
     cursor: pointer;
-    transition: .2s ease;
-    border-radius: 0.3rem;
+    padding: 5px;
+    border-radius: 5px;
 
     &:hover {
-        background-color: rgba(255, 255, 255, 0.05);
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    &[data-selected="true"] {
+        background-color: rgba(255, 255, 255, 0.1);
     }
 }
 
-.userMentionContainer {
+.typingListItemImage {
+    width: 20px;
+    height: 20px;
+
+    &>img {
+        height: 100%;
+        object-fit: contain;
+    }
+
+    &>video {
+        height: 100%;
+        object-fit: contain;
+    }
+}
+
+.roomSidebar {
+    position: absolute;
+    width: 200px;
+    height: 100%;
+    background: var(--primary-color);
+    bottom: 0;
+    right: 0;
+    overflow-y: auto;
     display: flex;
-    align-items: center;
-    gap: 0.5rem;
-
-    & > img {
-        width: 30px;
-        height: auto;
-    }
-
-    & > p {
-        color: var(--accent-color);
-    }
+    flex-direction: column;
+    gap: 10px;
 }

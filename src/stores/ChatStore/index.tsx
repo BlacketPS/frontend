@@ -5,7 +5,7 @@ import { useCachedUser } from "@stores/CachedUserStore/index";
 import { useMessages } from "@controllers/chat/messages/useMessages/index";
 
 import { TypingUser, type ChatStoreContext } from "./chatStore.d";
-import { Message, PublicUser, SocketMessageType } from "blacket-types";
+import { Message, SocketMessageType } from "blacket-types";
 
 const ChatStoreContext = createContext<ChatStoreContext>({
     messages: [],
@@ -48,7 +48,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
                 || (message.replyingTo && message.replyingTo.authorId === user?.id)) setMentions((previousMentions) => previousMentions + 1);
         });
 
-        for (const user of Array.from(userMap.keys())) addCachedUser(user);
+        for (const user of Array.from(userMap.keys())) await addCachedUser(user);
 
         setMessages(messages);
 
@@ -127,7 +127,6 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
         fetchMessages(0);
 
         socket.on(SocketMessageType.CHAT_MESSAGES_CREATE, onChatMessageCreate);
-
         socket.on(SocketMessageType.CHAT_TYPING_STARTED, onChatStartTyping);
 
         const typingInterval = setInterval(() => setUsersTyping((previousUsersTyping) => previousUsersTyping.filter((user) => Date.now() - user.startedTypingAt < 2500)), 1000);
@@ -142,6 +141,6 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
 
     return <ChatStoreContext.Provider value={{
         messages, usersTyping, replyingTo, setReplyingTo,
-        fetchMessages, sendMessage, startTyping, mentions, resetMentions 
+        fetchMessages, sendMessage, startTyping, mentions, resetMentions
     }}>{children}</ChatStoreContext.Provider>;
 }

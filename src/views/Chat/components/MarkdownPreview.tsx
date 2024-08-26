@@ -1,16 +1,21 @@
 // this file has no types and is really messy because it's awful to deal with
 // if anyone wants to make types for it you're welcome to
 
-import { memo, useCallback, useMemo, useEffect } from "react";
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 import Prism, { Token } from "prismjs";
 import "prismjs/components/prism-markdown";
-import { Node, Path, Text, createEditor, Transforms } from "slate";
+import { Editor, Node, Path, Text, Transforms, Range, createEditor } from "slate";
 import { Slate, Editable, withReact } from "slate-react";
 import { useModal } from "@stores/ModalStore/index";
-import { withHistory } from "slate-history";
+import { useUser } from "@stores/UserStore/index";
+import { useCachedUser } from "@stores/CachedUserStore/index";
+import { ImageOrVideo, Username } from "@components/index";
 import AreYouSureLinkModal from "./AreYouSureLinkModal";
+import styles from "../chat.module.scss";
 
-import { BlacketEditor, MarkdownPreviewProps, LeafProps } from "../chat.d";
+import { MarkdownPreviewProps, ElementProps } from "../chat";
+import { PublicUser } from "blacket-types";
+import { useNavigate } from "react-router-dom";
 
 Prism.languages.blacketMarkdown = {
     colorBoldItalic: { pattern: /{#([0-9a-fA-F]{6})}\*\*\*([^*]+)\*\*\*{#([0-9a-fA-F]{6})}/g },
@@ -25,36 +30,101 @@ Prism.languages.blacketMarkdown = {
     strikethrough: { pattern: /~~([^~]+)~~/g },
     underlined: { pattern: /__([^_]+)__/g },
     code: { pattern: /`([^`]+)`/g },
-    mention: { pattern: /<@([^\s]+)>/g },
-    link: { pattern: /https?:\/\/([^\s]+)/g }
-    // emoji: { pattern: /:([^\s]+):/g }
+    link: { pattern: /https?:\/\/([^\s]+)/g },
+    mention: { pattern: /<@(\d+)>/g }
 };
 
-export default memo(function MarkdownPreview({ content, color, onLeafChange = () => { }, readOnly, ...props }: MarkdownPreviewProps) {
-    const { createModal } = useModal();
+const withMentions = (editor: any) => {
+    const { isInline, isVoid, markableVoid } = editor;
 
-    const editor = useMemo(() => withHistory(withReact(createEditor() as BlacketEditor)), []);
-
-    editor.clearContent = () => {
-        editor.children.map(() => Transforms.delete(editor, { at: [0] }));
-
-        editor.children = [{ type: "paragraph", children: [{ text: "" }] } as Node];
-
-        Transforms.select(editor, { offset: 0, path: [0, 0] });
+    editor.isInline = (element: any) => {
+        return element.type === "mention" ? true : isInline(element);
     };
 
-    const Leaf = ({ attributes, children, leaf }: LeafProps) => {
-        // console.log(leaf);
+    editor.isVoid = (element: any) => {
+        return element.type === "mention" ? true : isVoid(element);
+    };
 
-        useEffect(() => {
-            onLeafChange(editor);
-        }, [leaf]);
+    editor.markableVoid = (element: any) => {
+        return element.type === "mention" || markableVoid(element);
+    };
 
+    return editor;
+};
+
+const insertMention = (editor: any, user: PublicUser) => {
+    const mention = {
+        type: "mention",
+        user,
+        children: [{ text: "" }]
+    };
+
+    Transforms.insertNodes(editor, mention);
+    Transforms.move(editor);
+};
+
+const insertEmoji = (editor: any, emoji: string) => {
+    const text = { text: emoji };
+    Transforms.insertNodes(editor, text);
+};
+
+const Mention = ({ attributes, children, element }: ElementProps) => {
+    return (
+        <span
+            {...attributes}
+            contentEditable={false}
+            className="mention"
+        >
+            @{element.user.username}
+            {children}
+        </span>
+    );
+};
+
+const Element = ({ attributes, children, element }: ElementProps) => {
+    switch (element.type) {
+        case "mention":
+            return <Mention {...{ attributes, children, element }} />;
+        default:
+            return <span {...attributes}>{children}</span>;
+    }
+};
+
+export default memo(function MarkdownPreview({ content, color, readOnly, getEditor = () => { }, ...props }: MarkdownPreviewProps) {
+    const { createModal } = useModal();
+    const { getUserAvatarPath } = useUser();
+    const { cachedUsers } = useCachedUser();
+
+    const navigate = useNavigate();
+
+    const mentionRef = useRef<HTMLDivElement | null>(null);
+    const emojiRef = useRef<HTMLDivElement | null>(null);
+    const [mentionSearch, setMentionSearch] = useState<string>("");
+    const [emojiSearch, setEmojiSearch] = useState<string>("");
+
+    const mentionUsers = useMemo(() => {
+        if (!mentionSearch) return [];
+        return cachedUsers.filter((user) => user.username.toLowerCase().startsWith(mentionSearch.toLowerCase())).slice(0, 10);
+    }, [mentionSearch, cachedUsers]);
+
+    const emojis = useMemo(() => {
+        if (!emojiSearch) return [];
+        return window.emojis.filter((emoji) => emoji.key.toLowerCase().startsWith(emojiSearch.toLowerCase())).slice(0, 10);
+    }, [emojiSearch]);
+
+    const [mentionTarget, setMentionTarget] = useState<Range | null>(null);
+    const [emojiTarget, setEmojiTarget] = useState<Range | null>(null);
+    const [mentionUserId, setMentionUserId] = useState<string>(mentionUsers[0]?.id || "");
+    const [emojiName, setEmojiName] = useState<string>(emojis[0]?.key || "");
+
+    const editor = useMemo(() => withMentions(withReact(createEditor())), []);
+
+    getEditor(editor);
+
+    const Leaf = ({ attributes, children, leaf }: any) => {
         switch (true) {
             case leaf.code:
                 return <span {...attributes} className={readOnly ? "codeDark" : "code"}>{readOnly ? leaf.content : children}</span>;
-            case leaf.mention:
-                return <span {...attributes} className="mention">{readOnly ? leaf.content : children}</span>;
             case leaf.link:
                 return <a {...attributes} className="link" href={leaf.content} onClick={(e) => {
                     e.preventDefault();
@@ -68,18 +138,22 @@ export default memo(function MarkdownPreview({ content, color, onLeafChange = ()
                         ${leaf.colorStrikethrough ? "strikethrough" : ""}
                         ${leaf.colorUnderlined ? "underline" : ""}
                     `} style={{ color: leaf.hexcode }}>{readOnly ? leaf.content : children}</span>;
+            case leaf.mention:
+                const user = cachedUsers.find((user) => user.id === leaf.content.replace(/<@|>/g, ""))?.username;
 
+                if (readOnly) return <span {...attributes} contentEditable={false} className="mention" onClick={() => {
+                    if (user) navigate(`/dashboard?name=${user}`);
+                }} style={{ cursor: "pointer" }}>{user ? `@${user}` : leaf.content}</span>;
+                else return <span {...attributes} className="mention">{children}</span>;
             default:
                 return <span {...attributes} className={`
                         ${(leaf.bold || leaf.boldItalic) ? "bold" : ""}
                         ${(leaf.italic || leaf.boldItalic) ? "italic" : ""}
                         ${leaf.strikethrough ? "strikethrough" : ""}
                         ${leaf.underlined ? "underline" : ""}
-                    `}>{readOnly ? leaf.content ? leaf.content : children : children}</span>;
+                    `}>{readOnly ? leaf.content ?? children : children}</span>;
         }
     };
-
-    const renderLeaf = useCallback((props: any) => <Leaf {...props} />, []);
 
     const decorate = useCallback(([node, path]: [Node, Path]) => {
         const ranges: any[] = [];
@@ -123,26 +197,10 @@ export default memo(function MarkdownPreview({ content, color, onLeafChange = ()
                             focus: { path, offset: end }
                         });
                         break;
-                    case "mention":
-                        ranges.push({
-                            mention: true,
-                            content: node.text.slice(start, end).replace(/<>/g, ""),
-                            anchor: { path, offset: start },
-                            focus: { path, offset: end }
-                        });
-                        break;
                     case "link":
                         ranges.push({
                             link: true,
                             content: node.text.slice(start, end),
-                            anchor: { path, offset: start },
-                            focus: { path, offset: end }
-                        });
-                        break;
-                    case "emoji":
-                        ranges.push({
-                            emoji: true,
-                            content: node.text.slice(start, end).replace(/:([^:]+):/g, "$1"),
                             anchor: { path, offset: start },
                             focus: { path, offset: end }
                         });
@@ -152,7 +210,7 @@ export default memo(function MarkdownPreview({ content, color, onLeafChange = ()
                             color: true,
                             colorBoldItalic: true,
                             hexcode: token.content[1] + token.content[2] + token.content[3] + token.content[4] + token.content[5] + token.content[6] + token.content[7],
-                            content: node.text.slice(start, end).replace(/{#([0-9a-fA-F]{6})}\*\*\*|\*\*\*{#([0-9a-fA-F]{6})}/g, ""),
+                            content: node.text.slice(start, end).replace(/{#([0 - 9a - fA - F]{ 6})}\*\*\*|\*\*\*{#([0 - 9a - fA - F]{ 6})}/g, ""),
                             anchor: { path, offset: start },
                             focus: { path, offset: end }
                         });
@@ -162,7 +220,7 @@ export default memo(function MarkdownPreview({ content, color, onLeafChange = ()
                             color: true,
                             colorBold: true,
                             hexcode: token.content[1] + token.content[2] + token.content[3] + token.content[4] + token.content[5] + token.content[6] + token.content[7],
-                            content: node.text.slice(start, end).replace(/{#([0-9a-fA-F]{6})}\*\*|\*\*{#([0-9a-fA-F]{6})}/g, ""),
+                            content: node.text.slice(start, end).replace(/{#([0 - 9a - fA - F]{ 6})}\*\*|\*\*{#([0 - 9a - fA - F]{ 6})}/g, ""),
                             anchor: { path, offset: start },
                             focus: { path, offset: end }
                         });
@@ -172,7 +230,7 @@ export default memo(function MarkdownPreview({ content, color, onLeafChange = ()
                             color: true,
                             colorItalic: true,
                             hexcode: token.content[1] + token.content[2] + token.content[3] + token.content[4] + token.content[5] + token.content[6] + token.content[7],
-                            content: node.text.slice(start, end).replace(/{#([0-9a-fA-F]{6})}\*|\*{#([0-9a-fA-F]{6})}/g, ""),
+                            content: node.text.slice(start, end).replace(/{#([0 - 9a - fA - F]{ 6})}\*|\*{#([0 - 9a - fA - F]{ 6})}/g, ""),
                             anchor: { path, offset: start },
                             focus: { path, offset: end }
                         });
@@ -182,7 +240,7 @@ export default memo(function MarkdownPreview({ content, color, onLeafChange = ()
                             color: true,
                             colorStrikethrough: true,
                             hexcode: token.content[1] + token.content[2] + token.content[3] + token.content[4] + token.content[5] + token.content[6] + token.content[7],
-                            content: node.text.slice(start, end).replace(/{#([0-9a-fA-F]{6})}~~|~~{#([0-9a-fA-F]{6})}/g, ""),
+                            content: node.text.slice(start, end).replace(/{#([0 - 9a - fA - F]{ 6})}~~|~~{#([0 - 9a - fA - F]{ 6})}/g, ""),
                             anchor: { path, offset: start },
                             focus: { path, offset: end }
                         });
@@ -192,7 +250,7 @@ export default memo(function MarkdownPreview({ content, color, onLeafChange = ()
                             color: true,
                             colorUnderlined: true,
                             hexcode: token.content[1] + token.content[2] + token.content[3] + token.content[4] + token.content[5] + token.content[6] + token.content[7],
-                            content: node.text.slice(start, end).replace(/{#([0-9a-fA-F]{6})}__|__{#([0-9a-fA-F]{6})}/g, ""),
+                            content: node.text.slice(start, end).replace(/{#([0 - 9a - fA - F]{ 6})}__|__{#([0 - 9a - fA - F]{ 6})}/g, ""),
                             anchor: { path, offset: start },
                             focus: { path, offset: end }
                         });
@@ -201,7 +259,15 @@ export default memo(function MarkdownPreview({ content, color, onLeafChange = ()
                         ranges.push({
                             color: true,
                             hexcode: token.content[1] + token.content[2] + token.content[3] + token.content[4] + token.content[5] + token.content[6] + token.content[7],
-                            content: node.text.slice(start, end).replace(/{#([0-9a-fA-F]{6})}|{#([0-9a-fA-F]{6})}/g, ""),
+                            content: node.text.slice(start, end).replace(/{#([0 - 9a - fA - F]{ 6})}|{#([0 - 9a - fA - F]{ 6})}/g, ""),
+                            anchor: { path, offset: start },
+                            focus: { path, offset: end }
+                        });
+                        break;
+                    case "mention":
+                        ranges.push({
+                            mention: true,
+                            content: node.text.slice(start, end).replace(/<>/g, ""),
                             anchor: { path, offset: start },
                             focus: { path, offset: end }
                         });
@@ -217,9 +283,181 @@ export default memo(function MarkdownPreview({ content, color, onLeafChange = ()
 
     const initialValue = content ? content.toString().split("\n").map((text: string) => ({ type: "paragraph", children: [{ text }] })) : [{ type: "paragraph", children: [{ text: "" }] }];
 
+    const renderElement = useCallback((props: any) => <Element {...props} />, []);
+    const renderLeaf = useCallback((props: any) => <Leaf {...props} />, []);
+
     return (
-        <Slate editor={editor} initialValue={initialValue}>
-            <Editable renderLeaf={renderLeaf} decorate={decorate} readOnly={readOnly} contentEditable={readOnly ? undefined : true} style={{ color: color && color }} {...props} />
+        <Slate editor={editor} initialValue={initialValue} onChange={() => {
+            const { selection } = editor;
+
+            // this is for mentions below
+            if (selection && Range.isCollapsed(selection)) {
+                const [start] = Range.edges(selection);
+                const wordBefore = Editor.before(editor, start, { unit: "word" });
+                const before = wordBefore && Editor.before(editor, wordBefore);
+                const beforeRange = before && Editor.range(editor, before, start);
+                const beforeText = beforeRange && Editor.string(editor, beforeRange);
+                const beforeMatch = beforeText && beforeText.match(/^@(\w*)$/);
+
+                if (beforeMatch) {
+                    setMentionTarget(beforeRange);
+                    setMentionSearch(beforeMatch[1]);
+                    setMentionUserId(cachedUsers.find((user) => user.username.toLowerCase().startsWith(beforeMatch[1].toLowerCase()))?.id || "");
+                    return;
+                }
+            }
+
+            // this is for emojis below
+            if (selection && Range.isCollapsed(selection)) {
+                const [start] = Range.edges(selection);
+                const wordBefore = Editor.before(editor, start, { unit: "word" });
+                const before = wordBefore && Editor.before(editor, wordBefore);
+                const beforeRange = before && Editor.range(editor, before, start);
+                const beforeText = beforeRange && Editor.string(editor, beforeRange);
+                const beforeMatch = beforeText && beforeText.match(/^:([a-zA-Z0-9_-]*)$/);
+                const fullMatch = beforeText && beforeText.match(/^:([a-zA-Z0-9_-]*):$/);
+
+                if (beforeMatch) {
+                    setEmojiTarget(beforeRange);
+                    setEmojiSearch(beforeMatch[1]);
+                    setEmojiName(window.emojis.find((emoji) => emoji.key.toLowerCase().startsWith(beforeMatch[1].toLowerCase()))?.key || "");
+                    return;
+                }
+
+                if (fullMatch) {
+                    const emoji = window.emojis.find((emoji) => emoji.key === fullMatch[1]);
+                    if (!emoji) return;
+
+                    Transforms.delete(editor, { at: beforeRange });
+                    insertEmoji(editor, emoji.value);
+                    return;
+                }
+            }
+
+            setMentionTarget(null);
+            setEmojiTarget(null);
+        }}>
+            {!readOnly && mentionTarget && mentionUsers.length > 0 && (
+                <div ref={mentionRef} className={styles.typingListContainer}>
+                    {mentionUsers.map((user) => (
+                        <div
+                            key={user.id}
+                            className={styles.typingListItem}
+                            onClick={() => {
+                                Transforms.select(editor, mentionTarget);
+                                insertMention(editor, user);
+                                Transforms.insertText(editor, " ");
+                                setMentionTarget(null);
+                            }}
+                            data-selected={user.id === mentionUserId}
+                        >
+                            <div className={styles.typingListItemImage}>
+                                <ImageOrVideo src={getUserAvatarPath(user)} />
+                            </div>
+
+                            <Username user={user} />
+                        </div>
+                    ))}
+                </div>
+            )}
+
+            {!readOnly && emojiTarget && emojis.length > 0 && (
+                <div ref={emojiRef} className={styles.typingListContainer}>
+                    {emojis.map((emoji) => (
+                        <div
+                            key={emoji.key}
+                            className={styles.typingListItem}
+                            onClick={() => {
+                                Transforms.select(editor, emojiTarget);
+                                insertEmoji(editor, emoji.value);
+                                setEmojiTarget(null);
+                            }}
+                            data-selected={emoji.key === emojiName}
+                        >
+                            <div className={styles.typingListItemImage}>
+                                <div>{emoji.value}</div>
+                            </div>
+
+                            <div>{emoji.key}</div>
+                        </div>
+                    ))}
+                </div>
+            )}
+            <Editable renderElement={renderElement} renderLeaf={renderLeaf} decorate={decorate} readOnly={readOnly} contentEditable={readOnly ? undefined : true} style={{ color: color && color }} {...props}
+                onKeyDown={(e) => {
+                    if (mentionRef.current && mentionUsers.length > 0) {
+                        switch (e.key) {
+                            case "ArrowDown":
+                                e.preventDefault();
+                                setMentionUserId(mentionUsers[mentionUsers.findIndex((user) => user.id === mentionUserId) + 1]?.id || mentionUsers[0].id);
+
+                                break;
+                            case "ArrowUp":
+                                e.preventDefault();
+                                const index = mentionUsers.findIndex((user) => user.id === mentionUserId) - 1;
+
+                                setMentionUserId(mentionUsers[index < 0 ? mentionUsers.length - 1 : index].id);
+
+                                break;
+                            case "Tab":
+                            case "Enter":
+                                if (!mentionTarget) return;
+
+                                e.preventDefault();
+                                Transforms.select(editor, mentionTarget);
+
+                                const mentionUser = mentionUsers.find((user) => user.id === mentionUserId);
+                                if (mentionUser) insertMention(editor, mentionUser);
+
+                                Transforms.insertText(editor, " ");
+
+                                setMentionTarget(null);
+
+                                break;
+                            case "Escape":
+                                e.preventDefault();
+                                setMentionTarget(null);
+
+                                break;
+                        }
+                    } else if (emojiRef.current && emojis.length > 0) {
+                        switch (e.key) {
+                            case "ArrowDown":
+                                e.preventDefault();
+                                setEmojiName(emojis[emojis.findIndex((emoji) => emoji.key === emojiName) + 1]?.key || emojis[0].key);
+
+                                break;
+                            case "ArrowUp":
+                                e.preventDefault();
+                                const index = emojis.findIndex((emoji) => emoji.key === emojiName) - 1;
+
+                                setEmojiName(emojis[index < 0 ? emojis.length - 1 : index].key);
+
+                                break;
+                            case "Tab":
+                            case "Enter":
+                                if (!emojiTarget) return;
+
+                                e.preventDefault();
+                                Transforms.select(editor, emojiTarget);
+
+                                const emoji = emojis.find((emoji) => emoji.key === emojiName);
+                                if (emoji) insertEmoji(editor, emoji.value);
+
+                                setEmojiTarget(null);
+
+                                break;
+                            case "Escape":
+                                e.preventDefault();
+                                setEmojiTarget(null);
+
+                                break;
+                        }
+                    } else {
+                        props.onKeyDown(e);
+                    }
+                }}
+            />
         </Slate>
     );
 });

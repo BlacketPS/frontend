@@ -24,6 +24,7 @@ module.exports = {
         // Blacket Rules
         "max-depth": "error",
         "prefer-spread": "off",
+        "no-case-declarations": "off",
         "@stylistic/quotes": ["error", "double"],
         "@stylistic/arrow-parens": ["error", "always"],
         "@stylistic/arrow-spacing": "error",
