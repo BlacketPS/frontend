@@ -36,6 +36,10 @@
         border: 2px solid var(--primary-color);
     }
 
+    &[data-slate-placeholder="true"] {
+        top: unset !important;
+    }
+
     &[data-slate-editor="true"] {
         overflow-wrap: unset !important;
 
@@ -143,4 +147,8 @@ a {
     padding: 1px;
     border-radius: 3px;
     background: hsl(235 calc(1 * 85.6%) 64.7% / 0.3);
+
+    &:hover {
+        background: hsl(235 calc(1 * 85.6%) 64.7% / 0.5);
+    }
 }
