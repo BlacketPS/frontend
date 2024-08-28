@@ -13,8 +13,8 @@ export function useSellBlooks() {
         .then((res: Fetch2Response) => {
             const userBlooks = user.blooks;
 
-            userBlooks[dto.blookId] -= dto.quantity;
-            if (userBlooks[dto.blookId] < 1) delete userBlooks[dto.blookId];
+            (userBlooks[dto.blookId] as number) -= dto.quantity;
+            if ((userBlooks[dto.blookId] as number) < 1) delete userBlooks[dto.blookId];
 
             const blook = blooks.find((b) => b.id === dto.blookId);
             if (!blook) return reject("Blook not found");

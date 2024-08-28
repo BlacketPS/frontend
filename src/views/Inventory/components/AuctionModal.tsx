@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useModal } from "@stores/ModalStore/index";
 import { useUser } from "@stores/UserStore";
+import { useCreateAuction } from "@controllers/auctions/useCreateAuction/index";
 import { Modal, Button, Form, Input, ErrorContainer, Toggle } from "@components/index";
 
 import { AuctionModalProps } from "../inventory.d";
@@ -15,6 +16,8 @@ export default function AuctionModal({ type, blook, item }: AuctionModalProps) {
 
     const [auctionTax, setAuctionTax] = useState<number>(0);
     const [durationTax, setDurationTax] = useState<number>(0);
+
+    const { createAuction } = useCreateAuction();
 
     const { closeModal } = useModal();
     const { user } = useUser();
@@ -35,11 +38,24 @@ export default function AuctionModal({ type, blook, item }: AuctionModalProps) {
         if (parseInt(duration) < 60) return setError("Duration must be at least 60 minutes.");
 
         if ((auctionTax + durationTax) > user.tokens) return setError("You don't have enough tokens to auction this.");
+
+        setLoading(true);
+        createAuction({
+            type,
+            itemId: item ? item.id : undefined,
+            blookId: blook ? blook.id : undefined,
+            price: parseInt(price),
+            duration: parseInt(duration),
+            buyItNow
+        }, (auctionTax + durationTax))
+            .then(() => closeModal())
+            .catch((err) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
+            .finally(() => setLoading(false));
     };
 
     useEffect(() => {
-        let auctionTax = Math.floor(parseInt(price !== "" ? price : "0") * (buyItNow ? 0.05 : 0.1));
-        if (user.permissions.includes(PermissionTypeEnum.LESS_AUCTION_TAX)) auctionTax = Math.floor(auctionTax / 2);
+        let auctionTax = Math.floor(parseInt(price !== "" ? price : "0") * (buyItNow ? 0.025 : 0.05));
+        if (user.permissions.includes(PermissionTypeEnum.LESS_AUCTION_TAX)) auctionTax = Math.floor(auctionTax * 0.75);
 
         setAuctionTax(auctionTax);
         setDurationTax(Math.floor(parseInt(duration !== "" ? duration : "0") / 60 * 10));
@@ -99,7 +115,7 @@ export default function AuctionModal({ type, blook, item }: AuctionModalProps) {
                     <div style={{ color: durationTax > user.tokens ? "#ff0000" : "" }}>Duration Tax: {durationTax.toLocaleString()}</div>
                     <div style={{ color: (auctionTax + durationTax) > user.tokens ? "#ff0000" : "" }}>Total: {(auctionTax + durationTax).toLocaleString()}</div>
 
-                    {user.permissions.includes(PermissionTypeEnum.LESS_AUCTION_TAX) && <div style={{ fontSize: "0.8rem", marginTop: 13 }}>You have a 50% discount on auction tax!</div>}
+                    {user.permissions.includes(PermissionTypeEnum.LESS_AUCTION_TAX) && <div style={{ fontSize: "0.8rem", marginTop: 13 }}>You have a 25% discount on auction tax!</div>}
                 </div>
             </Modal.ModalBody>
 

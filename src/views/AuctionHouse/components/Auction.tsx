@@ -30,22 +30,20 @@ const formatTimeRemaining = (expiresAt: Date): string => {
     }
 };
 
-export default function Auction({ auction }: AuctionProps) {
+export default function Auction({ auction, ...props }: AuctionProps) {
     const { resourceIdToPath } = useResource();
     const { blooks, items } = useData();
 
-    const item = blooks.find((blook) => blook.id === auction.blookId) || items.find((item) => item.id === auction.itemId);
+    const item = blooks.find((blook) => blook.id === auction.blookId) || items.find((item) => item.id === auction.item.itemId);
 
     if (!item) return null;
     if (!auction.seller) return null;
 
-    console.log(auction);
-
     return (
-        <div className={styles.auction}>
+        <div className={styles.auction} {...props}>
             <div className={styles.auctionImageContainer}>
                 <ImageOrVideo src={resourceIdToPath(item.imageId)} alt={item.name} />
-                {auction.type === AuctionTypeEnum.ITEM && <div className={styles.auctionUsesLeft}>{auction.itemUsesLeft?.toLocaleString()} Use{auction.itemUsesLeft !== 1 ? "s" : ""} Left</div>}
+                {auction.type === AuctionTypeEnum.ITEM && <div className={styles.auctionUsesLeft}>{auction.item.usesLeft?.toLocaleString()} Use{auction.item.usesLeft !== 1 ? "s" : ""} Left</div>}
             </div>
 
             <div className={styles.auctionInfo}>
