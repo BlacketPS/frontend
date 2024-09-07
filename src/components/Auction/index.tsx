@@ -1,12 +1,12 @@
+import { useEffect, useState } from "react";
 import { ImageOrVideo, Username } from "@components/index";
 import { useResource } from "@stores/ResourceStore/index";
 import { useData } from "@stores/DataStore/index";
-import { useCachedUser } from "@stores/CachedUserStore/index";
-import styles from "../auctionHouse.module.scss";
+import normalStyles from "./auction.module.scss";
+import vhStyles from "./auctionVh.module.scss";
 
-import { AuctionProps } from "../auctionHouse.d";
+import { AuctionProps } from "./auction.d";
 import { AuctionTypeEnum } from "blacket-types";
-import { useEffect } from "react";
 
 const formatTimeRemaining = (expiresAt: Date): string => {
     const now = new Date();
@@ -19,18 +19,18 @@ const formatTimeRemaining = (expiresAt: Date): string => {
     const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
     const days = Math.floor(diff / (1000 * 60 * 60 * 24));
 
-    if (days > 0) {
-        return `${days}d ${hours}h`;
-    } else if (hours > 0) {
-        return `${hours}h ${minutes}m`;
-    } else if (minutes > 0) {
+    if (days > 1) {
+        return `${days}d ${hours}h ${minutes}m`;
+    } else if (hours >= 1) {
+        return `${hours}h ${minutes}m ${seconds}s`;
+    } else if (minutes >= 1) {
         return `${minutes}m ${seconds}s`;
     } else {
         return `${seconds}s`;
     }
 };
 
-export default function Auction({ auction, ...props }: AuctionProps) {
+export default function Auction({ auction, useVhStyles = false, ...props }: AuctionProps) {
     const { resourceIdToPath } = useResource();
     const { blooks, items } = useData();
 
@@ -38,6 +38,16 @@ export default function Auction({ auction, ...props }: AuctionProps) {
 
     if (!item) return null;
     if (!auction.seller) return null;
+
+    const [timeRemainingString, setTimeRemainingString] = useState<string>(formatTimeRemaining(new Date(auction.expiresAt)));
+
+    useEffect(() => {
+        const interval = setInterval(() => setTimeRemainingString(formatTimeRemaining(new Date(auction.expiresAt))), 1000);
+
+        return () => clearInterval(interval);
+    }, []);
+
+    const styles = useVhStyles ? vhStyles : normalStyles;
 
     return (
         <div className={styles.auction} {...props}>
@@ -70,7 +80,7 @@ export default function Auction({ auction, ...props }: AuctionProps) {
 
             <div className={styles.auctionBadge}>{auction.buyItNow ? "BIN" : "AUCTION"}</div>
             <div className={styles.auctionTime}>
-                {formatTimeRemaining(new Date(auction.expiresAt))} <i className="fas fa-clock" />
+                {timeRemainingString} <i className="fas fa-clock" />
             </div>
         </div>
     );

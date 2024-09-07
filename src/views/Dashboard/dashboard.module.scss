@@ -43,15 +43,7 @@
 }
 
 .auctionSection {
-    grid-area: 4 / 3 / 2 / 1;
-
-    &[data-extend="true"] {
-        grid-area: 6 / 3 / 2 / 1;
-    }
-}
-
-.guildSection {
-    grid-area: 4 / 3 / 6 / 1;
+    grid-area: 6 / 3 / 2 / 1;
 }
 
 .inventorySection {
@@ -504,12 +496,6 @@
     box-sizing: border-box;
     color: var(--accent-color);
     overflow-y: auto;
-
-    @media screen and (max-width: 475px) {
-        border-radius: 5px;
-        box-shadow: inset 0 -7px rgba(0, 0, 0, 0.2);
-        padding: 40px 15px;
-    }
 }
 
 .statsContainerHolder {
@@ -525,9 +511,15 @@
 }
 
 .inventoryItems {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 6vh);
-    grid-gap: 1vh;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    width: 100%;
+    height: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    justify-content: center;
+    gap: 1vh;
 }
 
 .statContainer {
@@ -753,5 +745,27 @@
         width: 5.5vh;
         object-fit: contain;
         -o-object-fit: contain;
+    }
+}
+
+.userAuctions {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 2vh;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+    flex-wrap: wrap;
+}
+
+.noAuctions {
+    font-size: 2.5vh;
+    font-weight: 700;
+
+    @media screen and (max-width: 475px) {
+        margin-top: 15px;
     }
 }

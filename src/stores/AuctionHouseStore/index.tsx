@@ -13,7 +13,8 @@ const AuctionHouseStoreContext = createContext<AuctionHouseStoreContext>({
     auctions: [],
     setAuctions: () => { },
     search: {},
-    setSearch: () => { }
+    setSearch: () => { },
+    getAuctions: () => { }
 });
 
 export function useAuctionHouse() {
@@ -25,11 +26,20 @@ export function AuctionHouseStoreProvider({ children }: { children: ReactNode })
     const { user, setUser } = useUser();
     const { addCachedUser } = useCachedUser();
 
-    const [loading, setLoading] = useState<boolean>(true);
+    const [loading, setLoading] = useState<boolean>(false);
     const [auctions, setAuctions] = useState<AuctionsAuctionEntity[]>([]);
     const [search, setSearch] = useState<AuctionsSearchAuctionDto>(JSON.parse(localStorage.getItem("AUCTION_SEARCH") || "{}"));
 
     const { searchAuction } = useSearchAuction();
+
+    const getAuctions = () => searchAuction(search)
+        .then((res) => {
+            localStorage.setItem("AUCTION_SEARCH", JSON.stringify(search));
+
+            setAuctions(res.data);
+
+            setLoading(false);
+        });
 
     const onAuctionExpire = useCallback((data: AuctionsAuctionEntity) => {
         if (!user) return;
@@ -86,16 +96,11 @@ export function AuctionHouseStoreProvider({ children }: { children: ReactNode })
     }, [user]);
 
     useEffect(() => {
+        if (!user) return;
+
         setLoading(true);
 
-        searchAuction(search)
-            .then((res) => {
-                localStorage.setItem("AUCTION_SEARCH", JSON.stringify(search));
-
-                setAuctions(res.data);
-
-                setLoading(false);
-            });
+        getAuctions();
     }, [search]);
 
     useEffect(() => {
@@ -113,6 +118,7 @@ export function AuctionHouseStoreProvider({ children }: { children: ReactNode })
     return <AuctionHouseStoreContext.Provider value={{
         loading, setLoading,
         auctions, setAuctions,
-        search, setSearch
+        search, setSearch,
+        getAuctions
     }}>{children}</AuctionHouseStoreContext.Provider>;
 }

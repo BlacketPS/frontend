@@ -72,8 +72,8 @@ export default function AuctionModal({ auctionId }: AuctionModalProps) {
 
             {auction.bids[0] && <Modal.ModalBody>
                 <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
-                    <div className={styles.bidsContainer} style={{ height: "90px", filter: "drop-shadow(0px 0px 1px white)" }}>
-                        <div className={styles.bid} onClick={() => {
+                    <div className={styles.bidsContainer} style={{ height: "110px" }}>
+                        <div className={styles.bid} data-top-bidder={true} onClick={() => {
                             navigate(`/dashboard?name=${auction.bids[0].user.username}`);
 
                             closeModal();

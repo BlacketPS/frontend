@@ -1,0 +1,120 @@
+.auction {
+    position: relative;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+    height: 15vh;
+    padding: 1vh 0;
+    background: var(--background-color);
+    border-radius: 0.7vh;
+    padding-bottom: 1.5vh;
+    box-shadow: inset 0 -0.7vh rgba(0, 0, 0, .2);
+    transition: background-color .2s;
+    cursor: pointer;
+
+    &:hover {
+        background: var(--secondary-color);
+    }
+}
+
+.auctionImageContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding-right: 1.5vh;
+    padding-left: 1vh;
+    width: 12vh;
+    height: 11vh;
+
+    @media (max-width: 768px) {
+        padding-left: 0.5vh;
+        padding-right: 1vh;
+        width: 11vh;
+        height: 9vh;
+    }
+
+    &>img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+
+    &>video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
+}
+
+.auctionUsesLeft {
+    margin-top: 1vh;
+    font-size: 1.6vh; // Converted from 16px to 1.6vh
+    font-weight: 700;
+}
+
+.auctionInfo {
+    display: flex;
+    flex-direction: column;
+    font-size: 2vh; // Converted from 19.2px to 1.92vh
+    gap: 0.5vh;
+    font-weight: 700;
+    line-height: 2.2vh;
+
+    @media (max-width: 768px) {
+        font-size: 1.5vh; // Converted from 14.4px to 1.44vh
+    }
+
+    &>div>span {
+        font-weight: 400;
+    }
+}
+
+.auctionPrice {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 0.5vh;
+
+    &>img {
+        width: 2vh;
+        height: 2vh;
+        object-fit: contain;
+    }
+}
+
+.auctionBadge {
+    top: 0.5vh;
+    position: absolute;
+    right: 0.5vh;
+    padding: 0.5vh;
+    background: rgba(0, 0, 0, .15);
+    border-radius: 0.7vh;
+    user-select: none;
+    font-weight: 700;
+    font-size: 1.6vh;
+
+    @media (max-width: 768px) {
+        font-size: 1.4vh;
+    }
+}
+
+.auctionTime {
+    position: absolute;
+    bottom: 1.2vh;
+    right: 0.5vh;
+    padding: 0.5vh;
+    opacity: .5;
+    user-select: none;
+    font-size: 1.6vh;
+
+    @media (max-width: 768px) {
+        font-size: 1.4vh;
+    }
+
+    &>i {
+        margin-left: 0.2vh;
+    }
+}

@@ -6,30 +6,35 @@ import { useUser } from "@stores/UserStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
 import { useData } from "@stores/DataStore/index";
 import { useResource } from "@stores/ResourceStore/index";
+import { useAuctionHouse } from "@stores/AuctionHouseStore/index";
 import { useUsers } from "@controllers/users/useUsers/index";
-import { Button, ImageOrVideo, Username } from "@components/index";
+import { useSearchAuction } from "@controllers/auctions/useSearchAuction/index";
+import { Auction, ImageOrVideo, Username } from "@components/index";
 import { LevelContainer, LookupUserModal, SmallButton, SectionHeader, StatContainer, InventoryBlook, InventoryItem } from "./components";
 import styles from "./dashboard.module.scss";
 
-import { PrivateUser, PublicUser } from "blacket-types";
+import { AuctionsAuctionEntity, PrivateUser, PublicUser } from "blacket-types";
 
 export default function Dashboard() {
     const { setLoading } = useLoading();
     const { createModal } = useModal();
     const { user, getUserAvatarPath } = useUser();
     const { cachedUsers, addCachedUserWithData } = useCachedUser();
-    const { blooks, packs, items, banners, titleIdToText } = useData();
+    const { blooks, packs, items, titleIdToText } = useData();
     const { resourceIdToPath } = useResource();
+    const { setSearch } = useAuctionHouse();
 
     if (!user) return <Navigate to="/login" />;
 
     const { getUser } = useUsers();
+    const { searchAuction } = useSearchAuction();
 
     const [searchParams] = useSearchParams();
 
     const navigate = useNavigate();
 
     const [viewingUser, setViewingUser] = useState<PublicUser | PrivateUser>(user);
+    const [viewingUserAuctions, setViewingUserAuctions] = useState<AuctionsAuctionEntity[]>([]);
 
     const viewUser = (username: string) => new Promise<void>((resolve, reject) => {
         const cachedUser = cachedUsers.find((user) => user.username.toLowerCase() === username.toLowerCase() || user.id === username);
@@ -79,6 +84,15 @@ export default function Dashboard() {
             .finally(() => setLoading(false));
     }, []);
 
+    useEffect(() => {
+        if (!viewingUser) return;
+        if (searchParams.get("name") && viewingUser.id === user.id) return;
+
+        searchAuction({ seller: viewingUser.id })
+            .then((res) => setViewingUserAuctions(res.data))
+            .catch(() => setViewingUserAuctions([]));
+    }, [viewingUser]);
+
     const nonPackBlooks = blooks
         .filter((blook) => !blook.packId)
         .sort((a, b) => a.priority - b.priority);
@@ -118,7 +132,7 @@ export default function Dashboard() {
                     </div>
 
                     <div className={styles.userBadges}>
-                        {viewingUser.badges.sort((a, b) => a.priority - b.priority).map((badge) => <div className={styles.badgeContainer} key={badge.id}>
+                        {viewingUser.badges.sort((a, b) => a.priority - b.priority).map((badge) => badge.imageId && <div className={styles.badgeContainer} key={badge.id}>
                             <ImageOrVideo src={resourceIdToPath(badge.imageId)} alt={badge.name} />
                         </div>)}
                     </div>
@@ -166,23 +180,19 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            <div className={`${styles.section} ${styles.auctionSection}`} data-extend={!user.guild}>
+            <div className={`${styles.section} ${styles.auctionSection}`}>
                 <SectionHeader>Auctions</SectionHeader>
 
                 <div className={styles.statsContainer}>
-                    <div className={styles.statsContainerHolder}>
+                    <div className={styles.userAuctions}>
+                        {viewingUserAuctions.length > 0 ? viewingUserAuctions.map((auction) => <Auction key={auction.id} auction={auction} useVhStyles={true} onClick={() => {
+                            setSearch({ seller: viewingUser.username });
+
+                            navigate("/auction-house");
+                        }} />) : <div className={styles.noAuctions}>No auctions found.</div>}
                     </div>
                 </div>
             </div>
-
-            {user.guild && <div className={`${styles.section} ${styles.guildSection}`}>
-                <SectionHeader>Guild</SectionHeader>
-
-                <div className={styles.statsContainer}>
-                    <div className={styles.statsContainerHolder}>
-                    </div>
-                </div>
-            </div>}
 
             <div className={`${styles.section} ${styles.inventorySection}`}>
                 <SectionHeader>Inventory</SectionHeader>
@@ -200,7 +210,7 @@ export default function Dashboard() {
                                 .filter((blook) => blook.packId === pack.id)
                                 .sort((a, b) => a.priority - b.priority);
 
-                            if (filteredBlooks.length > 0) return filteredBlooks.map((blook) => viewingUser.blooks[blook.id] && <InventoryBlook key={blook.id} blook={blook} quantity={viewingUser.blooks[blook.id] as number} />)
+                            if (filteredBlooks.length > 0) return filteredBlooks.map((blook) => viewingUser.blooks[blook.id] && <InventoryBlook key={blook.id} blook={blook} quantity={viewingUser.blooks[blook.id] as number} />);
                         })}
 
                         {nonPackBlooks.map((blook) => viewingUser.blooks[blook.id] && <InventoryBlook key={blook.id} blook={blook} quantity={viewingUser.blooks[blook.id] as number} />)}

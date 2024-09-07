@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useModal } from "@stores/ModalStore/index";
-import { useUser } from "@stores/UserStore";
+import { useUser } from "@stores/UserStore/index";
+import { useAuctionHouse } from "@stores/AuctionHouseStore/index";
 import { useCreateAuction } from "@controllers/auctions/useCreateAuction/index";
 import { Modal, Button, Form, Input, ErrorContainer, Toggle } from "@components/index";
 
@@ -21,14 +22,7 @@ export default function AuctionModal({ type, blook, item }: AuctionModalProps) {
 
     const { closeModal } = useModal();
     const { user } = useUser();
-
-    /* const submit = () => {
-        setLoading(true);
-        sellBlooks({ blookId: blook.id, quantity: parseInt(quantity) })
-            .then(() => closeModal())
-            .catch((err: Fetch2Response) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
-            .finally(() => setLoading(false));
-    }; */
+    const { getAuctions } = useAuctionHouse();
 
     if (!user) return null;
 
@@ -48,7 +42,10 @@ export default function AuctionModal({ type, blook, item }: AuctionModalProps) {
             duration: parseInt(duration),
             buyItNow
         }, (auctionTax + durationTax))
-            .then(() => closeModal())
+            .then(() => {
+                getAuctions();
+                closeModal();
+            })
             .catch((err) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
             .finally(() => setLoading(false));
     };

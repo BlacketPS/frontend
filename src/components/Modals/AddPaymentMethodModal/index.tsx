@@ -16,9 +16,9 @@ export default function AddPaymentMethodModal() {
     const { closeModal } = useModal();
     const { createPaymentMethod } = useCreate();
 
-    if (!payments) return null;
-
     useEffect(() => {
+        if (!payments) return;
+
         const attachCard = async () => {
             const card = await payments.card({
                 style: {

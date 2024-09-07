@@ -1,3 +1,4 @@
+import Auction from "./Auction";
 import Background from "./Background";
 import * as Button from "./Buttons";
 import Dropdown from "./Dropdown";
@@ -18,6 +19,7 @@ import TopRight from "./TopRight";
 import Username from "./Username";
 
 export {
+    Auction,
     Background,
     Button,
     Dropdown,

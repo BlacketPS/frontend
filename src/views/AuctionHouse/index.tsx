@@ -3,8 +3,8 @@ import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { useData } from "@stores/DataStore/index";
 import { useAuctionHouse } from "@stores/AuctionHouseStore/index";
-import { Loader, SearchBox } from "@components/index";
-import { Auction, AuctionModal, BuyItNowModal, ChangeFilterModal, RemoveAuctionModal } from "./components/index";
+import { Auction, Loader, SearchBox } from "@components/index";
+import { AuctionModal, BuyItNowModal, ChangeFilterModal, RemoveAuctionModal } from "./components/index";
 import styles from "./auctionHouse.module.scss";
 
 export default function AuctionHouse() {
@@ -64,6 +64,7 @@ export default function AuctionHouse() {
                                 <Auction
                                     key={auction.id}
                                     auction={auction}
+                                    useVhStyles={false}
                                     onClick={() => {
                                         switch (true) {
                                             case auction.seller.id === user.id:

@@ -7,4 +7,5 @@ export interface AuctionHouseStoreContext {
     setAuctions: (auctions: AuctionsAuctionEntity[]) => void;
     search: AuctionsSearchAuctionDto;
     setSearch: (search: AuctionsSearchAuctionDto) => void;
+    getAuctions: () => void;
 }
