@@ -1,16 +1,21 @@
 import { useResource } from "@stores/ResourceStore/index";
 import { useContextMenu } from "@stores/ContextMenuStore/index";
+import { useModal } from "@stores/ModalStore/index";
 import { useData } from "@stores/DataStore/index";
 import { Button } from "@components/index";
+import { AuctionModal } from ".";
 import Textfit from "react-textfit";
 import styles from "../inventory.module.scss";
 
 import { RightItemProps } from "../inventory";
+import { AuctionTypeEnum } from "blacket-types";
 
 export default function RightItem({ item, usesLeft, children, ...props }: RightItemProps) {
     const { resourceIdToPath } = useResource();
     const { openContextMenu, closeContextMenu } = useContextMenu();
     const { rarities } = useData();
+
+    const { createModal } = useModal();
 
     return (
         <div className={styles.rightSide} {...props}>
@@ -32,16 +37,15 @@ export default function RightItem({ item, usesLeft, children, ...props }: RightI
 
                 <div className={styles.rightBottomText}>
                     <Textfit className={styles.rightBottomDescription} max={35} min={0} mode="multi">{item.description}</Textfit>
-                    {usesLeft?.toLocaleString() || 0} Use{usesLeft !== 1 ? "s": ""} Left
+                    {usesLeft?.toLocaleString() || 0} Use{usesLeft !== 1 ? "s" : ""} Left
                 </div>
 
                 <Button.GenericButton
                     className={styles.rightButtonMobile}
                     backgroundColor="var(--primary-color)"
                     onClick={() => openContextMenu([
-                        { label: "Use", image: "https://cdn.blacket.org/static/content/use.png" },
-                        { label: "Auction", icon: "fas fa-building-columns" },
-                        { label: "Close", icon: "fas fa-times", onClick: () => closeContextMenu() }
+                        { label: "Use", image: window.constructCDNUrl("/content/use.png") },
+                        ...(item.canAuction ? [{ label: "Auction", icon: "fas fa-building-columns", onClick: () => createModal(<AuctionModal type={AuctionTypeEnum.ITEM} item={item} />) }] : [])
                     ])}
                 >
                     <i className="fas fa-bars" />

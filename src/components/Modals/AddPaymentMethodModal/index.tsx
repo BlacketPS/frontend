@@ -82,6 +82,12 @@ export default function AddPaymentMethodModal() {
                 </div>
             </Modal.ModalBody>
 
+            <Modal.ModalBody style={{ fontSize: "0.8rem" }}>
+                We use Square to handle all of our payment processing.
+                <br />
+                None of your payment information is stored on our servers.
+            </Modal.ModalBody>
+
             {error !== "" && <ErrorContainer>{error}</ErrorContainer>}
 
             <Modal.ModalButtonContainer loading={loading}>

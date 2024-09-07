@@ -2,7 +2,7 @@ import { createContext, useContext, useState, ReactNode } from "react";
 
 import { type LeaderboardStoreContext } from "./leaderboard";
 import { PlacementType } from "../../views/Leaderboard/leaderboard.d";
-import { LeaderboardLeaderboardEntity } from "blacket-types";
+import { PublicUser } from "blacket-types";
 
 const LeaderboardStoreContext = createContext<LeaderboardStoreContext>({
     sortBy: PlacementType.TOKEN,
@@ -17,7 +17,10 @@ export function useLeaderboard() {
 
 export function LeaderboardStoreProvider({ children }: { children: ReactNode }) {
     const [sortBy, setSortBy] = useState<PlacementType>(PlacementType.TOKEN);
-    const [leaderboard, setLeaderboard] = useState<LeaderboardLeaderboardEntity | null>(null);
+    const [leaderboard, setLeaderboard] = useState<{
+        tokens: PublicUser[],
+        experience: PublicUser[]
+    } | null>(null);
 
     return <LeaderboardStoreContext.Provider value={{
         sortBy, setSortBy,

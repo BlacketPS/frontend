@@ -1,32 +1,36 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
-import { useSearchAuction } from "@controllers/auctions/useSearchAuction/index";
-import { SearchBox } from "@components/index";
-import { Auction, BuyItNowModal } from "./components/index";
+import { useData } from "@stores/DataStore/index";
+import { useAuctionHouse } from "@stores/AuctionHouseStore/index";
+import { Loader, SearchBox } from "@components/index";
+import { Auction, AuctionModal, BuyItNowModal, ChangeFilterModal, RemoveAuctionModal } from "./components/index";
 import styles from "./auctionHouse.module.scss";
 
-import { AuctionsAuctionEntity, AuctionTypeEnum } from "blacket-types";
-
 export default function AuctionHouse() {
-    const [auctions, setAuctions] = useState<AuctionsAuctionEntity[]>([]);
-    const [query, setQuery] = useState<string>("");
-
     const { user } = useUser();
     const { createModal } = useModal();
+    const { blooks, items } = useData();
+    const { loading, auctions, search, setSearch } = useAuctionHouse();
 
-    const { searchAuction } = useSearchAuction();
+    const [query, setQuery] = useState<string>(search.query || "");
 
     if (!user) return null;
 
-    useEffect(() => {
-        searchAuction({
-            query: query !== "" ? query : undefined,
-            endingSoon: true
-        }).then((res) => {
-            setAuctions(res.data);
+    const setAuctionSearch = () => {
+        const blook = blooks.find((blook) => blook.name.toLowerCase() === query.toLowerCase());
+        const item = items.find((item) => item.name.toLowerCase() === query.toLowerCase());
+
+        if (blook) setSearch({ ...search, query: undefined, blookId: blook.id, itemId: undefined });
+        else if (item) setSearch({ ...search, query: undefined, itemId: item.id, blookId: undefined });
+        else setSearch({
+            ...search,
+            seller: undefined,
+            blookId: undefined,
+            itemId: undefined,
+            query
         });
-    }, [query]);
+    };
 
     return (
         <>
@@ -34,34 +38,48 @@ export default function AuctionHouse() {
                 placeholder="Search for an auction..."
                 buttons={[
                     {
-                        icon: "fas fa-times", tooltip: "Reset Search", onClick: () => { }
+                        icon: "fas fa-times", tooltip: "Reset Search", onClick: () => {
+                            setQuery("");
+
+                            setSearch({});
+                        }
                     },
-                    { icon: "fas fa-sliders", tooltip: "Change Filters", onClick: () => { } },
-                    { icon: "fas fa-magnifying-glass", tooltip: "Search", onClick: () => { } }
+                    { icon: "fas fa-sliders", tooltip: "Change Filters", onClick: () => createModal(<ChangeFilterModal />) },
+                    { icon: "fas fa-magnifying-glass", tooltip: "Search", onClick: () => setAuctionSearch() }
                 ]}
                 onChange={(e) => {
                     setQuery(e.target.value);
                 }}
+                onKeyDown={(e) => {
+                    if (e.key === "Enter") setAuctionSearch();
+                }}
+                value={query}
             />
 
             <div className={styles.auctionHouseContainer}>
                 <div className={styles.auctionHouse}>
                     <div className={styles.auctionHouseItems}>
-                        {auctions.map((auction) => {
-                            console.log(auction);
-
+                        {!loading ? auctions.map((auction) => {
                             return (
                                 <Auction
                                     key={auction.id}
                                     auction={auction}
                                     onClick={() => {
-                                        if (auction.buyItNow) createModal(<BuyItNowModal
-                                            auction={auction}
-                                        />);
+                                        switch (true) {
+                                            case auction.seller.id === user.id:
+                                                createModal(<RemoveAuctionModal auction={auction} />);
+                                                break;
+                                            case auction.buyItNow:
+                                                createModal(<BuyItNowModal auction={auction} />);
+                                                break;
+                                            default:
+                                                createModal(<AuctionModal auctionId={auction.id} />);
+                                                break;
+                                        }
                                     }}
                                 />
                             );
-                        })}
+                        }) : <Loader noModal style={{ marginBottom: 50 }} />}
                     </div>
                 </div>
             </div>

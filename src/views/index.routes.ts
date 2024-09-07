@@ -16,5 +16,6 @@ export { default as SettingsLinkDiscord } from "./Settings/LinkDiscord/route";
 export { default as SettingsAdminHandover } from "./Settings/AdminHandover/route";
 export { default as Store } from "./Store/route";
 export { default as News } from "./News/route";
+export { default as Test } from "./Test/route";
 
 export { default as Credits } from "./Credits/route";

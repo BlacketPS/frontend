@@ -2,14 +2,13 @@ import { useState } from "react";
 import { useModal } from "@stores/ModalStore/index";
 import { useData } from "@stores/DataStore/index";
 import { useUser } from "@stores/UserStore";
-import { useBuyAuction } from "@controllers/auctions/useBuyAuction/index";
+import { useRemoveAuction } from "@controllers/auctions/useRemoveAuction/index";
 import { Modal, Button, ErrorContainer } from "@components/index";
-import styles from "../auctionHouse.module.scss";
 
 import { ModalProps } from "../auctionHouse.d";
 import { AuctionTypeEnum } from "blacket-types";
 
-export default function BuyItNowModal({ auction }: ModalProps) {
+export default function RemoveAuctionModal({ auction }: ModalProps) {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
 
@@ -17,7 +16,7 @@ export default function BuyItNowModal({ auction }: ModalProps) {
     const { blooks, items } = useData();
     const { user } = useUser();
 
-    const { buyAuction } = useBuyAuction();
+    const { removeAuction } = useRemoveAuction();
 
     if (!user) return null;
 
@@ -26,23 +25,32 @@ export default function BuyItNowModal({ auction }: ModalProps) {
 
     const submit = () => {
         setLoading(true);
-        buyAuction(auction)
+        removeAuction(auction.id)
             .then(() => closeModal())
             .catch((err) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
             .finally(() => setLoading(false));
     };
 
-    return (
+    if (auction.bids.length > 0) return (
         <>
             <Modal.ModalHeader>
                 {auction.type === AuctionTypeEnum.BLOOK ? blook!.name : item!.name}
             </Modal.ModalHeader>
 
-            <Modal.ModalBody>Would you like to purchase this {
-                auction.type === AuctionTypeEnum.BLOOK
-                    ? "blook"
-                    : "item"
-            } for <img className={styles.tokenPrice} src={window.constructCDNUrl("/content/token.png")} /> {auction.price.toLocaleString()} tokens?</Modal.ModalBody>
+            <Modal.ModalBody>You cannot remove a listing with bids on it.</Modal.ModalBody>
+
+            <Modal.ModalButtonContainer loading={loading}>
+                <Button.GenericButton onClick={closeModal}>Close</Button.GenericButton>
+            </Modal.ModalButtonContainer>
+        </>
+    );
+    else return (
+        <>
+            <Modal.ModalHeader>
+                {auction.type === AuctionTypeEnum.BLOOK ? blook!.name : item!.name}
+            </Modal.ModalHeader>
+
+            <Modal.ModalBody>Are you sure you want to remove your listing?</Modal.ModalBody>
 
             {error !== "" && <ErrorContainer>{error}</ErrorContainer>}
 

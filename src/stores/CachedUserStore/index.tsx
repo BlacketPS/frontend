@@ -1,7 +1,7 @@
 import { createContext, useContext, useState, useRef, ReactNode } from "react";
 import { useUsers } from "@controllers/users/useUsers";
 
-import { type CachedUserStoreContext } from "./cachedUserStore.d";
+import { type CachedUserStoreContext } from "./cachedUser.d";
 import { PublicUser } from "blacket-types";
 
 const CachedUserStoreContext = createContext<CachedUserStoreContext>({
@@ -23,12 +23,15 @@ export function CachedUserStoreProvider({ children }: { children: ReactNode }) {
 
     const { getUser } = useUsers();
 
-    const addCachedUser = (userId: string) => new Promise<void>((resolve, reject) => {
-        if (cachedUsersRef.current.find((user) => user.id === userId)) return;
+    const addCachedUser = (userId: string) => new Promise<PublicUser>((resolve, reject) => {
+        const cachedUser = cachedUsersRef.current.find((user) => user.id === userId);
+        if (cachedUser) return resolve(cachedUser);
 
         getUser(userId)
             .then((res) => {
-                resolve(setCachedUsers((previousCachedUsers) => [...previousCachedUsers, res.data]));
+                setCachedUsers((previousCachedUsers) => [...previousCachedUsers, res.data]);
+
+                resolve(res.data);
             })
             .catch((err) => reject(err));
     });

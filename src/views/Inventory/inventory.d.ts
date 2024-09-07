@@ -6,7 +6,7 @@ import { AuctionTypeEnum, Blook, Item } from "blacket-types";
 export interface SearchOptions {
     query: string;
     rarity?: number;
-    dupesOnly: boolean;
+    onlyDupes: boolean;
     onlyOwned: boolean;
 }
 

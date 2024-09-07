@@ -86,11 +86,13 @@
     }
 
     &>img {
+        width: 100%;
         height: 100%;
         object-fit: contain;
     }
 
     &>video {
+        width: 100%;
         height: 100%;
         object-fit: contain;
     }
@@ -108,6 +110,7 @@
     font-size: 1.2rem;
     gap: 5px;
     font-weight: 700;
+    line-height: 22px;
 
     @media (max-width: 768px) {
         margin-top: 10px;
@@ -168,4 +171,43 @@
     height: 25px;
     margin: 0 6px;
     width: auto;
+}
+
+.bidsContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 70px;
+    height: auto;
+    max-height: 210px;
+    gap: 10px;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.bid {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    width: 95%;
+    min-height: 50px;
+    max-height: 50px;
+    padding: 10px;
+    background: var(--background-color);
+    border-radius: 7px;
+    box-shadow: inset 0 -7px rgba(0, 0, 0, .2);
+    transition: background-color .2s;
+    cursor: pointer;
+
+    @media (max-width: 768px) {
+        height: 40px;
+        padding: 5px;
+    }
+
+    &:hover {
+        background: var(--secondary-color);
+    }
 }

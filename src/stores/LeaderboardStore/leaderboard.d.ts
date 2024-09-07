@@ -1,8 +1,14 @@
-import { LeaderboardLeaderboardEntity } from "blacket-types";
+import { PublicUser } from "blacket-types";
 
 export interface LeaderboardStoreContext {
     sortBy: PlacementType;
     setSortBy: (sortBy: PlacementType) => void;
-    leaderboard: LeaderboardLeaderboardEntity | null;
-    setLeaderboard: (leaderboard: LeaderboardLeaderboardEntity) => void;
+    leaderboard: {
+        tokens: PublicUser[];
+        experience: PublicUser[];
+    } | null;
+    setLeaderboard: (leaderboard: {
+        tokens: PublicUser[];
+        experience: PublicUser[];
+    }) => void;
 }

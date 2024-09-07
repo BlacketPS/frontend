@@ -16,6 +16,12 @@
         border-radius: 0.7vh;
         margin: 1vh;
         filter: drop-shadow(0 0.4vh 0.4vh rgba(0, 0, 0, 0.25));
+
+        @media screen and (max-width: 475px) {
+            &:last-child {
+                padding-bottom: 10px;
+            }
+        }
     }
 }
 
@@ -38,6 +44,10 @@
 
 .auctionSection {
     grid-area: 4 / 3 / 2 / 1;
+
+    &[data-extend="true"] {
+        grid-area: 6 / 3 / 2 / 1;
+    }
 }
 
 .guildSection {
@@ -514,6 +524,12 @@
     }
 }
 
+.inventoryItems {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 6vh);
+    grid-gap: 1vh;
+}
+
 .statContainer {
     height: 6.5vh;
     width: calc(50% - 4.5vh);
@@ -650,4 +666,92 @@
     padding: 1vh;
     border-radius: 0.5vh;
     font-size: 1.5vh;
+}
+
+.blook {
+    width: 6vh;
+    height: 7vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    outline: none;
+    will-change: transform;
+    transition: transform .2s;
+
+    .blookQuantity {
+        position: absolute;
+        font-family: "Titan One", sans-serif;
+        font-size: 1.2vh;
+        -webkit-text-stroke: #000000 .1vh;
+        border-radius: .7vh;
+        padding: 0 .5vh;
+        height: 1.4vh;
+        line-height: 1.4vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        bottom: .2vh;
+        left: -.2vh;
+    }
+
+    &>img {
+        height: 6.5vh;
+        object-fit: contain;
+        -o-object-fit: contain;
+    }
+
+    &>video {
+        height: 6.5vh;
+        object-fit: contain;
+        -o-object-fit: contain;
+    }
+}
+
+.item {
+    width: 6vh;
+    height: 7vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    outline: none;
+    will-change: transform;
+    transition: transform .2s;
+
+    .itemsLeft {
+        font-family: "Titan One", sans-serif;
+        font-size: 1.2vh;
+        -webkit-text-stroke: #000000 .1vh;
+        border-radius: .7vh;
+        padding: 0 .5vh;
+        height: 1.4vh;
+        line-height: 1.4vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 1vh;
+    }
+
+    &>img {
+        width: 5.5vh;
+        object-fit: contain;
+        -o-object-fit: contain;
+    }
+
+    &>video {
+        width: 5.5vh;
+        object-fit: contain;
+        -o-object-fit: contain;
+    }
 }

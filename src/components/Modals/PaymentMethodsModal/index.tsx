@@ -47,6 +47,12 @@ export default function PaymentMethodsModal() {
                 {selectedPaymentMethod ? <><i className="fas fa-credit-card" style={{ marginRight: "10px" }} /> {selectedPaymentMethod.cardBrand} {selectedPaymentMethod.lastFour}</> : "No Payment Method Selected"}
             </Dropdown>
 
+            <Modal.ModalBody style={{ fontSize: "0.8rem" }}>
+                We use Square to handle all of our payment processing.
+                <br />
+                None of your payment information is stored on our servers.
+            </Modal.ModalBody>
+
             {error !== "" && <ErrorContainer>{error}</ErrorContainer>}
 
             <Modal.ModalButtonContainer loading={loading}>
@@ -65,7 +71,7 @@ export default function PaymentMethodsModal() {
                         .then(() => closeModal())
                         .catch((err: Fetch2Response) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
                         .finally(() => setLoading(false));
-                }}>Delete</GenericButton>
+                }}>Remove</GenericButton>
                 <GenericButton onClick={closeModal}>Cancel</GenericButton>
             </Modal.ModalButtonContainer>
         </>

@@ -1,4 +1,5 @@
 import { HTMLAttributes } from "react";
+import { Blook } from "blacket-types";
 
 export interface SmallButton {
     icon: string;
@@ -26,4 +27,14 @@ export interface LevelContainerProps {
 export interface SmallButtonProps extends HTMLAttributes<HTMLDivElement> {
     icon: string;
     onClick?: () => void;
+}
+
+export interface BlookProps extends HTMLAttributes<HTMLDivElement> {
+    blook: Blook;
+    quantity: number;
+}
+
+export interface ItemProps extends HTMLAttributes<HTMLDivElement> {
+    item: Item;
+    usesLeft: number;
 }

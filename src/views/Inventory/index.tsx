@@ -21,7 +21,7 @@ export default function Inventory() {
     const randomBlookIdFromMyBlooks = Object.keys(user.blooks)[Math.floor(Math.random() * Object.keys(user.blooks).length)];
     const [selectedBlook, setSelectedBlook] = useState<BlookType | null>(blooks.find((blook) => blook.id === parseInt(randomBlookIdFromMyBlooks)) || null);
     const [selectedItem, setSelectedItem] = useState<ItemType | null>(null);
-    const [search, setSearch] = useState<SearchOptions>({ query: localStorage.getItem("INVENTORY_SEARCH_QUERY") || "", rarity: parseInt(localStorage.getItem("INVENTORY_SEARCH_RARITY")!), dupesOnly: localStorage.getItem("INVENTORY_SEARCH_DUPES_ONLY") === "true", onlyOwned: localStorage.getItem("INVENTORY_SEARCH_ONLY_OWNED") === "true" });
+    const [search, setSearch] = useState<SearchOptions>({ query: localStorage.getItem("INVENTORY_SEARCH_QUERY") || "", rarity: parseInt(localStorage.getItem("INVENTORY_SEARCH_RARITY")!), onlyDupes: localStorage.getItem("INVENTORY_SEARCH_ONLY_DUPES") === "true", onlyOwned: localStorage.getItem("INVENTORY_SEARCH_ONLY_OWNED") === "true" });
 
     const nonPackBlooks = blooks.filter((blook) => !blook.packId).map((blook) => blook.id);
 
@@ -53,7 +53,7 @@ export default function Inventory() {
                 blook.packId === packId
                 && blook.name.toLowerCase().includes(search.query.toLowerCase())
                 && (!search.rarity || blook.rarityId === search.rarity)
-                && (!search.dupesOnly || user.blooks[blook.id] > 1)
+                && (!search.onlyDupes || (user.blooks[blook.id] as number) > 1)
                 && (!search.onlyOwned || user.blooks[blook.id])
             );
     }, [blooks, user.blooks, search]);
@@ -65,20 +65,20 @@ export default function Inventory() {
                 && blook.name.toLowerCase().includes(search.query.toLowerCase())
                 && user.blooks[blook.id]
                 && (!search.rarity || blook.rarityId === search.rarity)
-                && (!search.dupesOnly || user.blooks[blook.id] > 1)
+                && (!search.onlyDupes || (user.blooks[blook.id] as number) > 1)
             );
     }, [blooks, user.blooks, search]);
 
     const setSearchOptionsFromLocalStorage = () => {
         const query = localStorage.getItem("INVENTORY_SEARCH_QUERY");
         const rarity = parseInt(localStorage.getItem("INVENTORY_SEARCH_RARITY")!);
-        const dupesOnly = localStorage.getItem("INVENTORY_SEARCH_DUPES_ONLY");
+        const dupesOnly = localStorage.getItem("INVENTORY_SEARCH_ONLY_DUPES");
         const onlyOwned = localStorage.getItem("INVENTORY_SEARCH_ONLY_OWNED");
 
         setSearch({
             query: query || "",
             rarity: rarity ?? null,
-            dupesOnly: dupesOnly === "true",
+            onlyDupes: dupesOnly === "true",
             onlyOwned: onlyOwned === "true"
         });
     };
@@ -115,22 +115,22 @@ export default function Inventory() {
                         {filterItems().map((item) => <Item key={item.id} item={items.find((i) => i.id === item.itemId)!} usesLeft={item.usesLeft} onClick={() => selectItem(items.find((i) => i.id === item.itemId)!)} />)}
                     </SetHolder>}
 
-                    {packs.map((pack) => {
+                    {packs.sort((a, b) => a.priority - b.priority).map((pack) => {
                         const filteredBlooks = filterPackBlooks(pack.id);
 
                         if (filteredBlooks.length > 0) return <SetHolder key={pack.id} name={`${pack.name} Pack`} nothing={false}>
-                            {filterPackBlooks(pack.id).sort((a, b) => a.priority - b.priority).map((blook) => <Blook key={blook.id} blook={blook} locked={!user.blooks[blook.id]} quantity={user.blooks[blook.id]} onClick={() => selectBlook(blook)} />)}
+                            {filterPackBlooks(pack.id).sort((a, b) => a.priority - b.priority).map((blook) => <Blook key={blook.id} blook={blook} locked={!user.blooks[blook.id]} quantity={user.blooks[blook.id] as number} onClick={() => selectBlook(blook)} />)}
                         </SetHolder>;
                         else if (filterPackBlooks.length === 0 && search.query.length === 0) return <SetHolder key={pack.id} name={`${pack.name} Pack`} nothing={true} />;
                     })}
 
                     {Object.keys(user.blooks).filter((blook) => nonPackBlooks.includes(parseInt(blook))).length !== 0 && <SetHolder nothing={false} name="Miscellaneous">
-                        {filterMiscBlooks().map((blook) => <Blook key={blook.id} blook={blook} locked={!user.blooks[blook.id]} quantity={user.blooks[blook.id]} onClick={() => selectBlook(blook)} />)}
+                        {filterMiscBlooks().map((blook) => <Blook key={blook.id} blook={blook} locked={!user.blooks[blook.id]} quantity={user.blooks[blook.id] as number} onClick={() => selectBlook(blook)} />)}
                     </SetHolder>}
                 </div>
             </div>
 
-            {Object.keys(user.blooks).length > 0 && selectedBlook && <RightBlook blook={selectedBlook} owned={user.blooks[selectedBlook.id]} noBlooksOwned={Object.keys(user.blooks).length < 1}>
+            {Object.keys(user.blooks).length > 0 && selectedBlook && <RightBlook blook={selectedBlook} owned={user.blooks[selectedBlook.id] as number} noBlooksOwned={Object.keys(user.blooks).length < 1}>
                 {Object.keys(user.blooks).length > 0 && selectedBlook && <div className={styles.rightButtonContainer}>
                     <RightButton image="https://cdn.blacket.org/static/content/token.png" onClick={() => createModal(<SellBlooksModal blook={selectedBlook} />)}>Sell</RightButton>
                     <RightButton icon="fas fa-building-columns" onClick={() => createModal(<AuctionModal type={AuctionTypeEnum.BLOOK} blook={selectedBlook} />)}>Auction</RightButton>

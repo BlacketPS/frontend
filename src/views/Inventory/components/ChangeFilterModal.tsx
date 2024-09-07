@@ -7,7 +7,7 @@ import { ChangeFilterModalProps } from "../inventory.d";
 
 export default function ChangeFilterModal({ onSave }: ChangeFilterModalProps) {
     const [rarity, setRarity] = useState<number | null>(localStorage.getItem("INVENTORY_SEARCH_RARITY") ? parseInt(localStorage.getItem("INVENTORY_SEARCH_RARITY")!) : null);
-    const [dupesOnly, setDupesOnly] = useState<boolean>(localStorage.getItem("INVENTORY_SEARCH_DUPES_ONLY") === "true" ? true : false);
+    const [dupesOnly, setDupesOnly] = useState<boolean>(localStorage.getItem("INVENTORY_SEARCH_ONLY_DUPES") === "true" ? true : false);
     const [onlyOwned, setOnlyOwned] = useState<boolean>(localStorage.getItem("INVENTORY_SEARCH_ONLY_OWNED") === "true" ? true : false);
 
     const { closeModal } = useModal();
@@ -37,7 +37,7 @@ export default function ChangeFilterModal({ onSave }: ChangeFilterModalProps) {
                     checked={dupesOnly}
                     onClick={() => setDupesOnly(!dupesOnly)}
                 >
-                    Dupes Only
+                    Only Dupes
                 </Toggle>
 
                 <Toggle
@@ -51,7 +51,7 @@ export default function ChangeFilterModal({ onSave }: ChangeFilterModalProps) {
             <Modal.ModalButtonContainer>
                 <Button.GenericButton onClick={() => {
                     localStorage.setItem("INVENTORY_SEARCH_RARITY", rarity?.toString() || "");
-                    localStorage.setItem("INVENTORY_SEARCH_DUPES_ONLY", dupesOnly.toString());
+                    localStorage.setItem("INVENTORY_SEARCH_ONLY_DUPES", dupesOnly.toString());
                     localStorage.setItem("INVENTORY_SEARCH_ONLY_OWNED", onlyOwned.toString());
 
                     onSave();

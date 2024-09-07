@@ -67,6 +67,7 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
         initializeSocket();
 
         return () => {
+            socketRef.current?.offAny();
             socketRef.current?.close();
 
             socketRef.current = null;

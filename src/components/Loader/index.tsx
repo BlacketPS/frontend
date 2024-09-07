@@ -1,12 +1,12 @@
 import { LoaderProps } from "./loader.d";
 import styles from "./loader.module.scss";
 
-export default function Loader({ image = window.constructCDNUrl("/content/blooks/Default.png"), motionless = false, noModal = false, message, className = "" }: LoaderProps) {
+export default function Loader({ image = window.constructCDNUrl("/content/blooks/Default.png"), motionless = false, noModal = false, message, className = "", ...props }: LoaderProps) {
     if (className !== "") className = ` ${className}`;
 
     if (!noModal) return (
         <div className={styles.loadingModal}>
-            <div className={`${styles.loader}${className}`} style={message ? { marginBottom: 100 } : {}}>
+            <div className={`${styles.loader}${className}`} style={message ? { marginBottom: 100 } : {}} {...props}>
                 <div className={styles.loaderShadow} />
 
                 <img className={styles.loaderBlook} data-motionless={motionless} src={image} draggable={false} />
@@ -17,7 +17,7 @@ export default function Loader({ image = window.constructCDNUrl("/content/blooks
     );
 
     else return (
-        <div className={`${styles.loader}${className}`}>
+        <div className={`${styles.loader}${className}`} {...props}>
             <div className={styles.loaderShadow} />
 
             <img className={styles.loaderBlook} data-motionless={motionless} src={image} draggable={false} />

@@ -8,7 +8,7 @@ import { useData } from "@stores/DataStore/index";
 import { useResource } from "@stores/ResourceStore/index";
 import { useUsers } from "@controllers/users/useUsers/index";
 import { Button, ImageOrVideo, Username } from "@components/index";
-import { LevelContainer, LookupUserModal, SmallButton, SectionHeader, StatContainer } from "./components";
+import { LevelContainer, LookupUserModal, SmallButton, SectionHeader, StatContainer, InventoryBlook, InventoryItem } from "./components";
 import styles from "./dashboard.module.scss";
 
 import { PrivateUser, PublicUser } from "blacket-types";
@@ -18,7 +18,7 @@ export default function Dashboard() {
     const { createModal } = useModal();
     const { user, getUserAvatarPath } = useUser();
     const { cachedUsers, addCachedUserWithData } = useCachedUser();
-    const { blooks, banners, titleIdToText } = useData();
+    const { blooks, packs, items, banners, titleIdToText } = useData();
     const { resourceIdToPath } = useResource();
 
     if (!user) return <Navigate to="/login" />;
@@ -78,6 +78,10 @@ export default function Dashboard() {
             })
             .finally(() => setLoading(false));
     }, []);
+
+    const nonPackBlooks = blooks
+        .filter((blook) => !blook.packId)
+        .sort((a, b) => a.priority - b.priority);
 
     return (
         <div className={styles.parentHolder}>
@@ -162,7 +166,7 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            <div className={`${styles.section} ${styles.auctionSection}`}>
+            <div className={`${styles.section} ${styles.auctionSection}`} data-extend={!user.guild}>
                 <SectionHeader>Auctions</SectionHeader>
 
                 <div className={styles.statsContainer}>
@@ -171,20 +175,35 @@ export default function Dashboard() {
                 </div>
             </div>
 
-            <div className={`${styles.section} ${styles.guildSection}`}>
+            {user.guild && <div className={`${styles.section} ${styles.guildSection}`}>
                 <SectionHeader>Guild</SectionHeader>
 
                 <div className={styles.statsContainer}>
                     <div className={styles.statsContainerHolder}>
                     </div>
                 </div>
-            </div>
+            </div>}
 
             <div className={`${styles.section} ${styles.inventorySection}`}>
                 <SectionHeader>Inventory</SectionHeader>
 
                 <div className={styles.statsContainer}>
-                    <div className={styles.statsContainerHolder}>
+                    <div className={styles.inventoryItems}>
+                        {items.sort((a, b) => a.priority - b.priority).map((item) => {
+                            const filteredItems = viewingUser.items.filter((i) => i.itemId === item.id);
+
+                            if (filteredItems.length > 0) return filteredItems.map((i) => <InventoryItem key={i.id} item={item} usesLeft={i.usesLeft} />);
+                        })}
+
+                        {packs.sort((a, b) => a.priority - b.priority).map((pack) => {
+                            const filteredBlooks = blooks
+                                .filter((blook) => blook.packId === pack.id)
+                                .sort((a, b) => a.priority - b.priority);
+
+                            if (filteredBlooks.length > 0) return filteredBlooks.map((blook) => viewingUser.blooks[blook.id] && <InventoryBlook key={blook.id} blook={blook} quantity={viewingUser.blooks[blook.id] as number} />)
+                        })}
+
+                        {nonPackBlooks.map((blook) => viewingUser.blooks[blook.id] && <InventoryBlook key={blook.id} blook={blook} quantity={viewingUser.blooks[blook.id] as number} />)}
                     </div>
                 </div>
             </div>
