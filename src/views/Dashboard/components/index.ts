@@ -1,3 +1,4 @@
+import CosmeticsModal from "./CosmeticsModal";
 import InventoryBlook from "./InventoryBlook";
 import InventoryItem from "./InventoryItem";
 import LevelContainer from "./LevelContainer";
@@ -7,6 +8,7 @@ import SmallButton from "./SmallButton";
 import StatContainer from "./StatContainer";
 
 export {
+    CosmeticsModal,
     InventoryBlook,
     InventoryItem,
     LevelContainer,

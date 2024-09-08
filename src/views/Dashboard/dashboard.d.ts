@@ -38,3 +38,15 @@ export interface ItemProps extends HTMLAttributes<HTMLDivElement> {
     item: Item;
     usesLeft: number;
 }
+
+export interface CosmeticsModalProps {
+    category: CosmeticsModalCategory;
+}
+
+export enum CosmeticsModalCategory {
+    AVATAR = 1,
+    BANNER = 2,
+    TITLE = 3,
+    FONT = 4,
+    COLOR = 5
+}

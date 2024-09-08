@@ -12,9 +12,9 @@ export default function InventoryBlook({ blook, quantity, ...props }: BlookProps
     return (
         <div className={styles.blook} {...props}>
             <ImageOrVideo src={resourceIdToPath(blook.imageId) || window.constructCDNUrl("/content/blooks/Default.png")} alt={blook.name} draggable={false} />
-            <div style={{
+            {quantity > 0 && <div style={{
                 backgroundColor: rarities.find((rarity) => rarity.id === blook.rarityId)!.color
-            }} className={styles.blookQuantity}>{quantity.toLocaleString()}</div>
+            }} className={styles.blookQuantity}>{quantity.toLocaleString()}</div>}
         </div>
     );
 }

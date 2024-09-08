@@ -91,8 +91,14 @@ export default function ChangeFilterModal() {
 
             <Modal.ModalButtonContainer>
                 <Button.GenericButton onClick={() => {
-                    if (seller !== "") setSearch({ ...search, seller });
-                    else if (seller && search.seller !== seller) setSearch({ ...search, seller: undefined });
+                    switch (true) {
+                        case seller === "":
+                            setSearch({ ...search, seller: undefined });
+                            break;
+                        case seller !== search.seller:
+                            setSearch({ ...search, seller });
+                            break;
+                    }
 
                     closeModal();
                 }}>Save</Button.GenericButton>

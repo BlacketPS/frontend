@@ -72,12 +72,12 @@ export default function Sidebar() {
                 icon: "fas fa-newspaper",
                 text: "News",
                 link: "/news"
-            },
-            {
+            }
+            /* {
                 icon: "fas fa-flask",
                 text: "Test",
                 link: "/test"
-            }
+            } */
         ],
         bottom: [
             {

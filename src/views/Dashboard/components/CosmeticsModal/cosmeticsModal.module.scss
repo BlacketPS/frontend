@@ -1,0 +1,43 @@
+.holder {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+
+    &[data-column="true"] {
+        flex-direction: column;
+    }
+}
+
+.bannerContainer {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    justify-content: center;
+    padding: 20px 10px;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 10px;
+    flex-direction: column;
+    cursor: pointer;
+    transition: transform .2s;
+
+    &:hover {
+        transform: scale(0.95);
+    }
+
+    &:active {
+        transform: scale(0.9);
+    }
+}
+
+.bannerName {
+    font-size: 25px;
+    font-weight: 700;
+}
+
+.bannerImage {
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
+}

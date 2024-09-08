@@ -10,10 +10,11 @@ import { useAuctionHouse } from "@stores/AuctionHouseStore/index";
 import { useUsers } from "@controllers/users/useUsers/index";
 import { useSearchAuction } from "@controllers/auctions/useSearchAuction/index";
 import { Auction, ImageOrVideo, Username } from "@components/index";
-import { LevelContainer, LookupUserModal, SmallButton, SectionHeader, StatContainer, InventoryBlook, InventoryItem } from "./components";
+import { LevelContainer, LookupUserModal, SmallButton, SectionHeader, StatContainer, InventoryBlook, InventoryItem, CosmeticsModal } from "./components";
 import styles from "./dashboard.module.scss";
 
 import { AuctionsAuctionEntity, PrivateUser, PublicUser } from "blacket-types";
+import { CosmeticsModalCategory } from "./dashboard.d";
 
 export default function Dashboard() {
     const { setLoading } = useLoading();
@@ -93,6 +94,13 @@ export default function Dashboard() {
             .catch(() => setViewingUserAuctions([]));
     }, [viewingUser]);
 
+    useEffect(() => {
+        if (searchParams.get("name")) return;
+        if (viewingUser.id !== user.id) return;
+
+        setViewingUser(user);
+    }, [user]);
+
     const nonPackBlooks = blooks
         .filter((blook) => !blook.packId)
         .sort((a, b) => a.priority - b.priority);
@@ -102,10 +110,25 @@ export default function Dashboard() {
             <div className={`${styles.section} ${styles.userSection}`}>
                 <div className={styles.userTopProfile}>
                     <div className={styles.userBannerBlook}>
-                        <ImageOrVideo className={styles.userAvatar} src={getUserAvatarPath(viewingUser)} alt="User Avatar" draggable={false} />
+                        <ImageOrVideo
+                            className={styles.userAvatar}
+                            src={getUserAvatarPath(viewingUser)}
+                            alt="User Avatar"
+                            draggable={false}
+                            onClick={() => {
+                                if (viewingUser.id === user.id) createModal(<CosmeticsModal category={CosmeticsModalCategory.AVATAR} />);
+                            }}
+                        />
                         <div className={styles.bannerLevel}>
-                            <div className={styles.userBanner}>
-                                <img src={resourceIdToPath(viewingUser.bannerId)} alt="User Banner" draggable={false} />
+                            <div className={styles.userBanner} data-hoverable={viewingUser.id === user.id}>
+                                <img
+                                    src={resourceIdToPath(viewingUser.bannerId)}
+                                    alt="User Banner"
+                                    draggable={false}
+                                    onClick={() => {
+                                        if (viewingUser.id === user.id) createModal(<CosmeticsModal category={CosmeticsModalCategory.BANNER} />);
+                                    }}
+                                />
                                 <div className={styles.userInfoContainer}>
                                     <div className={styles.usernameAndTitleContainer}>
                                         <Username className={styles.username} user={viewingUser} />

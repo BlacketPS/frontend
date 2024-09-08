@@ -227,6 +227,19 @@
             width: 300px;
         }
     }
+
+    &[data-hoverable="true"] {
+        cursor: pointer;
+        transition: filter 0.2s;
+
+        &:hover {
+            filter: brightness(1.4);
+        }
+
+        &:active {
+            filter: brightness(1.2);
+        }
+    }
 }
 
 .userInfoContainer {
@@ -674,7 +687,6 @@
     user-select: none;
     outline: none;
     will-change: transform;
-    transition: transform .2s;
 
     .blookQuantity {
         position: absolute;
@@ -702,6 +714,19 @@
         height: 6.5vh;
         object-fit: contain;
         -o-object-fit: contain;
+    }
+
+    &[data-selectable="true"] {
+        transition: transform .2s;
+        cursor: pointer;
+
+        &:hover {
+            transform: scale(0.95);
+        }
+
+        &:active {
+            transform: scale(0.9);
+        }
     }
 }
 
@@ -768,4 +793,33 @@
     @media screen and (max-width: 475px) {
         margin-top: 15px;
     }
+}
+
+.cosmeticsButtonContainer {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 5px 10px;
+}
+
+.cosmeticsCloseButton {
+    position: absolute;
+    top: 2px;
+    right: 0;
+    min-width: 50px !important;
+    width: 50px;
+    transform: scale(0.7);
+}
+
+.cosmeticsCategoryContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 20px 10px 20px;
+    height: 500px;
+    max-height: 500px;
+    overflow-y: auto;
+    overflow-x: hidden;
 }
