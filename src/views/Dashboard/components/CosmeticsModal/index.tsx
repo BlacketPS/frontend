@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { Button, Modal } from "@components/index";
-import { AvatarCategory, BannerCategory } from "./components/index";
+import { AvatarCategory, BannerCategory, FontCategory, TitleCategory } from "./components/index";
 import styles from "../../dashboard.module.scss";
 
 import { CosmeticsModalCategory, CosmeticsModalProps } from "../../dashboard.d";
@@ -14,11 +14,11 @@ const Category = (category: CosmeticsModalCategory) => {
             return <AvatarCategory />;
         case CosmeticsModalCategory.BANNER:
             return <BannerCategory />;
-        /* case CosmeticModalCategory.TITLE:
+        case CosmeticsModalCategory.TITLE:
             return <TitleCategory />;
-        case CosmeticModalCategory.FONT:
+        case CosmeticsModalCategory.FONT:
             return <FontCategory />;
-        case CosmeticModalCategory.COLOR:
+        /*  case CosmeticModalCategory.COLOR:
             return <ColorCategory />; */
         default:
             return <div>{NotFound.DEFAULT}</div>;

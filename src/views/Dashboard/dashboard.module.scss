@@ -43,11 +43,11 @@
 }
 
 .auctionSection {
-    grid-area: 6 / 3 / 2 / 1;
+    grid-area: 6 / 3 / 2 / 5;
 }
 
 .inventorySection {
-    grid-area: 6 / 3 / 2 / 5;
+    grid-area: 6 / 3 / 2 / 1;
 }
 
 .friendsSection {
@@ -801,7 +801,13 @@
     flex-direction: row;
     flex-wrap: wrap;
     gap: 10px;
-    padding: 5px 10px;
+    padding: 5px 5px;
+    width: 420px;
+    flex-wrap: wrap;
+
+    @media screen and (max-width: 768px) {
+        width: 100%;
+    }
 }
 
 .cosmeticsCloseButton {
@@ -817,9 +823,9 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    padding: 20px 10px 20px;
-    height: 500px;
-    max-height: 500px;
+    padding: 15px;
+    height: 450px;
+    max-height: 450px;
     overflow-y: auto;
     overflow-x: hidden;
 }

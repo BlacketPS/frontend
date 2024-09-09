@@ -3,7 +3,6 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 10px;
-    width: 100%;
 
     &[data-column="true"] {
         flex-direction: column;
@@ -15,9 +14,11 @@
     align-items: center;
     gap: 10px;
     justify-content: center;
-    padding: 20px 10px;
+    width: 380px;
+    padding: 20px 30px;
+    width: auto;
     background: rgba(0, 0, 0, 0.2);
-    border-radius: 10px;
+    border-radius: 7px;
     flex-direction: column;
     cursor: pointer;
     transition: transform .2s;
@@ -37,7 +38,49 @@
 }
 
 .bannerImage {
-    width: 90%;
-    height: 90%;
+    width: 85%;
+    height: 85%;
     object-fit: contain;
+}
+
+.titleContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 7px;
+    width: 380px;
+    background: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform .2s;
+    font-size: 15px;
+
+    &:hover {
+        transform: scale(0.95);
+    }
+
+    &:active {
+        transform: scale(0.9);
+    }
+}
+
+.fontContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+    border-radius: 7px;
+    width: 380px;
+    background: rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform .2s;
+    font-size: 25px;
+
+    &:hover {
+        transform: scale(0.95);
+    }
+
+    &:active {
+        transform: scale(0.9);
+    }
 }
