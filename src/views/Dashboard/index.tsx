@@ -177,12 +177,12 @@ export default function Dashboard() {
             <div className={`${styles.section} ${styles.statsSection}`}>
                 <div className={styles.statsContainer}>
                     <div className={styles.statsContainerHolder}>
-                        <StatContainer title="User ID" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsUserID.png" value={viewingUser.id} />
-                        <StatContainer title="Tokens" icon="https://cdn.blacket.org/static/content/token.png" value={viewingUser.tokens.toLocaleString()} />
-                        <StatContainer title="Experience" icon="https://cdn.blacket.org/static/content/experience.png" value={viewingUser.experience.toLocaleString()} />
-                        <StatContainer title="Blooks Unlocked" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsBlooksUnlocked.png" value={`${Object.keys(viewingUser.blooks).length.toLocaleString()} / ${blooks.length.toLocaleString()}`} />
-                        <StatContainer title="Packs Opened" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsPacksOpened.png" value={viewingUser.statistics.packsOpened.toLocaleString()} />
-                        <StatContainer title="Messages Sent" icon="https://cdn.blacket.org/static/content/icons/dashboardStatsMessagesSent.png" value={viewingUser.statistics.messagesSent.toLocaleString()} />
+                        <StatContainer title="User ID" icon={window.constructCDNUrl("/content/icons/dashboardStatsUserID.png")} value={viewingUser.id} />
+                        <StatContainer title="Tokens" icon={window.constructCDNUrl("/content/token.png")} value={viewingUser.tokens.toLocaleString()} />
+                        <StatContainer title="Experience" icon={window.constructCDNUrl("/content/experience.png")} value={viewingUser.experience.toLocaleString()} />
+                        <StatContainer title="Blooks Unlocked" icon={window.constructCDNUrl("/content/icons/dashboardStatsBlooksUnlocked.png")} value={`${Object.keys(viewingUser.blooks).length.toLocaleString()} / ${blooks.length.toLocaleString()}`} />
+                        <StatContainer title="Packs Opened" icon={window.constructCDNUrl("/content/icons/dashboardStatsPacksOpened.png")} value={viewingUser.statistics.packsOpened.toLocaleString()} />
+                        <StatContainer title="Messages Sent" icon={window.constructCDNUrl("/content/icons/dashboardStatsMessagesSent.png")} value={viewingUser.statistics.messagesSent.toLocaleString()} />
                     </div>
                 </div>
             </div>

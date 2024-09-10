@@ -93,7 +93,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
 
         if (data.mentions.includes(user.id)
             || (data.replyingTo && data.replyingTo.authorId === user?.id)) {
-            new Audio(import.meta.env.VITE_CDN_URL + "/content/mention.ogg").play();
+            new Audio(window.constructCDNUrl("/content/mention.ogg")).play();
             setMentions((previousMentions) => previousMentions + 1);
         }
 

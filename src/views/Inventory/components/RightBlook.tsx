@@ -22,7 +22,7 @@ export default function RightBlook({ blook, owned, noBlooksOwned, children, ...p
         <div className={styles.rightSide} {...props}>
             <div className={styles.rightSideContent}>
                 <div className={styles.rightBlookBackground}>
-                    <ImageOrVideo src={resourceIdToPath(blook.backgroundId) || "https://cdn.blacket.org/static/content/blooks/backgrounds/Default.png"} alt="Blook Background" draggable={false} />
+                    <ImageOrVideo src={resourceIdToPath(blook.backgroundId) || window.constructCDNUrl("/content/blooks/backgrounds/Default.png")} alt="Blook Background" draggable={false} />
                 </div>
                 <div className={styles.rightTopText}>
                     <Textfit mode="single" min={0} max={window.innerWidth > 1000 ? 40 : 25} className={styles.rightBlookName}>{blook.name}</Textfit>
@@ -42,7 +42,7 @@ export default function RightBlook({ blook, owned, noBlooksOwned, children, ...p
                     backgroundColor="var(--primary-color)"
                     onClick={() => openContextMenu([
                         {
-                            label: "Sell", image: "https://cdn.blacket.org/static/content/token.png", onClick: () => {
+                            label: "Sell", image: window.constructCDNUrl("/content/token.png"), onClick: () => {
                                 closeContextMenu();
 
                                 createModal(<SellBlooksModal blook={blook} />);

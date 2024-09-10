@@ -53,7 +53,7 @@
     opacity: .15;
     width: 100%;
     height: 100%;
-    background-image: url("https://cdn.blacket.org/static/content/blookTile.png");
+    // background-image: url(window.constructCDNUrl("/content/blookTile.png"));
 }
 
 .setTopText {

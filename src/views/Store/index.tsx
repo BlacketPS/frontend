@@ -32,7 +32,7 @@ export default function Store() {
     };
 
     const [products, setProducts] = useState<Product[]>([
-        { name: "Blacket Plus", monthly: true, price: 2.99, lifetime: 39.99, image: "https://cdn.blacket.org/static/content/badges/Plus.png", colors: ["#071d8b", "#3d8def"], type: "Plan" },
+        { name: "Blacket Plus", monthly: true, price: 2.99, lifetime: 39.99, image: window.constructCDNUrl("/content/badges/Plus.png"), colors: ["#071d8b", "#3d8def"], type: "Plan" },
         { name: "1Hr Booster", price: 9.99, image: "https://blacket.org/content/items/1%20Hour%20Booster.webp", colors: ["#0d96d6", "#61ecff"], type: "Item" },
         { name: "3Hr Booster", price: 14.99, image: "https://blacket.org/content/items/3%20Hour%20Booster.webp", colors: ["#d68213", "#edd557"], type: "Item" }
     ]);

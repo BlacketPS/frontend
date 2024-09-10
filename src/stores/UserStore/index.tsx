@@ -16,10 +16,10 @@ export function UserStoreProvider({ children }: { children: ReactNode }) {
     const { resourceIdToPath } = useResource();
 
     const getUserAvatarPath = (user: PrivateUser | null): string => {
-        if (!user) return import.meta.env.VITE_CDN_URL + "/content/blooks/Error.png";
+        if (!user) return window.constructCDNUrl("/content/blooks/Error.png");
         else if (user.customAvatar) return user.customAvatar as string;
         else if (user.avatarId) return resourceIdToPath(user.avatarId) || window.errorImage;
-        else return import.meta.env.VITE_CDN_URL + "/content/blooks/Default.png";
+        else return window.constructCDNUrl("/content/blooks/Default.png");
     };
 
     return <UserStoreContext.Provider value={{ user, setUser, getUserAvatarPath }}>{children}</UserStoreContext.Provider>;

@@ -282,7 +282,7 @@
     height: 233px;
     background-size: 2835px 233px;
     background-repeat: no-repeat;
-    background-image: url("https://cdn.blacket.org/static/content/packSeelOpen.svg");
+    // background-image: url(window.constructCDNUrl("/content/packSeelOpen.svg"));
 
     &[data-opening="true"] {
         animation: seelPeel .4s steps(8) forwards;

@@ -25,7 +25,7 @@ export default function Category({ header, internalName, children }: CategoryPro
         <>
             <div className={styles.categoryHeader} onClick={toggleOpenedState}>
                 {header}
-                <img src="https://cdn.blacket.org/static/content/arrow.png" className={styles.categoryArrow} draggable={false} data-opened={openedState} />
+                <img src={window.constructCDNUrl("/content/arrow.png")} className={styles.categoryArrow} draggable={false} data-opened={openedState} />
             </div>
 
             <div className={styles.categoryContent} data-opened={openedState}>{children}</div>
