@@ -12,7 +12,7 @@ export function useResource() {
 export function ResourceStoreProvider({ children }: { children: ReactNode }) {
     const [resources, setResources] = useState<Resource[]>([]);
 
-    const resourceIdToPath = useCallback((id: number) => resources.find((resource) => resource.id === id)?.path ?? window.errorImage, [resources]);
+    const resourceIdToPath = useCallback((id: number) => resources.find((resource) => resource.id === id)?.path.replace("{cdn}", import.meta.env.VITE_CDN_URL) ?? window.errorImage, [resources]);
 
     return <ResourceStoreContext.Provider value={{ resources, setResources, resourceIdToPath }}>{children}</ResourceStoreContext.Provider>;
 }

@@ -1,5 +1,3 @@
-/* eslint-disable no-var */
-
 export enum HTTPMethod {
     GET = "GET",
     HEAD = "HEAD",
@@ -19,6 +17,7 @@ const fetchInterceptor = (method: HTTPMethod) => (url: string, body: JSON) => ne
 })
     .then(async (response: Response) => {
         let data;
+
         try {
             data = await response.json();
         } catch {

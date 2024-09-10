@@ -1,8 +1,8 @@
 import { createRoot } from "react-dom/client";
 import { HelmetProvider } from "react-helmet-async";
 
-import "./fetch2";
 import "./window";
+import "./fetch2";
 import "./console";
 
 import App from "./App";

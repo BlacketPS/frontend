@@ -41,12 +41,14 @@ export default function FontCategory() {
                 {fonts
                     .filter((font) => font.name.toLowerCase().includes(search.toLowerCase()))
                     .filter((font) => font.default)
+                    .sort((a, b) => a.priority - b.priority)
                     .map((font) => <Font key={font.id} font={font} onClick={() => onSelect(font.id)} />)
                 }
 
                 {fonts
                     .filter((font) => font.name.toLowerCase().includes(search.toLowerCase()))
                     .filter((font) => !font.default)
+                    .sort((a, b) => a.priority - b.priority)
                     .map((font) => (user.fonts as number[]).includes(font.id) && <Font key={font.id} font={font} onClick={() => onSelect(font.id)} />)
                 }
             </div>

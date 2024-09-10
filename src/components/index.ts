@@ -1,6 +1,7 @@
 import Auction from "./Auction";
 import Background from "./Background";
 import * as Button from "./Buttons";
+import ColorPicker from "./ColorPicker";
 import Dropdown from "./Dropdown";
 import ErrorContainer from "./ErrorContainer";
 import Form from "./Form";
@@ -22,6 +23,7 @@ export {
     Auction,
     Background,
     Button,
+    ColorPicker,
     Dropdown,
     ErrorContainer,
     Form,
