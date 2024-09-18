@@ -3,7 +3,7 @@ import { useAuctionHouse } from "@stores/AuctionHouseStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { useData } from "@stores/DataStore/index";
 import { Modal, Button, Dropdown, Toggle, Input } from "@components/index";
-import { AuctionTypeEnum } from "blacket-types";
+import { AuctionTypeEnum } from "@blacket/types";
 
 export default function ChangeFilterModal() {
     const { search, setSearch } = useAuctionHouse();

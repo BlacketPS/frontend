@@ -13,7 +13,7 @@ import { Auction, ImageOrVideo, Username } from "@components/index";
 import { LevelContainer, LookupUserModal, SmallButton, SectionHeader, StatContainer, InventoryBlook, InventoryItem, CosmeticsModal } from "./components";
 import styles from "./dashboard.module.scss";
 
-import { AuctionsAuctionEntity, PrivateUser, PublicUser } from "blacket-types";
+import { AuctionsAuctionEntity, PrivateUser, PublicUser } from "@blacket/types";
 import { CosmeticsModalCategory } from "./dashboard.d";
 
 export default function Dashboard() {

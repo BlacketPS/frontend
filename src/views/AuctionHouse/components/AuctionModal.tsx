@@ -23,7 +23,12 @@ export default function AuctionModal({ auctionId }: AuctionModalProps) {
 
     const { bidAuction } = useBidAuction();
 
+    console.log(auctionId);
+    console.log(auctions);
+
     const [auction, setAuction] = useState<AuctionsAuctionEntity | null>(auctions.find((auction) => auction.id === auctionId) || null);
+
+    console.log(auction);
 
     if (!auction) return null;
     if (!user) return null;

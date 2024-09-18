@@ -2,13 +2,14 @@ import { useEffect, useRef, useState } from "react";
 import { useModal } from "@stores/ModalStore/index";
 import { useSquare } from "@stores/SquareStore/index";
 import { useCreate } from "@controllers/store/payment-methods/useCreate/index";
-import { Modal, ErrorContainer, Input } from "@components/index";
+import { Modal, ErrorContainer, Input, Loader } from "@components/index";
 import { GenericButton } from "@components/Buttons";
 import { Card } from "@square/web-sdk";
 
 export default function AddPaymentMethodModal() {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
+    const [cardLoading, setCardLoading] = useState<boolean>(true);
     const squareCardRef = useRef<Card | null>(null);
     const [cardName, setCardName] = useState<string>("");
 
@@ -20,9 +21,12 @@ export default function AddPaymentMethodModal() {
         if (!payments) return;
 
         const attachCard = async () => {
+            const accentColor = getComputedStyle(document.documentElement).getPropertyValue("--accent-color");
+            const backgroundColor = getComputedStyle(document.documentElement).getPropertyValue("--background-color");
+
             const card = await payments.card({
                 style: {
-                    input: { backgroundColor: "transparent", color: "#ffffff", fontSize: "16px" },
+                    input: { backgroundColor: backgroundColor, color: accentColor, fontSize: "16px" },
                     ".input-container": { borderWidth: "0px", borderRadius: "7px" },
                     ".input-container.is-error": { borderWidth: "0px" },
                     ".input-container.is-focus": { borderWidth: "0px" },
@@ -37,6 +41,7 @@ export default function AddPaymentMethodModal() {
 
             card.attach("#square-card");
             squareCardRef.current = card;
+            setCardLoading(false);
         };
 
         attachCard();
@@ -56,13 +61,25 @@ export default function AddPaymentMethodModal() {
                     <div
                         id="square-card"
                         style={{
-                            border: "2px solid var(--background-color)",
                             borderRadius: "7px",
                             height: 100,
                             marginBottom: 10
                         }}
                         onClick={() => setError("")}
-                    />
+                    >
+                        {
+                            cardLoading &&
+                            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", height: "100%" }}>
+                                <Loader
+                                    noModal
+                                    style={{
+                                        marginBottom: 20,
+                                        transform: "scale(1.5)"
+                                    }}
+                                />
+                            </div>
+                        }
+                    </div>
 
                     <Input
                         type="text"

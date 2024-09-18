@@ -14,7 +14,7 @@ import AreYouSureLinkModal from "./AreYouSureLinkModal";
 import styles from "../chat.module.scss";
 
 import { MarkdownPreviewProps, ElementProps } from "../chat";
-import { PublicUser } from "blacket-types";
+import { PublicUser } from "@blacket/types";
 import { useNavigate } from "react-router-dom";
 
 Prism.languages.blacketMarkdown = {

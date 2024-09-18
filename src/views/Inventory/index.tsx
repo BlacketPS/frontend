@@ -7,7 +7,7 @@ import { SearchBox } from "@components/index";
 import { ChangeFilterModal, SetHolder, Blook, Item, RightBlook, RightItem, RightButton, SellBlooksModal, AuctionModal } from "./components";
 import styles from "./inventory.module.scss";
 
-import { AuctionTypeEnum, Blook as BlookType, Item as ItemType } from "blacket-types";
+import { AuctionTypeEnum, Blook as BlookType, Item as ItemType } from "@blacket/types";
 import { SearchOptions } from "./inventory.d";
 
 export default function Inventory() {

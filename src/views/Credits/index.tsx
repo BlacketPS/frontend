@@ -1,49 +1,39 @@
 import { useEffect, useState } from "react";
-import { useCachedUser } from "@stores/CachedUserStore";
-import { useUsers } from "@controllers/users/useUsers";
-import { CreditContainer } from "./components";
+import { useCachedUser } from "@stores/CachedUserStore/index";
+import { useModal } from "@stores/ModalStore/index";
+import { CreditContainer, CreditModal } from "./components";
 import styles from "./credits.module.scss";
 
-import { CreditUser } from "./credits.d";
+import { CreditUser, Credit } from "./credits.d";
 
 export default function Credits() {
     const [users, setUsers] = useState<CreditUser[]>([]);
 
-    const { addCachedUserWithData, cachedUsers } = useCachedUser();
-    const { getUser } = useUsers();
+    const { addCachedUser } = useCachedUser();
+    const { createModal } = useModal();
 
-    const credits: { user: string; description: string; }[] = [
+    const credits: Credit[] = [
         {
-            user: "Xotic",
-            description: "a very cool person a very cool person a very cool person a very cool person a very cool person for sure bro for sure bro for sure bro for sure bro for sure bro"
-        },
-        {
-            user: "zastix",
-            description: "very super cute ultimate cute cute cute cute girl girl cute"
-        },
-        {
-            user: "Rin",
-            description: "a girl a a a kangaroo kangaroo kangaroo kangaroo kangaroo"
-        },
-        {
-            user: "allie",
-            description: "person person person cute person cute cute cute cute"
+            user: "test",
+            description: "test ".repeat(100)
         }
     ];
 
     useEffect(() => {
         Promise.all(credits.map(async (credit) => {
-            const user = cachedUsers.find((cachedUser) => cachedUser.username === credit.user) ?? (await getUser(credit.user)).data;
+            const user = await addCachedUser(credit.user);
 
-            addCachedUserWithData(user);
-
-            return { user, description: credit.description };
+            return { ...credit, user };
         })).then((users) => setUsers(users));
     }, []);
 
     return (
         <div className={styles.container}>
-            {users.length > 0 && users.map((credit, index) => <CreditContainer key={index} {...credit} />)}
+            {users.length > 0 && users.map((credit, index) => <CreditContainer
+                key={index}
+                credit={credit}
+                onClick={() => createModal(<CreditModal credit={credit} />)}
+            />)}
         </div>
     );
 }

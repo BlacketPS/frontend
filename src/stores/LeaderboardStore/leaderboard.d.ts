@@ -1,4 +1,4 @@
-import { PublicUser } from "blacket-types";
+import { PublicUser } from "@blacket/types";
 
 export interface LeaderboardStoreContext {
     sortBy: PlacementType;

@@ -13,6 +13,7 @@ import { ChatStoreProvider } from "./ChatStore";
 import { ContextMenuStoreProvider } from "./ContextMenuStore";
 import { CachedUserStoreProvider } from "./CachedUserStore";
 import { AuctionHouseStoreProvider } from "./AuctionHouseStore";
+import { ToastStoreProvider } from "./ToastStore";
 
 const ProviderComposer = ({ providers, children }: { providers: [ComponentType<any>, any][], children: ReactNode }) => {
     for (let i = providers.length - 1; i >= 0; --i) {
@@ -36,6 +37,7 @@ export default function StoreWrapper({ children }: { children: ReactNode }) {
                 [DataStoreProvider, {}],
                 [CachedUserStoreProvider, {}],
                 [SocketStoreProvider, {}],
+                [ToastStoreProvider, {}],
                 [AuctionHouseStoreProvider, {}],
                 [ModalStoreProvider, {}],
                 [ChatStoreProvider, {}],

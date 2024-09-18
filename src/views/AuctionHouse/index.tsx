@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { useData } from "@stores/DataStore/index";
@@ -15,6 +16,8 @@ export default function AuctionHouse() {
 
     const [query, setQuery] = useState<string>(search.query || "");
 
+    const [searchParams, setSearchParams] = useSearchParams();
+
     if (!user) return null;
 
     const setAuctionSearch = () => {
@@ -25,12 +28,22 @@ export default function AuctionHouse() {
         else if (item) setSearch({ ...search, query: undefined, itemId: item.id, blookId: undefined });
         else setSearch({
             ...search,
+            id: undefined,
             seller: undefined,
             blookId: undefined,
             itemId: undefined,
             query
         });
     };
+
+    useEffect(() => {
+        const id = searchParams.get("id");
+
+        if (!id) return;
+
+        setSearchParams({});
+        setSearch({ ...search, id: parseInt(id) });
+    }, [searchParams]);
 
     return (
         <>
@@ -59,7 +72,7 @@ export default function AuctionHouse() {
             <div className={styles.auctionHouseContainer}>
                 <div className={styles.auctionHouse}>
                     <div className={styles.auctionHouseItems}>
-                        {!loading ? auctions.map((auction) => {
+                        {!loading ? auctions.length > 0 ? auctions.map((auction) => {
                             return (
                                 <Auction
                                     key={auction.id}
@@ -80,7 +93,7 @@ export default function AuctionHouse() {
                                     }}
                                 />
                             );
-                        }) : <Loader noModal style={{ marginBottom: 50 }} />}
+                        }) : <div className={styles.noAuctions}>No auctions found.</div> : <Loader noModal style={{ marginBottom: 50 }} />}
                     </div>
                 </div>
             </div>

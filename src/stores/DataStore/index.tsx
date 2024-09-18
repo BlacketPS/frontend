@@ -5,7 +5,7 @@ import Loading from "../../views/Loading";
 import styles from "./dataStore.module.scss";
 
 import { type DataStoreContext } from "./dataStore.d";
-import { Banner, Blook, Emoji, Font, Item, ItemShop, Pack, Rarity, Title } from "blacket-types";
+import { Banner, Blook, Emoji, Font, Item, ItemShop, Pack, Rarity, Title } from "@blacket/types";
 
 const DataStoreContext = createContext<DataStoreContext>({
     badges: [],

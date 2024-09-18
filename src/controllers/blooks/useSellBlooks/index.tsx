@@ -1,7 +1,7 @@
 import { useUser } from "@stores/UserStore/index";
 import { useData } from "@stores/DataStore/index";
 
-import { NotFound, BlooksSellBlookDto } from "blacket-types";
+import { NotFound, BlooksSellBlookDto } from "@blacket/types";
 
 export function useSellBlooks() {
     const { user, setUser } = useUser();

@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { PublicUser } from "blacket-types";
+import { PublicUser } from "@blacket/types";
 
 export enum PlacementType {
     TOKEN = "tokens",

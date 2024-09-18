@@ -2,7 +2,7 @@ import { createContext, useContext, useState, ReactNode } from "react";
 
 import { type LeaderboardStoreContext } from "./leaderboard";
 import { PlacementType } from "../../views/Leaderboard/leaderboard.d";
-import { PublicUser } from "blacket-types";
+import { PublicUser } from "@blacket/types";
 
 const LeaderboardStoreContext = createContext<LeaderboardStoreContext>({
     sortBy: PlacementType.TOKEN,

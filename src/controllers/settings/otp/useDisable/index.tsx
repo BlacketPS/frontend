@@ -1,6 +1,6 @@
 import { useUser } from "@stores/UserStore/index";
 
-import { NotFound, SettingsDisableOtpDto } from "blacket-types";
+import { NotFound, SettingsDisableOtpDto } from "@blacket/types";
 
 export function useDisable() {
     const { user, setUser } = useUser();

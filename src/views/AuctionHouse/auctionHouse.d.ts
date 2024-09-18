@@ -1,4 +1,4 @@
-import { AuctionsAuctionEntity } from "blacket-types";
+import { AuctionsAuctionEntity } from "@blacket/types";
 
 export interface AuctionModalProps {
     auctionId: number;

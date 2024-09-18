@@ -1,4 +1,4 @@
-import { Message } from "blacket-types";
+import { Message } from "@blacket/types";
 
 export interface ChatStoreContext {
     messages: Message[];

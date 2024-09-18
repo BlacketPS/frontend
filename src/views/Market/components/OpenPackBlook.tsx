@@ -6,7 +6,7 @@ import Textfit from "@namhong2001/react-textfit";
 import styles from "../market.module.scss";
 
 import { OpenPackBlookProps } from "../market.d";
-import { RarityAnimationTypeEnum } from "blacket-types";
+import { RarityAnimationTypeEnum } from "@blacket/types";
 
 export default function OpenPackBlook({ blook, animate, isNew }: OpenPackBlookProps) {
     const { resourceIdToPath } = useResource();

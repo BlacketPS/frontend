@@ -18,7 +18,7 @@ import {
 } from "./components/index";
 import styles from "./settings.module.scss";
 
-import { SettingFriendRequestEnum } from "blacket-types";
+import { SettingFriendRequestEnum } from "@blacket/types";
 
 export default function Settings() {
     const { setLoading } = useLoading();

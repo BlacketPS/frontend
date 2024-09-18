@@ -8,7 +8,7 @@ import Textfit from "react-textfit";
 import styles from "../inventory.module.scss";
 
 import { RightItemProps } from "../inventory";
-import { AuctionTypeEnum } from "blacket-types";
+import { AuctionTypeEnum } from "@blacket/types";
 
 export default function RightItem({ item, usesLeft, children, ...props }: RightItemProps) {
     const { resourceIdToPath } = useResource();

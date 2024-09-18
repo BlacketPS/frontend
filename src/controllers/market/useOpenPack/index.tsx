@@ -1,7 +1,7 @@
 import { useUser } from "@stores/UserStore/index";
 import { useData } from "@stores/DataStore/index";
 
-import { NotFound, MarketOpenPackDto } from "blacket-types";
+import { NotFound, MarketOpenPackDto } from "@blacket/types";
 import { OpenPackResponse } from "./useOpenPack.d";
 
 export function useOpenPack() {

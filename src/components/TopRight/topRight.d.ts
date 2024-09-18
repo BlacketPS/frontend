@@ -1,4 +1,4 @@
-import { PrivateUser } from "blacket-types";
+import { PrivateUser } from "@blacket/types";
 
 export enum TopRightContent {
     TOKENS = "tokens",

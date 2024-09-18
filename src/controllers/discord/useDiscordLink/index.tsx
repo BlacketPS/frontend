@@ -1,4 +1,4 @@
-import { DiscordLinkDto } from "blacket-types";
+import { DiscordLinkDto } from "@blacket/types";
 import { DiscordLinkResponse } from "./useDiscordLink.d";
 
 export function useDiscordLink() {

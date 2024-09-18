@@ -1,4 +1,4 @@
-import { Resource } from "blacket-types";
+import { Resource } from "@blacket/types";
 
 export interface ResourceStoreContext {
     resources: Resource[];

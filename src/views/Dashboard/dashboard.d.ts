@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { Blook } from "blacket-types";
+import { Blook } from "@blacket/types";
 
 export interface SmallButton {
     icon: string;

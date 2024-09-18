@@ -1,7 +1,7 @@
 import { HTMLAttributes } from "react";
 
 import { GenericButtonProps } from "@components/Buttons/GenericButton/genericButton";
-import { AuctionTypeEnum, Blook, Item } from "blacket-types";
+import { AuctionTypeEnum, Blook, Item } from "@blacket/types";
 
 export interface SearchOptions {
     query: string;

@@ -1,6 +1,6 @@
 import { useUser } from "@stores/UserStore/index";
 
-import { NotFound } from "blacket-types";
+import { NotFound } from "@blacket/types";
 
 export function useSelect() {
     const { user, setUser } = useUser();

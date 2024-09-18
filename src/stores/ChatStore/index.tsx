@@ -3,9 +3,10 @@ import { useSocket } from "@stores/SocketStore/index";
 import { useUser } from "@stores/UserStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
 import { useMessages } from "@controllers/chat/messages/useMessages/index";
+import { useToast } from "@stores/ToastStore/index";
 
 import { TypingUser, type ChatStoreContext } from "./chatStore.d";
-import { Message, SocketMessageType } from "blacket-types";
+import { Message, SocketMessageType } from "@blacket/types";
 
 const ChatStoreContext = createContext<ChatStoreContext>({
     messages: [],
@@ -25,8 +26,9 @@ export function useChat() {
 
 export function ChatStoreProvider({ children }: { children: ReactNode }) {
     const { connected, socket } = useSocket();
-    const { user } = useUser();
+    const { user, getUserAvatarPath } = useUser();
     const { addCachedUser } = useCachedUser();
+    const { createToast } = useToast();
 
     const { getMessages } = useMessages();
 
@@ -48,7 +50,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
                 || (message.replyingTo && message.replyingTo.authorId === user?.id)) setMentions((previousMentions) => previousMentions + 1);
         });
 
-        for (const user of Array.from(userMap.keys())) await addCachedUser(user);
+        await Promise.all(Array.from(userMap.keys()).map((user) => addCachedUser(user)));
 
         setMessages(messages);
 
@@ -88,18 +90,24 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
 
     const resetMentions = () => setMentions(0);
 
-    const onChatMessageCreate = useCallback((data: Message) => {
+    const onChatMessageCreate = useCallback(async (data: Message) => {
         if (!user) return;
+
+        if (data.authorId === user?.id) return;
+
+        const cachedUser = await addCachedUser(data.authorId);
 
         if (data.mentions.includes(user.id)
             || (data.replyingTo && data.replyingTo.authorId === user?.id)) {
             new Audio(window.constructCDNUrl("/content/mention.ogg")).play();
             setMentions((previousMentions) => previousMentions + 1);
+
+            createToast({
+                header: cachedUser.username,
+                body: data.content,
+                icon: getUserAvatarPath(cachedUser)
+            });
         }
-
-        if (data.authorId === user?.id) return;
-
-        addCachedUser(data.authorId);
 
         setMessages((previousMessages) => [data, ...previousMessages]);
         setUsersTyping((previousUsersTyping) => previousUsersTyping.filter((user) => user.userId !== data.authorId));

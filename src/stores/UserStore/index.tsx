@@ -1,7 +1,7 @@
 import { ReactNode, createContext, useContext, useState } from "react";
 import { useResource } from "@stores/ResourceStore/index";
 
-import { PrivateUser } from "blacket-types";
+import { PrivateUser } from "@blacket/types";
 import { type UserStoreContext } from "./userStore.d";
 
 const UserStoreContext = createContext<UserStoreContext>({ user: null, setUser: () => { }, getUserAvatarPath: () => "" });

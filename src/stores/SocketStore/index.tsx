@@ -3,10 +3,12 @@ import { Socket, io } from "socket.io-client";
 import styles from "./tooManyConnections.module.scss";
 
 import { type SocketStoreContext } from "./socket.d";
+import { SocketMessageType } from "blacket-types";
 
 const SocketStoreContext = createContext<SocketStoreContext>({
     socket: null,
     connected: false,
+    latency: 0,
     initializeSocket: () => { }
 });
 
@@ -18,11 +20,19 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
     const socketRef = useRef<Socket | null>(null);
     const [connected, setConnected] = useState<boolean>(false);
     const [tooManyConnections, setTooManyConnections] = useState<boolean>(false);
+    const [latency, setLatency] = useState<number>(0);
 
     const initializeSocket = useCallback(() => {
         setConnected(false);
 
         const socket = io(`${window.location.protocol}//${window.location.host}`, { path: "/gateway", auth: { token: localStorage.getItem("token") }, transports: ["websocket"] });
+
+        const pingInterval = setInterval(() => {
+            const start = Date.now();
+
+            socket.emit(SocketMessageType.KEEP_ALIVE);
+            socket.once(SocketMessageType.KEEP_ALIVE, () => setLatency(Date.now() - start));
+        }, 1000 * 5);
 
         socket.on("connect", () => {
             setConnected(true);
@@ -40,6 +50,8 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
 
                 initializeSocket();
             }
+
+            clearInterval(pingInterval);
         });
 
         socket.on("too-many-connections", () => {
@@ -48,6 +60,8 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
             setTooManyConnections(true);
 
             socket.close();
+
+            clearInterval(pingInterval);
         });
 
         socket.onAny((event: string, data: object) => {
@@ -60,6 +74,7 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
 
         return () => {
             socket.close();
+            clearInterval(pingInterval);
         };
     }, []);
 
@@ -75,7 +90,7 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
     }, [initializeSocket]);
 
     return (
-        <SocketStoreContext.Provider value={{ socket: socketRef.current, connected, initializeSocket }}>
+        <SocketStoreContext.Provider value={{ socket: socketRef.current, connected, latency, initializeSocket }}>
             {!tooManyConnections ? children : <h1 className={styles.tooManyConnections}>You have too many connections open, please close some tabs or disconnect some devices and try again.</h1>}
         </SocketStoreContext.Provider>
     );

@@ -1,6 +1,6 @@
 import { useUser } from "@stores/UserStore/index";
 
-import { NotFound, SettingsChangeSettingDto } from "blacket-types";
+import { NotFound, SettingsChangeSettingDto } from "@blacket/types";
 
 export function useSettings() {
     const { user, setUser } = useUser();

@@ -1,7 +1,7 @@
 import styles from "../dashboard.module.scss";
 
 import { LevelContainerProps } from "../dashboard.d";
-import { experienceToLevel, levelToExperienceRemaining } from "blacket-types";
+import { experienceToLevel, levelToExperienceRemaining } from "@blacket/types";
 
 export default function LevelContainer({ experience }: LevelContainerProps) {
     const level = experienceToLevel(experience);

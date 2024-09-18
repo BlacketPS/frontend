@@ -8,7 +8,7 @@ import Textfit from "react-textfit";
 import styles from "../inventory.module.scss";
 
 import { RightBlookProps } from "../inventory";
-import { AuctionTypeEnum } from "blacket-types";
+import { AuctionTypeEnum } from "@blacket/types";
 
 export default function RightBlook({ blook, owned, noBlooksOwned, children, ...props }: RightBlookProps) {
     const { resourceIdToPath } = useResource();

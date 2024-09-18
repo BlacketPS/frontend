@@ -6,7 +6,7 @@ import { useCreateAuction } from "@controllers/auctions/useCreateAuction/index";
 import { Modal, Button, Form, Input, ErrorContainer, Toggle } from "@components/index";
 
 import { AuctionModalProps } from "../inventory.d";
-import { AuctionTypeEnum, PermissionTypeEnum } from "blacket-types";
+import { AuctionTypeEnum, PermissionTypeEnum } from "@blacket/types";
 
 export default function AuctionModal({ type, blook, item }: AuctionModalProps) {
     const [loading, setLoading] = useState<boolean>(false);

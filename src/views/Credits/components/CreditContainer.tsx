@@ -1,23 +1,22 @@
-import { Link } from "react-router-dom";
 import { useUser } from "@stores/UserStore/index";
 import { ImageOrVideo, Username } from "@components/index";
 import styles from "../credits.module.scss";
 
-import { CreditUser } from "../credits.d";
+import { CreditContainerProps } from "../credits.d";
 
-export default function CreditContainer({ user, description }: CreditUser) {
+export default function CreditContainer({ credit, ...props }: CreditContainerProps) {
     const { getUserAvatarPath } = useUser();
 
     return (
-        <Link to={`/dashboard?name=${user.username}`} className={styles.creditContainer}>
+        <div className={styles.creditContainer} {...props}>
             <div className={styles.creditAvatar}>
-                <ImageOrVideo src={getUserAvatarPath(user)} />
+                <ImageOrVideo src={getUserAvatarPath(credit.user)} />
             </div>
 
             <div className={styles.creditRightSide}>
-                <Username className={styles.creditUsername} user={user} />
-                <div className={styles.creditDescription}>{description}</div>
+                <Username className={styles.creditUsername} user={credit.user} />
+                <div className={styles.creditDescription}>{credit.description}</div>
             </div>
-        </Link>
+        </div>
     );
 }

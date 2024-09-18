@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { Blook, MarketOpenPackDto, Pack } from "blacket-types";
+import { Blook, MarketOpenPackDto, Pack } from "@blacket/types";
 
 export type ParticlesScene = Phaser.Scene & {
     initParticles: () => void;

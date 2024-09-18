@@ -1,4 +1,4 @@
-import { SettingsChangePasswordDto } from "blacket-types";
+import { SettingsChangePasswordDto } from "@blacket/types";
 import { PasswordResponse } from "./usePassword.d";
 
 export function usePassword() {

@@ -1,4 +1,4 @@
-import { Banner, Blook, Emoji, Font, Item, ItemShop, Pack, Rarity, Title } from "blacket-types";
+import { Banner, Blook, Emoji, Font, Item, ItemShop, Pack, Rarity, Title } from "@blacket/types";
 
 export interface DataStoreContext {
     badges: any[];

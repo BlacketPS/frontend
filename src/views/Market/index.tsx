@@ -14,7 +14,7 @@ const { Game, Scale, WEBGL } = window.Phaser;
 import Particles from "./functions/PackParticles";
 import styles from "./market.module.scss";
 
-import { Blook, MarketOpenPackDto, Pack as PackType, RarityAnimationTypeEnum } from "blacket-types";
+import { Blook, MarketOpenPackDto, Pack as PackType, RarityAnimationTypeEnum } from "@blacket/types";
 import { ParticlesScene, Config, GameState, BigButtonClickType, SearchOptions } from "./market.d";
 
 const useGame = (config: Config, containerRef: RefObject<HTMLDivElement>) => {

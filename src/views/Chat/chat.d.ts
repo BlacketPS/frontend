@@ -1,7 +1,7 @@
 import { HTMLAttributes, ReactNode } from "react";
 import { UserTyping } from "@stores/ChatStore/chatStore";
 
-import { Message, User } from "blacket-types";
+import { Message, User } from "@blacket/types";
 import { Editor } from "slate";
 
 export interface ChatMessagesContainerProps extends HTMLAttributes<HTMLUListElement> {

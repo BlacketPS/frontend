@@ -19,9 +19,9 @@ export function ModalStoreProvider({ children }: { children: ReactNode }) {
     const [closing, setClosing] = useState<boolean>(false);
 
     const createModal = (modal: ReactNode) => {
-        const id: string = Math.random().toString(36).slice(2);
+        const id = Math.random().toString(36).slice(2);
 
-        setModals((modals: Modals[]) => [...modals, { id, modal }]);
+        setModals((modals) => [...modals, { id, modal }]);
 
         return id;
     };

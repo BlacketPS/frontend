@@ -1,6 +1,6 @@
 import { useUser } from "@stores/UserStore/index";
 
-import { NotFound, SettingsChangeUsernameDto } from "blacket-types";
+import { NotFound, SettingsChangeUsernameDto } from "@blacket/types";
 
 export function useUsername() {
     const { user, setUser } = useUser();

@@ -6,7 +6,7 @@ import { useRemove } from "@controllers/store/payment-methods/useRemove/index";
 import { Modal, ErrorContainer, Dropdown } from "@components/index";
 import { GenericButton } from "@components/Buttons";
 
-import { UserPaymentMethod } from "blacket-types";
+import { UserPaymentMethod } from "@blacket/types";
 
 export default function PaymentMethodsModal() {
     const { user } = useUser();

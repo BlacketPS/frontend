@@ -1,7 +1,7 @@
 import { ReactNode, createContext, useContext, useState, useCallback } from "react";
 
 import { type ResourceStoreContext } from "./resource.d";
-import { type Resource } from "blacket-types";
+import { type Resource } from "@blacket/types";
 
 const ResourceStoreContext = createContext<ResourceStoreContext>({ resources: [], setResources: () => { }, resourceIdToPath: () => "" });
 

@@ -7,5 +7,5 @@ export default {
     description: "Trade your tokens and blooks with other users.",
     sidebar: true,
     topRight: ["tokens"],
-    pageHeader: "Trading Plaza"
+    topRightDesktopOnly: true
 } as BlacketRoute;

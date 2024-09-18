@@ -1,6 +1,6 @@
 import { useUser } from "@stores/UserStore/index";
 
-import { NotFound, StoreCreatePaymentMethodDto } from "blacket-types";
+import { NotFound, StoreCreatePaymentMethodDto } from "@blacket/types";
 
 export function useCreate() {
     const { user, setUser } = useUser();

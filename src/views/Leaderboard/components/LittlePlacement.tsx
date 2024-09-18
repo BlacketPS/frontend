@@ -32,13 +32,13 @@ export default function LittlePlacement({ type, placement, user }: LittlePlaceme
                     </div>
 
                     <div className={styles.otherStandingScore}>
-                        {user[type]?.toLocaleString()} <img src={window.constructCDNUrl(`content/${type === PlacementType.TOKEN ? "token" : "experience"}.png`)} />
+                        {user[type]?.toLocaleString()} <img src={window.constructCDNUrl(`/content/${type === PlacementType.TOKEN ? "token" : "experience"}.png`)} />
                     </div>
                 </div>
 
                 <div className={styles.otherStandingBottomScores}>
                     <div className={styles.otherStandingBottomScore}>
-                        <img src={window.constructCDNUrl(`content/${type === PlacementType.TOKEN ? "token" : "experience"}.png`)} /> {user[type]?.toLocaleString()} {type === PlacementType.TOKEN ? "Tokens" : "EXP"}
+                        <img src={window.constructCDNUrl(`/content/${type === PlacementType.TOKEN ? "token" : "experience"}.png`)} /> {user[type]?.toLocaleString()} {type === PlacementType.TOKEN ? "Tokens" : "EXP"}
                     </div>
 
                     <div className={styles.otherStandingBottomButton} onClick={() => navigate(`/dashboard?name=${user.username}`)}>View User</div>
