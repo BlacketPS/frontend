@@ -11,6 +11,7 @@ import { SocketMessageType } from "blacket-types";
 
 export default function TradingPlaza() {
     const navigate = useNavigate();
+
     const { user, getUserAvatarPath } = useUser();
     const { socket, latency } = useSocket();
     const { fonts } = useData();
@@ -61,8 +62,8 @@ export default function TradingPlaza() {
         canvas.width = viewportWidth;
         canvas.height = viewportHeight;
 
-        const cols = 100;
-        const rows = 100;
+        const cols = 200;
+        const rows = 200;
 
         const tileMap: any[] = [];
 
@@ -70,7 +71,7 @@ export default function TradingPlaza() {
             tileMap.push([]);
 
             for (let y = 0; y < cols; y++) {
-                let key: string = "grass-1";
+                let key: string = "";
                 let tile: Tile = tiles[0];
 
                 const chanceSum = tiles.reduce((sum, tile) => sum + tile.chance, 0);
@@ -89,15 +90,16 @@ export default function TradingPlaza() {
                 }
 
                 tileMap[tileMap.length - 1].push({
-                    key: key,
+                    key,
                     flipped: tile.flippable && Math.random() < 0.5
                 });
             }
         }
+
         socket.emit(SocketMessageType.TRADING_PLAZA_JOIN);
 
         const addUserEntity = async (userId: string) => {
-            const alreadyExists = entities.some((entity) => entity.id === userId);
+            const alreadyExists = entities.find((entity) => entity.id === userId);
             if (alreadyExists) return;
 
             const user = await addCachedUser(userId);
@@ -114,9 +116,8 @@ export default function TradingPlaza() {
             });
         };
 
-        socket.on(SocketMessageType.TRADING_PLAZA_JOIN, async (data: { userId: string }) => addUserEntity(data.userId));
-
-        socket.on(SocketMessageType.TRADING_PLAZA_MOVE, async (data: { userId: string, x: number, y: number }) => {
+        const handleJoin = async (data: { userId: string }) => addUserEntity(data.userId);
+        const handleMove = async (data: { userId: string, x: number, y: number }) => {
             if (data.userId === user.id) return;
 
             const entity = entities.find((entity) => entity.id === data.userId) as PlayerEntity;
@@ -124,9 +125,15 @@ export default function TradingPlaza() {
 
             entity.targetX = data.x / tileSize;
             entity.targetY = data.y / tileSize;
-        });
+        };
+        const handleLeave = (data: { userId: string }) => {
+            const index = entities.findIndex((entity) => entity.id === data.userId);
+            if (index !== -1) entities.splice(index, 1);
+        };
 
-        socket.on(SocketMessageType.TRADING_PLAZA_LEAVE, (data: { userId: string }) => entities.splice(entities.findIndex((entity) => entity.id === data.userId), 1));
+        socket.on(SocketMessageType.TRADING_PLAZA_JOIN, handleJoin);
+        socket.on(SocketMessageType.TRADING_PLAZA_MOVE, handleMove);
+        socket.on(SocketMessageType.TRADING_PLAZA_LEAVE, handleLeave);
 
         const player = {
             x: 1500,
@@ -195,7 +202,7 @@ export default function TradingPlaza() {
 
             updatePlayerPosition(deltaTime);
 
-            ctx!.clearRect(0, 0, viewportWidth, viewportHeight);
+            ctx.clearRect(0, 0, viewportWidth, viewportHeight);
 
             // TILEMAP
             for (let row = 0; row < rows; row++) {
@@ -210,16 +217,16 @@ export default function TradingPlaza() {
 
                     if (!(x + tileSize > -tileSize && x < viewportWidth + tileSize && y + tileSize > -tileSize && y < viewportHeight + tileSize)) continue;
 
-                    ctx!.save();
+                    ctx.save();
 
                     if (tileMap[row][col].flipped) {
-                        ctx!.scale(-1, 1);
-                        ctx!.drawImage(img, -x - tileSize, y, tileSize, tileSize);
+                        ctx.scale(-1, 1);
+                        ctx.drawImage(img, -x - tileSize, y, tileSize, tileSize);
                     } else {
-                        ctx!.drawImage(img, x, y, tileSize, tileSize);
+                        ctx.drawImage(img, x, y, tileSize, tileSize);
                     }
 
-                    ctx!.restore();
+                    ctx.restore();
                 }
             }
 
@@ -236,22 +243,22 @@ export default function TradingPlaza() {
                         const img = new Image();
                         img.src = entity.image;
 
-                        ctx!.shadowColor = "rgba(0, 0, 0, 0.5)";
-                        ctx!.shadowBlur = 10;
-                        ctx!.shadowOffsetX = 5;
-                        ctx!.shadowOffsetY = 5;
+                        ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+                        ctx.shadowBlur = 10;
+                        ctx.shadowOffsetX = 5;
+                        ctx.shadowOffsetY = 5;
 
-                        ctx!.drawImage(img, x, y, img.width / 6, img.height / 6);
+                        ctx.drawImage(img, x, y, img.width / 6, img.height / 6);
 
-                        ctx!.font = `20px ${fonts.find((font) => font.id === playerEntity.user.fontId)?.name}`;
-                        ctx!.fillStyle = playerEntity.user.color;
-                        ctx!.textAlign = "center";
-                        ctx!.fillText(playerEntity.user.username, x + 25, y + 80);
+                        ctx.font = `20px ${fonts.find((font) => font.id === playerEntity.user.fontId)?.name}`;
+                        ctx.fillStyle = playerEntity.user.color;
+                        ctx.textAlign = "center";
+                        ctx.fillText(playerEntity.user.username, x + 25, y + 80);
 
-                        ctx!.shadowColor = "transparent";
-                        ctx!.shadowBlur = 0;
-                        ctx!.shadowOffsetX = 0;
-                        ctx!.shadowOffsetY = 0;
+                        ctx.shadowColor = "transparent";
+                        ctx.shadowBlur = 0;
+                        ctx.shadowOffsetX = 0;
+                        ctx.shadowOffsetY = 0;
 
                         break;
                 }
@@ -260,23 +267,23 @@ export default function TradingPlaza() {
             const playerX = viewportWidth / 2 - tileSize / 2;
             const playerY = viewportHeight / 2 - tileSize / 2;
 
-            ctx!.shadowColor = "rgba(0, 0, 0, 0.5)";
-            ctx!.shadowBlur = 10;
-            ctx!.shadowOffsetX = 5;
-            ctx!.shadowOffsetY = 5;
+            ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
+            ctx.shadowBlur = 10;
+            ctx.shadowOffsetX = 5;
+            ctx.shadowOffsetY = 5;
 
-            ctx!.drawImage(playerImage, playerX, playerY, playerImage.width / 6, playerImage.height / 6);
+            ctx.drawImage(playerImage, playerX, playerY, playerImage.width / 6, playerImage.height / 6);
 
-            ctx!.font = `20px ${fonts.find((font) => font.id === user.fontId)?.name}`;
-            ctx!.fillStyle = user.color;
-            ctx!.textAlign = "center";
-            ctx!.fillText(user.username, playerX + 25, playerY + 80);
-            ctx!.fillText(player.x + ", " + player.y, playerX + 25, playerY + 105);
+            ctx.font = `20px ${fonts.find((font) => font.id === user.fontId)?.name}`;
+            ctx.fillStyle = user.color;
+            ctx.textAlign = "center";
+            ctx.fillText(user.username, playerX + 25, playerY + 80);
+            ctx.fillText(player.x + ", " + player.y, playerX + 25, playerY + 105);
 
-            ctx!.shadowColor = "transparent";
-            ctx!.shadowBlur = 0;
-            ctx!.shadowOffsetX = 0;
-            ctx!.shadowOffsetY = 0;
+            ctx.shadowColor = "transparent";
+            ctx.shadowBlur = 0;
+            ctx.shadowOffsetX = 0;
+            ctx.shadowOffsetY = 0;
 
             animationFrameId = window.requestAnimationFrame(frame);
         };
@@ -293,10 +300,14 @@ export default function TradingPlaza() {
             window.removeEventListener("keydown", handleKeyDown);
             window.removeEventListener("keyup", handleKeyUp);
             window.cancelAnimationFrame(animationFrameId);
-            ctx!.clearRect(0, 0, viewportWidth, viewportHeight);
+            ctx.clearRect(0, 0, viewportWidth, viewportHeight);
             clearInterval(movementUpdateInterval);
 
             socket.emit(SocketMessageType.TRADING_PLAZA_LEAVE);
+
+            socket.off(SocketMessageType.TRADING_PLAZA_JOIN, handleJoin);
+            socket.off(SocketMessageType.TRADING_PLAZA_MOVE, handleMove);
+            socket.off(SocketMessageType.TRADING_PLAZA_LEAVE, handleLeave);
         };
     }, [socket]);
 
