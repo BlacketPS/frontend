@@ -110,15 +110,17 @@ export default function Dashboard() {
             <div className={`${styles.section} ${styles.userSection}`}>
                 <div className={styles.userTopProfile}>
                     <div className={styles.userBannerBlook}>
-                        <ImageOrVideo
-                            className={styles.userAvatar}
-                            src={getUserAvatarPath(viewingUser)}
-                            alt="User Avatar"
-                            draggable={false}
-                            onClick={() => {
-                                if (viewingUser.id === user.id) createModal(<CosmeticsModal category={CosmeticsModalCategory.AVATAR} />);
-                            }}
-                        />
+                        <div className={styles.userAvatarContainer}>
+                            <ImageOrVideo
+                                className={styles.userAvatar}
+                                src={getUserAvatarPath(viewingUser)}
+                                alt="User Avatar"
+                                draggable={false}
+                                onClick={() => {
+                                    if (viewingUser.id === user.id) createModal(<CosmeticsModal category={CosmeticsModalCategory.AVATAR} />);
+                                }}
+                            />
+                        </div>
                         <div className={styles.bannerLevel}>
                             <div className={styles.userBanner} data-hoverable={viewingUser.id === user.id}>
                                 <img

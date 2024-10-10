@@ -1,6 +1,6 @@
 import { useUser } from "@stores/UserStore/index";
 
-import { CosmeticsChangeFontDto, NotFound } from "blacket-types";
+import { CosmeticsChangeFontDto, NotFound } from "@blacket/types";
 
 export function useChangeFont() {
     const { user, setUser } = useUser();

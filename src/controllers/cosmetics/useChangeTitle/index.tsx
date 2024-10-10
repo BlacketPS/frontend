@@ -1,6 +1,6 @@
 import { useUser } from "@stores/UserStore/index";
 
-import { CosmeticsChangeTitleDto, NotFound } from "blacket-types";
+import { CosmeticsChangeTitleDto, NotFound } from "@blacket/types";
 
 export function useChangeTitle() {
     const { user, setUser } = useUser();

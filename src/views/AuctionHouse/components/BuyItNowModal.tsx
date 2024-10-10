@@ -7,7 +7,7 @@ import { Modal, Button, ErrorContainer } from "@components/index";
 import styles from "../auctionHouse.module.scss";
 
 import { ModalProps } from "../auctionHouse.d";
-import { AuctionTypeEnum } from "blacket-types";
+import { AuctionTypeEnum } from "@blacket/types";
 
 export default function BuyItNowModal({ auction }: ModalProps) {
     const [loading, setLoading] = useState<boolean>(false);

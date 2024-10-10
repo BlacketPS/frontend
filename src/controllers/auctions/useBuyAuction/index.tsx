@@ -1,6 +1,6 @@
 import { useUser } from "@stores/UserStore/index";
 
-import { AuctionsAuctionEntity, NotFound } from "blacket-types";
+import { AuctionsAuctionEntity, NotFound } from "@blacket/types";
 
 export function useBuyAuction() {
     const { user, setUser } = useUser();

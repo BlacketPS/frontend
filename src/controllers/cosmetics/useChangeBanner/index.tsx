@@ -1,7 +1,7 @@
 import { useUser } from "@stores/UserStore/index";
 import { useData } from "@stores/DataStore/index";
 
-import { CosmeticsChangeBannerDto, NotFound } from "blacket-types";
+import { CosmeticsChangeBannerDto, NotFound } from "@blacket/types";
 
 export function useChangeBanner() {
     const { user, setUser } = useUser();

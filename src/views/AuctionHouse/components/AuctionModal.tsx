@@ -9,7 +9,7 @@ import { Modal, Button, ErrorContainer, Username, Input } from "@components/inde
 import styles from "../auctionHouse.module.scss";
 
 import { AuctionModalProps } from "../auctionHouse.d";
-import { AuctionsAuctionEntity, AuctionTypeEnum, Forbidden } from "blacket-types";
+import { AuctionsAuctionEntity, AuctionTypeEnum, Forbidden } from "@blacket/types";
 
 export default function AuctionModal({ auctionId }: AuctionModalProps) {
     const [loading, setLoading] = useState<boolean>(false);

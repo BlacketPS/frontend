@@ -8,6 +8,8 @@
 .toggleContainer {
     width: 25px;
     height: 25px;
+    min-width: 25px;
+    min-height: 25px;
     appearance: none;
     background-color: transparent;
     border: 1px solid var(--accent-color);

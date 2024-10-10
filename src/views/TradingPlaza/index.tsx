@@ -1,78 +1,65 @@
 import { useLayoutEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { BrenderCanvas, BrenderCanvasRef, PlayerEntity } from "@brender/index";
 import { useUser } from "@stores/UserStore/index";
 import { useSocket } from "@stores/SocketStore/index";
 import { useData } from "@stores/DataStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
 import styles from "./tradingPlaza.module.scss";
 
-import { Entity, EntityType, PlayerEntity, Tile } from "./tradingPlaza.d";
-import { SocketMessageType } from "blacket-types";
+import { SocketMessageType } from "@blacket/types";
+import { Tile } from "./tradingPlaza";
 
 export default function TradingPlaza() {
-    const navigate = useNavigate();
-
     const { user, getUserAvatarPath } = useUser();
-    const { socket, latency } = useSocket();
-    const { fonts } = useData();
+    const { socket, connected, latency } = useSocket();
+    const { fontIdToName } = useData();
     const { addCachedUser } = useCachedUser();
 
-    if (!user) return navigate("/login");
+    if (!user) return <Navigate to="/login" />;
 
-    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const brenderCanvasRef = useRef<BrenderCanvasRef>(null);
 
     const tiles: Tile[] = [
-        { id: "grass-1", image: window.constructCDNUrl("/content/grass-1.png"), chance: 0.1 },
-        { id: "grass-2", image: window.constructCDNUrl("/content/grass-2.png"), chance: 0.003 },
-        { id: "grass-3", image: window.constructCDNUrl("/content/grass-3.png"), chance: 0.005, flippable: true },
-        { id: "grass-4", image: window.constructCDNUrl("/content/grass-4.png"), chance: 0.005, flippable: true },
-        { id: "grass-5", image: window.constructCDNUrl("/content/grass-5.png"), chance: 0.001 },
-        { id: "grass-6", image: window.constructCDNUrl("/content/grass-6.png"), chance: 0.0025, flippable: true }
+        { id: "grass-1", image: window.constructCDNUrl("/content/trading-plaza/grass-1.png"), chance: 0.1 },
+        { id: "grass-2", image: window.constructCDNUrl("/content/trading-plaza/grass-2.png"), chance: 0.005 },
+        { id: "grass-3", image: window.constructCDNUrl("/content/trading-plaza/grass-3.png"), chance: 0.005, flippable: true },
+        { id: "grass-4", image: window.constructCDNUrl("/content/trading-plaza/grass-4.png"), chance: 0.005, flippable: true },
+        { id: "grass-5", image: window.constructCDNUrl("/content/trading-plaza/grass-5.png"), chance: 0.001 },
+        { id: "grass-6", image: window.constructCDNUrl("/content/trading-plaza/grass-6.png"), chance: 0.0025, flippable: true }
     ];
 
-    const entities: Entity[] = [
-        { id: "spawn", type: EntityType.SPAWN, x: 1500, y: 1500, image: window.constructCDNUrl("/content/spawn.png") }
-    ];
+    for (const tile of tiles.filter((tile) => typeof tile.image === "string")) {
+        const image = new Image();
+        image.src = tile.image as string;
 
-    const images = new Map<string, HTMLImageElement>();
-
-    tiles.forEach((tile) => {
-        const img = new Image();
-        img.src = tile.image;
-        images.set(tile.id, img);
-    });
-
-    const playerImage = new Image();
-    playerImage.src = getUserAvatarPath(user);
+        tile.image = image;
+    }
 
     useLayoutEffect(() => {
         if (!socket) return;
 
-        const canvas = canvasRef.current;
-        if (!canvas) return;
+        const brender = brenderCanvasRef.current;
+        if (!brender) return;
 
-        const ctx = canvas.getContext("2d");
-        if (!ctx) return;
+        const MOVEMENT_KEYS = {
+            UP: ["w", "arrowup"],
+            LEFT: ["a", "arrowleft"],
+            DOWN: ["s", "arrowdown"],
+            RIGHT: ["d", "arrowright"]
+        };
 
-        const tileSize = window.innerWidth < 768 ? 75 : 50;
+        const PLAYER_SPEED = 5;
+        const TILE_SIZE = 50;
+        const COLUMNS = 50;
+        const ROWS = 50;
 
-        const viewportWidth = canvas.clientWidth;
-        const viewportHeight = canvas.clientHeight;
+        let _previousPos = { x: 0, y: 0 };
 
-        canvas.width = viewportWidth;
-        canvas.height = viewportHeight;
-
-        const cols = 200;
-        const rows = 200;
-
-        const tileMap: any[] = [];
-
-        for (let x = 0; x < rows; x++) {
-            tileMap.push([]);
-
-            for (let y = 0; y < cols; y++) {
+        for (let x = -ROWS; x < ROWS; x++) {
+            for (let y = -COLUMNS; y < COLUMNS; y++) {
                 let key: string = "";
-                let tile: Tile = tiles[0];
+                let tile = tiles[0];
 
                 const chanceSum = tiles.reduce((sum, tile) => sum + tile.chance, 0);
                 const randomChance = Math.random() * chanceSum;
@@ -89,239 +76,200 @@ export default function TradingPlaza() {
                     }
                 }
 
-                tileMap[tileMap.length - 1].push({
-                    key,
-                    flipped: tile.flippable && Math.random() < 0.5
+                const realX = x * TILE_SIZE;
+                const realY = y * TILE_SIZE;
+
+                brender.createObject({
+                    id: `${key}-${realX}-${realY}`,
+                    x: realX,
+                    y: realY,
+                    z: 0,
+                    width: TILE_SIZE + 1,
+                    height: TILE_SIZE + 1,
+                    image: tile.image as HTMLImageElement
                 });
             }
         }
 
         socket.emit(SocketMessageType.TRADING_PLAZA_JOIN);
 
-        const addUserEntity = async (userId: string) => {
-            const alreadyExists = entities.find((entity) => entity.id === userId);
-            if (alreadyExists) return;
+        const renderPlayerText = (entity: PlayerEntity, debug?: boolean) => {
+            const center = entity.x + (entity?.width ?? 300) / 2;
 
-            const user = await addCachedUser(userId);
+            brender.renderText(
+                entity.user.username,
+                center,
+                entity.y + 77,
+                {
+                    fontFamily: fontIdToName(entity.user.fontId) ?? "Nunito Bold",
+                    fontSize: 20,
+                    textAlign: "center",
+                    color: entity.user.color
+                }
+            );
 
-            (entities as PlayerEntity[]).push({
-                id: userId,
-                type: EntityType.PLAYER,
-                x: 1500 / tileSize,
-                y: 1500 / tileSize,
-                targetX: 1500 / tileSize,
-                targetY: 1500 / tileSize,
-                image: getUserAvatarPath(user),
-                user
-            });
+            if (debug) {
+                brender.renderText(
+                    `Player Position: ${entity.x}, ${entity.y}`,
+                    7,
+                    75,
+                    {
+                        fontFamily: "Nunito",
+                        color: "white"
+                    },
+                    false
+                );
+            }
         };
 
-        const handleJoin = async (data: { userId: string }) => addUserEntity(data.userId);
+        const createPlayerEntity = async (userId: string) => {
+            const entity = brender.createPlayerEntity({
+                id: userId,
+                x: 0,
+                y: 0,
+                z: 4,
+                width: 300 / 6,
+                height: 345 / 6,
+                targetEasingSpeed: 0.15,
+                user: {
+                    id: userId,
+                    username: "",
+                    fontId: 1,
+                    color: "#ffffff"
+                } as any,
+                onFrame: (entity, deltaTime) => {
+                    renderPlayerText(entity);
+
+                    entity.x = window.lerp(entity.x, entity?.targetX ?? 0, (entity?.targetEasingSpeed ?? 0.1 * deltaTime));
+                    entity.y = window.lerp(entity.y, entity?.targetY ?? 0, (entity?.targetEasingSpeed ?? 0.1 * deltaTime));
+                }
+            });
+
+            const user = await addCachedUser(userId);
+            if (!user) return entity.destroy?.();
+
+            entity.user = user;
+
+            brender.urlToImage(getUserAvatarPath(user))
+                .then((image) => {
+                    entity.image = image;
+                    entity.width = image.width / 6;
+                    entity.height = image.height / 6;
+                });
+
+            return entity;
+        };
+
+        const handleJoin = async (data: { userId: string }) => createPlayerEntity(data.userId);
+
         const handleMove = async (data: { userId: string, x: number, y: number }) => {
             if (data.userId === user.id) return;
 
-            const entity = entities.find((entity) => entity.id === data.userId) as PlayerEntity;
-            if (!entity) return addUserEntity(data.userId);
+            const entity = brender.findEntity(data.userId);
+            if (!entity) return createPlayerEntity(data.userId);
 
-            entity.targetX = data.x / tileSize;
-            entity.targetY = data.y / tileSize;
+            entity.targetX = data.x;
+            entity.targetY = data.y;
         };
-        const handleLeave = (data: { userId: string }) => {
-            const index = entities.findIndex((entity) => entity.id === data.userId);
-            if (index !== -1) entities.splice(index, 1);
+
+        const handleLeave = (data: { userId: string }) => brender.findEntity(data.userId)?.destroy?.();
+
+        const handleLagback = (data: { x: number, y: number }) => {
+            const player = brender.findEntity(user.id) as PlayerEntity;
+            if (!player) return;
+
+            player.x = data.x;
+            player.y = data.y;
         };
 
         socket.on(SocketMessageType.TRADING_PLAZA_JOIN, handleJoin);
         socket.on(SocketMessageType.TRADING_PLAZA_MOVE, handleMove);
         socket.on(SocketMessageType.TRADING_PLAZA_LEAVE, handleLeave);
+        socket.on(SocketMessageType.LAGBACK, handleLagback);
 
-        const player = {
-            x: 1500,
-            y: 1500
-        };
+        const player = brender.createPlayerEntity({
+            id: user.id,
+            x: 0,
+            y: 0,
+            z: 5,
+            user,
+            onFrame: (entity, deltaTime) => {
+                renderPlayerText(entity, true);
 
-        const playerSpeed = 5;
-        const keysPressed: { [key: string]: boolean } = {};
+                let moveX = 0;
+                let moveY = 0;
 
-        const handleKeyDown = (e: KeyboardEvent) => {
-            keysPressed[e.key] = true;
-        };
+                if (MOVEMENT_KEYS.UP.some((key) => brender.pressing[key])) moveY -= PLAYER_SPEED * deltaTime;
+                if (MOVEMENT_KEYS.LEFT.some((key) => brender.pressing[key])) moveX -= PLAYER_SPEED * deltaTime;
+                if (MOVEMENT_KEYS.DOWN.some((key) => brender.pressing[key])) moveY += PLAYER_SPEED * deltaTime;
+                if (MOVEMENT_KEYS.RIGHT.some((key) => brender.pressing[key])) moveX += PLAYER_SPEED * deltaTime;
 
-        const handleKeyUp = (e: KeyboardEvent) => {
-            keysPressed[e.key] = false;
-        };
-
-        const lerp = (start: number, end: number, t: number) => {
-            return start + (end - start) * t;
-        };
-
-        let lastTime = 0;
-        let _previousPos = { x: player.x, y: player.y };
-
-        const updatePlayerPosition = (deltaTime: number) => {
-            const speed = 0.24;
-
-            for (const entity of entities.filter((entity): entity is PlayerEntity => entity.type === EntityType.PLAYER)) {
-                entity.x = lerp(entity.x, entity.targetX, speed);
-                entity.y = lerp(entity.y, entity.targetY, speed);
-            }
-
-            _previousPos = { x: player.x, y: player.y };
-
-            let moveX = 0;
-            let moveY = 0;
-
-            if (keysPressed["w"] || keysPressed["W"]) moveY -= playerSpeed * deltaTime;
-            if (keysPressed["a"] || keysPressed["A"]) moveX -= playerSpeed * deltaTime;
-            if (keysPressed["s"] || keysPressed["S"]) moveY += playerSpeed * deltaTime;
-            if (keysPressed["d"] || keysPressed["D"]) moveX += playerSpeed * deltaTime;
-
-            if (moveX !== 0 && moveY !== 0) {
-                moveX *= Math.SQRT1_2;
-                moveY *= Math.SQRT1_2;
-            }
-
-            const nextX = player.x + moveX;
-            const nextY = player.y + moveY;
-
-            if (nextX < 0 || nextX > 3000) moveX = 0;
-            if (nextY < 0 || nextY > 3000) moveY = 0;
-
-            player.x += Math.floor(moveX);
-            player.y += Math.floor(moveY);
-        };
-
-        window.addEventListener("keydown", handleKeyDown);
-        window.addEventListener("keyup", handleKeyUp);
-
-        let animationFrameId: number;
-
-        const frame = (time: number) => {
-            const deltaTime = (time - lastTime) / 8.33;
-            lastTime = time;
-
-            updatePlayerPosition(deltaTime);
-
-            ctx.clearRect(0, 0, viewportWidth, viewportHeight);
-
-            // TILEMAP
-            for (let row = 0; row < rows; row++) {
-                for (let col = 0; col < cols; col++) {
-                    const obj = tileMap[row][col].key;
-                    const img = images.get(obj);
-
-                    if (!img) continue;
-
-                    const x = Math.floor(col * tileSize - player.x);
-                    const y = Math.floor(row * tileSize - player.y);
-
-                    if (!(x + tileSize > -tileSize && x < viewportWidth + tileSize && y + tileSize > -tileSize && y < viewportHeight + tileSize)) continue;
-
-                    ctx.save();
-
-                    if (tileMap[row][col].flipped) {
-                        ctx.scale(-1, 1);
-                        ctx.drawImage(img, -x - tileSize, y, tileSize, tileSize);
-                    } else {
-                        ctx.drawImage(img, x, y, tileSize, tileSize);
-                    }
-
-                    ctx.restore();
+                if (moveX !== 0 && moveY !== 0) {
+                    moveX *= Math.SQRT1_2;
+                    moveY *= Math.SQRT1_2;
                 }
+
+                const nextX = entity.x + moveX;
+                const nextY = entity.y + moveY;
+
+                if (nextX < -1500 || nextX > 1500) moveX = nextX < -1500 ? -1500 - entity.x : 1500 - entity.x;
+                if (nextY < -1500 || nextY > 1500) moveY = nextY < -1500 ? -1500 - entity.y : 1500 - entity.y;
+
+                _previousPos = { x: entity.x, y: entity.y };
+
+                entity.x += Math.floor(moveX);
+                entity.y += Math.floor(moveY);
+
+                brender.camera.focusOn(entity);
             }
+        });
 
-            for (const entity of entities) {
-                const x = entity.x * tileSize - player.x + (viewportWidth / 2 - tileSize / 2);
-                const y = entity.y * tileSize - player.y + (viewportHeight / 2 - tileSize / 2);
-
-                if (!(x + tileSize > -tileSize && x < viewportWidth + tileSize && y + tileSize > -tileSize && y < viewportHeight + tileSize)) continue;
-
-                switch (entity.type) {
-                    case EntityType.PLAYER:
-                        const playerEntity = entity as PlayerEntity;
-
-                        const img = new Image();
-                        img.src = entity.image;
-
-                        ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
-                        ctx.shadowBlur = 10;
-                        ctx.shadowOffsetX = 5;
-                        ctx.shadowOffsetY = 5;
-
-                        ctx.drawImage(img, x, y, img.width / 6, img.height / 6);
-
-                        ctx.font = `20px ${fonts.find((font) => font.id === playerEntity.user.fontId)?.name}`;
-                        ctx.fillStyle = playerEntity.user.color;
-                        ctx.textAlign = "center";
-                        ctx.fillText(playerEntity.user.username, x + 25, y + 80);
-
-                        ctx.shadowColor = "transparent";
-                        ctx.shadowBlur = 0;
-                        ctx.shadowOffsetX = 0;
-                        ctx.shadowOffsetY = 0;
-
-                        break;
-                }
-            }
-
-            const playerX = viewportWidth / 2 - tileSize / 2;
-            const playerY = viewportHeight / 2 - tileSize / 2;
-
-            ctx.shadowColor = "rgba(0, 0, 0, 0.5)";
-            ctx.shadowBlur = 10;
-            ctx.shadowOffsetX = 5;
-            ctx.shadowOffsetY = 5;
-
-            ctx.drawImage(playerImage, playerX, playerY, playerImage.width / 6, playerImage.height / 6);
-
-            ctx.font = `20px ${fonts.find((font) => font.id === user.fontId)?.name}`;
-            ctx.fillStyle = user.color;
-            ctx.textAlign = "center";
-            ctx.fillText(user.username, playerX + 25, playerY + 80);
-            ctx.fillText(player.x + ", " + player.y, playerX + 25, playerY + 105);
-
-            ctx.shadowColor = "transparent";
-            ctx.shadowBlur = 0;
-            ctx.shadowOffsetX = 0;
-            ctx.shadowOffsetY = 0;
-
-            animationFrameId = window.requestAnimationFrame(frame);
-        };
-
-        animationFrameId = window.requestAnimationFrame(frame);
+        brender.urlToImage(getUserAvatarPath(user))
+            .then((image) => {
+                player.image = image;
+                player.width = image.width / 6;
+                player.height = image.height / 6;
+            });
 
         const movementUpdateInterval = setInterval(() => {
             if (player.x === _previousPos.x && player.y === _previousPos.y) return;
 
             socket.emit(SocketMessageType.TRADING_PLAZA_MOVE, { x: player.x, y: player.y });
-        }, 1000 / 24);
+        }, 1000 / 20);
 
         return () => {
-            window.removeEventListener("keydown", handleKeyDown);
-            window.removeEventListener("keyup", handleKeyUp);
-            window.cancelAnimationFrame(animationFrameId);
-            ctx.clearRect(0, 0, viewportWidth, viewportHeight);
-            clearInterval(movementUpdateInterval);
+            player.destroy?.();
 
             socket.emit(SocketMessageType.TRADING_PLAZA_LEAVE);
 
             socket.off(SocketMessageType.TRADING_PLAZA_JOIN, handleJoin);
             socket.off(SocketMessageType.TRADING_PLAZA_MOVE, handleMove);
             socket.off(SocketMessageType.TRADING_PLAZA_LEAVE, handleLeave);
+
+            socket.off(SocketMessageType.LAGBACK, handleLagback);
+
+            clearInterval(movementUpdateInterval);
         };
     }, [socket]);
 
     return (
-        <div className={styles.container}>
-            <canvas ref={canvasRef} className={styles.canvas} />
+        <div
+            className={styles.container}
+            onContextMenu={(e) => e.preventDefault()}
+        >
+            {socket && <BrenderCanvas
+                ref={brenderCanvasRef}
+                className={styles.canvas}
+                debug={true}
+            />}
+
             <div className={styles.ui}>
                 <div
-                    className={styles.latency}
-                    style={{
-                        color: latency < 100 ? "unset" : latency < 200 ? "yellow" : "red"
-                    }}
+                    className={styles.topLeft}
                 >
-                    Latency: {latency}ms
+                    {connected ? "Connected to Trading Plaza" : "Disconnected from Trading Plaza"}
+                    <br />
+                    <div style={{ color: latency < 100 ? "unset" : latency < 200 ? "yellow" : "red" }}>Ping: {latency}ms</div>
                 </div>
             </div>
         </div>

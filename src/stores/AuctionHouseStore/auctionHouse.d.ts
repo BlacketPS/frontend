@@ -1,4 +1,4 @@
-import { AuctionsAuctionEntity, AuctionsSearchAuctionDto } from "blacket-types";
+import { AuctionsAuctionEntity, AuctionsSearchAuctionDto } from "@blacket/types";
 
 export interface AuctionHouseStoreContext {
     loading: boolean;

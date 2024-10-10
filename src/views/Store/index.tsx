@@ -32,9 +32,7 @@ export default function Store() {
     };
 
     const [products, setProducts] = useState<Product[]>([
-        { name: "Blacket Plus", monthly: true, price: 2.99, lifetime: 39.99, image: window.constructCDNUrl("/content/badges/Plus.png"), colors: ["#071d8b", "#3d8def"], type: "Plan" },
-        { name: "1Hr Booster", price: 9.99, image: "https://blacket.org/content/items/1%20Hour%20Booster.webp", colors: ["#0d96d6", "#61ecff"], type: "Item" },
-        { name: "3Hr Booster", price: 14.99, image: "https://blacket.org/content/items/3%20Hour%20Booster.webp", colors: ["#d68213", "#edd557"], type: "Item" }
+        { name: "Blacket Plus", monthly: true, price: 2.99, lifetime: 29.99, image: window.constructCDNUrl("/content/badges/Plus.png"), colors: ["#071d8b", "#3d8def"], type: "Plan" }
     ]);
 
     return (
@@ -51,25 +49,6 @@ export default function Store() {
                     <Category title="Plans" subTitle="Purchase a plan to unlock new features!">
                         {
                             products.filter((product) => product.type === "Plan").map((product, i) => (
-                                <div key={i} className={styles.product} style={{ background: `linear-gradient(15deg, ${product.colors[0]}, ${product.colors[1]})` }}>
-                                    <ImageOrVideo className={styles.productImage} src={product.image} />
-                                    <div className={styles.productText}>
-                                        <div className={styles.productTitle}>{product.name}</div>
-                                        <div className={styles.productPrice}>${product.price}{product.monthly && " monthly"}</div>
-                                        {product.lifetime && <div className={styles.productSubPrice}>${product.lifetime} lifetime</div>}
-                                    </div>
-
-                                    {Array.from({ length: 3 }, (_, i) => (
-                                        <div key={i} className={styles.shine} />
-                                    ))}
-                                </div>
-                            ))
-                        }
-                    </Category>
-
-                    <Category title="Items" subTitle="Enchant your experience by adventuring with your wallet into our godlike items and recieve benefits in return to enhance your Blacket Rewrite experience!">
-                        {
-                            products.filter((product) => product.type === "Item").map((product, i) => (
                                 <div key={i} className={styles.product} style={{ background: `linear-gradient(15deg, ${product.colors[0]}, ${product.colors[1]})` }}>
                                     <ImageOrVideo className={styles.productImage} src={product.image} />
                                     <div className={styles.productText}>

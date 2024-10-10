@@ -42,6 +42,8 @@ declare global {
 
         constructCDNUrl: (path: string) => string;
         errorImage: string;
+
+        lerp: (start: number, end: number, t: number) => number;
     }
 }
 

@@ -1,7 +1,7 @@
 import { ReactNode, createContext, useContext, useState } from "react";
 import { useResource } from "@stores/ResourceStore/index";
 
-import { PrivateUser } from "@blacket/types";
+import { PermissionType, PrivateUser } from "@blacket/types";
 import { type UserStoreContext } from "./userStore.d";
 
 const UserStoreContext = createContext<UserStoreContext>({ user: null, setUser: () => { }, getUserAvatarPath: () => "" });
@@ -11,9 +11,16 @@ export function useUser() {
 }
 
 export function UserStoreProvider({ children }: { children: ReactNode }) {
-    const [user, setUser] = useState<PrivateUser | null>(null);
+    const [user, setUserState] = useState<PrivateUser | null>(null);
 
     const { resourceIdToPath } = useResource();
+
+    const setUser = (user: PrivateUser | null) => {
+        // if (user) user.hasPermission = (permission: PermissionType) => user.permissions.includes(permission);
+        if (user) user.hasPermission = (permission: PermissionType) => true;
+        
+        setUserState(user);
+    }
 
     const getUserAvatarPath = (user: PrivateUser | null): string => {
         if (!user) return window.constructCDNUrl("/content/blooks/Error.png");

@@ -3,7 +3,7 @@ import { Socket, io } from "socket.io-client";
 import styles from "./tooManyConnections.module.scss";
 
 import { type SocketStoreContext } from "./socket.d";
-import { SocketMessageType } from "blacket-types";
+import { SocketMessageType } from "@blacket/types";
 
 const SocketStoreContext = createContext<SocketStoreContext>({
     socket: null,
@@ -30,9 +30,13 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
         const pingInterval = setInterval(() => {
             const start = Date.now();
 
-            socket.emit(SocketMessageType.KEEP_ALIVE);
-            socket.once(SocketMessageType.KEEP_ALIVE, () => setLatency(Date.now() - start));
-        }, 1000 * 5);
+            socket.emit(SocketMessageType.PING);
+            socket.once(SocketMessageType.PONG, () => {
+                socket.emit(SocketMessageType.PONG);
+
+                setLatency(Date.now() - start);
+            });
+        }, 1000 * 2);
 
         socket.on("connect", () => {
             setConnected(true);
@@ -90,8 +94,12 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
     }, [initializeSocket]);
 
     return (
-        <SocketStoreContext.Provider value={{ socket: socketRef.current, connected, latency, initializeSocket }}>
-            {!tooManyConnections ? children : <h1 className={styles.tooManyConnections}>You have too many connections open, please close some tabs or disconnect some devices and try again.</h1>}
+        <SocketStoreContext.Provider value={{
+            socket: socketRef.current,
+            connected, latency,
+            initializeSocket
+        }}>
+            {children}
         </SocketStoreContext.Provider>
     );
 }

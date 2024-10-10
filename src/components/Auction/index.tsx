@@ -6,7 +6,7 @@ import normalStyles from "./auction.module.scss";
 import vhStyles from "./auctionVh.module.scss";
 
 import { AuctionProps } from "./auction.d";
-import { AuctionTypeEnum } from "blacket-types";
+import { AuctionTypeEnum } from "@blacket/types";
 
 const formatTimeRemaining = (expiresAt: Date): string => {
     const now = new Date();

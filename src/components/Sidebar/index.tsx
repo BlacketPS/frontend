@@ -1,17 +1,22 @@
 import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
+import { useUser } from "@stores/UserStore/index";
+import { useChat } from "@stores/ChatStore/index";
 import { Button } from "@components/index";
 
 import styles from "./sidebar.module.scss";
-import { useChat } from "@stores/ChatStore";
+import { PermissionTypeEnum } from "@blacket/types";
 
 export default function Sidebar() {
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
     const location = useLocation().pathname.split("/")[1];
 
+    const { user } = useUser();
     const { mentions } = useChat();
+
+    if (!user) return null;
 
     const pages = {
         left: [
@@ -42,6 +47,11 @@ export default function Sidebar() {
                 link: "/trading-plaza",
                 textSizeOverride: 18
             },
+            ...user.hasPermission(PermissionTypeEnum.MANAGE_GAME_DATA) ? [{
+                icon: "fas fa-map",
+                text: "Map Editor",
+                link: "/map-editor"
+            }] : [],
             {
                 icon: "fas fa-swords",
                 text: "Guilds",
@@ -73,11 +83,6 @@ export default function Sidebar() {
                 text: "News",
                 link: "/news"
             }
-            /* {
-                icon: "fas fa-flask",
-                text: "Test",
-                link: "/test"
-            } */
         ],
         bottom: [
             {
@@ -85,26 +90,50 @@ export default function Sidebar() {
                 text: "Credits",
                 link: "/credits"
             },
-            {
-                icon: "fab fa-discord",
-                text: "Discord",
-                link: "/discord"
-            },
-            {
-                icon: "fab fa-github",
-                text: "GitHub",
-                link: "/github"
-            },
-            {
-                icon: "fab fa-youtube",
-                text: "YouTube",
-                link: "/youtube"
-            },
-            {
-                icon: "fab fa-x-twitter",
-                text: "X",
-                link: "/twitter"
-            }
+            ...(!user.hasPermission(PermissionTypeEnum.MUTE_USERS) ? [
+                {
+                    icon: "fab fa-discord",
+                    text: "Discord",
+                    link: "/discord"
+                },
+                {
+                    icon: "fab fa-github",
+                    text: "GitHub",
+                    link: "/github"
+                },
+                {
+                    icon: "fab fa-youtube",
+                    text: "YouTube",
+                    link: "/youtube"
+                },
+                {
+                    icon: "fab fa-x-twitter",
+                    text: "X",
+                    link: "/twitter"
+                }
+            ] : [
+                {
+                    icon: "fas fa-flask",
+                    text: "Experiments",
+                    link: "/staff/experiments"
+                },
+                ...user.hasPermission(PermissionTypeEnum.BAN_USERS) ? [{
+                    icon: "fas fa-gavel",
+                    text: "Appeals",
+                    link: "/staff/appeals"
+                }] : [],
+                ...user.hasPermission(PermissionTypeEnum.MANAGE_REPORTS) ? [{
+                    icon: "fas fa-flag",
+                    text: "Reports",
+                    link: "/staff/reports"
+                }] : [],
+                ...user.hasPermission(PermissionTypeEnum.BLACKLIST_USERS) ? [{
+                    icon: "fas fa-lock",
+                    text: "Admin Panel",
+                    link: "https://admin-dev.blacket.org",
+                    openInNewTab: true
+                }] : []
+            ])
         ]
     };
 

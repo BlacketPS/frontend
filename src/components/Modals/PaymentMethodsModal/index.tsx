@@ -32,19 +32,20 @@ export default function PaymentMethodsModal() {
             <Dropdown
                 options={[
                     ...user.paymentMethods.map((method) => ({
-                        name: `${method.cardBrand} ${method.lastFour}`, value: method.id
+                        label: `${method.cardBrand} ${method.lastFour}`, value: method.id
                     })),
-                    {
-                        name: "Add Payment Method", value: null, onClick: () => {
-                            closeModal();
-
-                            createModal(<Modal.AddPaymentMethodModal />);
-                        }
-                    }
+                    { label: "Add Payment Method", value: null }
                 ]}
-                onPick={(value) => setSelectedPaymentMethod(user.paymentMethods.find((method) => method.id === value) ?? null)}
+                onChange={(value: number | null) => {
+                    if (value === null) {
+                        closeModal();
+
+                        createModal(<Modal.AddPaymentMethodModal />);
+                    }
+                    else setSelectedPaymentMethod(user.paymentMethods.find((method) => method.id === value) ?? null)
+                }}
             >
-                {selectedPaymentMethod ? <><i className="fas fa-credit-card" style={{ marginRight: "10px" }} /> {selectedPaymentMethod.cardBrand} {selectedPaymentMethod.lastFour}</> : "No Payment Method Selected"}
+                {selectedPaymentMethod ? `${selectedPaymentMethod.cardBrand} ${selectedPaymentMethod.lastFour}` : "Select a payment method..."}
             </Dropdown>
 
             <Modal.ModalBody style={{ fontSize: "0.8rem" }}>

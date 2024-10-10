@@ -27,46 +27,29 @@
 }
 
 .button {
-    background-color: var(--primary-color);
-    border-color: var(--background-color);
-    border-radius: 6px;
-    border-style: solid;
-    color: var(--accent-color);
-    opacity: .75;
-    cursor: pointer;
-    display: block;
     font-family: "Nunito", sans-serif;
     font-size: 22px;
-    margin: auto auto 20px;
-    outline: none;
+    margin: 5px auto 20px;
     padding: 5px 20px;
-    text-align: center;
-    transition: .2s;
 }
 
-.button:focus,
-.button:hover {
-    border-color: var(--secondary-color);
-    opacity: 1;
-}
 
 .agreeHolder {
     align-items: center;
     display: flex;
     flex-direction: row;
     justify-content: flex-start;
-    margin: auto auto 15px;
-    max-width: 330px;
-    width: 80%
+    margin: auto auto 5px;
+    width: 330px;
 }
 
 .agreeText {
     color: var(--accent-color);
     font-family: "Nunito", sans-serif;
-    font-size: 14px;
+    font-size: 15px;
     line-height: 16px;
-    margin-left: 15px;
-    text-align: left
+    margin-left: 5px;
+    text-align: left;
 }
 
 .checkBox {

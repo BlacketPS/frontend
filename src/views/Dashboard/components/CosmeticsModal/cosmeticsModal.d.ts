@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { Banner, Font, Title } from "blacket-types";
+import { Banner, Font, Title } from "@blacket/types";
 
 export interface BannerProps extends HTMLAttributes<HTMLDivElement> {
     banner: Banner;

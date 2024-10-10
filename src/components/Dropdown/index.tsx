@@ -1,87 +1,69 @@
-import { useEffect, useRef, useState } from "react";
-import { Input } from "@components/index";
-import styles from "./dropdown.module.scss";
+import Select from "react-select";
 
 import { DropdownProps } from "./dropdown.d";
 
-export default function Dropdown({ options, onPick, children }: DropdownProps) {
-    const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
-    const [searchQuery, setSearchQuery] = useState<string>("");
-
-    const dropdownButtonRef = useRef<HTMLDivElement>(null);
-    const dropdownMenuRef = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        function handleClickOutside(event: MouseEvent) {
-            if (
-                dropdownMenuRef.current
-                && !dropdownMenuRef.current.contains(event.target as Node)
-                && !dropdownButtonRef.current?.contains(event.target as Node)
-            ) setDropdownOpen(false);
-        }
-
-        if (dropdownOpen) document.addEventListener("mousedown", handleClickOutside);
-        else document.removeEventListener("mousedown", handleClickOutside);
-
-        return () => {
-            document.removeEventListener("mousedown", handleClickOutside);
-        };
-    }, [dropdownOpen]);
-
+export default function Dropdown({ search = { enabled: false, placeholder: "Search for an item..." }, options, onChange, children }: DropdownProps) {
     return (
-        <>
-            <div className={styles.dropdownContainer}>
-                <div ref={dropdownButtonRef} className={styles.dropdownButton} onClick={() => setDropdownOpen(!dropdownOpen)}>
-                    {children ?? "Selected Item:"}
-                </div>
-            </div>
-
-            {dropdownOpen && <div className={styles.dropdownMenuContainer} style={{ transform: `translateY(${window.innerWidth < 650 ? "-310px" : "-10px"})` }}>
-                <div ref={dropdownMenuRef} className={styles.dropdownMenu}>
-                    {window.innerWidth > 650 && <Input
-                        placeholder="Search for an item..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        containerProps={{
-                            style: {
-                                width: "98%",
-                                maxWidth: "unset",
-                                margin: "unset",
-                                borderRadius: "unset",
-                                border: "none"
-                            }
-                        }}
-                    />}
-
-                    <div className={styles.itemList}>
-                        {options.filter((option) => option.name.toLowerCase().includes(searchQuery.toLowerCase())).length > 0 ? options.filter((option) => option.name.toLowerCase().includes(searchQuery.toLowerCase())).map((option, i) => (
-                            <div key={i} className={styles.itemListItem} onClick={() => {
-                                if (option.onClick) option.onClick();
-                                onPick(option.value);
-
-                                setDropdownOpen(false);
-                            }}>
-                                {option.name}
-                            </div>
-                        )) : <div className={styles.noItems}>No items found.</div>}
-                    </div>
-
-                    {window.innerWidth <= 650 && <Input
-                        placeholder="Search for an item..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        containerProps={{
-                            style: {
-                                width: "98%",
-                                maxWidth: "unset",
-                                margin: "unset",
-                                borderRadius: "unset",
-                                border: "none"
-                            }
-                        }}
-                    />}
-                </div>
-            </div>}
-        </>
+        <Select
+            styles={{
+                container: (provided) => ({
+                    ...provided,
+                    width: "100%",
+                    margin: "5px 0 20px 0",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    outline: "none",
+                    color: "var(--accent-color)"
+                }),
+                control: (provided) => ({
+                    ...provided,
+                    backgroundColor: "var(--primary-color)",
+                    borderRadius: "7px",
+                    padding: "5px 5px",
+                    display: "flex",
+                    flexDirection: "row",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    width: "75%",
+                    textAlign: "left",
+                    fontSize: "18px",
+                    borderColor: "var(--accent-color)",
+                    boxShadow: "none",
+                    "&:hover": { borderColor: "var(--accent-color)" }
+                }),
+                dropdownIndicator: (provided) => ({ ...provided, transform: "scale(1.5)", color: "var(--accent-color)" }),
+                indicatorSeparator: (provided) => ({ ...provided, display: "none" }),
+                menu: (provided) => ({
+                    ...provided,
+                    backgroundColor: "var(--background-color)",
+                    borderRadius: "7px",
+                    width: "300px",
+                    "@media screen and (max-width: 650px)": { width: "95%" }
+                }),
+                option: (provided, state) => ({
+                    ...provided,
+                    backgroundColor: state.isSelected ? "var(--accent-color)" : "var(--background-color)",
+                    color: state.isSelected ? "var(--background-color)" : "var(--accent-color)",
+                    transition: ".2s",
+                    borderRadius: "7px",
+                    width: "95%",
+                    margin: "5px auto",
+                    fontSize: "18px",
+                    "&:hover": {
+                        backgroundColor: "var(--accent-color)",
+                        color: "var(--background-color)",
+                    }
+                }),
+                singleValue: (provided) => ({ ...provided, color: "var(--accent-color)", fontSize: "18px" }),
+                placeholder: (provided) => ({ ...provided, color: "var(--accent-color)", fontSize: "18px" })
+            }}
+            classNamePrefix="dropdown"
+            options={options}
+            isSearchable={search.enabled}
+            placeholder={children}
+            onChange={(option) => onChange(option?.value)}
+        />
     );
 }

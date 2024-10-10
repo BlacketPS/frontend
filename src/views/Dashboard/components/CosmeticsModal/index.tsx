@@ -6,7 +6,7 @@ import { AvatarCategory, BannerCategory, ColorCategory, FontCategory, TitleCateg
 import styles from "../../dashboard.module.scss";
 
 import { CosmeticsModalCategory, CosmeticsModalProps } from "../../dashboard.d";
-import { PermissionTypeEnum, NotFound } from "blacket-types";
+import { PermissionTypeEnum, NotFound } from "@blacket/types";
 
 const Category = (category: CosmeticsModalCategory) => {
     switch (category) {

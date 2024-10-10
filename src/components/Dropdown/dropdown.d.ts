@@ -1,12 +1,15 @@
 import { HTMLAttributes } from "react";
 
 export interface Option {
-    name: string;
+    label: string;
     value: any;
-    onClick?: () => void;
 }
 
 export interface DropdownProps extends HTMLAttributes<HTMLDivElement> {
+    search?: {
+        enabled: boolean;
+        placeholder: string;
+    }
     options: Option[];
-    onPick: (value: any) => void;
+    onChange: (value: any) => void;
 }

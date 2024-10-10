@@ -22,13 +22,16 @@ export default function ChangeFilterModal() {
                 You can change the search filters below.
             </Modal.ModalBody>
 
-            <Dropdown onPick={(value) => {
-                setSearch({ ...search, rarityId: value });
-            }} options={[
-                { name: "All", value: null },
-                ...rarities.map((r) => ({ name: r.name, value: r.id }))
-            ]}>
-                Rarity: {rarities.find((r) => r.id === search.rarityId)?.name || "All"}
+            <Dropdown
+                onChange={(value: number) => {
+                    setSearch({ ...search, rarityId: value });
+                }}
+                options={[
+                    { label: "Select a rarity...", value: null },
+                    ...rarities.map((r) => ({ label: r.name, value: r.id }))
+                ]}
+            >
+                {search.rarityId ? rarities.find((r) => r.id === search.rarityId)?.name : "Select a rarity..."}
             </Dropdown>
 
             <Modal.ModalToggleContainer>

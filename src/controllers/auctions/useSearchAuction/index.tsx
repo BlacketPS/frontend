@@ -1,4 +1,4 @@
-import { AuctionsSearchAuctionDto } from "blacket-types";
+import { AuctionsSearchAuctionDto } from "@blacket/types";
 
 export function useSearchAuction() {
     const searchAuction = (dto?: AuctionsSearchAuctionDto) => new Promise<Fetch2Response>((resolve, reject) => window.fetch2.get(`/api/auctions/${JSON.stringify(dto)}`)

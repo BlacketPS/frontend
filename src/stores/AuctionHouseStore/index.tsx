@@ -9,7 +9,7 @@ import { useToast } from "@stores/ToastStore/index";
 import { useSearchAuction } from "@controllers/auctions/useSearchAuction/index";
 
 import { type AuctionHouseStoreContext } from "./auctionHouse.d";
-import { AuctionsAuctionEntity, AuctionsSearchAuctionDto, AuctionTypeEnum, SocketAuctionBidEntity, SocketAuctionExpireEntity, SocketMessageType, UserItem } from "blacket-types";
+import { AuctionsAuctionEntity, AuctionsSearchAuctionDto, AuctionTypeEnum, SocketAuctionBidEntity, SocketAuctionExpireEntity, SocketMessageType, UserItem } from "@blacket/types";
 
 const AuctionHouseStoreContext = createContext<AuctionHouseStoreContext>({
     loading: true,

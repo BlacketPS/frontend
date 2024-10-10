@@ -6,6 +6,9 @@
             "react-textfit": [
                 "node_modules/@namhong2001/react-textfit"
             ],
+            "@brender/*": [
+                "src/brender/*"
+            ],
             "@components/*": [
                 "src/components/*"
             ],
