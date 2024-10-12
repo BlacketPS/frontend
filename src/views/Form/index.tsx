@@ -4,7 +4,7 @@ import { useForms } from "@controllers/forms/useForms/index";
 import { useUpdateForm } from "@controllers/forms/useUpdateForm/index";
 import { useRegisterFromForm } from "@controllers/auth/useRegisterFromForm/index";
 import { useUser } from "@stores/UserStore/index";
-import { Button, Input, Loader } from "@components/index";
+import { Button, ErrorContainer, Input, Loader } from "@components/index";
 import styles from "./form.module.scss";
 
 import { FormsFormEntity, FormStatusEnum } from "@blacket/types";
@@ -23,6 +23,7 @@ export default function Form() {
     const { registerFormForm } = useRegisterFromForm();
 
     const [loading, setLoading] = useState<boolean>(true);
+    const [error, setError] = useState<string | null>(null);
     const [form, setForm] = useState<FormsFormEntity | null>(null);
     const [newFormReason, setNewFormReason] = useState<string>("");
 
@@ -48,7 +49,7 @@ export default function Form() {
     };
 
     const register = () => {
-        if (password !== passwordConfirm) return;
+        if (password !== passwordConfirm) return setError("Passwords do not match.");
 
         setLoading(true);
 
@@ -151,6 +152,7 @@ export default function Form() {
                         >
                             Create Account
                         </Button.ClearButton>
+                        {error && <ErrorContainer>{error}</ErrorContainer>}
                     </div>}
                 </div>
 
