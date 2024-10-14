@@ -1,13 +1,13 @@
 import { useUser } from "@stores/UserStore/index";
 
-import { NotFound, StoreCreatePaymentMethodDto } from "@blacket/types";
+import { NotFound, StripeCreatePaymentMethodDto } from "@blacket/types";
 
 export function useCreate() {
     const { user, setUser } = useUser();
 
     if (!user) throw new Error(NotFound.UNKNOWN_USER);
 
-    const createPaymentMethod = (dto: StoreCreatePaymentMethodDto) => new Promise<Fetch2Response>((resolve, reject) => window.fetch2.post("/api/store/payment-methods/create", dto)
+    const createPaymentMethod = (dto: StripeCreatePaymentMethodDto) => new Promise<Fetch2Response>((resolve, reject) => window.fetch2.post("/api/stripe/payment-methods", dto)
         .then((res: Fetch2Response) => {
             const paymentMethods = user.paymentMethods;
 

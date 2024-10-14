@@ -10,7 +10,8 @@
   },
   "dependencies": {
     "@namhong2001/react-textfit": "^2.0.0",
-    "@square/web-sdk": "^2.0.1",
+    "@stripe/react-stripe-js": "^2.8.1",
+    "@stripe/stripe-js": "^4.8.0",
     "@stylistic/eslint-plugin": "^1.8.1",
     "@types/prismjs": "^1.26.4",
     "@types/qrcode": "^1.5.5",

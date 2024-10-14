@@ -7,7 +7,7 @@ export function useRemove() {
 
     if (!user) throw new Error(NotFound.UNKNOWN_USER);
 
-    const removePaymentMethod = (id: number) => new Promise<Fetch2Response>((resolve, reject) => window.fetch2.delete(`/api/store/payment-methods/${id}`, {})
+    const removePaymentMethod = (id: number) => new Promise<Fetch2Response>((resolve, reject) => window.fetch2.delete(`/api/stripe/payment-methods/${id}`, {})
         .then((res: Fetch2Response) => {
             let paymentMethods = user.paymentMethods;
 

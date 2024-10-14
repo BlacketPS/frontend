@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useModal } from "@stores/ModalStore/index";
 import { useUser } from "@stores/UserStore/index";
-import { useSelect } from "@controllers/store/payment-methods/useSelect/index";
-import { useRemove } from "@controllers/store/payment-methods/useRemove/index";
+import { useSelect } from "@controllers/stripe/payment-methods/useSelect/index";
+import { useRemove } from "@controllers/stripe/payment-methods/useRemove/index";
 import { Modal, ErrorContainer, Dropdown } from "@components/index";
 import { GenericButton } from "@components/Buttons";
 
@@ -49,7 +49,7 @@ export default function PaymentMethodsModal() {
             </Dropdown>
 
             <Modal.ModalBody style={{ fontSize: "0.8rem" }}>
-                We use Square to handle all of our payment processing.
+                We use Stripe to handle all of our payment processing.
                 <br />
                 None of your payment information is stored on our servers.
             </Modal.ModalBody>

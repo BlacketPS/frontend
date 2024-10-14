@@ -3,7 +3,6 @@ import { ComponentType, ReactNode } from "react";
 import { ConfigStoreProvider } from "./ConfigStore";
 import { LoadingStoreProvider } from "./LoadingStore";
 import { ResourceStoreProvider } from "./ResourceStore";
-import { SquareStoreProvider } from "./SquareStore";
 import { LeaderboardStoreProvider } from "./LeaderboardStore";
 import { SocketStoreProvider } from "./SocketStore";
 import { ModalStoreProvider } from "./ModalStore";
@@ -32,7 +31,6 @@ export default function StoreWrapper({ children }: { children: ReactNode }) {
                 [LoadingStoreProvider, {}],
                 [LeaderboardStoreProvider, {}],
                 [ResourceStoreProvider, {}],
-                [SquareStoreProvider, {}],
                 [UserStoreProvider, {}],
                 [DataStoreProvider, {}],
                 [CachedUserStoreProvider, {}],
