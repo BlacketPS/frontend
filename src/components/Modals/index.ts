@@ -8,6 +8,7 @@ import ModalDropdownContainer from "./ModalDropdownContainer";
 import ModalHeader from "./ModalHeader";
 import ModalToggleContainer from "./ModalToggleContainer";
 import PaymentMethodsModal from "./PaymentMethodsModal";
+import PurchaseProductModal from "./PurchaseProductModal";
 
 export {
     AddPaymentMethodModal,
@@ -19,5 +20,6 @@ export {
     ModalDropdownContainer,
     ModalHeader,
     ModalToggleContainer,
-    PaymentMethodsModal
+    PaymentMethodsModal,
+    PurchaseProductModal
 };

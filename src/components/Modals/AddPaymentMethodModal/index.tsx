@@ -1,22 +1,10 @@
-import { ReactNode, useState } from "react";
+import { useState } from "react";
+import { useStripe, useElements, CardElement } from "@stripe/react-stripe-js";
 import { useModal } from "@stores/ModalStore/index";
 import { useCreateSetupIntent } from "@controllers/stripe/setup-intent/useCreateSetupIntent/index";
 import { useCreate } from "@controllers/stripe/payment-methods/useCreate/index";
-import { Modal, ErrorContainer, Button } from "@components/index";
+import { Modal, ErrorContainer, Button, StripeElementsWrapper } from "@components/index";
 import styles from "./addPaymentMethodModal.module.scss";
-
-import { useStripe, useElements, CardElement, Elements } from "@stripe/react-stripe-js";
-import { loadStripe } from "@stripe/stripe-js";
-
-const stripePromise = loadStripe(import.meta.env.VITE_STRIPE_PUBLIC_KEY);
-
-function ModalWrapper({ children }: { children: ReactNode }) {
-    return (
-        <Elements stripe={stripePromise}>
-            {children}
-        </Elements>
-    );
-}
 
 function TheModal() {
     const stripe = useStripe();
@@ -30,6 +18,8 @@ function TheModal() {
     const { createPaymentMethod } = useCreate();
 
     const accentColor = getComputedStyle(document.documentElement).getPropertyValue("--accent-color");
+
+    if (!stripe || !elements) return;
 
     return (
         <>
@@ -75,8 +65,6 @@ function TheModal() {
             <Modal.ModalButtonContainer loading={loading}>
                 <Button.GenericButton
                     onClick={async () => {
-                        if (!stripe || !elements) return;
-
                         const cardElement = elements.getElement(CardElement);
                         if (!cardElement) return;
 
@@ -105,7 +93,7 @@ function TheModal() {
                         if (verifyError) return setError(verifyError?.message ?? "Something went wrong."), setLoading(false);
 
                         await createPaymentMethod({
-                            paymentMethodId: result.paymentMethod.id
+                            setupIntentId: setupIntent.id
                         })
                             .then(() => closeModal())
                             .catch((err) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
@@ -123,8 +111,8 @@ function TheModal() {
 
 export default function AddPaymentMethodModal() {
     return (
-        <ModalWrapper>
+        <StripeElementsWrapper>
             <TheModal />
-        </ModalWrapper>
+        </StripeElementsWrapper>
     );
 }

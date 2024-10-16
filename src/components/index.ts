@@ -15,6 +15,7 @@ import PageHeader from "./PageHeader";
 import SearchBox from "./SearchBox";
 import Sidebar from "./Sidebar";
 import SidebarBody from "./SidebarBody";
+import StripeElementsWrapper from "./StripeElementsWrapper";
 import Toggle from "./Toggle";
 import TopRight from "./TopRight";
 import Username from "./Username";
@@ -37,6 +38,7 @@ export {
     SearchBox,
     Sidebar,
     SidebarBody,
+    StripeElementsWrapper,
     Toggle,
     TopRight,
     Username
