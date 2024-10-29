@@ -128,6 +128,7 @@ export default function TradingPlaza() {
                 x: 0,
                 y: 0,
                 z: 4,
+                image: brender.loadingImage,
                 width: 300 / 6,
                 height: 345 / 6,
                 targetEasingSpeed: 0.15,
@@ -192,6 +193,9 @@ export default function TradingPlaza() {
             x: 0,
             y: 0,
             z: 5,
+            image: brender.loadingImage,
+            width: 300 / 6,
+            height: 345 / 6,
             user,
             onFrame: (entity, deltaTime) => {
                 renderPlayerText(entity, true);

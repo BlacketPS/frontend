@@ -14,6 +14,7 @@ export interface BrenderCanvasRef {
     camera: Camera;
     pressing: { [key: string]: boolean };
     mousePosition: { x: number; y: number };
+    loadingImage: HTMLImageElement;
     isMouseOver(object: CanvasObject | Entity): boolean;
     createGenericEntity(entity: Entity): Entity;
     createPlayerEntity(entity: PlayerEntity): PlayerEntity;

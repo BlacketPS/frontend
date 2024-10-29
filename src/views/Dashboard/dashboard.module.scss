@@ -524,6 +524,8 @@
 .statsContainerHolder {
     width: 100%;
     gap: 1vh;
+    max-height: 28vh;
+    overflow-y: auto;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
@@ -811,7 +813,7 @@
     flex-direction: row;
     flex-wrap: wrap;
     gap: 10px;
-    padding: 5px 5px;
+    padding: 5px 0;
     width: 420px;
     flex-wrap: wrap;
 
@@ -839,4 +841,10 @@
     width: 400px;
     overflow-y: auto;
     overflow-x: hidden;
+
+    @media screen and (max-width: 768px) {
+        padding: 15px 0;
+        width: 100%;
+        transform: scale(0.95);
+    }
 }

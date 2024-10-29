@@ -3,6 +3,7 @@ import { Navigate } from "react-router-dom";
 import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { useData } from "@stores/DataStore/index";
+import { useResource } from "@stores/ResourceStore/index";
 import { SearchBox } from "@components/index";
 import { ChangeFilterModal, SetHolder, Blook, Item, RightBlook, RightItem, RightButton, SellBlooksModal, AuctionModal } from "./components";
 import styles from "./inventory.module.scss";
@@ -14,6 +15,7 @@ export default function Inventory() {
     const { createModal } = useModal();
     const { user } = useUser();
     const { packs, blooks, items } = useData();
+    const { resourceIdToPath } = useResource();
 
     if (!user) return <Navigate to="/login" />;
 
@@ -118,7 +120,7 @@ export default function Inventory() {
                     {packs.sort((a, b) => a.priority - b.priority).map((pack) => {
                         const filteredBlooks = filterPackBlooks(pack.id);
 
-                        if (filteredBlooks.length > 0) return <SetHolder key={pack.id} name={`${pack.name} Pack`} nothing={false}>
+                        if (filteredBlooks.length > 0) return <SetHolder key={pack.id} name={`${pack.name} Pack`} icon={resourceIdToPath(pack.iconId)} nothing={false}>
                             {filterPackBlooks(pack.id).sort((a, b) => a.priority - b.priority).map((blook) => <Blook key={blook.id} blook={blook} locked={!user.blooks[blook.id]} quantity={user.blooks[blook.id] as number} onClick={() => selectBlook(blook)} />)}
                         </SetHolder>;
                         else if (filterPackBlooks.length === 0 && search.query.length === 0) return <SetHolder key={pack.id} name={`${pack.name} Pack`} nothing={true} />;

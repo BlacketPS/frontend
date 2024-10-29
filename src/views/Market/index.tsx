@@ -92,7 +92,7 @@ export default function Market() {
         if (user.settings.openPacksInstantly) setLoading(`Opening ${packs.find((pack) => pack.id === dto.packId)!.name} pack`);
 
         openPack(dto)
-            .then((res) => {
+            .then(async (res) => {
                 const blook = blooks.find((blook) => blook.id === res.data.id)!;
                 const rarity = rarities.find((rarity) => rarity.id === blook.rarityId)!;
 
@@ -102,8 +102,10 @@ export default function Market() {
                     physics: { default: "arcade" },
                     scene: new Particles(rarity.animationType, rarity.color) as ParticlesScene
                 });
-                setBigButtonEvent(BigButtonClickType.OPEN);
                 setCurrentPack(packs.find((pack: PackType) => pack.id === dto.packId));
+
+                setBigButtonEvent(BigButtonClickType.NONE);
+                setTimeout(() => setBigButtonEvent(BigButtonClickType.OPEN), 100);
 
                 resolve(setUnlockedBlook(blooks.find((blook) => blook.id === res.data.id)!));
             })
@@ -214,18 +216,24 @@ export default function Market() {
                 <img className={styles.rightSideStore} src={window.constructCDNUrl("/content/market.png")} alt="Market" />
             </div>
 
-            {
-                currentPack && <div className={styles.openModal} style={{
+            {currentPack && <>
+                <style>{"body{overflow:hidden}"}</style>
+
+                <div className={styles.openModal} style={{
                     background: `radial-gradient(circle, ${currentPack.innerColor} 0%, ${currentPack.outerColor} 100%)`
                 }}>
                     <div ref={gameRef} className={styles.phaserContainer} />
-                    <OpenPackContainer opening={openingPack} image={resourceIdToPath(currentPack.imageId)} />
+                    <OpenPackContainer
+                        opening={openingPack}
+                        image={resourceIdToPath(currentPack.imageId)}
+                    />
                     {unlockedBlook && <OpenPackBlook blook={unlockedBlook} animate={
                         bigButtonEvent !== BigButtonClickType.OPEN
                     } isNew={user.blooks?.[unlockedBlook.id] === 1} />}
+                    <img className={styles.openPackIcon} src={resourceIdToPath(currentPack.iconId)} alt="Icon" draggable={false} />
                     <div style={{ cursor: bigButtonEvent === BigButtonClickType.NONE ? "unset" : "" }} className={styles.openBigButton} onClick={handleBigClick} />
                 </div>
-            }
+            </>}
         </>
     );
 }

@@ -3,15 +3,17 @@ import { useModal } from "@stores/ModalStore/index";
 import { useUser } from "@stores/UserStore/index";
 import { useAuctionHouse } from "@stores/AuctionHouseStore/index";
 import { useCreateAuction } from "@controllers/auctions/useCreateAuction/index";
-import { Modal, Button, Form, Input, ErrorContainer, Toggle } from "@components/index";
+import { useRecentAveragePrice } from "@controllers/auctions/useRecentAveragePrice/index";
+import { Modal, Button, Form, Input, ErrorContainer, Toggle, WarningContainer } from "@components/index";
 
 import { AuctionModalProps } from "../inventory.d";
-import { AuctionTypeEnum, PermissionTypeEnum } from "@blacket/types";
+import { AuctionsRecentAveragePriceEntity, AuctionTypeEnum, PermissionTypeEnum } from "@blacket/types";
 
 export default function AuctionModal({ type, blook, item }: AuctionModalProps) {
-    const [loading, setLoading] = useState<boolean>(false);
+    const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
     const [price, setPrice] = useState<string>("");
+    const [suspicious, setSuspicious] = useState<boolean>(false);
     const [duration, setDuration] = useState<string>("");
     const [buyItNow, setBuyItNow] = useState<boolean>(false);
 
@@ -19,6 +21,7 @@ export default function AuctionModal({ type, blook, item }: AuctionModalProps) {
     const [durationTax, setDurationTax] = useState<number>(0);
 
     const { createAuction } = useCreateAuction();
+    const { getRecentAveragePrice } = useRecentAveragePrice();
 
     const { closeModal } = useModal();
     const { user } = useUser();
@@ -57,6 +60,16 @@ export default function AuctionModal({ type, blook, item }: AuctionModalProps) {
         setAuctionTax(auctionTax);
         setDurationTax(Math.floor(parseInt(duration !== "" ? duration : "0") / 60 * 10));
     }, [price, duration, buyItNow]);
+
+    useEffect(() => {
+        getRecentAveragePrice({ type, itemId: item ? item.id : undefined, blookId: blook ? blook.id : undefined })
+            .then((res) => {
+                setPrice(Math.floor(res.data.averagePrice * 0.99).toString());
+                setSuspicious(res.data.suspicious);
+            })
+            .catch((err) => setError(err?.data?.message || "Something went wrong."))
+            .finally(() => setLoading(false));
+    }, []);
 
     return (
         <>
@@ -122,6 +135,7 @@ export default function AuctionModal({ type, blook, item }: AuctionModalProps) {
                 </Toggle>
             </Modal.ModalToggleContainer>
 
+            {suspicious && <WarningContainer>This item's recent average price seems suspicious. <b>Be careful when choosing a price for this item.</b></WarningContainer>}
             {error !== "" && <ErrorContainer>{error}</ErrorContainer>}
 
             <Modal.ModalButtonContainer loading={loading}>

@@ -54,7 +54,7 @@ function TheModal() {
                 </div>
             </Modal.ModalBody>
 
-            <Modal.ModalBody style={{ fontSize: "0.8rem" }}>
+            <Modal.ModalBody style={{ fontSize: "0.8rem", opacity: 0.5 }}>
                 We use Stripe to handle all of our payment processing.
                 <br />
                 None of your payment information is stored on our servers.

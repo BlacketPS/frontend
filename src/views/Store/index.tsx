@@ -27,7 +27,7 @@ export default function Store() {
             case (hour < 22):
                 return `Good evening ${username}, Welcome to the Store!`;
             default:
-                return `Good night ${username}, Welcome to the Store!`;
+                return `Enjoy your night ${username}, Welcome to the Store!`;
         }
     };
 

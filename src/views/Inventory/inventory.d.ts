@@ -42,7 +42,12 @@ export interface RightButtonProps extends GenericButtonProps {
 
 export interface SetHolderProps extends HTMLAttributes<HTMLDivElement> {
     name: string;
+    icon?: string;
     nothing: boolean;
+}
+
+export interface TiledBackgroundProps {
+    icon: string;
 }
 
 export interface SellBlooksModalProps {

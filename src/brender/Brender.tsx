@@ -37,7 +37,7 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
             this.y = Math.floor(entity.y - canvas.height / 2 / this.scale + (entity.height ?? entity?.image?.height ?? 0) / 2);
         },
         zoom(amount) {
-            this.targetScale += amount
+            this.targetScale += amount;
             this.targetScale = Math.max(.1, this.targetScale);
         }
     });
@@ -46,6 +46,9 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
 
     const pressing: { [key: string]: boolean } = {};
     const mousePosition = { x: 0, y: 0 };
+
+    const loadingImage = new Image();
+    loadingImage.src = window.constructCDNUrl("/content/blooks/Loading.png");
 
     const handleKeyDown = (e: KeyboardEvent) => pressing[e.key.toLowerCase()] = true;
     const handleKeyUp = (e: KeyboardEvent) => delete pressing[e.key.toLowerCase()];
@@ -104,7 +107,7 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
 
         const mouseX = mousePosition.x;
         const mouseY = mousePosition.y;
-    
+
         return mouseX >= objX && mouseX <= objX + objWidth && mouseY >= objY && mouseY <= objY + objHeight;
     };
 
@@ -179,7 +182,7 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
 
         for (const entity of entities) {
             if (entity.image && isOnScreen(entity.x, entity.y, entity.width ?? entity?.image?.width ?? 0, entity.height ?? entity?.image?.height ?? 0)) drawImage(entity.image, entity.x, entity.y, entity.width ?? entity.image.width, entity.height ?? entity.image.height);
-            
+
             if (entity.onClick && isMouseOver(entity)) entity.onClick(entity);
             if (entity.onFrame) entity.onFrame(entity, deltaTime);
 
@@ -192,7 +195,7 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
             renderText(`Objects: ${objects.length}`, 7, canvas.height - 50, {}, false);
             renderText(`Camera: ${camera.x}, ${camera.y}`, 7, canvas.height - 70, {}, false);
 
-            renderText(`FPS: ${fps! ?? "???"}`, canvas.width - 7, canvas.height - 10, { textAlign: "right" }, false);
+            renderText(`FPS: ${fps ?? "???"}`, canvas.width - 7, canvas.height - 10, { textAlign: "right" }, false);
         }
 
         animationFrameIdRef.current = requestAnimationFrame(frame);
@@ -203,14 +206,43 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
     const urlToImage = (url: string) => new Promise<HTMLImageElement>((resolve) => {
         if (cachedImages.has(url)) return resolve(cachedImages.get(url)!);
 
-        const image = new Image();
+        if (url.endsWith(".mp4") || url.endsWith(".webm")) {
+            const video = document.createElement("video");
+            video.setAttribute("crossorigin", "anonymous");
+            video.src = url;
 
-        image.src = url;
-        image.onload = () => {
-            cachedImages.set(url, image);
+            video.onloadeddata = () => video.currentTime = 0;
 
-            resolve(image);
-        };
+            video.onseeked = () => {
+                const canvas = document.createElement("canvas");
+
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+
+                const context = canvas.getContext("2d");
+                if (!context) return;
+
+                context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+                const image = new Image();
+
+                image.src = canvas.toDataURL();
+                image.onload = () => {
+                    cachedImages.set(url, image);
+
+                    resolve(image);
+                };
+            };
+        } else {
+            const image = new Image();
+            image.src = url;
+
+            image.onload = () => {
+                cachedImages.set(url, image);
+
+                resolve(image);
+            };
+        }
     });
 
     const createObject = (object: CanvasObject): CanvasObject => {
@@ -246,6 +278,7 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
         camera,
         pressing,
         mousePosition,
+        loadingImage,
         isMouseOver,
         createGenericEntity,
         createPlayerEntity,

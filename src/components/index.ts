@@ -19,6 +19,7 @@ import StripeElementsWrapper from "./StripeElementsWrapper";
 import Toggle from "./Toggle";
 import TopRight from "./TopRight";
 import Username from "./Username";
+import WarningContainer from "./WarningContainer";
 
 export {
     Auction,
@@ -41,5 +42,6 @@ export {
     StripeElementsWrapper,
     Toggle,
     TopRight,
-    Username
+    Username,
+    WarningContainer
 };

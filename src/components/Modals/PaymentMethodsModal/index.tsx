@@ -41,14 +41,13 @@ export default function PaymentMethodsModal() {
                         closeModal();
 
                         createModal(<Modal.AddPaymentMethodModal />);
-                    }
-                    else setSelectedPaymentMethod(user.paymentMethods.find((method) => method.id === value) ?? null)
+                    } else setSelectedPaymentMethod(user.paymentMethods.find((method) => method.id === value) ?? null);
                 }}
             >
                 {selectedPaymentMethod ? `${selectedPaymentMethod.cardBrand} ${selectedPaymentMethod.lastFour}` : "Select a payment method..."}
             </Dropdown>
 
-            <Modal.ModalBody style={{ fontSize: "0.8rem" }}>
+            <Modal.ModalBody style={{ fontSize: "0.8rem", opacity: 0.5 }}>
                 We use Stripe to handle all of our payment processing.
                 <br />
                 None of your payment information is stored on our servers.
