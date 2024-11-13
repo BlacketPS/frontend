@@ -52,15 +52,19 @@ export function ToastStoreProvider({ children }: { children: ReactNode }) {
 
             const toast = toastRef.current[0];
 
-            if (!window.constants.APPLE_DEVICE) {
-                if (document.visibilityState === "hidden" && Notification.permission === "granted") {
-                    const notification = new Notification(toast.header, { body: toast.body, icon: toast.icon, silent: true });
+            try {
+                if (!window.constants.APPLE_DEVICE) {
+                    if (document.visibilityState === "hidden" && Notification.permission === "granted") {
+                        const notification = new Notification(toast.header, { body: toast.body, icon: toast.icon, silent: true });
 
-                    notification.addEventListener("click", () => {
-                        if (toast.onClick) toast.onClick();
-                        closeToast(toast.id!);
-                    });
+                        notification.addEventListener("click", () => {
+                            if (toast.onClick) toast.onClick();
+                            closeToast(toast.id!);
+                        });
+                    }
                 }
+            } catch (err) {
+                console.warn("browser most likely doesn't support notifications");
             }
 
             setTimeout(() => closeToast(toast.id!), toast.expires);
@@ -68,8 +72,12 @@ export function ToastStoreProvider({ children }: { children: ReactNode }) {
             toastRef.current[0].aboutToClose = true;
         }, 100);
 
-        if (!window.constants.APPLE_DEVICE) {
-            if (Notification.permission !== "granted" && Notification.permission !== "denied") createModal(<NotificationAccessModal />);
+        try {
+            if (!window.constants.APPLE_DEVICE) {
+                if (Notification.permission !== "granted" && Notification.permission !== "denied") createModal(<NotificationAccessModal />);
+            }
+        } catch (err) {
+            console.warn("browser most likely doesn't support notifications");
         }
 
         return () => clearInterval(interval);
