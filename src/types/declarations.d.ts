@@ -34,11 +34,16 @@ declare global {
             delete: (url: string, body: object) => Promise<Fetch2Response>;
             patch: (url: string, body: object) => Promise<Fetch2Response>;
         };
+
         socket: Socket;
 
         emojis: {
             [key: string]: string;
         }[];
+
+        constants: {
+            APPLE_DEVICE: boolean
+        }
 
         constructCDNUrl: (path: string) => string;
         errorImage: string;

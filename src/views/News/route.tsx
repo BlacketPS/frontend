@@ -6,5 +6,6 @@ export default {
     title: `News | ${import.meta.env.VITE_INFORMATION_NAME}`,
     description: `Get the latest updates on ${import.meta.env.VITE_INFORMATION_NAME}.`,
     sidebar: true,
-    topRight: []
+    topRight: [],
+    pageHeader: "News"
 } as BlacketRoute;

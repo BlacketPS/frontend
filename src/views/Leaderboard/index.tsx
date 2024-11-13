@@ -15,6 +15,9 @@ export default function Leaderboard() {
     const { setLoading } = useLoading();
     const { createModal } = useModal();
     const { user } = useUser();
+
+    if (!user) return <Navigate to="/login" />;
+
     const { leaderboard, sortBy, setSortBy } = useLeaderboardStore();
 
     const { getLeaderboard } = useLeaderboardController();
@@ -29,8 +32,6 @@ export default function Leaderboard() {
     }, []);
 
     const switchSort = () => sortBy === PlacementType.TOKEN ? setSortBy(PlacementType.EXPERIENCE) : setSortBy(PlacementType.TOKEN);
-
-    if (!user) return <Navigate to="/login" />;
 
     if (leaderboard) return (
         <>

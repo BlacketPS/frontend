@@ -1,7 +1,7 @@
 console.info(`%c${import.meta.env.VITE_INFORMATION_NAME}`, "font-size: 8em;");
 
 console.info("%cWelcome to the console! Feel free to look around, but please don't paste anything here unless you know what you're doing.", "font-size: 2em; font-weight: bold;");
-console.info("%cThis server is running Blacket which is open source and available at https://github.com/XOTlC/Blacket", "font-size: 1.5em; font-weight: bold;");
+console.info("%cThis server is running Blacket which is open source and available at https://github.com/BlacketPS/Blacket", "font-size: 1.5em; font-weight: bold;");
 
 console.info(`[Blacket] Running Blacket v${import.meta.env.VITE_INFORMATION_VERSION}`);
 

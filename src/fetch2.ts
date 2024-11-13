@@ -26,8 +26,8 @@ const fetchInterceptor = (method: HTTPMethod) => (url: string, body: JSON) => ne
 
         if (!response.ok && data.message === "Internal server error") data.message = "Something went wrong.";
 
-        if (!response.ok) reject({ ok: false, status: response.status, data });
-        else resolve({ ok: true, status: response.status, data });
+        if (!response.ok) reject({ ok: response.ok, status: response.status, data });
+        else resolve({ ok: response.ok, status: response.status, data });
     })
     .catch((error) => reject(error)));
 

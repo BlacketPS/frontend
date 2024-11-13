@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import { useUser } from "@stores/UserStore/index";
@@ -126,12 +126,6 @@ export default function Sidebar() {
                     icon: "fas fa-flag",
                     text: "Reports",
                     link: "/staff/reports"
-                }] : [],
-                ...user.hasPermission(PermissionTypeEnum.BLACKLIST_USERS) ? [{
-                    icon: "fas fa-lock",
-                    text: "Admin Panel",
-                    link: "https://admin-dev.blacket.org",
-                    openInNewTab: true
                 }] : []
             ])
         ]

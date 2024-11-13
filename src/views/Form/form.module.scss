@@ -6,15 +6,19 @@
     display: flex;
     flex-direction: column;
     left: 50%;
-    max-width: 420px;
-    height: 50%;
+    height: 55%;
     padding-bottom: 7px;
     position: absolute;
     text-align: center;
     top: 50%;
     -webkit-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
-    width: 90%
+    width: 420px;
+
+    @media (max-width: 625px) {
+        width: 90%;
+        height: 90%;
+    }
 }
 
 .containerHeader {
@@ -74,6 +78,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    font-size: 1rem;
 }
 
 .formDenied {

@@ -8,6 +8,8 @@ export { default as Register } from "./Authentication/register.route";
 
 export { default as Form } from "./Form/route";
 
+export { default as Legal } from "./Legal/route";
+
 // TOP NAVIGATION ROUTES
 export { default as Dashboard } from "./Dashboard/route";
 export { default as Leaderboard } from "./Leaderboard/route";
@@ -31,3 +33,8 @@ export { default as Experiments } from "./Experiments/route";
 
 // INTERNAL ROUTES
 export { default as SettingsLinkDiscord } from "./Settings/LinkDiscord/route";
+
+// ALIASES
+export { default as TermsAlias } from "./Legal/termsAlias.route";
+export { default as PrivacyAlias } from "./Legal/privacyAlias.route";
+export { default as EulaAlias } from "./Legal/eulaAlias.route";

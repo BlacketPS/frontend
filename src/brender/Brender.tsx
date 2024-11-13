@@ -1,4 +1,4 @@
-import { useRef, useImperativeHandle, forwardRef, useLayoutEffect } from "react";
+import { useRef, useImperativeHandle, forwardRef, useLayoutEffect, memo } from "react";
 import { BrenderCanvasRef, BrenderCanvasProps, CanvasObject, Entity, Camera, TextStyle, PlayerEntity } from "@brender/index.d";
 import { EntityType } from "@blacket/types";
 
@@ -332,4 +332,4 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
     );
 });
 
-export default BrenderCanvas;
+export default memo(BrenderCanvas);

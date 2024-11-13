@@ -1,4 +1,5 @@
-import { Background, Header } from "@components/index";
+import { useRouteError } from "react-router-dom";
+import { Background, Button, Header } from "@components/index";
 import styles from "./error.module.scss";
 
 import { ErrorCode, ErrorProps } from "./error.d";
@@ -12,6 +13,8 @@ export default function Error({ code, reason }: ErrorProps) {
 
         setInterval(() => window.fetch2.get("/api").then(() => window.location.reload()).catch(() => null), 1000);
     }
+
+    const error: any = useRouteError();
 
     return (
         <>
@@ -34,6 +37,17 @@ export default function Error({ code, reason }: ErrorProps) {
                             It looks like you have been blacklisted for {reason}.
                         </> : code === ErrorCode.UNKNOWN ? <>
                             Sorry, an unexpected error has occurred. Please report this to the developers.
+
+                            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", marginTop: 20 }}>
+                                <Button.GenericButton onClick={() => {
+                                    navigator.clipboard.writeText(JSON.stringify({
+                                        message: error.message,
+                                        stack: error.stack
+                                    }, null, 4));
+                                }}>
+                                    Copy Callstack
+                                </Button.GenericButton>
+                            </div>
                         </> : <>
                             We tried our best looking for what you requested <br /> but we couldn't find anything!
                         </>}

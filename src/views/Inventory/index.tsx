@@ -105,8 +105,15 @@ export default function Inventory() {
                         {
                             icon: "fas fa-times", tooltip: "Reset Search", onClick: () => {
                                 localStorage.removeItem("INVENTORY_SEARCH_QUERY");
+                                localStorage.removeItem("INVENTORY_SEARCH_RARITY");
+                                localStorage.removeItem("INVENTORY_SEARCH_ONLY_DUPES");
+                                localStorage.removeItem("INVENTORY_SEARCH_ONLY_OWNED");
 
-                                setSearch({ ...search, query: "" });
+                                setSearch({
+                                    query: "",
+                                    onlyDupes: false,
+                                    onlyOwned: false
+                                });
                             }
                         }
                     ]}

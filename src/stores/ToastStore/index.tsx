@@ -52,13 +52,15 @@ export function ToastStoreProvider({ children }: { children: ReactNode }) {
 
             const toast = toastRef.current[0];
 
-            if (document.visibilityState === "hidden" && Notification.permission === "granted") {
-                const notification = new Notification(toast.header, { body: toast.body, icon: toast.icon, silent: true });
+            if (!window.constants.APPLE_DEVICE) {
+                if (document.visibilityState === "hidden" && Notification.permission === "granted") {
+                    const notification = new Notification(toast.header, { body: toast.body, icon: toast.icon, silent: true });
 
-                notification.addEventListener("click", () => {
-                    if (toast.onClick) toast.onClick();
-                    closeToast(toast.id!);
-                });
+                    notification.addEventListener("click", () => {
+                        if (toast.onClick) toast.onClick();
+                        closeToast(toast.id!);
+                    });
+                }
             }
 
             setTimeout(() => closeToast(toast.id!), toast.expires);
@@ -66,7 +68,9 @@ export function ToastStoreProvider({ children }: { children: ReactNode }) {
             toastRef.current[0].aboutToClose = true;
         }, 100);
 
-        if (Notification.permission !== "granted" && Notification.permission !== "denied") createModal(<NotificationAccessModal />);
+        if (!window.constants.APPLE_DEVICE) {
+            if (Notification.permission !== "granted" && Notification.permission !== "denied") createModal(<NotificationAccessModal />);
+        }
 
         return () => clearInterval(interval);
     }, []);

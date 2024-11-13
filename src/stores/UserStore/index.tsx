@@ -16,11 +16,10 @@ export function UserStoreProvider({ children }: { children: ReactNode }) {
     const { resourceIdToPath } = useResource();
 
     const setUser = (user: PrivateUser | null) => {
-        // if (user) user.hasPermission = (permission: PermissionType) => user.permissions.includes(permission);
-        if (user) user.hasPermission = (permission: PermissionType) => true;
-        
+        if (user) user.hasPermission = (permission: PermissionType) => user.permissions.includes(permission);
+
         setUserState(user);
-    }
+    };
 
     const getUserAvatarPath = (user: PrivateUser | null): string => {
         if (!user) return window.constructCDNUrl("/content/blooks/Error.png");

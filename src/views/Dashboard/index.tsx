@@ -110,7 +110,10 @@ export default function Dashboard() {
             <div className={`${styles.section} ${styles.userSection}`}>
                 <div className={styles.userTopProfile}>
                     <div className={styles.userBannerBlook}>
-                        <div className={styles.userAvatarContainer}>
+                        <div
+                            className={styles.userAvatarContainer}
+                            data-hoverable={viewingUser.id === user.id}
+                        >
                             <ImageOrVideo
                                 className={styles.userAvatar}
                                 src={getUserAvatarPath(viewingUser)}
@@ -122,14 +125,17 @@ export default function Dashboard() {
                             />
                         </div>
                         <div className={styles.bannerLevel}>
-                            <div className={styles.userBanner} data-hoverable={viewingUser.id === user.id}>
+                            <div
+                                className={styles.userBanner}
+                                data-hoverable={viewingUser.id === user.id}
+                                onClick={() => {
+                                    if (viewingUser.id === user.id) createModal(<CosmeticsModal category={CosmeticsModalCategory.BANNER} />);
+                                }}
+                            >
                                 <img
                                     src={resourceIdToPath(viewingUser.bannerId)}
                                     alt="User Banner"
                                     draggable={false}
-                                    onClick={() => {
-                                        if (viewingUser.id === user.id) createModal(<CosmeticsModal category={CosmeticsModalCategory.BANNER} />);
-                                    }}
                                 />
                                 <div className={styles.userInfoContainer}>
                                     <div className={styles.usernameAndTitleContainer}>
@@ -182,7 +188,7 @@ export default function Dashboard() {
                         <StatContainer title="User ID" icon={window.constructCDNUrl("/content/icons/dashboardStatsUserID.png")} value={viewingUser.id} />
                         <StatContainer title="Tokens" icon={window.constructCDNUrl("/content/token.png")} value={viewingUser.tokens.toLocaleString()} />
                         <StatContainer title="Experience" icon={window.constructCDNUrl("/content/experience.png")} value={viewingUser.experience.toLocaleString()} />
-                        <StatContainer title="Blooks Unlocked" icon={window.constructCDNUrl("/content/icons/dashboardStatsBlooksUnlocked.png")} value={`${Object.keys(viewingUser.blooks).length.toLocaleString()} / ${blooks.length.toLocaleString()}`} />
+                        <StatContainer title="Blooks Unlocked" icon={window.constructCDNUrl("/content/icons/dashboardStatsBlooksUnlocked.png")} value={`${Object.keys(viewingUser.blooks).length.toLocaleString()} / ${(blooks.length - 1).toLocaleString()}`} />
                         <StatContainer title="Packs Opened" icon={window.constructCDNUrl("/content/icons/dashboardStatsPacksOpened.png")} value={viewingUser.statistics.packsOpened.toLocaleString()} />
                         <StatContainer title="Messages Sent" icon={window.constructCDNUrl("/content/icons/dashboardStatsMessagesSent.png")} value={viewingUser.statistics.messagesSent.toLocaleString()} />
                         <StatContainer title="Guild" icon={window.constructCDNUrl("/content/icons/dashboardStatsGuild.png")} value={viewingUser.guild ? viewingUser.guild : "None"} />

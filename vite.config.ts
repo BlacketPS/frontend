@@ -68,7 +68,7 @@ export default defineConfig({
                 loops: true,
                 toplevel: true,
                 unsafe: true,
-                drop_console: true,
+                drop_console: false,
                 unsafe_comps: true,
                 passes: 2
             },

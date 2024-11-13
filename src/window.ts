@@ -4,6 +4,10 @@ const setStuff = () => {
     window.constructCDNUrl = (path) => `${import.meta.env.VITE_CDN_URL}${path}`;
     window.errorImage = window.constructCDNUrl("/content/blooks/Error.png");
 
+    window.constants = {
+        APPLE_DEVICE: /iPad|iPhone|iPod/.test(navigator.userAgent)
+    };
+
     window.lerp = (start: number, end: number, t: number) => Math.round((1 - t) * start * 100 + t * end * 100) / 100;
 };
 
