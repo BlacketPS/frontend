@@ -46,13 +46,13 @@ export default function SellBlooksModal({ blook }: SellBlooksModalProps) {
 
                         if (value.match(/[^0-9]/)) return;
                         if (parsedValue < 1 && value !== "") return;
-                        if (parsedValue > user.blooks[blook.id]) return setQuantity(user.blooks[blook.id].toString());
+                        if (parsedValue > (user.blooks[blook.id] as number)) return setQuantity(user.blooks[blook.id].toString());
 
                         setQuantity(e.target.value);
                         setError("");
                     }} autoComplete="off" />
                 </Form>
-                <Modal.ModalBody style={{ padding: "0 5px 15px", fontSize: "30px" }}>/ {user.blooks[blook.id] || 0}</Modal.ModalBody>
+                <Modal.ModalBody style={{ padding: "0 5px 15px", fontSize: "30px" }}>/ {user.blooks[blook.id] as number || 0}</Modal.ModalBody>
             </div>
 
             {error !== "" && <ErrorContainer>{error}</ErrorContainer>}

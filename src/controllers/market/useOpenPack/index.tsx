@@ -16,7 +16,7 @@ export function useOpenPack() {
             const statistics = user.statistics;
 
             if (!userBlooks[res.data.id]) userBlooks[res.data.id] = 1;
-            else userBlooks[res.data.id]++;
+            else (userBlooks[res.data.id] as number)++;
 
             statistics.packsOpened++;
 

@@ -30,7 +30,11 @@ export default function OpenPackModal({ pack, userTokens, onYesButton }: OpenPac
             <Tooltip id="tooltip" place="left">
                 {blooks
                     .filter((blook) => {
-                        return blook.onlyOnDay === null || blook.onlyOnDay === new Date().getDay() + 1;
+                        return blook.onlyOnDay === null;
+                        /*
+                            || blook.onlyOnDay === new Date().getDay() + 1;
+                            fix this later
+                        */
                     })
                     .sort((a, b) => a.priority - b.priority)
                     .map((blook) => blook.packId === pack.id && <div key={blook.id}>
