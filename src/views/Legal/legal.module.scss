@@ -1,0 +1,14 @@
+.containerContainer {
+    display: flex;
+    justify-content: center;
+
+    @media screen and (max-width: 768px) {
+        text-align: center;
+        align-items: center;
+    }
+}
+
+.container {
+    width: 95%;
+    margin-top: 20px;
+}

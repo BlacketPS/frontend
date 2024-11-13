@@ -1,6 +1,7 @@
-import { Message } from "@blacket/types";
+import { Message, PublicUser } from "@blacket/types";
 
 export interface ClientMessage extends Message {
+    author: PublicUser;
     nonce: string;
 }
 

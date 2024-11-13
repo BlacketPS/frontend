@@ -31,7 +31,7 @@ export default memo(function Chat() {
                             messages.indexOf(message) === messages.length - 1
                         }
                         mentionsMe={message.mentions.includes(user.id) || (message?.replyingTo?.authorId === user.id)}
-                        isSending={message.nonce !== null}
+                        isSending={message.nonce !== undefined}
                         messageContextMenu={() => openContextMenu([
                             // message.authorId === user.id && { label: "Edit", icon: "fas fa-edit", onClick: () => console.log("edit") },
                             { label: "Reply", icon: "fas fa-reply", onClick: () => setReplyingTo(message) },
@@ -43,7 +43,7 @@ export default memo(function Chat() {
                             { label: "Copy Message ID", icon: "fas fa-copy", onClick: () => navigator.clipboard.writeText(message.id.toString()) }
                         ])}
                         userContextMenu={() => openContextMenu([
-                            { label: "View Profile", icon: "fas fa-user", onClick: () => navigate(`/dashboard?name=${message?.author?.username}`) },
+                            { label: "View Profile", icon: "fas fa-user", onClick: () => navigate(`/dashboard?name=${message.author.username}`) },
                             // message.authorId !== user.id && { label: "Send Message", icon: "fas fa-paper-plane", onClick: () => console.log("send message") },
                             { label: "Mention", icon: "fas fa-at", onClick: () => console.log("mention") },
                             // message.authorId !== user.id && { label: "Block", icon: "fas fa-ban", color: "#F54242", onClick: () => console.log("block") },

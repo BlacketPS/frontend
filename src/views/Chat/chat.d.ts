@@ -1,29 +1,12 @@
 import { HTMLAttributes, ReactNode } from "react";
-import { UserTyping } from "@stores/ChatStore/chatStore";
-
-import { Message, User } from "@blacket/types";
-import { Editor } from "slate";
+import { ClientMessage, UserTyping } from "@stores/ChatStore/chatStore";
 
 export interface ChatMessagesContainerProps extends HTMLAttributes<HTMLUListElement> {
     aboveInput: boolean;
 }
 
-/* export interface ChatMessageProps {
-    id: number;
-    author: User | null;
-    newUser: boolean;
-    createdAt: number;
-    replyingTo: Message | null;
-    replyingToAuthor: User | null;
-    mentionsMe: boolean;
-    isSending: boolean;
-    rawMessage: Message;
-    messageContextMenu: (e) => void;
-    userContextMenu: (e) => void;
-    children: ReactNode;
-} */
 export interface ChatMessageProps {
-    message: Message;
+    message: ClientMessage;
     newUser: boolean;
     mentionsMe: boolean;
     isSending: boolean;

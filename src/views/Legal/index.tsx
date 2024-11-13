@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { Title, UpdatedAt, Section } from "./components";
+import styles from "./legal.module.scss";
 
 import { LegalObject } from "./legal.d";
 
@@ -25,8 +26,8 @@ export default function Legal() {
     }, []);
 
     return (
-        <div style={{ display: "flex", justifyContent: "center" }}>
-            <div style={{ width: "95%", marginTop: 20 }}>
+        <div className={styles.containerContainer}>
+            <div className={styles.container}>
                 {!error && terms && privacy && eula ? <>
                     <Title>TERMS OF SERVICE</Title>
                     <UpdatedAt date={terms.updatedAt} />
