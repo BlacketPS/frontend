@@ -50,3 +50,7 @@ export enum CosmeticsModalCategory {
     FONT = 4,
     COLOR = 5
 }
+
+export interface DailyRewardsModalProps {
+    amount: number;
+}

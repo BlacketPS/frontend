@@ -3,6 +3,7 @@ import { Socket } from "socket.io-client";
 
 import { HeaderProps } from "@components/Header/header.d";
 import { TopRightContent } from "@components/TopRight/topRight.d";
+import { PrivateUser } from "@blacket/types";
 
 declare global {
     interface BlacketRoute {
@@ -33,22 +34,25 @@ declare global {
             put: (url: string, body: object) => Promise<Fetch2Response>;
             delete: (url: string, body: object) => Promise<Fetch2Response>;
             patch: (url: string, body: object) => Promise<Fetch2Response>;
+
+            upload: (url: string, body: FormData) => Promise<Fetch2Response>;
         };
-
-        socket: Socket;
-
-        emojis: {
-            [key: string]: string;
-        }[];
 
         constants: {
             APPLE_DEVICE: boolean
+            emojis: {
+                [key: string]: string;
+            }[];
         }
 
         constructCDNUrl: (path: string) => string;
         errorImage: string;
 
         lerp: (start: number, end: number, t: number) => number;
+
+        // DEV ONLY VARIABLES
+        socket: Socket;
+        user?: PrivateUser;
     }
 }
 

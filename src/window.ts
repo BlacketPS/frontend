@@ -1,30 +1,15 @@
-import { HTTPMethod } from "./fetch2";
+window.constructCDNUrl = (path) => `${import.meta.env.VITE_MEDIA_PATH}${path}`;
+window.errorImage = window.constructCDNUrl("/content/blooks/Error.png");
 
-const setStuff = () => {
-    window.constructCDNUrl = (path) => `${import.meta.env.VITE_CDN_URL}${path}`;
-    window.errorImage = window.constructCDNUrl("/content/blooks/Error.png");
-
-    window.constants = {
-        APPLE_DEVICE: /iPad|iPhone|iPod/.test(navigator.userAgent)
-    };
-
-    window.lerp = (start: number, end: number, t: number) => Math.round((1 - t) * start * 100 + t * end * 100) / 100;
+window.constants = {
+    APPLE_DEVICE: /iPad|iPhone|iPod/.test(navigator.userAgent),
+    emojis: []
 };
 
-await fetch(import.meta.env.VITE_CDN_URL + "/pixel.png", { method: HTTPMethod.GET })
-    .then((response) => {
-        if (!response.ok) import.meta.env.VITE_CDN_URL = import.meta.env.VITE_CDN_BACKUP_URL;
+window.lerp = (start: number, end: number, t: number) => Math.round((1 - t) * start * 100 + t * end * 100) / 100;
 
-        setStuff();
-    })
-    .catch(() => {
-        import.meta.env.VITE_CDN_URL = import.meta.env.VITE_CDN_BACKUP_URL;
-
-        setStuff();
-    });
-
-await fetch(window.constructCDNUrl("/content/emojis.json"))
+fetch(window.constructCDNUrl("/content/emojis.json"))
     .then((res) => res.json())
     .then((emojis) => {
-        window.emojis = emojis;
+        window.constants.emojis = emojis;
     });

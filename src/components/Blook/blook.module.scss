@@ -1,0 +1,76 @@
+.blook {
+    position: relative;
+}
+
+.sparkleContainer {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
+
+.sparkle {
+    position: absolute;
+    width: 20px;
+    filter: drop-shadow(0 0 5px #000);
+    user-select: none;
+    pointer-events: none;
+    transform: scale(0);
+    animation: sparkle 4s 1 cubic-bezier(.47, 1.64, .41, .8) forwards;
+    z-index: 5;
+}
+
+@keyframes sparkle {
+    0% {
+        transform: scale(0.1) rotate(0deg);
+        opacity: 0;
+    }
+
+    50% {
+        transform: scale(1) rotate(180deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0.1) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+.overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.5), rgba(255, 255, 255, 0));
+    pointer-events: none;
+    background-size: 200% 200%;
+    background-repeat: no-repeat;
+    animation: gradient 4s infinite ease-in-out;
+    mask-size: 100% 100%;
+    z-index: 1;
+
+    @keyframes gradient {
+        0% {
+            background-position: 0% 0%;
+        }
+
+        50% {
+            background-position: 100% 100%;
+        }
+
+        100% {
+            background-position: 0% 0%;
+        }
+    }
+}
+
+.image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+
+    &[data-shiny="true"] {
+        filter: hue-rotate(125deg);
+    }
+}

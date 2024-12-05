@@ -9,8 +9,9 @@ import { useResource } from "@stores/ResourceStore/index";
 import { useAuctionHouse } from "@stores/AuctionHouseStore/index";
 import { useUsers } from "@controllers/users/useUsers/index";
 import { useSearchAuction } from "@controllers/auctions/useSearchAuction/index";
-import { Auction, ImageOrVideo, Username } from "@components/index";
-import { LevelContainer, LookupUserModal, SmallButton, SectionHeader, StatContainer, InventoryBlook, InventoryItem, CosmeticsModal } from "./components";
+import { useClaimDailyTokens } from "@controllers/quests/useClaimDailyTokens/index";
+import { Auction, Blook, ImageOrVideo, Username } from "@components/index";
+import { LevelContainer, LookupUserModal, SmallButton, SectionHeader, StatContainer, InventoryBlook, InventoryItem, CosmeticsModal, DailyRewardsModal } from "./components";
 import styles from "./dashboard.module.scss";
 
 import { AuctionsAuctionEntity, PrivateUser, PublicUser } from "@blacket/types";
@@ -29,6 +30,7 @@ export default function Dashboard() {
 
     const { getUser } = useUsers();
     const { searchAuction } = useSearchAuction();
+    const { claimDailyTokens } = useClaimDailyTokens();
 
     const [searchParams] = useSearchParams();
 
@@ -105,6 +107,9 @@ export default function Dashboard() {
         .filter((blook) => !blook.packId)
         .sort((a, b) => a.priority - b.priority);
 
+    const claimableDate = new Date();
+    claimableDate.setUTCHours(0, 0, 0, 0);
+
     return (
         <div className={styles.parentHolder}>
             <div className={`${styles.section} ${styles.userSection}`}>
@@ -114,7 +119,7 @@ export default function Dashboard() {
                             className={styles.userAvatarContainer}
                             data-hoverable={viewingUser.id === user.id}
                         >
-                            <ImageOrVideo
+                            <Blook
                                 className={styles.userAvatar}
                                 src={getUserAvatarPath(viewingUser)}
                                 alt="User Avatar"
@@ -151,7 +156,13 @@ export default function Dashboard() {
 
                     <div className={styles.smallButtonContainer}>
                         <SmallButton icon="fas fa-user-plus" onClick={() => createModal(<LookupUserModal onClick={viewUser} />)}>Lookup User</SmallButton>
-                        {viewingUser.id === user.id && <SmallButton icon="fas fa-star" onClick={() => { }}>Daily Rewards</SmallButton>}
+                        {viewingUser.id === user.id && new Date(user.lastClaimed) < claimableDate && <SmallButton icon="fas fa-star" onClick={() => {
+                            setLoading(true);
+
+                            claimDailyTokens()
+                                .then((res) => createModal(<DailyRewardsModal amount={res.data.tokens} />))
+                                .finally(() => setLoading(false));
+                        }}>Daily Rewards</SmallButton>}
                         <SmallButton icon="fas fa-cart-shopping" onClick={() => {
                             navigate("/store");
                         }}>Store</SmallButton>

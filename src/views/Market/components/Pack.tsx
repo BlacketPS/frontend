@@ -14,9 +14,9 @@ export default function Pack({ pack, onClick }: PackProps) {
                 <ImageOrVideo className={styles.packImage} src={resourceIdToPath(pack.imageId)} />
             </div>
 
-            <div className={styles.packBottom}>
+            <div className={styles.bottomLeftText}>
                 <img src={window.constructCDNUrl("/content/token.png")} alt="Token" />
-                {pack.price}
+                {pack.price.toLocaleString()}
             </div>
         </div>
     );

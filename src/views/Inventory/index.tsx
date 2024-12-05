@@ -90,7 +90,7 @@ export default function Inventory() {
             <div className={styles.leftSide}>
                 <SearchBox
                     noPadding={true}
-                    placeholder="Search for a blook or item..."
+                    placeholder="Search for an item..."
                     value={search.query}
                     onChange={(e) => {
                         localStorage.setItem("INVENTORY_SEARCH_QUERY", e.target.value);

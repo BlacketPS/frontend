@@ -613,19 +613,6 @@
             width: 20px;
         }
     }
-
-    &>video {
-        position: relative;
-        top: 0.4vh;
-        right: 0.5vh;
-        width: 2vh;
-
-        @media screen and (max-width: 475px) {
-            top: 4px;
-            right: 5px;
-            width: 20px;
-        }
-    }
 }
 
 .statDivider {

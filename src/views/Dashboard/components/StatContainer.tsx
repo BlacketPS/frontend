@@ -5,7 +5,7 @@ export default function StatContainer({ title, icon, value }: StatContainerProps
     return (
         <div className={styles.statContainer}>
             <div className={styles.statHeader}>
-                <img src={icon} />
+                <img src={icon} draggable={false} />
                 {title}
             </div>
             <div className={styles.statDivider} />

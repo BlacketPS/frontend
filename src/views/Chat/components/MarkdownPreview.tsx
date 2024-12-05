@@ -109,7 +109,7 @@ export default memo(function MarkdownPreview({ content, color, readOnly, getEdit
 
     const emojis = useMemo(() => {
         if (!emojiSearch) return [];
-        return window.emojis.filter((emoji) => emoji.key.toLowerCase().startsWith(emojiSearch.toLowerCase())).slice(0, 10);
+        return window.constants.emojis.filter((emoji) => emoji.key.toLowerCase().startsWith(emojiSearch.toLowerCase())).slice(0, 10);
     }, [emojiSearch]);
 
     const [mentionTarget, setMentionTarget] = useState<Range | null>(null);
@@ -320,12 +320,12 @@ export default memo(function MarkdownPreview({ content, color, readOnly, getEdit
                 if (beforeMatch) {
                     setEmojiTarget(beforeRange);
                     setEmojiSearch(beforeMatch[1]);
-                    setEmojiName(window.emojis.find((emoji) => emoji.key.toLowerCase().startsWith(beforeMatch[1].toLowerCase()))?.key || "");
+                    setEmojiName(window.constants.emojis.find((emoji) => emoji.key.toLowerCase().startsWith(beforeMatch[1].toLowerCase()))?.key || "");
                     return;
                 }
 
                 if (fullMatch) {
-                    const emoji = window.emojis.find((emoji) => emoji.key === fullMatch[1]);
+                    const emoji = window.constants.emojis.find((emoji) => emoji.key === fullMatch[1]);
                     if (!emoji) return;
 
                     Transforms.delete(editor, { at: beforeRange });

@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { Blook, MarketOpenPackDto, Pack } from "@blacket/types";
+import { Blook, ItemShop, MarketOpenPackDto, Pack } from "@blacket/types";
 
 export type ParticlesScene = Phaser.Scene & {
     initParticles: () => void;
@@ -45,7 +45,11 @@ export interface CategoryProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export interface PackProps extends HTMLAttributes<HTMLDivElement> {
-    pack: any;
+    pack: Pack;
+}
+
+export interface ItemProps extends HTMLAttributes<HTMLDivElement> {
+    itemShop: ItemShop;
 }
 
 export interface OpenPackModalProps {

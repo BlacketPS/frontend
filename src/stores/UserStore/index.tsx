@@ -1,4 +1,4 @@
-import { ReactNode, createContext, useContext, useState } from "react";
+import { ReactNode, createContext, useContext, useEffect, useState } from "react";
 import { useResource } from "@stores/ResourceStore/index";
 
 import { PermissionType, PrivateUser } from "@blacket/types";
@@ -27,6 +27,10 @@ export function UserStoreProvider({ children }: { children: ReactNode }) {
         else if (user.avatarId) return resourceIdToPath(user.avatarId) || window.errorImage;
         else return window.constructCDNUrl("/content/blooks/Default.png");
     };
+
+    useEffect(() => {
+        if (import.meta.env.MODE === "development") window.user = user ?? undefined;
+    }, [user]);
 
     return <UserStoreContext.Provider value={{ user, setUser, getUserAvatarPath }}>{children}</UserStoreContext.Provider>;
 }

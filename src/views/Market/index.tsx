@@ -8,7 +8,7 @@ import { useData } from "@stores/DataStore/index";
 import { useSettings } from "@controllers/settings/useSettings";
 import { useOpenPack } from "@controllers/market/useOpenPack";
 import { SidebarBody, PageHeader, Modal, Button, SearchBox } from "@components/index";
-import { OpenPackModal, Category, Pack, OpenPackContainer, OpenPackBlook } from "./components";
+import { OpenPackModal, Category, Pack, OpenPackContainer, OpenPackBlook, Item } from "./components";
 // @ts-expect-error phaser is too big for the bundle so import it externally since its only used once
 const { Game, Scale, WEBGL } = window.Phaser;
 import Particles from "./functions/PackParticles";
@@ -43,7 +43,7 @@ export default function Market() {
     const { createModal } = useModal();
     const { user } = useUser();
     const { resourceIdToPath } = useResource();
-    const { packs, rarities, blooks } = useData();
+    const { packs, rarities, blooks, itemShop } = useData();
 
     if (!user) return <Navigate to="/login" />;
 
@@ -161,7 +161,7 @@ export default function Market() {
                     </div>
 
                     <SearchBox
-                        placeholder="Search for a pack or shop item..."
+                        placeholder="Search for a pack..."
                         containerProps={{
                             style: { margin: "20px 5% 10px" }
                         }}
@@ -185,7 +185,7 @@ export default function Market() {
                         }}
                     />
 
-                    <Category header={`Packs (${packs.length})`} internalName="MARKET_PACKS">
+                    <Category header={"Packs"} internalName="MARKET_PACKS">
                         <div className={styles.packsWrapper}>
                             {packs.map((pack) =>
                                 pack.name.toLowerCase().includes(search.query.toLowerCase())
@@ -202,11 +202,15 @@ export default function Market() {
                     </Category>
 
                     <Category header="Weekly Shop" internalName="MARKET_WEEKLY_SHOP">
-                        There are no items in the weekly shop.
+                        <div className={styles.itemShopContainer}>
+                            {itemShop.length > 0 ? itemShop.map((entry) => entry.weekly && <Item itemShop={entry} key={entry.id} />) : "There are no items available in this shop."}
+                        </div>
                     </Category>
 
                     <Category header="Item Shop" internalName="MARKET_ITEM_SHOP">
-                        There are no items in the item shop.
+                        <div className={styles.itemShopContainer}>
+                            {itemShop.length > 0 ? itemShop.map((entry) => !entry.weekly && <Item itemShop={entry} key={entry.id} />) : "There are no items available in this shop."}
+                        </div>
                     </Category>
                 </div>
             </SidebarBody>

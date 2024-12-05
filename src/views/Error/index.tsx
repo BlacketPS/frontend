@@ -20,8 +20,6 @@ export default function Error({ code, reason }: ErrorProps) {
         <>
             {code !== ErrorCode.NOT_FOUND && <Background />}
 
-            {code !== ErrorCode.NOT_FOUND && <Header noLink={true} />}
-
             <div className={styles.body}>
                 <div className={styles.container}>
                     <div className={styles.top}>

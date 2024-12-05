@@ -20,6 +20,24 @@ export default function Experiments() {
         });
     }, []);
 
+    const openUploadDialog = () => {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "image/*";
+        input.onchange = () => {
+            if (!input.files || !input.files[0]) return;
+
+            const formData = new FormData();
+            formData.append("file", input.files[0]);
+
+            window.fetch2.upload("/api/users/upload", formData).then((res) => {
+                console.log(res);
+            });
+        };
+
+        input.click();
+    };
+
     return (
         <>
             <Dropdown
@@ -41,6 +59,8 @@ export default function Experiments() {
             >
                 Open Product Modal
             </Button.ClearButton>}
+
+            <Button.ClearButton onClick={openUploadDialog}>Upload Image</Button.ClearButton>
         </>
     );
 
