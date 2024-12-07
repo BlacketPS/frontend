@@ -1,5 +1,5 @@
 import { useRouteError } from "react-router-dom";
-import { Background, Button, Header } from "@components/index";
+import { Background, Button } from "@components/index";
 import styles from "./error.module.scss";
 
 import { ErrorCode, ErrorProps } from "./error.d";
@@ -15,6 +15,16 @@ export default function Error({ code, reason }: ErrorProps) {
     }
 
     const error: any = useRouteError();
+
+    let reasonText = "breaking rules";
+    let reasonEndTime = `at ${new Date()}`;
+
+    if (reason) {
+        const reasonArray = reason?.split("|");
+
+        reasonText = reasonArray?.[0] ?? "breaking rules";
+        reasonEndTime = `at ${new Date(reasonArray?.[1]).toLocaleDateString()  ?? "never"}`;
+    }
 
     return (
         <>
@@ -32,7 +42,7 @@ export default function Error({ code, reason }: ErrorProps) {
                         {code === ErrorCode.MAINTENANCE ? <>
                             It looks like our servers are having some troubles at the moment. <br /> Please come back at a later time while we fix this.
                         </> : code === ErrorCode.BLACKLISTED ? <>
-                            It looks like you have been blacklisted for {reason}.
+                            It looks like you have been blacklisted for {reasonText}. <br /> Your blacklist will expire {reasonEndTime}.
                         </> : code === ErrorCode.UNKNOWN ? <>
                             Sorry, an unexpected error has occurred. Please report this to the developers.
 

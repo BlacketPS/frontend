@@ -30,7 +30,7 @@ export default function Experiments() {
             const formData = new FormData();
             formData.append("file", input.files[0]);
 
-            window.fetch2.upload("/api/users/upload", formData).then((res) => {
+            window.fetch2.upload("/api/users/upload/small", formData).then((res) => {
                 console.log(res);
             });
         };
