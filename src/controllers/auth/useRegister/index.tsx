@@ -1,14 +1,19 @@
 import { useUser } from "@stores/UserStore";
 import { useSocket } from "@stores/SocketStore";
 
-import { RegisterResponse } from "./useRegister.d";
+import { AuthAuthEntity } from "@blacket/types";
+
+interface RegisterDto {
+    formId: string;
+    password: string;
+}
 
 export function useRegister() {
     const { setUser } = useUser();
     const { initializeSocket } = useSocket();
 
-    const register = (username: string, password: string, accessCode: string, acceptedTerms: boolean) => new Promise<RegisterResponse>((resolve, reject) => window.fetch2.post("/api/auth/register", { username, password, accessCode, acceptedTerms })
-        .then((res: RegisterResponse) => {
+    const register = (dto: RegisterDto) => new Promise((resolve, reject) => window.fetch2.post("/api/auth/register", dto)
+        .then((res: Fetch2Response & { data: AuthAuthEntity }) => {
             localStorage.setItem("token", res.data.token);
 
             window.fetch2.get("/api/users/me").then((res: Fetch2Response) => {

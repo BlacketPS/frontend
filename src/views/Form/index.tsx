@@ -3,7 +3,7 @@ import { Navigate, useNavigate } from "react-router-dom";
 import { useForms } from "@controllers/forms/useForms/index";
 import { useUpdateForm } from "@controllers/forms/useUpdateForm/index";
 import { useDeleteForm } from "@controllers/forms/useDeleteForm/index";
-import { useRegisterFromForm } from "@controllers/auth/useRegisterFromForm/index";
+import { useRegister } from "@controllers/auth/useRegister/index";
 import { useUser } from "@stores/UserStore/index";
 import { Button, ErrorContainer, Input, Loader } from "@components/index";
 import styles from "./form.module.scss";
@@ -22,7 +22,7 @@ export default function Form() {
     const { updateForm } = useUpdateForm();
     const { deleteForm } = useDeleteForm();
 
-    const { registerFormForm } = useRegisterFromForm();
+    const { register } = useRegister();
 
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
@@ -63,12 +63,12 @@ export default function Form() {
             .finally(() => setLoading(false));
     };
 
-    const register = () => {
+    const handleRegister = () => {
         if (password !== passwordConfirm) return setError("Passwords do not match.");
 
         setLoading(true);
 
-        registerFormForm({ formId, password })
+        register({ formId, password })
             .then(() => {
                 localStorage.removeItem("USER_FORM_ID");
 
@@ -164,7 +164,7 @@ export default function Form() {
                             />
 
                             <Button.ClearButton
-                                onClick={() => register()}
+                                onClick={() => handleRegister()}
                             >
                                 Create Account
                             </Button.ClearButton>

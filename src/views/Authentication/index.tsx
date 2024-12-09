@@ -4,14 +4,12 @@ import { useLoading } from "@stores/LoadingStore";
 import { useModal } from "@stores/ModalStore";
 import { useUser } from "@stores/UserStore";
 import { useLogin } from "@controllers/auth/useLogin/index";
-import { useRegister } from "@controllers/auth/useRegister/index";
 import { useCreateForm } from "@controllers/forms/useCreateForm/index";
 import { Input, ErrorContainer, Dropdown, Toggle, Button } from "@components/index";
 import { OtpModal } from "./components/index";
+import styles from "./authentication.module.scss";
 
 import { AuthenticationType, AuthenticationProps } from "./authentication.d";
-
-import styles from "./authentication.module.scss";
 
 export default function Authentication({ type }: AuthenticationProps) {
     const formId = localStorage.getItem("USER_FORM_ID");
@@ -21,7 +19,6 @@ export default function Authentication({ type }: AuthenticationProps) {
 
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const [accessCode, setAccessCode] = useState<string>("");
     const [foundBy, setFoundBy] = useState<string>("");
     const [otherFoundBy, setOtherFoundBy] = useState<string>("");
     const [whyPlay, setWhyPlay] = useState<string>("");
@@ -33,7 +30,6 @@ export default function Authentication({ type }: AuthenticationProps) {
     const { user } = useUser();
 
     const { login } = useLogin();
-    const { register } = useRegister();
     const { createForm } = useCreateForm();
 
     if (user) return <Navigate to="/dashboard" />;
@@ -43,8 +39,6 @@ export default function Authentication({ type }: AuthenticationProps) {
         if (type === AuthenticationType.LOGIN && import.meta.env.VITE_USER_FORMS_ENABLED === "true" && password === "") return setError("Where's the password?");
         if (type === AuthenticationType.REGISTER) {
             switch (true) {
-                case (import.meta.env.VITE_USER_FORMS_ENABLED === "false" && accessCode === ""):
-                    return setError("Where's the access code?");
                 case (foundBy === "Other" && otherFoundBy === ""):
                     return setError("Where did you find us?");
                 case (foundBy === ""):
@@ -67,15 +61,9 @@ export default function Authentication({ type }: AuthenticationProps) {
                     else setError("Something went wrong.");
                 })
                 .finally(() => setLoading(false));
-        } else if (type === AuthenticationType.REGISTER && import.meta.env.VITE_USER_FORMS_ENABLED === "false") {
+        } else if (type === AuthenticationType.REGISTER) {
             if (!checked) return setError("You must agree to our Privacy Policy and Terms of Service.");
-            setLoading("Registering");
-            register(username, password, accessCode, checked)
-                .then(() => navigate("/dashboard"))
-                .catch((err) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
-                .finally(() => setLoading(false));
-        } else if (type === AuthenticationType.REGISTER && import.meta.env.VITE_USER_FORMS_ENABLED === "true") {
-            if (!checked) return setError("You must agree to our Privacy Policy and Terms of Service.");
+
             setLoading("Creating form");
             createForm({
                 username, reasonToPlay: `Found by: ${foundBy === "Other" ? otherFoundBy : foundBy}\n\n${whyPlay}`, acceptedTerms: checked
@@ -116,57 +104,44 @@ export default function Authentication({ type }: AuthenticationProps) {
             />}
 
             {type === AuthenticationType.REGISTER && <>
-                {import.meta.env.VITE_USER_FORMS_ENABLED === "false" && <Input
-                    icon="fas fa-lock"
-                    placeholder="Access Code"
-                    type="password"
+                <Dropdown
+                    options={[
+                        { label: "Select where you found us...", value: "" },
+                        { label: "Google", value: "Google" },
+                        { label: "YouTube", value: "YouTube" },
+                        { label: "Discord", value: "Discord" },
+                        { label: "Friend", value: "Friend" },
+                        { label: "Other", value: "Other" }
+                    ]}
+                    onChange={(value: string) => {
+                        setFoundBy(value);
+                        setOtherFoundBy("");
+                        setError("");
+                    }}
+                >
+                    Select where you found us...
+                </Dropdown>
+
+                {foundBy === "Other" && <Input
+                    icon="fas fa-location-arrow"
+                    placeholder="Where did you find us?"
+                    type="text"
                     onChange={(e) => {
-                        setAccessCode(e.target.value);
+                        setOtherFoundBy(e.target.value);
+                        setError("");
+                    }}
+                    value={otherFoundBy}
+                />}
+
+                {(foundBy && (foundBy !== "Other" || (foundBy === "Other" && otherFoundBy !== ""))) && <Input
+                    icon="fas fa-question"
+                    placeholder="Why do you want to play?"
+                    type="text"
+                    onChange={(e) => {
+                        setWhyPlay(e.target.value);
                         setError("");
                     }}
                 />}
-
-                {import.meta.env.VITE_USER_FORMS_ENABLED === "true" && <>
-                    <Dropdown
-                        options={[
-                            { label: "Select where you found us...", value: "" },
-                            { label: "Google", value: "Google" },
-                            { label: "YouTube", value: "YouTube" },
-                            { label: "Discord", value: "Discord" },
-                            { label: "Friend", value: "Friend" },
-                            { label: "Other", value: "Other" }
-                        ]}
-                        onChange={(value: string) => {
-                            setFoundBy(value);
-                            setOtherFoundBy("");
-                            setError("");
-                        }}
-                    >
-                        Select where you found us...
-                    </Dropdown>
-
-                    {foundBy === "Other" && <Input
-                        icon="fas fa-location-arrow"
-                        placeholder="Where did you find us?"
-                        type="text"
-                        onChange={(e) => {
-                            setOtherFoundBy(e.target.value);
-                            setError("");
-                        }}
-                        value={otherFoundBy}
-                    />}
-
-                    {(foundBy && (foundBy !== "Other" || (foundBy === "Other" && otherFoundBy !== ""))) && <Input
-                        icon="fas fa-question"
-                        placeholder="Why do you want to play?"
-                        type="text"
-                        onChange={(e) => {
-                            setWhyPlay(e.target.value);
-                            setError("");
-                        }}
-                    />}
-                </>
-                }
 
                 <div className={styles.agreeHolder}>
                     <Toggle

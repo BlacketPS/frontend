@@ -194,7 +194,15 @@ export default function Sidebar() {
                         ))}
                     </div>
 
-                    <Button.GenericButton to="/store" icon="fas fa-cart-shopping" className={styles.visitStoreButton} backgroundColor="#2b22c2">Visit Store</Button.GenericButton>
+                    <Button.GenericButton
+                        to="/store"
+                        icon="fas fa-cart-shopping"
+                        className={styles.visitStoreButton}
+                        backgroundColor="#2b22c2"
+                        onClick={() => setMobileSidebarOpen(false)}
+                    >
+                        Visit Store
+                    </Button.GenericButton>
                 </div>
             </div>
         </>

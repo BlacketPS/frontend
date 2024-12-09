@@ -4,7 +4,7 @@
         "baseUrl": ".",
         "paths": {
             "react-textfit": [
-                "node_modules/@namhong2001/react-textfit"
+                "src/components/Textfit"
             ],
             "@brender/*": [
                 "src/brender/*"

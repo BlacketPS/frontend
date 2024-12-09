@@ -17,6 +17,7 @@ import SearchBox from "./SearchBox";
 import Sidebar from "./Sidebar";
 import SidebarBody from "./SidebarBody";
 import StripeElementsWrapper from "./StripeElementsWrapper";
+import Textfit from "./Textfit";
 import Toggle from "./Toggle";
 import TopRight from "./TopRight";
 import Username from "./Username";
@@ -42,6 +43,7 @@ export {
     Sidebar,
     SidebarBody,
     StripeElementsWrapper,
+    Textfit,
     Toggle,
     TopRight,
     Username,

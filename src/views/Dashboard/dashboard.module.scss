@@ -534,6 +534,7 @@
     justify-content: center;
 
     @media screen and (max-width: 475px) {
+        max-height: unset;
         gap: 10px;
     }
 }

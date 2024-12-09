@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { ImageOrVideo } from "@components/index";
 import { useResource } from "@stores/ResourceStore/index";
 import { useData } from "@stores/DataStore/index";
-import Textfit from "@namhong2001/react-textfit";
+import Textfit from "react-textfit";
 import styles from "../market.module.scss";
 
 import { OpenPackBlookProps } from "../market.d";

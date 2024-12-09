@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
-import Textfit from "@namhong2001/react-textfit";
+import Textfit from "react-textfit";
 import { ImageOrVideo, Input, SidebarBody } from "@components/index";
 import { Category } from "./components/index";
 import { useUser } from "@stores/UserStore/index";

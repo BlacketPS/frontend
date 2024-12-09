@@ -11,7 +11,7 @@ export default defineConfig({
     },
     resolve: {
         alias: {
-            "react-textfit": "@namhong2001/react-textfit",
+            "react-textfit": "/src/components/Textfit",
             "@brender": "/src/brender",
             "@components": "/src/components",
             "@controllers": "/src/controllers",
