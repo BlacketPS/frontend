@@ -51,6 +51,7 @@ export default memo(function Chat() {
                                 || user.hasPermission(PermissionTypeEnum.MANAGE_MESSAGES)
                             ) && {
                                 label: "Delete", icon: "fas fa-trash", color: "#F54242", onClick: () => {
+                                    console.log(message);
                                     deleteMessage(message.roomId, message.id)
                                         .catch((err: Fetch2Response) => createToast({
                                             header: "Error",

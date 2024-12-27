@@ -2,7 +2,8 @@ import { Message, PublicUser } from "@blacket/types";
 
 export interface ClientMessage extends Message {
     author: PublicUser;
-    nonce: string;
+    replyingTo?: ClientMessage | null;
+    nonce?: string;
 }
 
 export interface TypingUser {

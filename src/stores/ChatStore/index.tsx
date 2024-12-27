@@ -4,10 +4,11 @@ import { useUser } from "@stores/UserStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
 import { useMessages } from "@controllers/chat/messages/useMessages/index";
 import { useStartTyping } from "@controllers/chat/messages/:roomId/useStartTyping/index";
+import { useSendMessage } from "@controllers/chat/messages/useSendMessage/index";
 import { useToast } from "@stores/ToastStore/index";
 
 import { ClientMessage, TypingUser, type ChatStoreContext } from "./chatStore.d";
-import { Message, PermissionTypeEnum, SocketMessageType } from "@blacket/types";
+import { Message, NotFound, PermissionTypeEnum, SocketMessageType } from "@blacket/types";
 
 const ChatStoreContext = createContext<ChatStoreContext>({
     messages: [],
@@ -61,25 +62,39 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
     }, [user]);
 
     const sendMessage = useCallback(async (content: string) => {
-        if (!user) return console.error("no user is defined while attempting to send a message");
+        if (!user) throw new Error(NotFound.UNKNOWN_USER);
 
         const nonce = ((Math.floor(Date.now() / 1000).toString()) + Math.floor(1000000 + Math.random() * 9000000)).toString();
-        const message: ClientMessage = { id: nonce, authorId: user.id, content, mentions: [], replyingTo, createdAt: new Date(Date.now()), nonce } as any;
+        const message: ClientMessage = {
+            id: nonce,
+            roomId: 0,
+            authorId: user.id,
+            author: user,
+            content,
+            mentions: [],
+            replyingToId: replyingTo ? replyingTo.id : null,
+            replyingTo: replyingTo || undefined,
+            createdAt: new Date(Date.now()),
+            updatedAt: new Date(Date.now()),
+            discordMessageId: null,
+            deleted: false,
+            edited: false,
+            nonce
+        };
 
         setMessages((previousMessages) => [message, ...previousMessages]);
 
         setTypingTimeout(null);
         setReplyingTo(null);
 
-        await window.fetch2.post("/api/chat/messages/0", { content, replyingTo: replyingTo ? replyingTo.id : null })
-            .then((res) => setMessages((previousMessages: any) => previousMessages.map((message: any) => message.nonce === nonce ? { ...message, id: res.data.id, mentions: res.data.mentions, nonce: undefined } : message)))
+        useSendMessage().sendMessage(0, { content, replyingTo: replyingTo ? replyingTo.id : undefined })
+            .then((res) => setMessages((previousMessages) => previousMessages.map((message) => message.nonce === nonce ? res.data : message)))
             .catch(() => { });
     }, [user, replyingTo]);
 
     const startTyping = () => {
         if (typingTimeout && Date.now() - typingTimeout < 2000) return;
 
-        // silly way to call because this scopes called startTyping too
         useStartTyping().startTyping(0);
 
         setTypingTimeout(Date.now());
