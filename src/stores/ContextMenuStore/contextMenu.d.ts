@@ -1,14 +1,16 @@
 import { CSSProperties, ReactNode } from "react";
 
+export interface ContextMenuItem {
+    divider?: boolean;
+    icon?: string;
+    image?: string;
+    color?: string;
+    onClick?: () => void;
+    label?: string;
+}
+
 export interface ContextMenu {
-    items: Array<{
-        divider?: boolean;
-        icon?: string;
-        image?: string;
-        color?: string;
-        onClick?: () => void;
-        label?: string;
-    }>;
+    items: Array<ContextMenuItem | false | null | undefined>;
     x?: number;
     y?: number;
 }
