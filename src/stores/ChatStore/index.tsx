@@ -110,6 +110,12 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
         setUsersTyping((previousUsersTyping) => previousUsersTyping.filter((user) => user.userId !== data.authorId));
     }, [user]);
 
+    const onChatMessagesDelete = useCallback((data: { messageId: string }) => {
+        if (!user) return;
+
+        setMessages((previousMessages) => previousMessages.filter((message) => message.id !== data.messageId));
+    }, []);
+
     const onChatStartTyping = useCallback((data: TypingUser) => {
         if (!user) return;
 
@@ -134,12 +140,14 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
 
         socket.on(SocketMessageType.CHAT_MESSAGES_CREATE, onChatMessageCreate);
         socket.on(SocketMessageType.CHAT_TYPING_STARTED, onChatStartTyping);
+        socket.on(SocketMessageType.CHAT_MESSAGES_DELETE, onChatMessagesDelete);
 
         const typingInterval = setInterval(() => setUsersTyping((previousUsersTyping) => previousUsersTyping.filter((user) => Date.now() - user.startedTypingAt < 2500)), 1000);
 
         return () => {
             socket.off(SocketMessageType.CHAT_MESSAGES_CREATE, onChatMessageCreate);
             socket.off(SocketMessageType.CHAT_TYPING_STARTED, onChatStartTyping);
+            socket.off(SocketMessageType.CHAT_MESSAGES_DELETE, onChatMessagesDelete);
 
             clearInterval(typingInterval);
         };
