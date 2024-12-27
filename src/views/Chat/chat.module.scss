@@ -15,7 +15,8 @@
     overflow-x: hidden;
     display: flex;
     flex-direction: column-reverse;
-    width: calc(100% - 200px);
+    // width: calc(100% - 200px);
+    width: 100%;
     height: calc(100% - 60px);
     font-size: 20px;
     scroll-behavior: smooth;
@@ -25,7 +26,7 @@
     }
 
     &[data-above-input="true"] {
-        height: calc(100% - 95px);
+        height: calc(100% - 100px);
     }
 }
 
@@ -221,7 +222,8 @@
 .messageForm {
     position: fixed;
     z-index: 5;
-    width: calc(100% - 200px);
+    // width: calc(100% - 200px);
+    width: 100%;
     display: flex;
     gap: 1rem;
     flex-direction: column;
@@ -300,10 +302,10 @@
     position: absolute;
     z-index: -1;
     left: 0;
-    top: -35px;
+    top: -40px;
     gap: 5px;
     padding: 7px 14px;
-    width: calc(100% - 28px);
+    width: calc(100% - 48px);
     background: var(--primary-color);
 
     &>i {
@@ -312,6 +314,10 @@
         cursor: pointer;
         padding: 5px;
         border-radius: 5px;
+    }
+
+    @media (max-width: 768px) {
+        width: calc(100% - 28px);
     }
 }
 

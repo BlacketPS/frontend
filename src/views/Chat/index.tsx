@@ -56,7 +56,10 @@ export default memo(function Chat() {
                 <InputContainer placeholder="Message #global" maxLength={2048} />
             </ChatContainer>
 
-            <div className={styles.roomSidebar} />
+            {
+                // TODO: finish this after the rewrite
+                /* <div className={styles.roomSidebar} /> */
+            }
         </>
     );
 });

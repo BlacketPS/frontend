@@ -297,7 +297,8 @@ export default memo(function MarkdownPreview({ content, color, readOnly, getEdit
                 const before = wordBefore && Editor.before(editor, wordBefore);
                 const beforeRange = before && Editor.range(editor, before, start);
                 const beforeText = beforeRange && Editor.string(editor, beforeRange);
-                const beforeMatch = beforeText && beforeText.match(/^@(\w*)$/);
+
+                const beforeMatch = beforeText && beforeText.match(/^@([\w_]*)$/);
 
                 if (beforeMatch) {
                     setMentionTarget(beforeRange);
@@ -314,13 +315,16 @@ export default memo(function MarkdownPreview({ content, color, readOnly, getEdit
                 const before = wordBefore && Editor.before(editor, wordBefore);
                 const beforeRange = before && Editor.range(editor, before, start);
                 const beforeText = beforeRange && Editor.string(editor, beforeRange);
-                const beforeMatch = beforeText && beforeText.match(/^:([a-zA-Z0-9_-]*)$/);
-                const fullMatch = beforeText && beforeText.match(/^:([a-zA-Z0-9_-]*):$/);
+
+                const beforeMatch = beforeText && beforeText.match(/^:([\w-_]*)$/);
+                const fullMatch = beforeText && beforeText.match(/^:([\w-]+):$/);
 
                 if (beforeMatch) {
                     setEmojiTarget(beforeRange);
                     setEmojiSearch(beforeMatch[1]);
-                    setEmojiName(window.constants.emojis.find((emoji) => emoji.key.toLowerCase().startsWith(beforeMatch[1].toLowerCase()))?.key || "");
+                    const emoji = window.constants.emojis.find((emoji) => emoji.key.toLowerCase().startsWith(beforeMatch[1].toLowerCase()))?.key || "";
+                    console.log(emoji);
+                    setEmojiName(emoji);
                     return;
                 }
 
