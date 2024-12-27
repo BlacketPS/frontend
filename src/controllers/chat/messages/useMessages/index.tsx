@@ -1,8 +1,10 @@
 import { Message } from "@blacket/types";
 
+type Response = Fetch2Response & { data: Message[] };
+
 export function useMessages() {
-    const getMessages = (room: number, limit: number) => new Promise<Fetch2Response>((resolve, reject) => window.fetch2.get(`/api/chat/messages/${room}?limit=${limit}`)
-        .then((res: Fetch2Response & { data: Message[] }) => {
+    const getMessages = (roomId: number, limit: number) => new Promise<Response>((resolve, reject) => window.fetch2.get(`/api/chat/messages/${roomId}?limit=${limit}`)
+        .then((res: Response) => {
             resolve(res);
         })
         .catch(reject));

@@ -3,10 +3,11 @@ import { useSocket } from "@stores/SocketStore/index";
 import { useUser } from "@stores/UserStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
 import { useMessages } from "@controllers/chat/messages/useMessages/index";
+import { useStartTyping } from "@controllers/chat/messages/:roomId/useStartTyping/index";
 import { useToast } from "@stores/ToastStore/index";
 
 import { ClientMessage, TypingUser, type ChatStoreContext } from "./chatStore.d";
-import { SocketMessageType } from "@blacket/types";
+import { Message, PermissionTypeEnum, SocketMessageType } from "@blacket/types";
 
 const ChatStoreContext = createContext<ChatStoreContext>({
     messages: [],
@@ -46,7 +47,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
             .catch(() => []);
 
         const userMap = new Map<string, boolean>();
-        messages.forEach((message) => {
+        messages.forEach((message: Message) => {
             userMap.set(message.authorId, true);
             if (message.mentions.includes(user.id)
                 || (message.replyingTo && message.replyingTo.authorId === user.id)) setMentions((previousMentions) => previousMentions + 1);
@@ -65,8 +66,6 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
         const nonce = ((Math.floor(Date.now() / 1000).toString()) + Math.floor(1000000 + Math.random() * 9000000)).toString();
         const message: ClientMessage = { id: nonce, authorId: user.id, content, mentions: [], replyingTo, createdAt: new Date(Date.now()), nonce } as any;
 
-        console.log("user", user, "\nmessage", message);
-
         setMessages((previousMessages) => [message, ...previousMessages]);
 
         setTypingTimeout(null);
@@ -80,7 +79,8 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
     const startTyping = () => {
         if (typingTimeout && Date.now() - typingTimeout < 2000) return;
 
-        window.fetch2.post("/api/chat/messages/0/start-typing", {});
+        // silly way to call because this scopes called startTyping too
+        useStartTyping().startTyping(0);
 
         setTypingTimeout(Date.now());
     };
@@ -113,7 +113,8 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
     const onChatMessagesDelete = useCallback((data: { messageId: string }) => {
         if (!user) return;
 
-        setMessages((previousMessages) => previousMessages.filter((message) => message.id !== data.messageId));
+        if (user.hasPermission(PermissionTypeEnum.MANAGE_MESSAGES)) return setMessages((previousMessages) => previousMessages.map((message) => message.id === data.messageId ? { ...message, deleted: true } : message));
+        else setMessages((previousMessages) => previousMessages.filter((message) => message.id !== data.messageId));
     }, []);
 
     const onChatStartTyping = useCallback((data: TypingUser) => {

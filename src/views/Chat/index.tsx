@@ -4,6 +4,7 @@ import { useUser } from "@stores/UserStore/index";
 import { useChat } from "@stores/ChatStore/index";
 import { useContextMenu } from "@stores/ContextMenuStore/index";
 import { useToast } from "@stores/ToastStore/index";
+import { useCachedUser } from "@stores/CachedUserStore/index";
 import { useDeleteMessage } from "@controllers/chat/messages/:roomId/useDeleteMessage/index";
 import { ChatContainer, ChatMessagesContainer, ChatMessage, InputContainer } from "./components";
 
@@ -14,6 +15,7 @@ export default memo(function Chat() {
     const { messages, replyingTo, setReplyingTo, resetMentions } = useChat();
     const { openContextMenu } = useContextMenu();
     const { createToast } = useToast();
+    const { addCachedUser } = useCachedUser();
 
     const { deleteMessage } = useDeleteMessage();
 
@@ -64,7 +66,7 @@ export default memo(function Chat() {
                             { label: "Copy Message ID", icon: "fas fa-copy", onClick: () => navigator.clipboard.writeText(message.id.toString()) }
                         ])}
                         userContextMenu={() => openContextMenu([
-                            { label: "View Profile", icon: "fas fa-user", onClick: () => navigate(`/dashboard?name=${message.author.username}`) },
+                            { label: "View Profile", icon: "fas fa-user", onClick: async () => navigate(`/dashboard?name=${(await addCachedUser(message.authorId)).username}`) },
                             // TODO: finish this after the rewrite
                             // message.authorId !== user.id && { label: "Send Message", icon: "fas fa-paper-plane", onClick: () => console.log("send message") },
                             { label: "Mention", icon: "fas fa-at", onClick: () => console.log("mention") },
