@@ -311,19 +311,23 @@ export default memo(function MarkdownPreview({ content, color, readOnly, getEdit
             // this is for emojis below
             if (selection && Range.isCollapsed(selection)) {
                 const [start] = Range.edges(selection);
+
                 const wordBefore = Editor.before(editor, start, { unit: "word" });
                 const before = wordBefore && Editor.before(editor, wordBefore);
                 const beforeRange = before && Editor.range(editor, before, start);
                 const beforeText = beforeRange && Editor.string(editor, beforeRange);
 
-                const beforeMatch = beforeText && beforeText.match(/^:([\w-_]*)$/);
-                const fullMatch = beforeText && beforeText.match(/^:([\w-]+):$/);
+                console.log(beforeText);
+
+                const beforeMatch = beforeText && beforeText.match(/:([\w_]*)$/);
+                const fullMatch = beforeText && beforeText.match(/:([\w_]*)$/);
+
+                console.log(beforeMatch, fullMatch);
 
                 if (beforeMatch) {
                     setEmojiTarget(beforeRange);
                     setEmojiSearch(beforeMatch[1]);
                     const emoji = window.constants.emojis.find((emoji) => emoji.key.toLowerCase().startsWith(beforeMatch[1].toLowerCase()))?.key || "";
-                    console.log(emoji);
                     setEmojiName(emoji);
                     return;
                 }

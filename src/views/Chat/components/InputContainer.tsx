@@ -22,6 +22,19 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
         Transforms.select(editor, { offset: 0, path: [0, 0] });
     };
 
+    const getEditorContent = (editor: Editor) => {
+        let content = "";
+        editor.children.map((object: any) => {
+            object.children.map((child: any) => {
+                if (child.text) content += child.text;
+                else if (child.text === "") content += "\n";
+                else if (child.type === "mention") content += `<@${child.user.id}>`;
+            });
+        });
+
+        return content.trim();
+    };
+
     return (
         <div className={styles.messageForm}>
             <UsersTypingContainer usersTyping={usersTyping} />
@@ -44,20 +57,11 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
 
                             if (!editor) return;
 
-                            let content = "";
-                            editor.children.map((object: any) => {
-                                object.children.map((child: any) => {
-                                    console.log(child);
-                                    if (child.text) {
-                                        if (JSON.stringify(child) === JSON.stringify({ text: "" })) content += "\n";
-                                        else content += child.text;
-                                    } else if (child.type === "mention") content += `<@${child.user.id}>`;
-                                });
-                            });
+                            const content = getEditorContent(editor);
 
                             if (content.replace(/\s/g, "").length === 0) return;
 
-                            sendMessage(content.trim());
+                            sendMessage(content);
 
                             clearEditor(editor);
                         }

@@ -1,3 +1,7 @@
+// TODO: editing messages doesn't update immediately
+// TODO: mobile support is completely broken
+// TODO: fix the emojis and menmtion breaking when an _ is inserted
+
 import { memo, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
 import { useUser } from "@stores/UserStore/index";
@@ -6,18 +10,20 @@ import { useContextMenu } from "@stores/ContextMenuStore/index";
 import { useToast } from "@stores/ToastStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
 import { useDeleteMessage } from "@controllers/chat/messages/:roomId/useDeleteMessage/index";
+import { useEditMessage } from "@controllers/chat/messages/:roomId/useEditMessage/index";
 import { ChatContainer, ChatMessagesContainer, ChatMessage, InputContainer } from "./components";
 
 import { PermissionTypeEnum } from "@blacket/types";
 
 export default memo(function Chat() {
     const { user } = useUser();
-    const { messages, replyingTo, setReplyingTo, resetMentions } = useChat();
+    const { messages, replyingTo, setReplyingTo, editing, setEditing, resetMentions } = useChat();
     const { openContextMenu } = useContextMenu();
     const { createToast } = useToast();
     const { addCachedUser } = useCachedUser();
 
     const { deleteMessage } = useDeleteMessage();
+    const { editMessage } = useEditMessage();
 
     const navigate = useNavigate();
 
@@ -25,6 +31,7 @@ export default memo(function Chat() {
 
     useEffect(() => {
         resetMentions();
+        setEditing(null);
     }, []);
 
     return (
@@ -40,8 +47,9 @@ export default memo(function Chat() {
                         }
                         mentionsMe={message.mentions.includes(user.id) || (message?.replyingTo?.authorId === user.id)}
                         isSending={message.nonce !== undefined}
+                        isEditing={editing?.id === message.id}
                         messageContextMenu={() => openContextMenu([
-                            message.authorId === user.id && { label: "Edit", icon: "fas fa-edit", onClick: () => console.log("edit") },
+                            message.authorId === user.id && { label: "Edit", icon: "fas fa-edit", onClick: () => setEditing(message) },
                             { label: "Reply", icon: "fas fa-reply", onClick: () => setReplyingTo(message) },
                             { label: "Copy Text", icon: "fas fa-copy", onClick: () => navigator.clipboard.writeText(message.content) },
                             message.authorId !== user.id && { label: "Report", icon: "fas fa-flag", color: "#F54242", onClick: () => console.log("report") },
@@ -77,6 +85,17 @@ export default memo(function Chat() {
 
                             { label: "Copy User ID", icon: "fas fa-copy", onClick: () => navigator.clipboard.writeText(message.authorId) }
                         ])}
+                        onEditSave={(newMessage) => {
+                            setEditing(null);
+
+                            editMessage(message.roomId, message.id, { content: newMessage })
+                                .catch((err: Fetch2Response) => createToast({
+                                    header: "Error",
+                                    body: err.data.message,
+                                    icon: window.constructCDNUrl("/content/blooks/Error.png")
+                                }));
+                        }}
+                        onEditCancel={() => setEditing(null)}
                     />)}
                 </ChatMessagesContainer>
 

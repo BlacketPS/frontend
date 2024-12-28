@@ -111,8 +111,17 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
         return mouseX >= objX && mouseX <= objX + objWidth && mouseY >= objY && mouseY <= objY + objHeight;
     };
 
-    const drawImage = (image: HTMLImageElement, x: number, y: number, w: number, h: number) => {
+    const drawImage = (
+        image: HTMLImageElement,
+        x: number, y: number, w: number, h: number,
+        blendMode?: GlobalCompositeOperation,
+        opacity?: number
+    ) => {
         if (!offscreenImageCtx) return;
+        offscreenImageCtx.save();
+
+        if (blendMode) offscreenImageCtx.globalCompositeOperation = blendMode;
+        if (opacity) offscreenImageCtx.globalAlpha = opacity;
 
         offscreenImageCtx.drawImage(
             image,
@@ -121,6 +130,8 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
             w * camera.scale,
             h * camera.scale
         );
+
+        offscreenImageCtx.restore();
     };
 
     const renderText = (text: string, x: number, y: number, style?: TextStyle, useCamera: boolean = true) => {
@@ -172,7 +183,15 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
         offscreenTextCtx.clearRect(0, 0, offscreenTextCanvas.width, offscreenTextCanvas.height);
 
         for (const object of objects) {
-            if (object.image && isOnScreen(object.x, object.y, object.width ?? object?.image?.width ?? 0, object.height ?? object?.image?.height ?? 0)) drawImage(object.image, object.x, object.y, object.width ?? object.image.width, object.height ?? object.image.height);
+            if (
+                object.image
+                && isOnScreen(object.x, object.y, object.width ?? object?.image?.width ?? 0, object.height ?? object?.image?.height ?? 0)
+            ) drawImage(
+                object.image,
+                object.x, object.y, object.width ?? object.image.width, object.height ?? object.image.height,
+                object.imageBlendMode,
+                object.imageOpacity
+            );
 
             if (object.onClick && isMouseOver(object)) object.onClick(object);
             if (object.onFrame) object.onFrame(object, deltaTime);
@@ -206,43 +225,14 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
     const urlToImage = (url: string) => new Promise<HTMLImageElement>((resolve) => {
         if (cachedImages.has(url)) return resolve(cachedImages.get(url)!);
 
-        if (url.endsWith(".mp4") || url.endsWith(".webm")) {
-            const video = document.createElement("video");
-            video.setAttribute("crossorigin", "anonymous");
-            video.src = url;
+        const image = new Image();
+        image.src = url;
 
-            video.onloadeddata = () => video.currentTime = 0;
+        image.onload = () => {
+            cachedImages.set(url, image);
 
-            video.onseeked = () => {
-                const canvas = document.createElement("canvas");
-
-                canvas.width = video.videoWidth;
-                canvas.height = video.videoHeight;
-
-                const context = canvas.getContext("2d");
-                if (!context) return;
-
-                context.drawImage(video, 0, 0, canvas.width, canvas.height);
-
-                const image = new Image();
-
-                image.src = canvas.toDataURL();
-                image.onload = () => {
-                    cachedImages.set(url, image);
-
-                    resolve(image);
-                };
-            };
-        } else {
-            const image = new Image();
-            image.src = url;
-
-            image.onload = () => {
-                cachedImages.set(url, image);
-
-                resolve(image);
-            };
-        }
+            resolve(image);
+        };
     });
 
     const createObject = (object: CanvasObject): CanvasObject => {

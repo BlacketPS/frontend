@@ -54,6 +54,8 @@ export interface CanvasObject {
     width?: number;
     height?: number;
     image?: HTMLImageElement;
+    imageBlendMode?: GlobalCompositeOperation;
+    imageOpacity?: number;
     destroy?: () => void;
     onClick?: (object: CanvasObject) => void;
     onFrame?: (object: CanvasObject, deltaTime: number) => void;

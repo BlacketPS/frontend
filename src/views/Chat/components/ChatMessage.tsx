@@ -1,5 +1,6 @@
-import { memo } from "react";
+import { memo, useState } from "react";
 import { Link } from "react-router-dom";
+import { Editor } from "slate";
 import { useUser } from "@stores/UserStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
 import MarkdownPreview from "./MarkdownPreview.tsx";
@@ -9,15 +10,32 @@ import styles from "../chat.module.scss";
 
 import { ChatMessageProps } from "../chat.d";
 
-export default memo(function ChatMessage({ message, newUser, mentionsMe, isSending, messageContextMenu, userContextMenu }: ChatMessageProps) {
+export default memo(function ChatMessage({ message, newUser, mentionsMe, isSending, isEditing, messageContextMenu, userContextMenu, onEditSave, onEditCancel }: ChatMessageProps) {
     if (!messageContextMenu || isSending) messageContextMenu = () => { };
     if (!userContextMenu || isSending) userContextMenu = () => { };
+    if (!onEditSave || isSending) onEditSave = () => { };
+    if (!onEditCancel || isSending) onEditCancel = () => { };
 
     const { getUserAvatarPath } = useUser();
     const { cachedUsers } = useCachedUser();
 
+    const [editor, setEditor] = useState<Editor | null>(null);
+
     const author = cachedUsers.find((user) => user.id === message.authorId) || null;
     const replyingToAuthor = cachedUsers.find((user) => user.id === message?.replyingTo?.authorId) || null;
+
+    const getEditorContent = (editor: Editor) => {
+        let content = "";
+        editor.children.map((object: any) => {
+            object.children.map((child: any) => {
+                if (child.text) content += child.text;
+                else if (child.text === "") content += "\n";
+                else if (child.type === "mention") content += `<@${child.user.id}>`;
+            });
+        });
+
+        return content.trim();
+    };
 
     if (author) return (
         <span className={styles.messageHolder} style={{
@@ -78,6 +96,8 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
                             </div>
 
                             {
+                                // TODO: badges on messages
+
                                 /* author.badges.length > 0 && <div className={styles.messageBadgeContainer}>
                                     {
                                         // badges.map((badge, index) => <img key={index} src={badge} className={styles.messageBadge} />)
@@ -91,9 +111,65 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
                                 {new Date(message.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                             </div>}
 
-                            <MarkdownPreview content={message.content} readOnly={true} />
+                            {!isEditing
+                                ? <MarkdownPreview content={message.content} readOnly={true} />
+                                : <>
+                                    <MarkdownPreview
+                                        content={message.content}
+                                        className={styles.editingMessageInput}
+                                        autoFocus={true}
+                                        readOnly={false}
+                                        getEditor={(editor) => setEditor(editor)}
+                                        onKeyDown={(e: KeyboardEvent) => {
+                                            if (!e.repeat) {
+                                                if (e.key === "Enter" && !e.shiftKey) {
+                                                    e.preventDefault();
+
+                                                    if (!editor) return;
+
+                                                    const content = getEditorContent(editor);
+
+                                                    if (content.replace(/\s/g, "").length === 0) return;
+
+                                                    onEditSave(content);
+                                                } else if (e.key === "Escape") {
+                                                    onEditCancel();
+                                                }
+                                            }
+                                        }}
+                                    />
+
+                                    <div className={styles.editingMessageText}>
+                                        escape to <span
+                                            className={styles.editingMessageCancelText}
+                                            onClick={onEditCancel}
+                                        >
+                                            cancel
+                                        </span> | enter to <span
+                                            className={styles.editingMessageSaveText}
+                                            onClick={() => {
+                                                if (!editor) return;
+
+                                                const content = getEditorContent(editor);
+
+                                                if (content.replace(/\s/g, "").length === 0) return;
+
+                                                onEditSave(content);
+                                            }}
+                                        >
+                                            save
+                                        </span>
+                                    </div>
+                                </>
+                            }
+
                         </div>
                     </div>
+                    {
+                        // TODO: make this next to the content of the message instead
+
+                        message.edited && <span className={styles.edited}>(edited)</span>
+                    }
                 </div>
             </li>
         </span>

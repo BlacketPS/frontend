@@ -10,8 +10,11 @@ export interface ChatMessageProps {
     newUser: boolean;
     mentionsMe: boolean;
     isSending: boolean;
-    messageContextMenu: (e) => void;
-    userContextMenu: (e) => void;
+    isEditing: boolean;
+    messageContextMenu?: (e) => void;
+    userContextMenu?: (e) => void;
+    onEditSave?: (content: string) => void;
+    onEditCancel?: () => void;
 }
 
 export interface AreYouSureLinkModalProps {

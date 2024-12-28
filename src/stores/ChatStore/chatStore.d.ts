@@ -16,6 +16,8 @@ export interface ChatStoreContext {
     usersTyping: TypingUser[];
     replyingTo: ClientMessage | null;
     setReplyingTo: (message: ClientMessage | null) => void;
+    editing: ClientMessage | null;
+    setEditing: (message: ClientMessage | null) => void;
     fetchMessages: (room: number) => void;
     sendMessage: (content: string) => void;
     startTyping: () => void;

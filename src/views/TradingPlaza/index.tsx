@@ -188,6 +188,22 @@ export default function TradingPlaza() {
         socket.on(SocketMessageType.TRADING_PLAZA_LEAVE, handleLeave);
         socket.on(SocketMessageType.LAGBACK, handleLagback);
 
+        const overlay = brender.createObject({
+            id: "overlay",
+            x: 0,
+            y: 0,
+            z: 10,
+            imageBlendMode: "overlay",
+            imageOpacity: 0.2,
+            width: brender.getWidth(),
+            height: brender.getHeight()
+        });
+
+        brender.urlToImage(window.constructCDNUrl("/content/trading-plaza/overlay.png"))
+            .then((image) => {
+                overlay.image = image;
+            });
+
         const player = brender.createPlayerEntity({
             id: user.id,
             x: 0,
@@ -225,6 +241,9 @@ export default function TradingPlaza() {
                 entity.y += Math.floor(moveY);
 
                 brender.camera.focusOn(entity);
+
+                overlay.x = brender.camera.x;
+                overlay.y = brender.camera.y;
             }
         });
 
