@@ -64,7 +64,7 @@ export default memo(function Chat() {
                                         .catch((err: Fetch2Response) => createToast({
                                             header: "Error",
                                             body: err.data.message,
-                                            icon: window.constructCDNUrl("/content/blooks/Error.png")
+                                            icon: window.constructCDNUrl("/content/icons/error.png")
                                         }));
                                 }
                             },
@@ -92,7 +92,7 @@ export default memo(function Chat() {
                                 .catch((err: Fetch2Response) => createToast({
                                     header: "Error",
                                     body: err.data.message,
-                                    icon: window.constructCDNUrl("/content/blooks/Error.png")
+                                    icon: window.constructCDNUrl("/content/icons/error.png")
                                 }));
                         }}
                         onEditCancel={() => setEditing(null)}

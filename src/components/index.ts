@@ -3,6 +3,7 @@ import Background from "./Background";
 import Blook from "./Blook";
 import * as Button from "./Buttons";
 import ColorPicker from "./ColorPicker";
+import * as Development from "./Development";
 import Dropdown from "./Dropdown";
 import ErrorContainer from "./ErrorContainer";
 import Form from "./Form";
@@ -29,6 +30,7 @@ export {
     Blook,
     Button,
     ColorPicker,
+    Development,
     Dropdown,
     ErrorContainer,
     Form,

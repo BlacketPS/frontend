@@ -1,4 +1,5 @@
 import { ReactNode } from "react";
+import { Product } from "@blacket/types";
 
 export interface CategoryProps {
     title: string;
@@ -6,12 +7,6 @@ export interface CategoryProps {
     children?: ReactNode;
 }
 
-export type Product = {
-    name: string;
-    monthly?: boolean;
-    price: number;
-    lifetime?: number;
-    image: string;
-    colors: string[];
-    type: string;
-};
+export interface ProductProps {
+    product: Product;
+}

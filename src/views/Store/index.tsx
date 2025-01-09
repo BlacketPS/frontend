@@ -1,17 +1,34 @@
-import { useState } from "react";
+import { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import Textfit from "react-textfit";
-import { ImageOrVideo, Input, SidebarBody } from "@components/index";
-import { Category } from "./components/index";
+import { ImageOrVideo, SidebarBody } from "@components/index";
+import { Category, Product } from "./components/index";
 import { useUser } from "@stores/UserStore/index";
+import { useLoading } from "@stores/LoadingStore/index";
+import { useData } from "@stores/DataStore/index";
+import { useProducts } from "@controllers/stripe/useProducts/index";
 import styles from "./store.module.scss";
-import { Product } from "./store.d";
 
 export default function Store() {
     const { user } = useUser();
-
     if (!user) return <Navigate to="/login" />;
+
+    const { setLoading } = useLoading();
+    const { stores, setStores } = useData();
+
+    const { getProducts } = useProducts();
+
+    useEffect(() => {
+        if (stores.length) return;
+
+        setLoading(true);
+
+        getProducts()
+            .then((res) => setStores(res))
+            .catch(() => setStores([]))
+            .finally(() => setLoading(false));
+    }, [stores]);
 
     const getGreeting = () => {
         const hour = new Date().getHours();
@@ -31,10 +48,6 @@ export default function Store() {
         }
     };
 
-    const [products, setProducts] = useState<Product[]>([
-        { name: "Blacket Plus", monthly: true, price: 2.99, lifetime: 29.99, image: window.constructCDNUrl("/content/badges/Plus.png"), colors: ["#071d8b", "#3d8def"], type: "Plan" }
-    ]);
-
     return (
         <>
             <SidebarBody pushOnMobile={false}>
@@ -46,24 +59,15 @@ export default function Store() {
                         </div>
                     </div>
 
-                    <Category title="Plans" subTitle="Purchase a plan to unlock new features!">
-                        {
-                            products.filter((product) => product.type === "Plan").map((product, i) => (
-                                <div key={i} className={styles.product} style={{ background: `linear-gradient(15deg, ${product.colors[0]}, ${product.colors[1]})` }}>
-                                    <ImageOrVideo className={styles.productImage} src={product.image} />
-                                    <div className={styles.productText}>
-                                        <div className={styles.productTitle}>{product.name}</div>
-                                        <div className={styles.productPrice}>${product.price}{product.monthly && " monthly"}</div>
-                                        {product.lifetime && <div className={styles.productSubPrice}>${product.lifetime} lifetime</div>}
-                                    </div>
-
-                                    {Array.from({ length: 3 }, (_, i) => (
-                                        <div key={i} className={styles.shine} />
-                                    ))}
-                                </div>
-                            ))
-                        }
-                    </Category>
+                    {stores
+                        .sort((a, b) => a.priority - b.priority)
+                        .map((store, i) => (
+                            <Category key={i} title={store.name} subTitle={store.description}>
+                                {store.products && store.products
+                                    .sort((a, b) => a.priority - b.priority)
+                                    .map((product, i) => <Product key={i} product={product} />)}
+                            </Category>
+                        ))}
                 </div>
             </SidebarBody>
 

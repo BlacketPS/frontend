@@ -104,7 +104,6 @@ export default function Settings() {
             <SettingsContainer header={{ icon: "fas fa-palette", text: "Theme" }}>
                 <Tooltip id="modalAnimation" place="right">This will disable the zoom in out animation on popups.</Tooltip>
                 <Button.ClearButton data-tooltip-id="modalAnimation" onClick={modalAnimationButton}>Modal Animation: {modalAnimation ? "On" : "Off"}</Button.ClearButton>
-                <div>More options coming soon!</div>
                 {
                     /* <Button.ClearButton onClick={() => {
                     const style = document.createElement("style");

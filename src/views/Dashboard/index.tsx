@@ -124,6 +124,7 @@ export default function Dashboard() {
                                 src={getUserAvatarPath(viewingUser)}
                                 alt="User Avatar"
                                 draggable={false}
+                                shiny={true}
                                 onClick={() => {
                                     if (viewingUser.id === user.id) createModal(<CosmeticsModal category={CosmeticsModalCategory.AVATAR} />);
                                 }}

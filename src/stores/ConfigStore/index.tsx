@@ -5,7 +5,7 @@ import Error from "../../views/Error/index";
 
 const ConfigStoreContext = createContext<ConfigStoreContext>({ config: null, setConfig: () => { } });
 
-export default function useConfig() {
+export function useConfig() {
     return useContext(ConfigStoreContext);
 }
 

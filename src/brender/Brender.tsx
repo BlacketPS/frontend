@@ -48,7 +48,7 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
     const mousePosition = { x: 0, y: 0 };
 
     const loadingImage = new Image();
-    loadingImage.src = window.constructCDNUrl("/content/blooks/Loading.png");
+    loadingImage.src = window.constructCDNUrl("/content/icons/loading.png");
 
     const handleKeyDown = (e: KeyboardEvent) => pressing[e.key.toLowerCase()] = true;
     const handleKeyUp = (e: KeyboardEvent) => delete pressing[e.key.toLowerCase()];

@@ -1,5 +1,6 @@
 export interface Config {
     version: string
+    type: string
 }
 
 export interface ConfigStoreContext {
