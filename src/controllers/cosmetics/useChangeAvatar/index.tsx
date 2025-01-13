@@ -1,7 +1,7 @@
 import { useUser } from "@stores/UserStore/index";
 import { useData } from "@stores/DataStore/index";
 
-import { CosmeticsChangeAvatarDto, NotFound } from "@blacket/types";
+import { CosmeticsChangeAvatarDto, CosmeticsUploadAvatarDto, NotFound } from "@blacket/types";
 
 export function useChangeAvatar() {
     const { user, setUser } = useUser();
@@ -17,5 +17,13 @@ export function useChangeAvatar() {
         })
         .catch(reject));
 
-    return { changeAvatar };
+    const uploadAvatar = (dto: CosmeticsUploadAvatarDto) => new Promise<Fetch2Response>((resolve, reject) => window.fetch2.post("/api/cosmetics/avatar/upload", dto)
+        .then((res: Fetch2Response) => {
+            setUser({ ...user, customAvatar: res.data.path });
+
+            resolve(res);
+        })
+        .catch(reject));
+
+    return { changeAvatar, uploadAvatar };
 }

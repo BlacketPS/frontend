@@ -44,11 +44,12 @@ export interface CosmeticsModalProps {
 }
 
 export enum CosmeticsModalCategory {
-    AVATAR = 1,
-    BANNER = 2,
-    TITLE = 3,
-    FONT = 4,
-    COLOR = 5
+    AVATAR,
+    BANNER,
+    TITLE,
+    FONT,
+    COLOR,
+    GRADIENT
 }
 
 export interface DailyRewardsModalProps {

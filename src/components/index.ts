@@ -12,6 +12,7 @@ import HeaderBody from "./HeaderBody";
 import ImageOrVideo from "./ImageOrVideo";
 import Input from "./Input";
 import Loader from "./Loader";
+import Markdown from "./Markdown";
 import * as Modal from "./Modals";
 import PageHeader from "./PageHeader";
 import SearchBox from "./SearchBox";
@@ -39,6 +40,7 @@ export {
     ImageOrVideo,
     Input,
     Loader,
+    Markdown,
     Modal,
     PageHeader,
     SearchBox,

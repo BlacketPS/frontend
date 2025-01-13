@@ -17,7 +17,7 @@ export default function Username({ user, className, style = {}, ...props }: User
         });
 
         gradientStyle = {
-            background: `linear-gradient(${degrees}deg, ${colorArray.join(", ")})`,
+            background: `linear-gradient(${degrees}deg, ${colorArray.join(", ")}) text`,
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent"
         };

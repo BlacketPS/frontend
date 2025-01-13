@@ -33,7 +33,6 @@ export interface RightBlookProps extends HTMLAttributes<HTMLDivElement> {
 
 export interface RightItemProps extends HTMLAttributes<HTMLDivElement> {
     item: Item;
-    usesLeft: number;
 }
 
 export interface RightButtonProps extends GenericButtonProps {

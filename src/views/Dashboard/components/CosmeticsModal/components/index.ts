@@ -4,6 +4,7 @@ import BannerCategory from "./BannerCategory";
 import ColorCategory from "./ColorCategory";
 import Font from "./Font";
 import FontCategory from "./FontCategory";
+import GradientCategory from "./GradientCategory";
 import Title from "./Title";
 import TitleCategory from "./TitleCategory";
 
@@ -14,6 +15,7 @@ export {
     ColorCategory,
     Font,
     FontCategory,
+    GradientCategory,
     Title,
     TitleCategory
 };

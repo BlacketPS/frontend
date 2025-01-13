@@ -542,16 +542,20 @@
     }
 }
 
+.inventoryItemsContainer {
+    display: block;
+    height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
 .inventoryItems {
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    overflow-x: hidden;
-    justify-content: center;
-    gap: 1vh;
+    justify-content: left;
+    gap: 0.9vh;
 }
 
 .statContainer {

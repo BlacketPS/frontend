@@ -10,9 +10,9 @@ import styles from "../inventory.module.scss";
 import { RightItemProps } from "../inventory";
 import { AuctionTypeEnum } from "@blacket/types";
 
-export default function RightItem({ item, usesLeft, children, ...props }: RightItemProps) {
+export default function RightItem({ item, children, ...props }: RightItemProps) {
     const { resourceIdToPath } = useResource();
-    const { openContextMenu, closeContextMenu } = useContextMenu();
+    const { openContextMenu } = useContextMenu();
     const { rarities } = useData();
 
     const { createModal } = useModal();
@@ -37,7 +37,6 @@ export default function RightItem({ item, usesLeft, children, ...props }: RightI
 
                 <div className={styles.rightBottomText}>
                     <Textfit className={styles.rightBottomDescription} max={35} min={0} mode="multi">{item.description}</Textfit>
-                    {usesLeft?.toLocaleString() || 0} Use{usesLeft !== 1 ? "s" : ""} Left
                 </div>
 
                 <Button.GenericButton

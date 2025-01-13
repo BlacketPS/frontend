@@ -25,7 +25,7 @@ export function UserStoreProvider({ children }: { children: ReactNode }) {
 
     const getUserAvatarPath = (user: PrivateUser | null): string => {
         if (!user) return window.constructCDNUrl("/content/icons/error.png");
-        else if (user.customAvatar) return user.customAvatar as string;
+        else if (user.customAvatar) return `${import.meta.env.VITE_UPLOAD_PATH}${user.customAvatar}` as string;
         else if (user.avatarId) return resourceIdToPath(user.avatarId) || window.errorImage;
         else return window.constructCDNUrl("/content/blooks/Default.png");
     };

@@ -90,4 +90,60 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+}
+
+.gradientPicker {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    width: 380px;
+    background: linear-gradient(90deg, #000, #fff);
+    height: 40px;
+    margin: 10px 0;
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+
+    @media screen and (max-width: 768px) {
+        width: 320px;
+    }
+}
+
+.gradientPoint {
+    position: absolute;
+    width: 10px;
+    height: 100%;
+    cursor: pointer;
+    border: 1px solid;
+}
+
+.usernameWouldLookLike {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.uploadAvatarButton {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 6vh;
+    height: 7vh;
+    cursor: pointer;
+    transition: transform .2s;
+
+    &:hover {
+        transform: scale(0.95);
+    }
+
+    &:active {
+        transform: scale(0.9);
+    }
+
+    &>img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+    }
 }

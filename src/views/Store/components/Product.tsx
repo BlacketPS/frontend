@@ -1,18 +1,31 @@
 import { ImageOrVideo } from "@components/index";
 import { useResource } from "@stores/ResourceStore/index";
+import { useData } from "@stores/DataStore/index";
+import Textfit from "react-textfit";
 import styles from "../store.module.scss";
 
 import { ProductProps } from "../store.d";
 
-export default function Product({ product }: ProductProps) {
+export default function Product({ product, ...props }: ProductProps) {
     const { resourceIdToPath } = useResource();
+    const { fontIdToName } = useData();
 
     return (
-        <div className={styles.product} style={{ background: `linear-gradient(15deg, ${product.color1}, ${product.color2})` }}>
-            <ImageOrVideo className={styles.productImage} src={resourceIdToPath(product.imageId)} />
+        <div className={styles.product} style={{ background: `linear-gradient(15deg, ${product.color1}, ${product.color2})` }} {...props}>
+            <ImageOrVideo className={styles.productImage} src={resourceIdToPath(product.imageId)} draggable={false} />
 
             <div className={styles.productText}>
-                <div className={styles.productTitle}>{product.name}</div>
+                <Textfit
+                    mode="single"
+                    min={1}
+                    max={25}
+                    className={styles.productTitle}
+                    style={{
+                        fontFamily: product.fontId ? fontIdToName(product.fontId) : ""
+                    }}
+                >
+                    {product.name}
+                </Textfit>
                 <div className={styles.productPrice}>
                     ${product.price} USD
                     {product.isSubscription && " monthly"}

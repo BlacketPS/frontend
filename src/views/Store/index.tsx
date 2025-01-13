@@ -3,9 +3,10 @@ import { Navigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import Textfit from "react-textfit";
 import { ImageOrVideo, SidebarBody } from "@components/index";
-import { Category, Product } from "./components/index";
+import { Category, Product, ProductModal } from "./components/index";
 import { useUser } from "@stores/UserStore/index";
 import { useLoading } from "@stores/LoadingStore/index";
+import { useModal } from "@stores/ModalStore/index";
 import { useData } from "@stores/DataStore/index";
 import { useProducts } from "@controllers/stripe/useProducts/index";
 import styles from "./store.module.scss";
@@ -15,6 +16,7 @@ export default function Store() {
     if (!user) return <Navigate to="/login" />;
 
     const { setLoading } = useLoading();
+    const { createModal } = useModal();
     const { stores, setStores } = useData();
 
     const { getProducts } = useProducts();
@@ -65,7 +67,11 @@ export default function Store() {
                             <Category key={i} title={store.name} subTitle={store.description}>
                                 {store.products && store.products
                                     .sort((a, b) => a.priority - b.priority)
-                                    .map((product, i) => <Product key={i} product={product} />)}
+                                    .map((product, i) => <Product
+                                        key={i}
+                                        product={product}
+                                        onClick={() => createModal(<ProductModal product={product} />)}
+                                    />)}
                             </Category>
                         ))}
                 </div>

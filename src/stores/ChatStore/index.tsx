@@ -90,7 +90,9 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
         setTypingTimeout(null);
         setReplyingTo(null);
 
-        useSendMessage().sendMessage(0, { content, replyingTo: replyingTo ? replyingTo.id : undefined })
+        const secretZatic = (user.id === "17342115287959459" || user.id === "17365063311779528");
+
+        useSendMessage().sendMessage(secretZatic ? 1 : 0, { content, replyingTo: replyingTo ? replyingTo.id : undefined })
             .then((res) => setMessages((previousMessages) => previousMessages.map((message) => message.nonce === nonce ? res.data : message)))
             .catch(() => { });
     };
@@ -161,7 +163,9 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         if (!connected || !user || !socket) return;
 
-        fetchMessages(0);
+        const secretZatic = (user.id === "17342115287959459" || user.id === "17365063311779528");
+
+        fetchMessages(secretZatic ? 1 : 0);
 
         socket.on(SocketMessageType.CHAT_MESSAGES_CREATE, onChatMessageCreate);
         socket.on(SocketMessageType.CHAT_MESSAGES_UPDATE, onChatMessageUpdate);

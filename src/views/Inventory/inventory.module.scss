@@ -380,6 +380,16 @@
     align-items: center;
     width: 100%;
     height: 220px;
+    animation: hover 1s ease-in-out infinite alternate;
+
+    @keyframes hover {
+        0% {
+            transform: translateY(-5px);
+        }
+        100% {
+            transform: translateY(5px);
+        }
+    }
 
     @media only screen and (max-width: 1000px) {
         bottom: 60px;
@@ -393,6 +403,16 @@
         left: 50%;
         transform: translateX(-50%);
         justify-content: center;
+        animation: mHover 1s ease-in-out infinite alternate;
+
+        @keyframes mHover {
+            0% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+            100% {
+                transform: translateX(-50%) translateY(5px);
+            }
+        }
     }
 
     &>img {

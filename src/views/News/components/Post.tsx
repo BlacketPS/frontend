@@ -1,11 +1,15 @@
 import { useResource } from "@stores/ResourceStore/index";
-import { Username } from "@components/index";
+import { useUser } from "@stores/UserStore/index";
+import { Username, Markdown } from "@components/index";
 import styles from "../news.module.scss";
 
 import { PostProps } from "../news.d";
 
 export default function Post({ post }: PostProps) {
     const { resourceIdToPath } = useResource();
+    const { user } = useUser();
+
+    if (!user) return null;
 
     return (
         <div className={styles.postContainer}>
@@ -31,7 +35,9 @@ export default function Post({ post }: PostProps) {
 
             <div className={styles.postBottomContainer}>
                 <div className={styles.postContent}>
-                    {post.content}
+                    <Markdown user={user}>
+                        {post.content}
+                    </Markdown>
                 </div>
 
                 <div className={styles.postScoringContainer}>

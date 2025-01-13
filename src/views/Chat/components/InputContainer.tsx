@@ -8,11 +8,14 @@ import styles from "../chat.module.scss";
 
 import { InputContainerProps } from "../chat.d";
 
+const isMobile = () => window.innerWidth <= 768;
+
 export default memo(function InputContainer({ placeholder }: InputContainerProps) {
     const { sendMessage, startTyping, usersTyping, replyingTo, setReplyingTo } = useChat();
     const { cachedUsers } = useCachedUser();
 
     const [editor, setEditor] = useState<Editor | null>(null);
+    const [mTextareaValue, setMTextareaValue] = useState<string>("");
 
     const clearEditor = (editor: Editor) => {
         editor.children.map(() => Transforms.delete(editor, { at: [0] }));
@@ -35,6 +38,41 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
         return content.trim();
     };
 
+    const send = () => {
+        if (isMobile()) {
+            if (mTextareaValue.replace(/\s/g, "").length === 0) return;
+
+            const content = mTextareaValue.replace(/@(\w+)/g, (match, username) => {
+                const user = cachedUsers.find((user) => user.username.toLowerCase() === username.toLowerCase());
+
+                return user ? `<@${user.id}>` : match;
+            });
+
+            sendMessage(content.trim());
+            setMTextareaValue("");
+        } else {
+            if (!editor) return;
+
+            const content = getEditorContent(editor);
+
+            if (content.replace(/\s/g, "").length === 0) return;
+
+            sendMessage(content);
+
+            clearEditor(editor);
+        }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+        if (!e.repeat) {
+            if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+
+                send();
+            }
+        }
+    };
+
     return (
         <div className={styles.messageForm}>
             <UsersTypingContainer usersTyping={usersTyping} />
@@ -44,31 +82,34 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
                 <i className="fas fa-times" onClick={() => setReplyingTo(null)} />
             </div>}
 
-            <MarkdownPreview
-                className={styles.messageInput}
-                placeholder={placeholder}
-                spellCheck
-                autoFocus
-                onInput={() => startTyping()}
-                onKeyDown={(e: KeyboardEvent) => {
-                    if (!e.repeat) {
-                        if (e.key === "Enter" && !e.shiftKey) {
-                            e.preventDefault();
+            {isMobile() ? (
+                <textarea
+                    className={styles.messageInput}
+                    placeholder={placeholder}
+                    spellCheck
+                    autoFocus
+                    value={mTextareaValue}
+                    onChange={(e) => setMTextareaValue(e.target.value)}
+                    onKeyDown={(e) => handleKeyDown(e as any)}
 
-                            if (!editor) return;
+                />
+            ) : (
+                <MarkdownPreview
+                    className={styles.messageInput}
+                    placeholder={placeholder}
+                    spellCheck
+                    autoFocus
+                    onInput={() => startTyping()}
+                    onKeyDown={handleKeyDown}
+                    getEditor={(editor) => setEditor(editor)}
+                />
+            )}
 
-                            const content = getEditorContent(editor);
-
-                            if (content.replace(/\s/g, "").length === 0) return;
-
-                            sendMessage(content);
-
-                            clearEditor(editor);
-                        }
-                    }
-                }}
-                getEditor={(editor) => setEditor(editor)}
-            />
+            <div className={styles.inputButtonsContainer}>
+                <div className={styles.inputButton}>
+                    <i className="fas fa-paper-plane" onClick={send} />
+                </div>
+            </div>
         </div>
     );
 });

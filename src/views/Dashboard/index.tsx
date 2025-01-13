@@ -242,22 +242,24 @@ export default function Dashboard() {
                 <SectionHeader>Inventory</SectionHeader>
 
                 <div className={styles.statsContainer}>
-                    <div className={styles.inventoryItems}>
-                        {items.sort((a, b) => a.priority - b.priority).map((item) => {
-                            const filteredItems = viewingUser.items.filter((i) => i.itemId === item.id);
+                    <div className={styles.inventoryItemsContainer}>
+                        <div className={styles.inventoryItems}>
+                            {items.sort((a, b) => a.priority - b.priority).map((item) => {
+                                const filteredItems = viewingUser.items.filter((i) => i.itemId === item.id);
 
-                            if (filteredItems.length > 0) return filteredItems.map((i) => <InventoryItem key={i.id} item={item} usesLeft={i.usesLeft} />);
-                        })}
+                                if (filteredItems.length > 0) return filteredItems.map((i) => <InventoryItem key={i.id} item={item} usesLeft={i.usesLeft} />);
+                            })}
 
-                        {packs.sort((a, b) => a.priority - b.priority).map((pack) => {
-                            const filteredBlooks = blooks
-                                .filter((blook) => blook.packId === pack.id)
-                                .sort((a, b) => a.priority - b.priority);
+                            {packs.sort((a, b) => a.priority - b.priority).map((pack) => {
+                                const filteredBlooks = blooks
+                                    .filter((blook) => blook.packId === pack.id)
+                                    .sort((a, b) => a.priority - b.priority);
 
-                            if (filteredBlooks.length > 0) return filteredBlooks.map((blook) => viewingUser.blooks[blook.id] && <InventoryBlook key={blook.id} blook={blook} quantity={viewingUser.blooks[blook.id] as number} />);
-                        })}
+                                if (filteredBlooks.length > 0) return filteredBlooks.map((blook) => viewingUser.blooks[blook.id] && <InventoryBlook key={blook.id} blook={blook} quantity={viewingUser.blooks[blook.id] as number} />);
+                            })}
 
-                        {nonPackBlooks.map((blook) => viewingUser.blooks[blook.id] && <InventoryBlook key={blook.id} blook={blook} quantity={viewingUser.blooks[blook.id] as number} />)}
+                            {nonPackBlooks.map((blook) => viewingUser.blooks[blook.id] && <InventoryBlook key={blook.id} blook={blook} quantity={viewingUser.blooks[blook.id] as number} />)}
+                        </div>
                     </div>
                 </div>
             </div>

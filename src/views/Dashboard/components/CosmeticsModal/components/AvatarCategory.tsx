@@ -5,6 +5,7 @@ import { useData } from "@stores/DataStore/index";
 import { SearchBox } from "@components/index";
 import { InventoryBlook } from "../../../components";
 import { useChangeAvatar } from "@controllers/cosmetics/useChangeAvatar/index";
+import { useUpload } from "@controllers/users/useUpload/index";
 import styles from "../cosmeticsModal.module.scss";
 
 export default function AvatarCategory() {
@@ -14,7 +15,8 @@ export default function AvatarCategory() {
     const { user } = useUser();
     const { packs, blooks } = useData();
 
-    const { changeAvatar } = useChangeAvatar();
+    const { changeAvatar, uploadAvatar } = useChangeAvatar();
+    const { uploadFileSmall } = useUpload();
 
     if (!user) return null;
 
@@ -30,6 +32,33 @@ export default function AvatarCategory() {
             .catch(() => setLoading(false));
     };
 
+    const onFileSelect = (_file: File) => {
+        setLoading(true);
+
+        const file = new FormData();
+        file.append("file", _file);
+
+        uploadFileSmall(file)
+            .then((res) => {
+                uploadAvatar({ uploadId: res.data.id })
+                    .finally(() => setLoading(false));
+            })
+            .catch(() => setLoading(false));
+    };
+
+    const openFileSelect = () => {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".png, .jpg, .jpeg, .gif, .webp";
+        input.onchange = () => {
+            if (!input.files) return;
+
+            onFileSelect(input.files[0]);
+        };
+
+        input.click();
+    };
+
     return (
         <>
             <SearchBox
@@ -41,6 +70,12 @@ export default function AvatarCategory() {
             />
 
             <div className={styles.holder}>
+                <div
+                    className={styles.uploadAvatarButton}
+                    onClick={openFileSelect}
+                >
+                    <img src={window.constructCDNUrl("/content/icons/add.png")} />
+                </div>
                 <InventoryBlook blook={blooks.find((blook) => blook.id === 1)!} quantity={0} onClick={() => onSelect(1)} data-selectable={true} />
 
                 {packs.sort((a, b) => a.priority - b.priority).map((pack) => {

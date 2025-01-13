@@ -71,29 +71,34 @@ export default function AuctionHouse() {
 
             <div className={styles.auctionHouseContainer}>
                 <div className={styles.auctionHouse}>
-                    <div className={styles.auctionHouseItems}>
-                        {!loading ? auctions.length > 0 ? auctions.map((auction) => {
-                            return (
-                                <Auction
-                                    key={auction.id}
-                                    auction={auction}
-                                    useVhStyles={false}
-                                    onClick={() => {
-                                        switch (true) {
-                                            case auction.seller.id === user.id:
-                                                createModal(<RemoveAuctionModal auction={auction} />);
-                                                break;
-                                            case auction.buyItNow:
-                                                createModal(<BuyItNowModal auction={auction} />);
-                                                break;
-                                            default:
-                                                createModal(<AuctionModal auctionId={auction.id} />);
-                                                break;
-                                        }
-                                    }}
-                                />
-                            );
-                        }) : <div className={styles.noAuctions}>No auctions found.</div> : <Loader noModal style={{ marginBottom: 50 }} />}
+                    <div className={styles.auctionHouseItemsContainer}>
+                        {!loading ? auctions.length > 0 ? <div className={styles.auctionHouseItems}>
+                            {auctions.map((auction) => {
+                                return (
+                                    <Auction
+                                        key={auction.id}
+                                        auction={auction}
+                                        useVhStyles={false}
+                                        onClick={() => {
+                                            switch (true) {
+                                                case auction.seller.id === user.id:
+                                                    createModal(<RemoveAuctionModal auction={auction} />);
+                                                    break;
+                                                case auction.buyItNow:
+                                                    createModal(<BuyItNowModal auction={auction} />);
+                                                    break;
+                                                default:
+                                                    createModal(<AuctionModal auctionId={auction.id} />);
+                                                    break;
+                                            }
+                                        }}
+                                    />
+                                );
+                            })}
+                        </div> : <div className={styles.noAuctions}>
+                            <img className={styles.noAuctionsImage} src={window.constructCDNUrl("/content/404.png")} />
+                            No auctions found.
+                        </div> : <div className={styles.auctionLoaderContainer}><Loader noModal style={{ marginBottom: 50 }} /></div>}
                     </div>
                 </div>
             </div>

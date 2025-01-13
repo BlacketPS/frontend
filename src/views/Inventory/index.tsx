@@ -146,7 +146,7 @@ export default function Inventory() {
                 </div>}
             </RightBlook>}
 
-            {user.items.length > 0 && selectedItem && <RightItem item={selectedItem} usesLeft={user.items.find((i) => i.itemId === selectedItem.id)!.usesLeft}>
+            {user.items.length > 0 && selectedItem && <RightItem item={selectedItem}>
                 <div className={styles.rightButtonContainer}>
                     {selectedItem.canUse && <RightButton image={window.constructCDNUrl("/content/use.png")}>Use</RightButton>}
                     {selectedItem.canAuction && <RightButton icon="fas fa-building-columns" onClick={() => createModal(<AuctionModal type={AuctionTypeEnum.ITEM} item={selectedItem} />)}>Auction</RightButton>}

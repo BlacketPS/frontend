@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Editor } from "slate";
 import { useUser } from "@stores/UserStore/index";
@@ -9,6 +9,7 @@ import { ImageOrVideo, Username } from "@components/index";
 import styles from "../chat.module.scss";
 
 import { ChatMessageProps } from "../chat.d";
+import { ClientMessage } from "@stores/ChatStore/chatStore.js";
 
 export default memo(function ChatMessage({ message, newUser, mentionsMe, isSending, isEditing, messageContextMenu, userContextMenu, onEditSave, onEditCancel }: ChatMessageProps) {
     if (!messageContextMenu || isSending) messageContextMenu = () => { };
@@ -20,6 +21,8 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
     const { cachedUsers } = useCachedUser();
 
     const [editor, setEditor] = useState<Editor | null>(null);
+    // tempMessage is only used because editing messages doesn't re-render for some reason so i will just manually update the content
+    const [tempMessage, setTempMessage] = useState<ClientMessage>(message);
 
     const author = cachedUsers.find((user) => user.id === message.authorId) || null;
     const replyingToAuthor = cachedUsers.find((user) => user.id === message?.replyingTo?.authorId) || null;
@@ -35,6 +38,12 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
         });
 
         return content.trim();
+    };
+
+    const handleEditSave = (content: string) => {
+        setTempMessage({ ...tempMessage, content });
+
+        onEditSave(content);
     };
 
     if (author) return (
@@ -112,7 +121,7 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
                             </div>}
 
                             {!isEditing
-                                ? <MarkdownPreview content={message.content} readOnly={true} />
+                                ? <MarkdownPreview content={tempMessage.content} readOnly={true} />
                                 : <>
                                     <MarkdownPreview
                                         content={message.content}
@@ -131,7 +140,7 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
 
                                                     if (content.replace(/\s/g, "").length === 0) return;
 
-                                                    onEditSave(content);
+                                                    handleEditSave(content);
                                                 } else if (e.key === "Escape") {
                                                     onEditCancel();
                                                 }

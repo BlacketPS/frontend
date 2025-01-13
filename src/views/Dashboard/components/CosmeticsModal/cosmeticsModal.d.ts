@@ -12,3 +12,8 @@ export interface TitleProps extends HTMLAttributes<HTMLDivElement> {
 export interface FontProps extends HTMLAttributes<HTMLDivElement> {
     font: Font;
 }
+
+export interface GradientPoint {
+    color: string;
+    position: number;
+}

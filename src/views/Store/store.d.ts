@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { HTMLAttributes, ReactNode } from "react";
 import { Product } from "@blacket/types";
 
 export interface CategoryProps {
@@ -7,6 +7,10 @@ export interface CategoryProps {
     children?: ReactNode;
 }
 
-export interface ProductProps {
+export interface ProductProps extends HTMLAttributes<HTMLDivElement> {
+    product: Product;
+}
+
+export interface ProductModalProps {
     product: Product;
 }

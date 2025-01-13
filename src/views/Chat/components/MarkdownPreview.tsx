@@ -317,12 +317,8 @@ export default memo(function MarkdownPreview({ content, color, readOnly, getEdit
                 const beforeRange = before && Editor.range(editor, before, start);
                 const beforeText = beforeRange && Editor.string(editor, beforeRange);
 
-                console.log(beforeText);
-
                 const beforeMatch = beforeText && beforeText.match(/:([\w_]*)$/);
                 const fullMatch = beforeText && beforeText.match(/:([\w_]*)$/);
-
-                console.log(beforeMatch, fullMatch);
 
                 if (beforeMatch) {
                     setEmojiTarget(beforeRange);
