@@ -11,7 +11,7 @@ export function useChangeAvatar() {
 
     const changeAvatar = (dto: CosmeticsChangeAvatarDto) => new Promise<Fetch2Response>((resolve, reject) => window.fetch2.patch("/api/cosmetics/avatar", dto)
         .then((res: Fetch2Response) => {
-            setUser({ ...user, avatarId: blooks.find((blook) => blook.id === dto.blookId)!.imageId });
+            setUser({ ...user, avatarId: blooks.find((blook) => blook.id === dto.blookId)!.imageId, customAvatar: undefined });
 
             resolve(res);
         })

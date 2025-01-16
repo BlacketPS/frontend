@@ -12,7 +12,7 @@ export default function AvatarCategory() {
     const [search, setSearch] = useState<string>("");
 
     const { setLoading } = useLoading();
-    const { user } = useUser();
+    const { user, getUserAvatarPath } = useUser();
     const { packs, blooks } = useData();
 
     const { changeAvatar, uploadAvatar } = useChangeAvatar();
@@ -74,7 +74,7 @@ export default function AvatarCategory() {
                     className={styles.uploadAvatarButton}
                     onClick={openFileSelect}
                 >
-                    <img src={window.constructCDNUrl("/content/icons/add.png")} />
+                    <img src={user.customAvatar ? getUserAvatarPath(user) : window.constructCDNUrl("/content/icons/add.png")} />
                 </div>
                 <InventoryBlook blook={blooks.find((blook) => blook.id === 1)!} quantity={0} onClick={() => onSelect(1)} data-selectable={true} />
 

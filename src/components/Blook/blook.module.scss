@@ -71,6 +71,6 @@
     object-fit: contain;
 
     &[data-shiny="true"] {
-        filter: hue-rotate(125deg);
+        // filter: hue-rotate(125deg);
     }
 }
