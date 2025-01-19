@@ -1,3 +1,5 @@
+// TODO: implement this after rewrite is finished
+
 import { useLayoutEffect, useRef } from "react";
 import { Navigate } from "react-router-dom";
 import { BrenderCanvas, BrenderCanvasRef, CanvasObject } from "@brender/index";
@@ -8,10 +10,11 @@ import styles from "./mapEditor.module.scss";
 import { Mode } from "./mapEditor.d";
 
 export default function MapEditor() {
+    return <Navigate to="/dashboard" />;
+
     const { user } = useUser();
 
     if (!user) return <Navigate to="/login" />;
-    if (!user.hasPermission("MANAGE_GAME_DATA")) return <Navigate to="/dashboard" />;
 
     const BRENDER_CANVAS_REF = useRef<BrenderCanvasRef>(null);
 
