@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { useData } from "@stores/DataStore/index";
@@ -44,6 +44,14 @@ export default function AuctionHouse() {
         setSearchParams({});
         setSearch({ ...search, id: parseInt(id) });
     }, [searchParams]);
+
+    const easterEggList = [
+        {
+            query: "fartpoopshit542",
+            image: window.constructCDNUrl("/content/easter-eggs/fartpoopshit542.png"),
+            title: "No bitches found."
+        }
+    ];
 
     return (
         <>
@@ -96,8 +104,12 @@ export default function AuctionHouse() {
                                 );
                             })}
                         </div> : <div className={styles.noAuctions}>
-                            <img className={styles.noAuctionsImage} src={window.constructCDNUrl("/content/404.png")} />
-                            No auctions found.
+                            <img className={styles.noAuctionsImage} src={
+                                easterEggList.find((egg) => egg.query === query)?.image || window.constructCDNUrl("/content/404.png")
+                            } />
+                            {
+                                easterEggList.find((egg) => egg.query === query)?.title || "No auctions found."
+                            }
                         </div> : <div className={styles.auctionLoaderContainer}><Loader noModal style={{ marginBottom: 50 }} /></div>}
                     </div>
                 </div>

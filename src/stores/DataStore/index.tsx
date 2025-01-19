@@ -162,7 +162,7 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
             </div>
         </div>
         {error ? <div className={styles.error}>
-            Failed to load game data.
+            Failed to load data.
             <div className={styles.subError}>
                 {error.data?.message ?? error.message} Please report this issue to a developer.
             </div>

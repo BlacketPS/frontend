@@ -35,99 +35,25 @@
     // left: 7.5px;
     position: absolute;
     // top: 0;
-    -webkit-transform-origin: 50% 56.5%;
-    transform-origin: 50% 56.5%;
+    -webkit-transform-origin: 50% 50%;
+    transform-origin: 50% 50%;
     -webkit-user-select: none;
     user-select: none;
-    width: 35px;
-
-    @keyframes loaderBlook {
-        0% {
-            transform: translateY(10.5px) rotate(0deg);
-        }
-
-        10% {
-            transform: translateY(0) rotate(0deg);
-        }
-
-        15% {
-            transform: translateY(0) rotate(90deg);
-        }
-
-        25% {
-            transform: translateY(10.5px) rotate(90deg);
-        }
-
-        35% {
-            transform: translateY(0) rotate(90deg);
-        }
-
-        40% {
-            transform: translateY(0) rotate(180deg);
-        }
-
-        50% {
-            transform: translateY(10.5px) rotate(180deg);
-        }
-
-        60% {
-            transform: translateY(0) rotate(180deg);
-        }
-
-        65% {
-            transform: translateY(0) rotate(270deg);
-        }
-
-        75% {
-            transform: translateY(10.5px) rotate(270deg);
-        }
-
-        85% {
-            transform: translateY(0) rotate(270deg);
-        }
-
-        90% {
-            transform: translateY(0) rotate(1turn);
-        }
-
-        to {
-            transform: translateY(10.5px) rotate(1turn);
-        }
-    }
+    object-fit: contain;
+    width: 50px;
+    height: 50px;
 
     &[data-motionless="true"] {
         animation: none;
-        transform: translateY(10.5px) rotate(0deg);
     }
-}
 
-.loaderShadow {
-    animation: loaderShadow .75s linear infinite;
-    background: rgba(0, 0, 0, 0.75);
-    border-radius: 20px;
-    height: 6px;
-    // left: 5px;
-    opacity: .2;
-    position: absolute;
-    // top: 48px;
-    top: 28px;
-    width: 40px;
-
-    @keyframes loader-shadow {
+    @keyframes loaderBlook {
         0% {
-            transform: scale(1);
+            transform: translateY(0) rotate(0deg);
         }
 
-        40% {
-            transform: scaleX(1.2);
-        }
-
-        60% {
-            transform: scaleX(1.2);
-        }
-
-        to {
-            transform: scale(1);
+        100% {
+            transform: translateY(0) rotate(360deg);
         }
     }
 }

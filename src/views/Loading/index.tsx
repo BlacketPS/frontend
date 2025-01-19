@@ -8,8 +8,8 @@ export default function Loading({ error, children }: LoadingProps) {
             <Background />
 
             <Loader
-                motionless={true}
-                image={!error ? window.constructCDNUrl("/content/blooks/Console.gif") : window.errorImage}
+                image={!error ? window.constructCDNUrl("/content/icons/loading.png") : window.errorImage}
+                motionless={error ? true : false}
                 message={children}
             />
         </>

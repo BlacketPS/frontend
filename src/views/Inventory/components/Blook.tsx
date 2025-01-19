@@ -16,7 +16,7 @@ export default function Blook({ blook, locked, quantity, ...props }: BlookProps)
                 backgroundColor: rarities.find((rarity) => rarity.id === blook.rarityId)!.color
             }} className={styles.blookQuantity}>{quantity.toLocaleString()}</div>}
 
-            {locked && <i className={`${styles.blookLock} fas fa-question`} />}
+            {locked && <i className={`${styles.blookLock} fas fa-lock`} />}
         </div>
     );
 }

@@ -1,3 +1,7 @@
+export interface TitleProps {
+    children: string;
+}
+
 export interface SectionProps {
     title: string;
     children: string;

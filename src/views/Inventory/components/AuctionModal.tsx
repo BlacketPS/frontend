@@ -7,7 +7,7 @@ import { useRecentAveragePrice } from "@controllers/auctions/useRecentAveragePri
 import { Modal, Button, Form, Input, ErrorContainer, Toggle, WarningContainer } from "@components/index";
 
 import { AuctionModalProps } from "../inventory.d";
-import { AuctionsRecentAveragePriceEntity, AuctionTypeEnum, PermissionTypeEnum } from "@blacket/types";
+import { AuctionTypeEnum, PermissionTypeEnum } from "@blacket/types";
 
 export default function AuctionModal({ type, blook, item }: AuctionModalProps) {
     const [loading, setLoading] = useState<boolean>(true);

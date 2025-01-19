@@ -48,6 +48,11 @@ export function AuctionHouseStoreProvider({ children }: { children: ReactNode })
             setAuctions(res.data);
 
             setLoading(false);
+        })
+        .catch(() => {
+            setAuctions([]);
+
+            setLoading(false);
         });
 
     const onAuctionExpire = useCallback(async (data: SocketAuctionExpireEntity) => {
