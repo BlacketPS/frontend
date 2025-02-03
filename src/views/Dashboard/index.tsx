@@ -20,7 +20,7 @@ import { CosmeticsModalCategory } from "./dashboard.d";
 export default function Dashboard() {
     const { setLoading } = useLoading();
     const { createModal } = useModal();
-    const { user, getUserAvatarPath } = useUser();
+    const { user, getUserAvatarPath, getUserBannerPath } = useUser();
     const { cachedUsers, addCachedUserWithData } = useCachedUser();
     const { blooks, packs, items, titleIdToText } = useData();
     const { resourceIdToPath } = useResource();
@@ -103,6 +103,14 @@ export default function Dashboard() {
         setViewingUser(user);
     }, [user]);
 
+    const getUserBlookQuantity = (blookId: number) => {
+        return viewingUser.blooks.filter((blook) => blook.blookId === blookId).length;
+    };
+
+    const hasUserBlook = (blookId: number) => {
+        return viewingUser.blooks.some((blook) => blook.blookId === blookId);
+    };
+
     const nonPackBlooks = blooks
         .filter((blook) => !blook.packId)
         .sort((a, b) => a.priority - b.priority);
@@ -124,7 +132,8 @@ export default function Dashboard() {
                                 src={getUserAvatarPath(viewingUser)}
                                 alt="User Avatar"
                                 draggable={false}
-                                shiny={false}
+                                custom={user.customAvatar ? true : false}
+                                shiny={true}
                                 onClick={() => {
                                     if (viewingUser.id === user.id) createModal(<CosmeticsModal category={CosmeticsModalCategory.AVATAR} />);
                                 }}
@@ -139,7 +148,7 @@ export default function Dashboard() {
                                 }}
                             >
                                 <img
-                                    src={resourceIdToPath(viewingUser.bannerId)}
+                                    src={getUserBannerPath(viewingUser)}
                                     alt="User Banner"
                                     draggable={false}
                                 />
@@ -200,7 +209,7 @@ export default function Dashboard() {
                         <StatContainer title="User ID" icon={window.constructCDNUrl("/content/icons/dashboardStatsUserID.png")} value={viewingUser.id} />
                         <StatContainer title="Tokens" icon={window.constructCDNUrl("/content/token.png")} value={viewingUser.tokens.toLocaleString()} />
                         <StatContainer title="Experience" icon={window.constructCDNUrl("/content/experience.png")} value={viewingUser.experience.toLocaleString()} />
-                        <StatContainer title="Blooks Unlocked" icon={window.constructCDNUrl("/content/icons/dashboardStatsBlooksUnlocked.png")} value={`${Object.keys(viewingUser.blooks).length.toLocaleString()} / ${(blooks.length - 1).toLocaleString()}`} />
+                        <StatContainer title="Blooks Unlocked" icon={window.constructCDNUrl("/content/icons/dashboardStatsBlooksUnlocked.png")} value={`${viewingUser.blooks.length.toLocaleString()} / ${blooks.length.toLocaleString()}`} /> {/* TODO: BACKEND (Syfe/Xotic/Zastix): Default blook does NOT count in inventory (yet). REVERT to (blooks.length - 1) when fixed. */}
                         <StatContainer title="Packs Opened" icon={window.constructCDNUrl("/content/icons/dashboardStatsPacksOpened.png")} value={viewingUser.statistics.packsOpened.toLocaleString()} />
                         <StatContainer title="Messages Sent" icon={window.constructCDNUrl("/content/icons/dashboardStatsMessagesSent.png")} value={viewingUser.statistics.messagesSent.toLocaleString()} />
                         <StatContainer title="Guild" icon={window.constructCDNUrl("/content/icons/dashboardStatsGuild.png")} value={viewingUser.guild ? viewingUser.guild : "None"} />
@@ -213,10 +222,12 @@ export default function Dashboard() {
                     <div className={styles.friendsTop}>
                         <p>Friends</p>
                         <div>
-                            <SmallButton icon="fas fa-arrow-up">Incoming</SmallButton>
-                            <SmallButton icon="fas fa-arrow-down">Outgoing</SmallButton>
+                            <SmallButton data-secondary icon="fas fa-arrow-up">Incoming</SmallButton>
+                            <SmallButton data-secondary icon="fas fa-arrow-down">Outgoing</SmallButton>
                         </div>
                     </div>
+
+                    <div className={styles.friendsDivider} />
 
                     <div className={styles.holdFriends}>
                         You have no friends, go touch grass.
@@ -255,10 +266,10 @@ export default function Dashboard() {
                                     .filter((blook) => blook.packId === pack.id)
                                     .sort((a, b) => a.priority - b.priority);
 
-                                if (filteredBlooks.length > 0) return filteredBlooks.map((blook) => viewingUser.blooks[blook.id] && <InventoryBlook key={blook.id} blook={blook} quantity={viewingUser.blooks[blook.id] as number} />);
+                                if (filteredBlooks.length > 0) return filteredBlooks.map((blook) => hasUserBlook(blook.id) && <InventoryBlook key={blook.id} blook={blook} quantity={getUserBlookQuantity(blook.id)} />);
                             })}
 
-                            {nonPackBlooks.map((blook) => viewingUser.blooks[blook.id] && <InventoryBlook key={blook.id} blook={blook} quantity={viewingUser.blooks[blook.id] as number} />)}
+                            {nonPackBlooks.map((blook) => hasUserBlook(blook.id) && <InventoryBlook key={blook.id} blook={blook} quantity={getUserBlookQuantity(blook.id)} />)}
                         </div>
                     </div>
                 </div>

@@ -26,7 +26,6 @@
 }
 
 .userSection {
-    background-color: rgba(0, 0, 0, 0.125);
     padding: 2vh 2vh 0 2vh;
     // grid-area: 1 / 1 / 2 / 2;
     grid-area: 1 / 1 / 2 / 3;
@@ -471,6 +470,10 @@
     &:active {
         transform: scale(0.9);
     }
+
+    &[data-secondary] {
+        background-color: var(--secondary-color);
+    }
 }
 
 .containerHeader {
@@ -651,6 +654,8 @@
     justify-content: space-between;
     gap: 2vh;
     height: 100%;
+    background-color: var(--primary-color);
+    border-radius: 0.5vh;
 }
 
 .friendsTop {
@@ -672,14 +677,18 @@
     }
 }
 
+.friendsDivider {
+    width: 100%;
+    height: 1vh;
+    background-color: var(--secondary-color);
+}
+
 .holdFriends {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgba(0, 0, 0, 0.125);
     height: 100%;
-    padding: 1vh;
-    border-radius: 0.5vh;
+    margin: 1vh;
     font-size: 1.5vh;
 }
 

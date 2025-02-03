@@ -1,18 +1,12 @@
 import styles from "../settings.module.scss";
 
 import { SettingsContainerProps } from "../settings.d";
+import { Container } from "@components/index";
 
 export default function SettingsContainer({ header, children }: SettingsContainerProps) {
     return (
-        <div className={styles.settingsContainer}>
-            <div className={styles.settingsContainerHeader}>
-                <i className={header.icon} />
-                <div>{header.text}</div>
-            </div>
-
-            <div className={styles.settingsContainerDivider} />
-
+        <Container.LabeledContainer label={header.text} icon={header.icon}>
             {children}
-        </div>
+        </Container.LabeledContainer>
     );
 }

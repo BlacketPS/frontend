@@ -8,21 +8,49 @@ export interface TextStyle {
     color?: string;
 }
 
+export interface DrawRectProps {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    color: string;
+    useCamera?: boolean;
+}
+
+export interface DrawTextProps {
+    text: string;
+    x: number;
+    y: number;
+    style?: TextStyle;
+    useCamera?: boolean;
+}
+export interface DrawImageProps {
+    image: HTMLImageElement,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    blendMode?: GlobalCompositeOperation,
+    opacity?: number
+    useCamera?: boolean;
+}
+
 export interface BrenderCanvasRef {
-    objects: CanvasObject[];
-    entities: Entity[];
-    camera: Camera;
+    objects: BrenderObject[];
+    entities: BrenderEntity[];
+    camera: BrenderCamera;
     pressing: { [key: string]: boolean };
     mousePosition: { x: number; y: number };
     loadingImage: HTMLImageElement;
-    isMouseOver(object: CanvasObject | Entity): boolean;
-    createGenericEntity(entity: Entity): Entity;
+    isMouseOver(object: BrenderObject | BrenderEntity): boolean;
+    createGenericEntity(entity: BrenderEntity): BrenderEntity;
     createPlayerEntity(entity: PlayerEntity): PlayerEntity;
-    createObject(object: CanvasObject): CanvasObject;
-    findEntity(id: string): Entity | undefined;
-    findObject(id: string): CanvasObject | undefined;
-    renderRect(x: number, y: number, w: number, h: number, color: string): void;
-    renderText(text: string, x: number, y: number, style?: TextStyle, useCamera?: boolean): void;
+    createObject(object: BrenderObject): BrenderObject;
+    findEntity(id: string): BrenderEntity | undefined;
+    findObject(id: string): BrenderObject | undefined;
+    drawRect(rect: DrawRectProps): void
+    drawText(text: DrawTextProps): void;
+    drawImage(image: DrawImageProps): void;
     urlToImage(url: string): Promise<HTMLImageElement>;
     getWidth(): number;
     getHeight(): number;
@@ -35,18 +63,18 @@ export interface BrenderCanvasProps extends HTMLAttributes<HTMLCanvasElement> {
     debug?: boolean;
 }
 
-export interface Camera {
+export interface BrenderCamera {
     x: number;
     y: number;
     scale: number;
     targetScale: number;
     moveTo(x: number, y: number): void;
     moveBy(dx: number, dy: number): void;
-    focusOn(entity: CanvasObject | Entity | PlayerEntity): void;
+    focusOn(entity: BrenderObject | BrenderEntity | PlayerEntity): void;
     zoom(amount: number): void;
 }
 
-export interface CanvasObject {
+export interface BrenderObject {
     id: string;
     x: number;
     y: number;
@@ -56,27 +84,28 @@ export interface CanvasObject {
     image?: HTMLImageElement;
     imageBlendMode?: GlobalCompositeOperation;
     imageOpacity?: number;
+    onClick?: (object: BrenderObject) => void;
+    onFrame?: (object: BrenderObject, deltaTime: number) => void;
+
     destroy?: () => void;
-    onClick?: (object: CanvasObject) => void;
-    onFrame?: (object: CanvasObject, deltaTime: number) => void;
 }
 
-export interface Entity extends CanvasObject {
+export interface BrenderEntity extends BrenderObject {
     type?: EntityType;
     targetX?: number;
     targetY?: number;
     targetWidth?: number;
     targetHeight?: number;
     targetEasingSpeed?: number;
-    onFrame?: (entity: Entity, deltaTime: number) => void;
+    onFrame?: (entity: BrenderEntity, deltaTime: number) => void;
 }
 
-export interface PlayerEntity extends Entity {
+export interface PlayerEntity extends BrenderEntity {
     sitting?: boolean;
     user: PublicUser;
     onFrame?: (entity: PlayerEntity, deltaTime: number) => void;
 }
 
-export interface TradingTableEntity extends Entity {
+export interface TradingTableEntity extends BrenderEntity {
     tradingTable: null;
 }

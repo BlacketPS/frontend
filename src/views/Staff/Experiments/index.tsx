@@ -3,6 +3,7 @@ import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { Button, Dropdown, Modal } from "@components/index";
 import { useEffect, useState } from "react";
+
 import { Product } from "@blacket/types";
 
 export default function Experiments() {
@@ -63,5 +64,4 @@ export default function Experiments() {
             <Button.ClearButton onClick={openUploadDialog}>Upload Image</Button.ClearButton>
         </>
     );
-
 }

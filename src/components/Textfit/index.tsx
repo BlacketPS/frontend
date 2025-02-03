@@ -40,25 +40,65 @@ export default function Textfit({ min = 1, max = 72, mode = "multi", children, c
     const isWidthFit = (element: HTMLElement | null, width: number): boolean => element ? element.scrollWidth - 1 <= width : false;
     const isHeightFit = (element: HTMLElement | null, height: number): boolean => element ? element.scrollHeight - 1 <= height : false;
 
+    const resizeText = () => {
+        const container = containerRef.current;
+        if (!container) return;
+
+        const height = getElementHeight(container);
+        const width = getElementWidth(container);
+
+        if (height <= 0 || width <= 0) return;
+
+        minRef.current = min;
+        maxRef.current = max;
+
+        const initialFontSize = (min + max) / 2;
+
+        setStep(1);
+        setFontSize(initialFontSize);
+    };
+
+    const fitText = () => {
+        const textElement = textRef.current;
+        if (!textElement) return;
+
+        const checkFit =
+            mode === "multi"
+                ? () => isHeightFit(textElement, getElementHeight(containerRef.current))
+                : () => isWidthFit(textElement, getElementWidth(containerRef.current));
+
+        const fallbackCheck =
+            mode === "multi"
+                ? () => isWidthFit(textElement, getElementWidth(containerRef.current))
+                : () => isHeightFit(textElement, getElementHeight(containerRef.current));
+
+        if (step === 1 && minRef.current <= maxRef.current) {
+            checkFit()
+                ? (minRef.current = fontSize + 1)
+                : (maxRef.current = fontSize - 1);
+
+            setFontSize((minRef.current + maxRef.current) / 2);
+        } else if (step === 1) setStep(2);
+
+        if (step === 2 && minRef.current < maxRef.current) {
+            fallbackCheck()
+                ? (minRef.current = fontSize + 1)
+                : (maxRef.current = fontSize - 1);
+
+            setFontSize((minRef.current + maxRef.current) / 2);
+        } else if (step === 2) setStep(3);
+
+        if (step === 3) {
+            const adjustedFontSize = Math.max(
+                min,
+                Math.min(max, Math.min(minRef.current, maxRef.current))
+            );
+            setFontSize(adjustedFontSize);
+            setStep(4);
+        }
+    };
+
     useEffect(() => {
-        const resizeText = () => {
-            const container = containerRef.current;
-            if (!container) return;
-
-            const height = getElementHeight(container);
-            const width = getElementWidth(container);
-
-            if (height <= 0 || width <= 0) return;
-
-            minRef.current = min;
-            maxRef.current = max;
-
-            const initialFontSize = (min + max) / 2;
-
-            setStep(1);
-            setFontSize(initialFontSize);
-        };
-
         window.addEventListener("resize", resizeText);
         resizeText();
 
@@ -66,47 +106,10 @@ export default function Textfit({ min = 1, max = 72, mode = "multi", children, c
     }, [min, max]);
 
     useEffect(() => {
-        const fitText = () => {
-            const textElement = textRef.current;
-            if (!textElement) return;
-
-            const checkFit =
-                mode === "multi"
-                    ? () => isHeightFit(textElement, getElementHeight(containerRef.current))
-                    : () => isWidthFit(textElement, getElementWidth(containerRef.current));
-
-            const fallbackCheck =
-                mode === "multi"
-                    ? () => isWidthFit(textElement, getElementWidth(containerRef.current))
-                    : () => isHeightFit(textElement, getElementHeight(containerRef.current));
-
-            if (step === 1 && minRef.current <= maxRef.current) {
-                checkFit()
-                    ? (minRef.current = fontSize + 1)
-                    : (maxRef.current = fontSize - 1);
-
-                setFontSize((minRef.current + maxRef.current) / 2);
-            } else if (step === 1) setStep(2);
-
-            if (step === 2 && minRef.current < maxRef.current) {
-                fallbackCheck()
-                    ? (minRef.current = fontSize + 1)
-                    : (maxRef.current = fontSize - 1);
-
-                setFontSize((minRef.current + maxRef.current) / 2);
-            } else if (step === 2) setStep(3);
-
-            if (step === 3) {
-                const adjustedFontSize = Math.max(
-                    min,
-                    Math.min(max, Math.min(minRef.current, maxRef.current))
-                );
-                setFontSize(adjustedFontSize);
-                setStep(4);
-            }
-        };
-
+        window.addEventListener("resize", fitText);
         fitText();
+
+        return () => window.removeEventListener("resize", fitText);
     }, [fontSize, step, mode, min, max]);
 
     const textStyle: CSSProperties = {

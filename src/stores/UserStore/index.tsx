@@ -5,7 +5,14 @@ import { useCachedUser } from "@stores/CachedUserStore/index";
 import { PermissionType, PrivateUser } from "@blacket/types";
 import { type UserStoreContext } from "./userStore.d";
 
-const UserStoreContext = createContext<UserStoreContext>({ user: null, setUser: () => { }, getUserAvatarPath: () => "" });
+import { UserAvatar } from "@blacket/types";
+
+const UserStoreContext = createContext<UserStoreContext>({
+    user: null,
+    setUser: () => { },
+    getUserAvatarPath: () => "",
+    getUserBannerPath: () => ""
+});
 
 export function useUser() {
     return useContext(UserStoreContext);
@@ -26,8 +33,15 @@ export function UserStoreProvider({ children }: { children: ReactNode }) {
     const getUserAvatarPath = (user: PrivateUser | null): string => {
         if (!user) return window.constructCDNUrl("/content/icons/error.png");
         else if (user.customAvatar) return `${import.meta.env.VITE_UPLOAD_PATH}${user.customAvatar}` as string;
-        else if (user.avatarId) return resourceIdToPath(user.avatarId) || window.errorImage;
+        else if (user.avatar) return resourceIdToPath((user.avatar as UserAvatar).resourceId) || window.errorImage;
         else return window.constructCDNUrl("/content/blooks/Default.png");
+    };
+
+    const getUserBannerPath = (user: PrivateUser | null): string => {
+        if (!user) return window.constructCDNUrl("/content/icons/error.png");
+        else if (user.customBanner) return `${import.meta.env.VITE_UPLOAD_PATH}${user.customBanner}` as string;
+        else if (user.bannerId) return resourceIdToPath(user.bannerId) || window.errorImage;
+        else return window.constructCDNUrl("/content/banners/Default.png");
     };
 
     useEffect(() => {
@@ -35,5 +49,8 @@ export function UserStoreProvider({ children }: { children: ReactNode }) {
         if (user) addCachedUserWithData(user);
     }, [user]);
 
-    return <UserStoreContext.Provider value={{ user, setUser, getUserAvatarPath }}>{children}</UserStoreContext.Provider>;
+    return <UserStoreContext.Provider value={{
+        user, setUser,
+        getUserAvatarPath, getUserBannerPath
+    }}>{children}</UserStoreContext.Provider>;
 }

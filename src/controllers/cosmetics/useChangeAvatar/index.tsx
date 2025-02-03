@@ -11,9 +11,22 @@ export function useChangeAvatar() {
 
     const changeAvatar = (dto: CosmeticsChangeAvatarDto) => new Promise<Fetch2Response>((resolve, reject) => window.fetch2.patch("/api/cosmetics/avatar", dto)
         .then((res: Fetch2Response) => {
-            setUser({ ...user, avatarId: blooks.find((blook) => blook.id === dto.blookId)!.imageId, customAvatar: undefined });
+            if (dto.id === 0) {
+                setUser({ ...user, avatar: undefined, customAvatar: undefined });
 
-            resolve(res);
+                resolve(res);
+            } else {
+                const blook = user.blooks.filter((blook) => blook.id === dto.id)[0];
+
+                setUser({
+                    ...user, avatar: {
+                        ...blook,
+                        resourceId: blooks.filter((b) => b.id === blook.blookId)[0].imageId
+                    }
+                });
+
+                resolve(res);
+            }
         })
         .catch(reject));
 

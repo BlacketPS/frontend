@@ -85,14 +85,13 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
             nonce
         };
 
-        setMessages((previousMessages) => [message, ...previousMessages]);
+        const previousMessages = messages;
+        setMessages([message, ...previousMessages]);
 
         setTypingTimeout(null);
         setReplyingTo(null);
 
-        const secretZatic = (user.id === "17342115287959459" || user.id === "17365063311779528");
-
-        useSendMessage().sendMessage(secretZatic ? 1 : 0, { content, replyingTo: replyingTo ? replyingTo.id : undefined })
+        useSendMessage().sendMessage(0, { content, replyingTo: replyingTo ? replyingTo.id : undefined })
             .then((res) => setMessages((previousMessages) => previousMessages.map((message) => message.nonce === nonce ? res.data : message)))
             .catch(() => { });
     };

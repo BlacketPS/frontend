@@ -1,11 +1,11 @@
-import { useCallback, useState } from "react";
+import { Fragment, useCallback, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { useData } from "@stores/DataStore/index";
 import { useResource } from "@stores/ResourceStore/index";
 import { SearchBox } from "@components/index";
-import { ChangeFilterModal, SetHolder, Blook, Item, RightBlook, RightItem, RightButton, SellBlooksModal, AuctionModal } from "./components";
+import { ChangeFilterModal, SetHolder, InventoryBlook, Item, RightBlook, RightItem, RightButton, SellBlooksModal, AuctionModal } from "./components";
 import styles from "./inventory.module.scss";
 
 import { AuctionTypeEnum, Blook as BlookType, Item as ItemType } from "@blacket/types";
@@ -19,19 +19,44 @@ export default function Inventory() {
 
     if (!user) return <Navigate to="/login" />;
 
-    // i have to make a const for this i have no idea why but if i don't it just sometimes can't find a blook theres 0 reason for it but using a const works! i love typescript
-    const randomBlookIdFromMyBlooks = Object.keys(user.blooks)[Math.floor(Math.random() * Object.keys(user.blooks).length)];
-    const [selectedBlook, setSelectedBlook] = useState<BlookType | null>(blooks.find((blook) => blook.id === parseInt(randomBlookIdFromMyBlooks)) || null);
+    const getUserBlookQuantity = (blookId: number) => {
+        return user.blooks.filter((blook) => blook.blookId === blookId && !blook.shiny).length;
+    };
+
+    const getUserShinyBlookQuantity = (blookId: number) => {
+        return user.blooks.filter((blook) => blook.blookId === blookId && blook.shiny).length;
+    };
+
+    const hasUserBlook = (blookId: number) => {
+        return user.blooks.some((blook) => blook.blookId === blookId && !blook.shiny);
+    };
+
+    const hasShinyUserBlook = (blookId: number) => {
+        return user.blooks.some((blook) => blook.blookId === blookId && blook.shiny);
+    };
+
+    const randomBlookIdFromMyBlooks = user.blooks[Math.floor(Math.random() * user.blooks.length)]?.blookId;
+    const [selectedBlook, setSelectedBlook] = useState<BlookType | null>(blooks.find((blook) => blook.id === randomBlookIdFromMyBlooks) || null);
+    const [selectedBlookShiny, setSelectedBlookShiny] = useState<boolean>(false);
     const [selectedItem, setSelectedItem] = useState<ItemType | null>(null);
     const [search, setSearch] = useState<SearchOptions>({ query: localStorage.getItem("INVENTORY_SEARCH_QUERY") || "", rarity: parseInt(localStorage.getItem("INVENTORY_SEARCH_RARITY")!), onlyDupes: localStorage.getItem("INVENTORY_SEARCH_ONLY_DUPES") === "true", onlyOwned: localStorage.getItem("INVENTORY_SEARCH_ONLY_OWNED") === "true" });
 
     const nonPackBlooks = blooks.filter((blook) => !blook.packId).map((blook) => blook.id);
 
     const selectBlook = (blook: BlookType) => {
-        if (!user.blooks[blook.id]) return;
+        if (!hasUserBlook(blook.id)) return;
 
         setSelectedItem(null);
         setSelectedBlook(blook);
+        setSelectedBlookShiny(false);
+    };
+
+    const selectShinyBlook = (blook: BlookType) => {
+        if (!hasShinyUserBlook(blook.id)) return;
+
+        setSelectedItem(null);
+        setSelectedBlook(blook);
+        setSelectedBlookShiny(true);
     };
 
     const selectItem = (item: ItemType) => {
@@ -55,21 +80,21 @@ export default function Inventory() {
                 blook.packId === packId
                 && blook.name.toLowerCase().includes(search.query.toLowerCase())
                 && (!search.rarity || blook.rarityId === search.rarity)
-                && (!search.onlyDupes || (user.blooks[blook.id] as number) > 1)
-                && (!search.onlyOwned || user.blooks[blook.id])
+                && (!search.onlyDupes || getUserBlookQuantity(blook.id) > 1)
+                && (!search.onlyOwned || hasUserBlook(blook.id))
             );
-    }, [blooks, user.blooks, search]);
+    }, [blooks, search]);
 
     const filterMiscBlooks = useCallback(() => {
         return blooks
             .filter((blook) =>
                 nonPackBlooks.includes(blook.id)
                 && blook.name.toLowerCase().includes(search.query.toLowerCase())
-                && user.blooks[blook.id]
+                && hasUserBlook(blook.id)
                 && (!search.rarity || blook.rarityId === search.rarity)
-                && (!search.onlyDupes || (user.blooks[blook.id] as number) > 1)
+                && (!search.onlyDupes || getUserBlookQuantity(blook.id) > 1)
             );
-    }, [blooks, user.blooks, search]);
+    }, [blooks, search]);
 
     const setSearchOptionsFromLocalStorage = () => {
         const query = localStorage.getItem("INVENTORY_SEARCH_QUERY");
@@ -128,20 +153,31 @@ export default function Inventory() {
                         const filteredBlooks = filterPackBlooks(pack.id);
 
                         if (filteredBlooks.length > 0) return <SetHolder key={pack.id} name={`${pack.name} Pack`} icon={resourceIdToPath(pack.iconId)} nothing={false}>
-                            {filterPackBlooks(pack.id).sort((a, b) => a.priority - b.priority).map((blook) => <Blook key={blook.id} blook={blook} locked={!user.blooks[blook.id]} quantity={user.blooks[blook.id] as number} onClick={() => selectBlook(blook)} />)}
+                            {
+                                filterPackBlooks(pack.id).sort((a, b) => a.priority - b.priority)
+                                    .map((blook, i) => (
+                                        <Fragment key={i}>
+                                            <InventoryBlook blook={blook} shiny={false} locked={!hasUserBlook(blook.id)} quantity={getUserBlookQuantity(blook.id)} onClick={() => selectBlook(blook)} />
+
+                                            {hasShinyUserBlook(blook.id) && <InventoryBlook blook={blook} shiny={true} locked={false} quantity={getUserShinyBlookQuantity(blook.id)} onClick={() => selectShinyBlook(blook)} />}
+                                        </Fragment>)
+                                    )
+                            }
                         </SetHolder>;
                         else if (filterPackBlooks.length === 0 && search.query.length === 0) return <SetHolder key={pack.id} name={`${pack.name} Pack`} nothing={true} />;
                     })}
 
-                    {Object.keys(user.blooks).filter((blook) => nonPackBlooks.includes(parseInt(blook))).length !== 0 && <SetHolder nothing={false} name="Miscellaneous">
-                        {filterMiscBlooks().map((blook) => <Blook key={blook.id} blook={blook} locked={!user.blooks[blook.id]} quantity={user.blooks[blook.id] as number} onClick={() => selectBlook(blook)} />)}
+                    {user.blooks.filter((blook) => nonPackBlooks.includes(blook.blookId)).length !== 0 && <SetHolder nothing={false} name="Miscellaneous">
+                        {filterMiscBlooks().map((blook) => <InventoryBlook key={blook.id} blook={blook} shiny={false} locked={!hasUserBlook(blook.id)} quantity={getUserBlookQuantity(blook.id)} onClick={() => selectBlook(blook)} />)}
                     </SetHolder>}
                 </div>
             </div>
 
-            {Object.keys(user.blooks).length > 0 && selectedBlook && <RightBlook blook={selectedBlook} owned={user.blooks[selectedBlook.id] as number} noBlooksOwned={Object.keys(user.blooks).length < 1}>
-                {Object.keys(user.blooks).length > 0 && selectedBlook && <div className={styles.rightButtonContainer}>
-                    <RightButton image={window.constructCDNUrl("/content/token.png")} onClick={() => createModal(<SellBlooksModal blook={selectedBlook} />)}>Sell</RightButton>
+            {user.blooks.length > 0 && selectedBlook && <RightBlook blook={selectedBlook} shiny={selectedBlookShiny} owned={
+                !selectedBlookShiny ? getUserBlookQuantity(selectedBlook.id) : getUserShinyBlookQuantity(selectedBlook.id)
+            } noBlooksOwned={user.blooks.length < 1}>
+                {user.blooks.length > 0 && selectedBlook && <div className={styles.rightButtonContainer}>
+                    <RightButton image={window.constructCDNUrl("/content/token.png")} onClick={() => createModal(<SellBlooksModal blook={selectedBlook} shiny={selectedBlookShiny} />)}>Sell</RightButton>
                     <RightButton icon="fas fa-building-columns" onClick={() => createModal(<AuctionModal type={AuctionTypeEnum.BLOOK} blook={selectedBlook} />)}>Auction</RightButton>
                 </div>}
             </RightBlook>}

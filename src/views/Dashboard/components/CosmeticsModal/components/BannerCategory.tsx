@@ -1,22 +1,31 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useLoading } from "@stores/LoadingStore/index";
 import { useUser } from "@stores/UserStore/index";
 import { useData } from "@stores/DataStore/index";
+import { useModal } from "@stores/ModalStore/index";
 import { SearchBox } from "@components/index";
 import { Banner } from ".";
 import { useChangeBanner } from "@controllers/cosmetics/useChangeBanner/index";
+import { useUpload } from "@controllers/users/useUpload/index";
 import styles from "../cosmeticsModal.module.scss";
 
+import { PermissionTypeEnum } from "@blacket/types";
+
 export default function BannerCategory() {
+    const { user, getUserBannerPath } = useUser();
+    if (!user) return null;
+
     const [search, setSearch] = useState<string>("");
 
     const { setLoading } = useLoading();
-    const { user } = useUser();
     const { banners } = useData();
+    const { closeModal } = useModal();
 
-    const { changeBanner } = useChangeBanner();
+    const { changeBanner, uploadBanner } = useChangeBanner();
+    const { uploadFileSmall } = useUpload();
 
-    if (!user) return null;
+    const navigate = useNavigate();
 
     const onSelect = (id: number) => {
         setLoading(true);
@@ -25,6 +34,36 @@ export default function BannerCategory() {
             .then(() => setLoading(false))
             .catch(() => setLoading(false));
     };
+
+    const onFileSelect = (_file: File) => {
+        setLoading(true);
+
+        const file = new FormData();
+        file.append("file", _file);
+
+        uploadFileSmall(file)
+            .then((res) => {
+                uploadBanner({ uploadId: res.data.id })
+                    .finally(() => setLoading(false));
+            })
+            .catch(() => setLoading(false));
+    };
+
+    const openFileSelect = () => {
+        if (!user.hasPermission(PermissionTypeEnum.CUSTOM_AVATAR)) return closeModal(), navigate("/store");
+
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = ".png, .jpg, .jpeg, .gif, .webp";
+        input.onchange = () => {
+            if (!input.files) return;
+
+            onFileSelect(input.files[0]);
+        };
+
+        input.click();
+    };
+
 
     return (
         <>
@@ -37,6 +76,11 @@ export default function BannerCategory() {
             />
 
             <div className={styles.holder} data-column={true}>
+                <div className={styles.bannerContainer} onClick={openFileSelect}>
+                    <img className={styles.bannerImage} src={user.customBanner ? getUserBannerPath(user) : window.constructCDNUrl("/content/icons/upload-banner.png")} />
+                    <div className={styles.bannerName}>Upload Banner</div>
+                </div>
+
                 <Banner banner={banners.find((banner) => banner.id === 1)!} onClick={() => onSelect(1)} />
 
                 {banners

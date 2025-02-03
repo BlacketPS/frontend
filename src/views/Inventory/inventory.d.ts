@@ -12,6 +12,7 @@ export interface SearchOptions {
 
 export interface BlookProps extends HTMLAttributes<HTMLDivElement> {
     blook: Blook;
+    shiny: boolean;
     locked: boolean;
     quantity: number;
 }
@@ -27,6 +28,7 @@ export interface ItemProps extends HTMLAttributes<HTMLDivElement> {
 
 export interface RightBlookProps extends HTMLAttributes<HTMLDivElement> {
     blook: Blook;
+    shiny: boolean;
     owned: number;
     noBlooksOwned: boolean;
 }
@@ -51,6 +53,7 @@ export interface TiledBackgroundProps {
 
 export interface SellBlooksModalProps {
     blook: Blook;
+    shiny: boolean;
 }
 
 export interface AuctionModalProps {

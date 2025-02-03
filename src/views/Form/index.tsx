@@ -36,7 +36,9 @@ export default function Form() {
 
     const fetchForm = () => getForm(formId)
         .then((form) => setForm(form))
-        .catch(() => {
+        .catch((err: Fetch2Response) => {
+            if (err.status !== 404) return;
+
             localStorage.removeItem("USER_FORM_ID");
 
             navigate("/register");
@@ -100,7 +102,7 @@ export default function Form() {
                         Status: {form.status === FormStatusEnum.PENDING ? <span className={styles.formStatus}>
                             Pending
                             <div className={styles.loadingContainer} style={{ display: "inline-block", width: 20, height: 20, marginLeft: 25 }}>
-                                <Loader noModal style={{ transform: "scale(0.9)", marginTop: 5 }} />
+                                <Loader noModal style={{ transform: "scale(0.7)", marginTop: 14 }} />
                             </div>
                         </span> : form.status === FormStatusEnum.DENIED ? <span className={styles.formStatus}>
                             Denied

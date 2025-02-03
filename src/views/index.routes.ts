@@ -29,7 +29,8 @@ export { default as Store } from "./Store/route";
 
 // STAFF ROUTES
 export { default as MapEditor } from "./MapEditor/route";
-export { default as Experiments } from "./Experiments/route";
+export { default as StaffPanel } from "./Staff/route";
+export { default as StaffExperiments } from "./Staff/Experiments/route";
 
 // INTERNAL ROUTES
 export { default as SettingsLinkDiscord } from "./Settings/LinkDiscord/route";

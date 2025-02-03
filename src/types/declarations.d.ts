@@ -48,8 +48,6 @@ declare global {
         constructCDNUrl: (path: string) => string;
         errorImage: string;
 
-        lerp: (start: number, end: number, t: number) => number;
-
         // DEV ONLY VARIABLES
         socket: Socket;
         user?: PrivateUser;

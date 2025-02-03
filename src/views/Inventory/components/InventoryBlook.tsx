@@ -1,17 +1,27 @@
 import { useResource } from "@stores/ResourceStore/index";
 import { useData } from "@stores/DataStore/index";
-import { ImageOrVideo } from "@components/index";
+import { Blook } from "@components/index";
 import styles from "../inventory.module.scss";
 
 import { BlookProps } from "../inventory";
 
-export default function Blook({ blook, locked, quantity, ...props }: BlookProps) {
+export default function InventoryBlook({ blook, shiny, locked, quantity, ...props }: BlookProps) {
     const { resourceIdToPath } = useResource();
     const { rarities } = useData();
 
     return (
         <div data-locked={locked} className={styles.blook} {...props}>
-            <ImageOrVideo src={!locked ? resourceIdToPath(blook.imageId) : window.constructCDNUrl("/content/blooks/Default.png")} data-locked={locked} alt={blook.name} draggable={false} />
+            <Blook
+                className={styles.blookImage}
+                src={!locked ? resourceIdToPath(blook.imageId) : window.constructCDNUrl("/content/blooks/Default.png")}
+                alt={blook.name}
+                data-locked={locked}
+                draggable={false}
+                shiny={shiny}
+                shinyHue={blook.shinyHue ?? undefined}
+                shinySparkles={false}
+            />
+
             {!locked && <div style={{
                 backgroundColor: rarities.find((rarity) => rarity.id === blook.rarityId)!.color
             }} className={styles.blookQuantity}>{quantity.toLocaleString()}</div>}

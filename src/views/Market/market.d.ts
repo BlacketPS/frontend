@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { Blook, ItemShop, MarketOpenPackDto, Pack } from "@blacket/types";
+import { ItemShop, MarketOpenPackDto, Pack, UserBlook } from "@blacket/types";
 
 export type ParticlesScene = Phaser.Scene & {
     initParticles: () => void;
@@ -64,7 +64,7 @@ export interface OpenPackContainerProps {
 }
 
 export interface OpenPackBlookProps {
-    blook: Blook;
+    userBlook: UserBlook;
     animate: boolean;
     isNew: boolean;
 }

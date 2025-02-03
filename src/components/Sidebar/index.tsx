@@ -47,7 +47,7 @@ export default function Sidebar() {
                 link: "/trading-plaza",
                 textSizeOverride: 18
             },
-            ...user.hasPermission(PermissionTypeEnum.MANAGE_GAME_DATA) ? [{
+            ...user.hasPermission(PermissionTypeEnum.MANAGE_DATA) ? [{
                 icon: "fas fa-map",
                 text: "Map Editor",
                 link: "/map-editor"
@@ -90,7 +90,7 @@ export default function Sidebar() {
                 text: "Credits",
                 link: "/credits"
             },
-            ...(!user.hasPermission(PermissionTypeEnum.MUTE_USERS) ? [
+            ...(!user.hasPermission(PermissionTypeEnum.VIEW_AUDIT) ? [
                 {
                     icon: "fab fa-discord",
                     text: "Discord",
@@ -113,15 +113,10 @@ export default function Sidebar() {
                 }
             ] : [
                 {
-                    icon: "fas fa-flask",
-                    text: "Experiments",
-                    link: "/staff/experiments"
+                    icon: "fas fa-screwdriver-wrench",
+                    text: "Staff",
+                    link: "/staff"
                 },
-                ...user.hasPermission(PermissionTypeEnum.BAN_USERS) ? [{
-                    icon: "fas fa-gavel",
-                    text: "Appeals",
-                    link: "/staff/appeals"
-                }] : [],
                 ...user.hasPermission(PermissionTypeEnum.MANAGE_REPORTS) ? [{
                     icon: "fas fa-flag",
                     text: "Reports",

@@ -71,7 +71,7 @@ export default function Settings() {
                 {window.innerWidth <= 768 && <Button.ClearButton onClick={() => createModal(<Modal.LogoutModal />)}>Logout</Button.ClearButton>}
             </SettingsContainer>
 
-            <SettingsContainer header={{ icon: "fas fa-clipboard-list", text: "Plan" }}>
+            <SettingsContainer header={{ icon: "fas fa-wallet", text: "Billing" }}>
                 <PlanText>Basic</PlanText>
 
                 <UpgradeButton>Upgrade</UpgradeButton>

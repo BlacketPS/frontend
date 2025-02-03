@@ -27,7 +27,10 @@ export default function Store() {
         setLoading(true);
 
         getProducts()
-            .then((res) => setStores(res))
+            .then((res) => {
+                if (res.length) setStores(res);
+                else return;
+            })
             .catch(() => setStores([]))
             .finally(() => setLoading(false));
     }, [stores]);

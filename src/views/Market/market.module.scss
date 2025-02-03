@@ -82,6 +82,10 @@
     margin: 0 0 0 5%;
     flex-direction: column;
 
+    transition: max-height 400ms cubic-bezier(.32,.77,.84,1.02);
+    min-height: 0;
+    overflow: clip;
+
     // &[data-opened="true"] {
     //     animation: openCategory 1.2s cubic-bezier(.32,.77,.84,1.02) forwards;
 
@@ -114,14 +118,6 @@
     //     }
     // }
 
-    &[data-opened="true"] {
-        display: flex;
-    }
-
-    &[data-opened="false"] {
-        display: none;
-    }
-
     // &[data-opened="true"] {
     //     opacity: 1;
     //     transition: 0.4s ease;
@@ -132,6 +128,18 @@
     //     max-height: 0;
     //     transition: 0.4s ease;
     // }
+}
+
+@keyframes loadingDot {
+    0% {
+        transform: scale(0);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 0;
+    }
 }
 
 .buttonHolder {
@@ -435,6 +443,10 @@
     left: 0;
     z-index: 0;
     filter: brightness(1.5);
+
+    &[data-shiny="true"] {
+        filter: brightness(2) drop-shadow(0 0 25px #fff);
+    }
 }
 
 .openPackBlookContainer {
@@ -703,5 +715,25 @@
         width: 200px;
         bottom: -15px;
         right: -15px;
+    }
+}
+
+.shinySunburst {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 0;
+    animation: shinySunburst 15s linear infinite;
+
+    @keyframes shinySunburst {
+        0% {
+            rotate: 0deg;
+        }
+
+        100% {
+            rotate: 360deg;
+        }
     }
 }

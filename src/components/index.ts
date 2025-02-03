@@ -24,6 +24,7 @@ import Toggle from "./Toggle";
 import TopRight from "./TopRight";
 import Username from "./Username";
 import WarningContainer from "./WarningContainer";
+import Container from "./Container";
 
 export {
     Auction,
@@ -51,5 +52,6 @@ export {
     Toggle,
     TopRight,
     Username,
-    WarningContainer
+    WarningContainer,
+    Container
 };

@@ -2,7 +2,7 @@
 
 import { useLayoutEffect, useRef } from "react";
 import { Navigate } from "react-router-dom";
-import { BrenderCanvas, BrenderCanvasRef, CanvasObject } from "@brender/index";
+import { BrenderCanvas, BrenderCanvasRef, BrenderObject } from "@brender/index";
 import { useUser } from "@stores/UserStore/index";
 import { Button } from "@components/index";
 import styles from "./mapEditor.module.scss";
@@ -10,7 +10,7 @@ import styles from "./mapEditor.module.scss";
 import { Mode } from "./mapEditor.d";
 
 export default function MapEditor() {
-    return <Navigate to="/dashboard" />;
+    // return <Navigate to="/dashboard" />;
 
     const { user } = useUser();
 
@@ -39,8 +39,8 @@ export default function MapEditor() {
 
     let mode: Mode = Mode.EDIT;
 
-    let tileSelected: CanvasObject | null = null;
-    let objectSelected: CanvasObject | null = null;
+    let tileSelected: BrenderObject | null = null;
+    let objectSelected: BrenderObject | null = null;
 
     let isMouseDown = false;
 
@@ -53,8 +53,10 @@ export default function MapEditor() {
         const mouseDownHandler = () => isMouseDown = true;
         const mouseUpHandler = () => isMouseDown = false;
 
-        const placeTile = (entity: CanvasObject) => {
+        const placeTile = (entity: BrenderObject) => {
             if (!tileSelected) return;
+
+            if (brender.objects.some((obj) => obj.x === entity.x && obj.y === entity.y)) return;
 
             brender.createObject({
                 id: `${tileSelected.id} ${entity.x} ${entity.y}`,
@@ -93,18 +95,67 @@ export default function MapEditor() {
                             break;
                     }
 
-                    brender.renderRect(objectUnderMouse.x, objectUnderMouse.y, objectUnderMouse?.image?.width ?? 0, objectUnderMouse?.image?.height ?? 0, "rgba(255, 255, 255, 0.2)");
+                    // brender.drawRect(objectUnderMouse.x, objectUnderMouse.y, objectUnderMouse?.image?.width ?? 0, objectUnderMouse?.image?.height ?? 0, "rgba(255, 255, 255, 0.2)");
+                    brender.drawRect({
+                        x: objectUnderMouse.x,
+                        y: objectUnderMouse.y,
+                        width: objectUnderMouse?.image?.width ?? 0,
+                        height: objectUnderMouse?.image?.height ?? 0,
+                        color: "rgba(255, 255, 255, 0.2)"
+                    });
                 }
 
                 if (objectSelected) {
                     const x = brender.getWidth() - 10;
 
-                    brender.renderText(objectSelected.id, x, 20, { textAlign: "right" }, false);
-                    brender.renderText(`X: ${objectSelected.x}`, x, 40, { textAlign: "right" }, false);
-                    brender.renderText(`Y: ${objectSelected.y}`, x, 60, { textAlign: "right" }, false);
-                    brender.renderText(`Z: ${objectSelected.z}`, x, 80, { textAlign: "right" }, false);
-                    brender.renderText(`W: ${objectSelected.width ?? objectSelected?.image?.width ?? 0}`, x, 100, { textAlign: "right" }, false);
-                    brender.renderText(`H: ${objectSelected.height ?? objectSelected?.image?.height ?? 0}`, x, 120, { textAlign: "right" }, false);
+                    // brender.renderText(objectSelected.id, x, 20, { textAlign: "right" }, false);
+                    // brender.renderText(`X: ${objectSelected.x}`, x, 40, { textAlign: "right" }, false);
+                    // brender.renderText(`Y: ${objectSelected.y}`, x, 60, { textAlign: "right" }, false);
+                    // brender.renderText(`Z: ${objectSelected.z}`, x, 80, { textAlign: "right" }, false);
+                    // brender.renderText(`W: ${objectSelected.width ?? objectSelected?.image?.width ?? 0}`, x, 100, { textAlign: "right" }, false);
+                    // brender.renderText(`H: ${objectSelected.height ?? objectSelected?.image?.height ?? 0}`, x, 120, { textAlign: "right" }, false);
+                    brender.drawText({
+                        text: objectSelected.id,
+                        x,
+                        y: 20,
+                        style: { textAlign: "right" },
+                        useCamera: false
+                    });
+                    brender.drawText({
+                        text: `X: ${objectSelected.x}`,
+                        x,
+                        y: 40,
+                        style: { textAlign: "right" },
+                        useCamera: false
+                    });
+                    brender.drawText({
+                        text: `Y: ${objectSelected.y}`,
+                        x,
+                        y: 60,
+                        style: { textAlign: "right" },
+                        useCamera: false
+                    });
+                    brender.drawText({
+                        text: `Z: ${objectSelected.z}`,
+                        x,
+                        y: 80,
+                        style: { textAlign: "right" },
+                        useCamera: false
+                    });
+                    brender.drawText({
+                        text: `W: ${objectSelected.width ?? objectSelected?.image?.width ?? 0}`,
+                        x,
+                        y: 100,
+                        style: { textAlign: "right" },
+                        useCamera: false
+                    });
+                    brender.drawText({
+                        text: `H: ${objectSelected.height ?? objectSelected?.image?.height ?? 0}`,
+                        x,
+                        y: 120,
+                        style: { textAlign: "right" },
+                        useCamera: false
+                    });
                 }
             }
         });
@@ -127,7 +178,14 @@ export default function MapEditor() {
 
                     entity.image = tileSelected.image;
 
-                    brender.renderText(`${entity.x}, ${entity.y}`, entity.x + tileWidth / 2, entity.y + tileHeight + 30, { fontSize: 25, textAlign: "center" });
+                    // brender.renderText(`${entity.x}, ${entity.y}`, entity.x + tileWidth / 2, entity.y + tileHeight + 30, { fontSize: 25, textAlign: "center" });
+                    brender.drawText({
+                        text: `${entity.x}, ${entity.y}`,
+                        x: entity.x + tileWidth / 2,
+                        y: entity.y + tileHeight + 30,
+                        style: { fontSize: 25, textAlign: "center" },
+                        useCamera: true
+                    });
 
                     if (isMouseDown) {
                         placeTile(entity);

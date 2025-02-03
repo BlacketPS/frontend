@@ -5,10 +5,11 @@ import { useUser } from "@stores/UserStore/index";
 import { useSocket } from "@stores/SocketStore/index";
 import { useData } from "@stores/DataStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
+import { lerp } from "@functions/core/mathematics";
 import styles from "./tradingPlaza.module.scss";
 
 import { SocketMessageType } from "@blacket/types";
-import { Tile } from "./tradingPlaza";
+import { Tile } from "./tradingPlaza.d";
 
 export default function TradingPlaza() {
     const { user, getUserAvatarPath } = useUser();
@@ -96,30 +97,42 @@ export default function TradingPlaza() {
         const renderPlayerText = (entity: PlayerEntity, debug?: boolean) => {
             const center = entity.x + (entity?.width ?? 300) / 2;
 
-            brender.renderText(
-                entity.user.username,
-                center,
-                entity.y + 77,
-                {
+            // brender.renderText(
+            //     entity.user.username,
+            //     center,
+            //     entity.y + 77,
+            //     {
+            //         fontFamily: fontIdToName(entity.user.fontId) ?? "Nunito Bold",
+            //         fontSize: 20,
+            //         textAlign: "center",
+            //         color: entity.user.color
+            //     }
+            // );
+
+            brender.drawText({
+                text: entity.user.username,
+                x: center,
+                y: entity.y + 77,
+                style: {
                     fontFamily: fontIdToName(entity.user.fontId) ?? "Nunito Bold",
                     fontSize: 20,
                     textAlign: "center",
                     color: entity.user.color
                 }
-            );
+            });
 
-            if (debug) {
-                brender.renderText(
-                    `Player Position: ${entity.x}, ${entity.y}`,
-                    7,
-                    75,
-                    {
-                        fontFamily: "Nunito",
-                        color: "white"
-                    },
-                    false
-                );
-            }
+            // if (debug) {
+            //     brender.renderText(
+            //         `Player Position: ${entity.x}, ${entity.y}`,
+            //         7,
+            //         75,
+            //         {
+            //             fontFamily: "Nunito",
+            //             color: "white"
+            //         },
+            //         false
+            //     );
+            // }
         };
 
         const createPlayerEntity = async (userId: string) => {
@@ -141,8 +154,8 @@ export default function TradingPlaza() {
                 onFrame: (entity, deltaTime) => {
                     renderPlayerText(entity);
 
-                    entity.x = window.lerp(entity.x, entity?.targetX ?? 0, (entity?.targetEasingSpeed ?? 0.1 * deltaTime));
-                    entity.y = window.lerp(entity.y, entity?.targetY ?? 0, (entity?.targetEasingSpeed ?? 0.1 * deltaTime));
+                    entity.x = lerp(entity.x, entity?.targetX ?? 0, (entity?.targetEasingSpeed ?? 0.1 * deltaTime));
+                    entity.y = lerp(entity.y, entity?.targetY ?? 0, (entity?.targetEasingSpeed ?? 0.1 * deltaTime));
                 }
             });
 

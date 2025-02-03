@@ -8,7 +8,7 @@ import styles from "./blook.module.scss";
 
 import { BlookProps } from "./blook.d";
 
-export default function Blook({ shiny, src, alt, draggable, className, ...props }: BlookProps) {
+export default function Blook({ custom = false, shiny = false, shinyHue, shinySparkles = true, src, alt, draggable, className, ...props }: BlookProps) {
     const sparkleContainerRef = useRef<HTMLDivElement>(null);
 
     // this spawns in the corners only
@@ -35,7 +35,7 @@ export default function Blook({ shiny, src, alt, draggable, className, ...props 
     };
 
     useEffect(() => {
-        if (!shiny) return;
+        if (!shiny || !shinySparkles) return;
 
         const spawnSparkles = () => {
             // if you're tabbed off for a while there will be a bunch of sparkles that spawn at once
@@ -71,11 +71,17 @@ export default function Blook({ shiny, src, alt, draggable, className, ...props 
             className={`${className ? `${className} ` : ""}${styles.blook}`}
             {...props}
         >
+            {custom && <div className={styles.customIndicatorContainer}>
+                <div className={styles.customIndicator}>
+                    <span>C</span>
+                </div>
+            </div>}
+
             {shiny && <>
-                <div
+                {shinySparkles && <div
                     className={styles.sparkleContainer}
                     ref={sparkleContainerRef}
-                />
+                />}
 
                 <div
                     style={{ maskImage: `url('${src}')` }}
@@ -88,7 +94,9 @@ export default function Blook({ shiny, src, alt, draggable, className, ...props 
                 src={src}
                 alt={alt}
                 draggable={draggable}
-                data-shiny={shiny}
+                style={{
+                    filter: shiny ? `hue-rotate(${shinyHue ?? 30}deg)` : ""
+                }}
             />
         </div>
     );

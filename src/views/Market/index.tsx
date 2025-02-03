@@ -14,7 +14,7 @@ const { Game, Scale, WEBGL } = window.Phaser;
 import Particles from "./functions/PackParticles";
 import styles from "./market.module.scss";
 
-import { Blook, MarketOpenPackDto, Pack as PackType, RarityAnimationTypeEnum } from "@blacket/types";
+import { MarketOpenPackDto, Pack as PackType, RarityAnimationTypeEnum, UserBlook } from "@blacket/types";
 import { ParticlesScene, Config, GameState, BigButtonClickType, SearchOptions } from "./market.d";
 
 const useGame = (config: Config, containerRef: RefObject<HTMLDivElement>) => {
@@ -66,7 +66,7 @@ export default function Market() {
     const [currentPack, setCurrentPack] = useState<any | null>(null);
     const [openingPack, setOpeningPack] = useState<boolean>(false);
 
-    const [unlockedBlook, setUnlockedBlook] = useState<Blook | null>(null);
+    const [unlockedBlook, setUnlockedBlook] = useState<UserBlook | null>(null);
 
     const [bigButtonEvent, setBigButtonEvent] = useState<BigButtonClickType>(BigButtonClickType.CLOSE);
 
@@ -84,6 +84,8 @@ export default function Market() {
             .finally(() => setLoading(false));
     };
 
+    const isNew = (blookId: number) => user.blooks?.find((b) => b.blookId === blookId) ? false : true;
+
     const purchasePack = (dto: MarketOpenPackDto) => new Promise<void>((resolve, reject) => {
         if (user.settings.openPacksInstantly && user.tokens < packs.find((pack) => pack.id === dto.packId)!.price) {
             return reject(createModal(<Modal.ErrorModal>You do not have enough tokens to purchase this pack.</Modal.ErrorModal>));
@@ -93,7 +95,7 @@ export default function Market() {
 
         openPack(dto)
             .then(async (res) => {
-                const blook = blooks.find((blook) => blook.id === res.data.id)!;
+                const blook = blooks.find((blook) => blook.id === res.data.blookId)!;
                 const rarity = rarities.find((rarity) => rarity.id === blook.rarityId)!;
 
                 setGame({
@@ -107,7 +109,7 @@ export default function Market() {
                 setBigButtonEvent(BigButtonClickType.NONE);
                 setTimeout(() => setBigButtonEvent(BigButtonClickType.OPEN), 100);
 
-                resolve(setUnlockedBlook(blooks.find((blook) => blook.id === res.data.id)!));
+                resolve(setUnlockedBlook(res.data));
             })
             .catch((err) => {
                 if (user.settings.openPacksInstantly) createModal(<Modal.ErrorModal>{err?.data?.message || "Something went wrong."}</Modal.ErrorModal>);
@@ -121,7 +123,8 @@ export default function Market() {
     const handleBigClick = async () => {
         if (!unlockedBlook) return;
 
-        const rarity = rarities.find((rarity) => rarity.id === unlockedBlook.rarityId)!;
+        const blook = blooks.find((blook) => blook.id === unlockedBlook.blookId)!;
+        const rarity = rarities.find((rarity) => rarity.id === blook.rarityId)!;
 
         switch (bigButtonEvent) {
             case BigButtonClickType.OPEN:
@@ -226,14 +229,14 @@ export default function Market() {
                 <div className={styles.openModal} style={{
                     background: `radial-gradient(circle, ${currentPack.innerColor} 0%, ${currentPack.outerColor} 100%)`
                 }}>
-                    <div ref={gameRef} className={styles.phaserContainer} />
+                    <div ref={gameRef} className={styles.phaserContainer} data-shiny={unlockedBlook?.shiny} />
                     <OpenPackContainer
                         opening={openingPack}
                         image={resourceIdToPath(currentPack.imageId)}
                     />
-                    {unlockedBlook && <OpenPackBlook blook={unlockedBlook} animate={
+                    {unlockedBlook && <OpenPackBlook userBlook={unlockedBlook} animate={
                         bigButtonEvent !== BigButtonClickType.OPEN
-                    } isNew={user.blooks?.[unlockedBlook.id] === 1} />}
+                    } isNew={isNew(unlockedBlook.blookId)} />}
                     <img className={styles.openPackIcon} src={resourceIdToPath(currentPack.iconId)} alt="Icon" draggable={false} />
                     <div style={{ cursor: bigButtonEvent === BigButtonClickType.NONE ? "unset" : "" }} className={styles.openBigButton} onClick={handleBigClick} />
                 </div>
