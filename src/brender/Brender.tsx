@@ -48,7 +48,7 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
         _setCanvas(canvas);
         start();
 
-        if (debug) createObject({
+        if (debug) createGenericEntity({
             id: "debug",
             x: 0,
             y: 0,
@@ -65,6 +65,7 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
 
             destroyAllObjects();
             destroyAllEntities();
+            camera.scale = 1;
         };
     }, []);
 

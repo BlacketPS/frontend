@@ -1,15 +1,15 @@
 import { useLayoutEffect, useRef } from "react";
 import { Navigate } from "react-router-dom";
-import { BrenderCanvas, BrenderCanvasRef, PlayerEntity } from "@brender/index";
+import { BrenderCanvas, BrenderCanvasRef, BrenderEntity, PlayerEntity, urlToImage } from "@brender/index";
 import { useUser } from "@stores/UserStore/index";
 import { useSocket } from "@stores/SocketStore/index";
 import { useData } from "@stores/DataStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
 import { lerp } from "@functions/core/mathematics";
+import map from "./map";
 import styles from "./tradingPlaza.module.scss";
 
 import { SocketMessageType } from "@blacket/types";
-import { Tile } from "./tradingPlaza.d";
 
 export default function TradingPlaza() {
     const { user, getUserAvatarPath } = useUser();
@@ -21,22 +21,6 @@ export default function TradingPlaza() {
 
     const brenderCanvasRef = useRef<BrenderCanvasRef>(null);
 
-    const tiles: Tile[] = [
-        { id: "grass-1", image: window.constructCDNUrl("/content/trading-plaza/grass-1.png"), chance: 0.1 },
-        { id: "grass-2", image: window.constructCDNUrl("/content/trading-plaza/grass-2.png"), chance: 0.005 },
-        { id: "grass-3", image: window.constructCDNUrl("/content/trading-plaza/grass-3.png"), chance: 0.005, flippable: true },
-        { id: "grass-4", image: window.constructCDNUrl("/content/trading-plaza/grass-4.png"), chance: 0.005, flippable: true },
-        { id: "grass-5", image: window.constructCDNUrl("/content/trading-plaza/grass-5.png"), chance: 0.001 },
-        { id: "grass-6", image: window.constructCDNUrl("/content/trading-plaza/grass-6.png"), chance: 0.0025, flippable: true }
-    ];
-
-    for (const tile of tiles.filter((tile) => typeof tile.image === "string")) {
-        const image = new Image();
-        image.src = tile.image as string;
-
-        tile.image = image;
-    }
-
     useLayoutEffect(() => {
         if (!socket) return;
 
@@ -47,72 +31,79 @@ export default function TradingPlaza() {
             UP: ["w", "arrowup"],
             LEFT: ["a", "arrowleft"],
             DOWN: ["s", "arrowdown"],
-            RIGHT: ["d", "arrowright"]
+            RIGHT: ["d", "arrowright"],
+            RUN: ["shift"]
         };
 
-        const PLAYER_SPEED = 5;
-        const TILE_SIZE = 50;
-        const COLUMNS = 50;
-        const ROWS = 50;
+        const PLAYER_SPEED = 4;
+        // const TILE_SIZE = 50;
+        // const COLUMNS = 50;
+        // const ROWS = 50;
 
         let _previousPos = { x: 0, y: 0 };
 
-        for (let x = -ROWS; x < ROWS; x++) {
-            for (let y = -COLUMNS; y < COLUMNS; y++) {
-                let key: string = "";
-                let tile = tiles[0];
+        // for (let x = -ROWS; x < ROWS; x++) {
+        //     for (let y = -COLUMNS; y < COLUMNS; y++) {
+        //         let key: string = "";
+        //         let tile = tiles[0];
 
-                const chanceSum = tiles.reduce((sum, tile) => sum + tile.chance, 0);
-                const randomChance = Math.random() * chanceSum;
+        //         const chanceSum = tiles.reduce((sum, tile) => sum + tile.chance, 0);
+        //         const randomChance = Math.random() * chanceSum;
 
-                let accumulatedChance = 0;
-                for (const tile2 of tiles) {
-                    accumulatedChance += tile2.chance;
+        //         let accumulatedChance = 0;
+        //         for (const tile2 of tiles) {
+        //             accumulatedChance += tile2.chance;
 
-                    if (randomChance < accumulatedChance) {
-                        key = tile2.id;
-                        tile = tile2;
+        //             if (randomChance < accumulatedChance) {
+        //                 key = tile2.id;
+        //                 tile = tile2;
 
-                        break;
-                    }
-                }
+        //                 break;
+        //             }
+        //         }
 
-                const realX = x * TILE_SIZE;
-                const realY = y * TILE_SIZE;
+        //         const realX = x * TILE_SIZE;
+        //         const realY = y * TILE_SIZE;
 
-                brender.createObject({
-                    id: `${key}-${realX}-${realY}`,
-                    x: realX,
-                    y: realY,
-                    z: 0,
-                    width: TILE_SIZE + 1,
-                    height: TILE_SIZE + 1,
-                    image: tile.image as HTMLImageElement
-                });
-            }
-        }
+        //         brender.createObject({
+        //             id: `${key}-${realX}-${realY}`,
+        //             x: realX,
+        //             y: realY,
+        //             z: 0,
+        //             width: TILE_SIZE + 1,
+        //             height: TILE_SIZE + 1,
+        //             image: tile.image as HTMLImageElement
+        //         });
+        //     }
+        // }
 
         socket.emit(SocketMessageType.TRADING_PLAZA_JOIN);
 
-        const renderPlayerText = (entity: PlayerEntity, debug?: boolean) => {
-            const center = entity.x + (entity?.width ?? 300) / 2;
+        const loadMap = async () => {
+            for (const o of map) {
+                const image = o.image ? await brender.urlToImage(o.image) : undefined;
 
-            // brender.renderText(
-            //     entity.user.username,
-            //     center,
-            //     entity.y + 77,
-            //     {
-            //         fontFamily: fontIdToName(entity.user.fontId) ?? "Nunito Bold",
-            //         fontSize: 20,
-            //         textAlign: "center",
-            //         color: entity.user.color
-            //     }
-            // );
+                brender.createObject({
+                    id: o.id,
+                    x: o.x,
+                    y: o.y,
+                    z: o.z,
+                    width: o.width,
+                    height: o.height,
+                    image
+                });
+            }
+        };
+
+        loadMap();
+
+        const renderPlayerText = (entity: PlayerEntity) => {
+            const center = entity.x + (entity?.width ?? 300) / 2;
 
             brender.drawText({
                 text: entity.user.username,
                 x: center,
-                y: entity.y + 77,
+                y: entity.y + (entity?.height ?? 345 / 6) + 20,
                 style: {
                     fontFamily: fontIdToName(entity.user.fontId) ?? "Nunito Bold",
                     fontSize: 20,
@@ -120,19 +111,6 @@ export default function TradingPlaza() {
                     color: entity.user.color
                 }
             });
-
-            // if (debug) {
-            //     brender.renderText(
-            //         `Player Position: ${entity.x}, ${entity.y}`,
-            //         7,
-            //         75,
-            //         {
-            //             fontFamily: "Nunito",
-            //             color: "white"
-            //         },
-            //         false
-            //     );
-            // }
         };
 
         const createPlayerEntity = async (userId: string) => {
@@ -227,7 +205,7 @@ export default function TradingPlaza() {
             height: 345 / 6,
             user,
             onFrame: (entity, deltaTime) => {
-                renderPlayerText(entity, true);
+                renderPlayerText(entity);
 
                 let moveX = 0;
                 let moveY = 0;
@@ -237,9 +215,9 @@ export default function TradingPlaza() {
                 if (MOVEMENT_KEYS.DOWN.some((key) => brender.pressing[key])) moveY += PLAYER_SPEED * deltaTime;
                 if (MOVEMENT_KEYS.RIGHT.some((key) => brender.pressing[key])) moveX += PLAYER_SPEED * deltaTime;
 
-                if (moveX !== 0 && moveY !== 0) {
-                    moveX *= Math.SQRT1_2;
-                    moveY *= Math.SQRT1_2;
+                if (MOVEMENT_KEYS.RUN.some((key) => brender.pressing[key])) {
+                    moveX *= 1.5;
+                    moveY *= 1.5;
                 }
 
                 const nextX = entity.x + moveX;
@@ -250,10 +228,10 @@ export default function TradingPlaza() {
 
                 _previousPos = { x: entity.x, y: entity.y };
 
+                brender.camera.focusOn(entity as BrenderEntity, 0.05);
+
                 entity.x += Math.floor(moveX);
                 entity.y += Math.floor(moveY);
-
-                brender.camera.focusOn(entity);
 
                 overlay.x = brender.camera.x;
                 overlay.y = brender.camera.y;

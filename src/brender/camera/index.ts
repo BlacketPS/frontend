@@ -1,4 +1,5 @@
 import { canvas } from "@brender/index";
+import { lerp as lerpFunction } from "@functions/core/mathematics";
 
 import { BrenderCamera, BrenderEntity } from "..";
 
@@ -18,13 +19,23 @@ export const camera: BrenderCamera = {
         this.y += dy;
     },
 
-    focusOn(entity: BrenderEntity) {
-        this.x = Math.floor(entity.x - canvas.width / 2 / this.scale + (entity.width ?? entity?.image?.width ?? 0) / 2);
-        this.y = Math.floor(entity.y - canvas.height / 2 / this.scale + (entity.height ?? entity?.image?.height ?? 0) / 2);
+    focusOn(entity: BrenderEntity, lerp = 1) {
+        // this.x = Math.floor(entity.x - canvas.width / 2 / this.scale + (entity.width ?? entity?.image?.width ?? 0) / 2);
+        // this.y = Math.floor(entity.y - canvas.height / 2 / this.scale + (entity.height ?? entity?.image?.height ?? 0) / 2);
+        this.x = lerpFunction(this.x, entity.x - canvas.width / 2 / this.scale + (entity.width ?? entity?.image?.width ?? 0) / 2, lerp);
+        this.y = lerpFunction(this.y, entity.y - canvas.height / 2 / this.scale + (entity.height ?? entity?.image?.height ?? 0) / 2, lerp);
     },
 
     zoom(amount: number) {
+        const oldScale = this.scale;
+
         this.targetScale += amount;
-        this.targetScale = Math.max(.1, this.targetScale);
+        this.targetScale = Math.max(0.1, this.targetScale);
+
+        const centerX = this.x + canvas.width / 2 / oldScale;
+        const centerY = this.y + canvas.height / 2 / oldScale;
+
+        this.x = centerX - canvas.width / 2 / this.targetScale;
+        this.y = centerY - canvas.height / 2 / this.targetScale;
     }
 };

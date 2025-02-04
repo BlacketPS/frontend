@@ -47,7 +47,7 @@ export default function Sidebar() {
                 link: "/trading-plaza",
                 textSizeOverride: 18
             },
-            ...user.hasPermission(PermissionTypeEnum.MANAGE_DATA) ? [{
+            ...!user.hasPermission(PermissionTypeEnum.MANAGE_DATA) ? [{
                 icon: "fas fa-map",
                 text: "Map Editor",
                 link: "/map-editor"

@@ -70,7 +70,7 @@ export interface BrenderCamera {
     targetScale: number;
     moveTo(x: number, y: number): void;
     moveBy(dx: number, dy: number): void;
-    focusOn(entity: BrenderObject | BrenderEntity | PlayerEntity): void;
+    focusOn(entity: BrenderObject | BrenderEntity, lerp?: number): void;
     zoom(amount: number): void;
 }
 

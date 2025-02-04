@@ -1,5 +1,3 @@
-// TODO: implement this after rewrite is finished
-
 import { useLayoutEffect, useRef } from "react";
 import { Navigate } from "react-router-dom";
 import { BrenderCanvas, BrenderCanvasRef, BrenderObject } from "@brender/index";
@@ -18,22 +16,14 @@ export default function MapEditor() {
 
     const BRENDER_CANVAS_REF = useRef<BrenderCanvasRef>(null);
 
-    const CAMERA_SPEED = 10;
-    const MOVEMENT_KEYS = {
-        UP: ["w", "arrowup"],
-        LEFT: ["a", "arrowleft"],
-        DOWN: ["s", "arrowdown"],
-        RIGHT: ["d", "arrowright"]
-    };
-
     const TILES = [
-        { id: "grass-1", width: 50, height: 50, url: window.constructCDNUrl("/content/trading-plaza/grass-1.png") },
-        { id: "grass-2", width: 50, height: 50, url: window.constructCDNUrl("/content/trading-plaza/grass-2.png") },
-        { id: "grass-3", width: 50, height: 50, url: window.constructCDNUrl("/content/trading-plaza/grass-3.png") },
-        { id: "grass-4", width: 50, height: 50, url: window.constructCDNUrl("/content/trading-plaza/grass-4.png") },
-        { id: "grass-5", width: 50, height: 50, url: window.constructCDNUrl("/content/trading-plaza/grass-5.png") },
-        { id: "grass-6", width: 50, height: 50, url: window.constructCDNUrl("/content/trading-plaza/grass-6.png") },
-        { id: "spawn", width: 1000, height: 1000, url: window.constructCDNUrl("/content/trading-plaza/spawn.png") },
+        { id: "grass-1", width: 50, height: 50, url: window.constructCDNUrl("/content/trading-plaza/grass-1.png"), chance: 0.1 },
+        { id: "grass-2", width: 50, height: 50, url: window.constructCDNUrl("/content/trading-plaza/grass-2.png"), chance: 0.005 },
+        { id: "grass-3", width: 50, height: 50, url: window.constructCDNUrl("/content/trading-plaza/grass-3.png"), chance: 0.005 },
+        { id: "grass-4", width: 50, height: 50, url: window.constructCDNUrl("/content/trading-plaza/grass-4.png"), chance: 0.005 },
+        { id: "grass-5", width: 50, height: 50, url: window.constructCDNUrl("/content/trading-plaza/grass-5.png"), chance: 0.001 },
+        { id: "grass-6", width: 50, height: 50, url: window.constructCDNUrl("/content/trading-plaza/grass-6.png"), chance: 0.0025 },
+        { id: "spawn", width: 500, height: 500, url: window.constructCDNUrl("/content/trading-plaza/spawn.png") },
         { id: "spawn-ring", width: 1600, height: 1600, url: window.constructCDNUrl("/content/trading-plaza/spawn-ring.png") }
     ];
 
@@ -43,15 +33,54 @@ export default function MapEditor() {
     let objectSelected: BrenderObject | null = null;
 
     let isMouseDown = false;
+    let isRightMouseDown = false;
+    let lastMousePosition = { x: 0, y: 0 };
+
+    const exportMap = () => {
+        const brender = BRENDER_CANVAS_REF.current;
+        if (!brender) return;
+
+        const objects = brender.objects
+            .map((obj) => ({
+                id: obj.id,
+                x: obj.x,
+                y: obj.y,
+                z: obj.z,
+                width: obj.width,
+                height: obj.height,
+                image: obj.image?.src
+            }));
+
+        console.log(JSON.stringify(objects));
+    };
 
     useLayoutEffect(() => {
         const brender = BRENDER_CANVAS_REF.current;
         if (!brender) return;
 
-        const scrollHandler = (event: WheelEvent) => brender.camera.zoom(-event.deltaY / 1000);
+        const mouseDownHandler = (e: MouseEvent) => {
+            if (e.button === 0) isMouseDown = true;
+            if (e.button === 2) {
+                isRightMouseDown = true;
+                lastMousePosition = { x: e.clientX, y: e.clientY };
+            }
+        };
 
-        const mouseDownHandler = () => isMouseDown = true;
-        const mouseUpHandler = () => isMouseDown = false;
+        const mouseUpHandler = (e: MouseEvent) => {
+            if (e.button === 0) isMouseDown = false;
+            if (e.button === 2) isRightMouseDown = false;
+        };
+
+        const mouseMoveHandler = (e: MouseEvent) => {
+            if (isRightMouseDown) {
+                const deltaX = e.clientX - lastMousePosition.x;
+                const deltaY = e.clientY - lastMousePosition.y;
+
+                brender.camera.moveBy(-deltaX / brender.camera.scale, -deltaY / brender.camera.scale);
+
+                lastMousePosition = { x: e.clientX, y: e.clientY };
+            }
+        };
 
         const placeTile = (entity: BrenderObject) => {
             if (!tileSelected) return;
@@ -74,14 +103,7 @@ export default function MapEditor() {
             x: 0,
             y: 0,
             z: 0,
-            onFrame: (_, deltaTime) => {
-                const speed = (CAMERA_SPEED / brender.camera.scale) * deltaTime;
-
-                if (MOVEMENT_KEYS.UP.some((key) => brender.pressing[key])) brender.camera.moveBy(0, -speed);
-                if (MOVEMENT_KEYS.LEFT.some((key) => brender.pressing[key])) brender.camera.moveBy(-speed, 0);
-                if (MOVEMENT_KEYS.DOWN.some((key) => brender.pressing[key])) brender.camera.moveBy(0, speed);
-                if (MOVEMENT_KEYS.RIGHT.some((key) => brender.pressing[key])) brender.camera.moveBy(speed, 0);
-
+            onFrame: () => {
                 const objectUnderMouse = brender.objects.find((obj) => brender.isMouseOver(obj));
                 if (objectUnderMouse && mode !== Mode.CREATE) {
                     switch (mode) {
@@ -95,7 +117,6 @@ export default function MapEditor() {
                             break;
                     }
 
-                    // brender.drawRect(objectUnderMouse.x, objectUnderMouse.y, objectUnderMouse?.image?.width ?? 0, objectUnderMouse?.image?.height ?? 0, "rgba(255, 255, 255, 0.2)");
                     brender.drawRect({
                         x: objectUnderMouse.x,
                         y: objectUnderMouse.y,
@@ -108,12 +129,6 @@ export default function MapEditor() {
                 if (objectSelected) {
                     const x = brender.getWidth() - 10;
 
-                    // brender.renderText(objectSelected.id, x, 20, { textAlign: "right" }, false);
-                    // brender.renderText(`X: ${objectSelected.x}`, x, 40, { textAlign: "right" }, false);
-                    // brender.renderText(`Y: ${objectSelected.y}`, x, 60, { textAlign: "right" }, false);
-                    // brender.renderText(`Z: ${objectSelected.z}`, x, 80, { textAlign: "right" }, false);
-                    // brender.renderText(`W: ${objectSelected.width ?? objectSelected?.image?.width ?? 0}`, x, 100, { textAlign: "right" }, false);
-                    // brender.renderText(`H: ${objectSelected.height ?? objectSelected?.image?.height ?? 0}`, x, 120, { textAlign: "right" }, false);
                     brender.drawText({
                         text: objectSelected.id,
                         x,
@@ -177,6 +192,7 @@ export default function MapEditor() {
                     entity.y = snappedY - tileHeight / 2;
 
                     entity.image = tileSelected.image;
+                    entity.imageOpacity = 0.5;
 
                     // brender.renderText(`${entity.x}, ${entity.y}`, entity.x + tileWidth / 2, entity.y + tileHeight + 30, { fontSize: 25, textAlign: "center" });
                     brender.drawText({
@@ -196,14 +212,14 @@ export default function MapEditor() {
             }
         });
 
-        document.addEventListener("wheel", scrollHandler);
         document.addEventListener("mousedown", mouseDownHandler);
         document.addEventListener("mouseup", mouseUpHandler);
+        document.addEventListener("mousemove", mouseMoveHandler);
 
         return () => {
-            document.removeEventListener("wheel", scrollHandler);
             document.removeEventListener("mousedown", mouseDownHandler);
             document.removeEventListener("mouseup", mouseUpHandler);
+            document.removeEventListener("mousemove", mouseMoveHandler);
         };
     }, [BRENDER_CANVAS_REF]);
 
@@ -264,7 +280,7 @@ export default function MapEditor() {
 
                 <div className={styles.right}>
                     <Button.ClearButton>Import</Button.ClearButton>
-                    <Button.ClearButton>Export</Button.ClearButton>
+                    <Button.ClearButton onClick={exportMap}>Export</Button.ClearButton>
                 </div>
             </div>
         </>
