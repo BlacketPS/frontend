@@ -73,6 +73,7 @@
     height: 250px;
     overflow: hidden;
     position: relative;
+    view-transition-name: postTopContainer;
 
     &::before {
         content: "";
@@ -91,6 +92,7 @@
     z-index: 0;
     user-select: none;
     transition: transform .2s;
+    view-transition-name: postImage;
 }
 
 .postDate {
@@ -106,6 +108,7 @@
     background-color: rgba(0, 0, 0, .3);
     font-weight: 700;
     border-radius: 0 0 7px 0;
+    view-transition-name: postDate;
 
     &>i {
         margin-right: 7px;
@@ -125,6 +128,7 @@
     background-color: rgba(0, 0, 0, .3);
     font-weight: 700;
     border-radius: 0 0 0 7px;
+    view-transition-name: postAuthor;
 
     &>i {
         margin-left: 7px;

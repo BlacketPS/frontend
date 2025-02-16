@@ -14,6 +14,7 @@ export default defineConfig({
             "react-textfit": "/src/components/Textfit",
             "@brender": "/src/brender",
             "@components": "/src/components",
+            "@constants": "/src/constants",
             "@controllers": "/src/controllers",
             "@functions": "/src/functions",
             "@stores": "/src/stores"
@@ -32,7 +33,10 @@ export default defineConfig({
                 changeOrigin: true,
                 ws: true
             }
-        }
+        },
+        allowedHosts: [
+            ".blacket.org"
+        ]
     },
     css: {
         modules: {

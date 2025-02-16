@@ -10,7 +10,7 @@ export interface ContextMenuItem {
 }
 
 export interface ContextMenu {
-    items: Array<ContextMenuItem | false | null | undefined>;
+    items: Array<ContextMenuItem | null | undefined>;
     x?: number;
     y?: number;
 }

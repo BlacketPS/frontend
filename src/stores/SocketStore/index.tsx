@@ -1,6 +1,5 @@
 import { ReactNode, createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Socket, io } from "socket.io-client";
-import styles from "./tooManyConnections.module.scss";
 
 import { type SocketStoreContext } from "./socket.d";
 import { SocketMessageType } from "@blacket/types";
@@ -19,8 +18,9 @@ export function useSocket() {
 export function SocketStoreProvider({ children }: { children: ReactNode }) {
     const socketRef = useRef<Socket | null>(null);
     const [connected, setConnected] = useState<boolean>(false);
-    const [tooManyConnections, setTooManyConnections] = useState<boolean>(false);
-    const [latency, setLatency] = useState<number>(0);
+
+    let latency = 0;
+    const setLatency = (value: number) => latency = value;
 
     const initializeSocket = useCallback(() => {
         setConnected(false);
@@ -54,16 +54,6 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
 
                 initializeSocket();
             }
-
-            clearInterval(pingInterval);
-        });
-
-        socket.on("too-many-connections", () => {
-            console.warn("[Blacket] Too many connections, closing WebSocket connection...");
-
-            setTooManyConnections(true);
-
-            socket.close();
 
             clearInterval(pingInterval);
         });

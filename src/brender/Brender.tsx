@@ -2,7 +2,7 @@ import { useRef, useImperativeHandle, forwardRef, useLayoutEffect, memo } from "
 import { BrenderCanvasRef, BrenderCanvasProps } from "@brender/index.d";
 
 import {
-    _setCanvas, getWidth, getHeight, start, stop,
+    _setCanvas, getCanvas, getWidth, getHeight, start, stop,
     camera,
     pressing, mousePosition,
     isMouseOver, urlToImage,
@@ -18,6 +18,9 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
     let canvas = canvasRef.current;
 
     useImperativeHandle(ref, () => ({
+        get raw() {
+            return getCanvas();
+        },
         objects,
         entities,
         camera,
@@ -34,6 +37,7 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
         drawText,
         drawImage,
         urlToImage,
+        getCanvas,
         getWidth,
         getHeight
     }));

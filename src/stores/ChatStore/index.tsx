@@ -40,8 +40,9 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
     const [replyingTo, setReplyingTo] = useState<ClientMessage | null>(null);
     const [editing, setEditing] = useState<ClientMessage | null>(null);
     const [usersTyping, setUsersTyping] = useState<TypingUser[]>([]);
-    const [typingTimeout, setTypingTimeout] = useState<number | null>(null);
     const [mentions, setMentions] = useState(0);
+
+    let typingTimeout: number | null = null;
 
     const fetchMessages = async (room: number) => {
         if (!user) return [];
@@ -88,7 +89,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
         const previousMessages = messages;
         setMessages([message, ...previousMessages]);
 
-        setTypingTimeout(null);
+        typingTimeout = null;
         setReplyingTo(null);
 
         useSendMessage().sendMessage(0, { content, replyingTo: replyingTo ? replyingTo.id : undefined })
@@ -101,7 +102,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
 
         useStartTyping().startTyping(0);
 
-        setTypingTimeout(Date.now());
+        typingTimeout = Date.now();
     };
 
     const resetMentions = () => setMentions(0);
@@ -162,16 +163,14 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         if (!connected || !user || !socket) return;
 
-        const secretZatic = (user.id === "17342115287959459" || user.id === "17365063311779528");
-
-        fetchMessages(secretZatic ? 1 : 0);
+        fetchMessages(0);
 
         socket.on(SocketMessageType.CHAT_MESSAGES_CREATE, onChatMessageCreate);
         socket.on(SocketMessageType.CHAT_MESSAGES_UPDATE, onChatMessageUpdate);
         socket.on(SocketMessageType.CHAT_MESSAGES_DELETE, onChatMessagesDelete);
         socket.on(SocketMessageType.CHAT_TYPING_STARTED, onChatStartTyping);
 
-        const typingInterval = setInterval(() => setUsersTyping((previousUsersTyping) => previousUsersTyping.filter((user) => Date.now() - user.startedTypingAt < 2500)), 1000);
+        // const typingInterval = setInterval(() => setUsersTyping((previousUsersTyping) => previousUsersTyping.filter((user) => Date.now() - user.startedTypingAt < 2500)), 1000);
 
         return () => {
             socket.off(SocketMessageType.CHAT_MESSAGES_CREATE, onChatMessageCreate);

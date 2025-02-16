@@ -6,5 +6,5 @@ export default function GenericContainer({ children }: GenericContainerProps) {
         <div className={styles.container}>
             {children}
         </div>
-    )
+    );
 }

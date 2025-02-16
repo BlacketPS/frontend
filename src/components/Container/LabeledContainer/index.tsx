@@ -17,5 +17,5 @@ export default function LabeledContainer({ icon, label, children, ...props }: La
 
             {children}
         </div>
-    )
+    );
 }

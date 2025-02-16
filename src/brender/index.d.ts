@@ -36,6 +36,7 @@ export interface DrawImageProps {
 }
 
 export interface BrenderCanvasRef {
+    raw: HTMLCanvasElement;
     objects: BrenderObject[];
     entities: BrenderEntity[];
     camera: BrenderCamera;

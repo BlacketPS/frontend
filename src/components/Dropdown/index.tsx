@@ -53,7 +53,7 @@ export default function Dropdown({ search = { enabled: false, placeholder: "Sear
                     fontSize: "18px",
                     "&:hover": {
                         backgroundColor: "var(--accent-color)",
-                        color: "var(--background-color)",
+                        color: "var(--background-color)"
                     }
                 }),
                 singleValue: (provided) => ({ ...provided, color: "var(--accent-color)", fontSize: "18px" }),

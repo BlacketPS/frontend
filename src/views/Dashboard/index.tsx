@@ -16,6 +16,7 @@ import styles from "./dashboard.module.scss";
 
 import { AuctionsAuctionEntity, PrivateUser, PublicUser } from "@blacket/types";
 import { CosmeticsModalCategory } from "./dashboard.d";
+import { flushSync } from "react-dom";
 
 export default function Dashboard() {
     const { setLoading } = useLoading();

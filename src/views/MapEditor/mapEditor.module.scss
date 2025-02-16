@@ -1,14 +1,36 @@
-.container {
-    height: calc(100% - 60px);
-    width: 100%;
+.canvasContainer {
+    height: 100%;
+    width: calc(100% - 60px);
+    margin-left: 60px;
     outline: none;
     overflow: hidden;
+    position: absolute;
 }
 
 .canvas {
     width: 100%;
     height: 100%;
     outline: none;
+}
+
+.container {
+    display: flex;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+.leftContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    height: 100%;
+    width: 60px;
+    background-color: var(--primary-color);
+    padding: 10px 0;
+    box-sizing: border-box;
+    position: absolute;
 }
 
 .bottomContainer {
@@ -69,4 +91,24 @@
     justify-content: space-evenly;
     gap: 10px;
     width: 185px;
+}
+
+.toolButton {
+    width: 20px;
+    height: 20px;
+    background: var(--secondary-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 7px;
+    transition: transform 0.2s;
+
+    &:hover {
+        transform: scale(0.95);
+    }
+
+    &:active {
+        transform: scale(0.9);
+    }
 }

@@ -12,7 +12,6 @@ export default function Category({ header, internalName, children }: CategoryPro
     const [openedState, setOpenedState] = useState(true);
     const [isVisible, setIsVisible] = useState(false);
     const [maxHeightSet, setMaxHeightSet] = useState(false);
-    const [empty, setEmpty] = useState(false);
 
     if (!user) return null;
 
@@ -44,13 +43,6 @@ export default function Category({ header, internalName, children }: CategoryPro
             }
         };
     }, [contentRef, maxHeightSet]);
-
-    useEffect(() => {
-        if (contentRef.current) {
-            const isEmptyContent = contentRef.current.children.length === 0 || contentRef.current.children[0].children.length === 0;
-            setEmpty(isEmptyContent);
-        }
-    }, [contentRef]);
 
     useEffect(() => {
         if (contentRef.current) {

@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { Blook, ImageOrVideo } from "@components/index";
 import { useResource } from "@stores/ResourceStore/index";
 import { useData } from "@stores/DataStore/index";

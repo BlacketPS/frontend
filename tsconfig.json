@@ -12,6 +12,9 @@
             "@components/*": [
                 "src/components/*"
             ],
+            "@constants/*": [
+                "src/constants/*"
+            ],
             "@controllers/*": [
                 "src/controllers/*"
             ],

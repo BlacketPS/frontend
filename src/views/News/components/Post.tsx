@@ -1,23 +1,21 @@
-import { useResource } from "@stores/ResourceStore/index";
 import { useUser } from "@stores/UserStore/index";
-import { Username, Markdown } from "@components/index";
+import { Markdown, Username } from "@components/index";
 import styles from "../news.module.scss";
 
 import { PostProps } from "../news.d";
 
-export default function Post({ post }: PostProps) {
-    const { resourceIdToPath } = useResource();
+export default function Post({ post, ...props }: PostProps) {
     const { user } = useUser();
 
     if (!user) return null;
 
     return (
-        <div className={styles.postContainer}>
+        <div className={styles.postContainer} {...props}>
             <div className={styles.postTopContainer}>
                 <img
                     className={styles.postImage}
                     draggable={false}
-                    src={resourceIdToPath(post.imageId)}
+                    src={`${import.meta.env.VITE_UPLOAD_PATH}${post.image as string}`}
                 />
                 <div className={styles.postDate}>
                     <i className="fas fa-calendar-alt" />
@@ -28,6 +26,7 @@ export default function Post({ post }: PostProps) {
                     <i className="fas fa-user" />
                 </div>
             </div>
+
             <div className={styles.postTitle}>
                 {post.title}
             </div>

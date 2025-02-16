@@ -6,10 +6,11 @@ import { useSocket } from "@stores/SocketStore/index";
 import { useData } from "@stores/DataStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
 import { lerp } from "@functions/core/mathematics";
-import map from "./map";
 import styles from "./tradingPlaza.module.scss";
 
 import { SocketMessageType } from "@blacket/types";
+import { TILES } from "@constants/index";
+import map from "./map";
 
 export default function TradingPlaza() {
     const { user, getUserAvatarPath } = useUser();
@@ -80,16 +81,32 @@ export default function TradingPlaza() {
         socket.emit(SocketMessageType.TRADING_PLAZA_JOIN);
 
         const loadMap = async () => {
-            for (const o of map) {
-                const image = o.image ? await brender.urlToImage(o.image) : undefined;
+            // @ts-ignore temporary
+            for (const o of window.map) {
+                // const image = o.image ? await brender.urlToImage(o.image) : undefined;
+
+                // brender.createObject({
+                //     id: o.id,
+                //     x: o.x,
+                //     y: o.y,
+                //     z: o.z,
+                //     width: o.width,
+                //     height: o.height,
+                //     image
+                // });
+
+                const tile = TILES.find((tile) => tile.id === o.id.split(" ")[0]) ?? undefined;
+                if (!tile) continue;
+
+                const image = tile.image ? await brender.urlToImage(tile.image) : undefined;
 
                 brender.createObject({
                     id: o.id,
                     x: o.x,
                     y: o.y,
-                    z: o.z,
-                    width: o.width,
-                    height: o.height,
+                    z: 0,
+                    width: tile.width,
+                    height: tile.height,
                     image
                 });
             }

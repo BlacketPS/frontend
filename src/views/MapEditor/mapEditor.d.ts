@@ -5,3 +5,14 @@ export enum Mode {
     SELECT = 4,
     PAINT_BUCKET = 5
 }
+
+export interface TileSet {
+    id: string;
+    x: number;
+    y: number;
+}
+
+export interface ToolButtonProps {
+    icon: string;
+    onClick: () => void;
+}

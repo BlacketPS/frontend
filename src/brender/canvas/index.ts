@@ -28,6 +28,8 @@ export function _setCanvas(c: HTMLCanvasElement) {
     canvas.addEventListener("mousemove", handleMouseMove);
 }
 
+export const getCanvas = () => canvas;
+
 export const getWidth = () => canvas.width ?? 0;
 export const getHeight = () => canvas.height ?? 0;
 

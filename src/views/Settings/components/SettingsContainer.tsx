@@ -1,5 +1,3 @@
-import styles from "../settings.module.scss";
-
 import { SettingsContainerProps } from "../settings.d";
 import { Container } from "@components/index";
 

@@ -49,15 +49,15 @@ export default memo(function Chat() {
                         isSending={message.nonce !== undefined}
                         isEditing={editing?.id === message.id}
                         messageContextMenu={() => openContextMenu([
-                            message.authorId === user.id && { label: "Edit", icon: "fas fa-edit", onClick: () => setEditing(message) },
+                            message.authorId === user.id ? { label: "Edit", icon: "fas fa-edit", onClick: () => setEditing(message) } : null,
                             { label: "Reply", icon: "fas fa-reply", onClick: () => setReplyingTo(message) },
                             { label: "Copy Text", icon: "fas fa-copy", onClick: () => navigator.clipboard.writeText(message.content) },
-                            message.authorId !== user.id && { label: "Report", icon: "fas fa-flag", color: "#F54242", onClick: () => console.log("report") },
+                            message.authorId !== user.id ? { label: "Report", icon: "fas fa-flag", color: "#F54242", onClick: () => console.log("report") } : null,
 
                             (
                                 message.authorId === user.id
                                 || user.hasPermission(PermissionTypeEnum.MANAGE_MESSAGES)
-                            ) && {
+                            ) ? {
                                 label: "Delete", icon: "fas fa-trash", color: "#F54242", onClick: () => {
                                     console.log(message);
                                     deleteMessage(message.roomId, message.id)
@@ -67,7 +67,7 @@ export default memo(function Chat() {
                                             icon: window.constructCDNUrl("/content/icons/error.png")
                                         }));
                                 }
-                            },
+                            } : null,
 
                             { divider: true },
 
@@ -79,7 +79,7 @@ export default memo(function Chat() {
                             // TODO: finish this after the rewrite
                             // message.authorId !== user.id && { label: "Send Message", icon: "fas fa-paper-plane", onClick: () => console.log("send message") },
                             { label: "Mention", icon: "fas fa-at", onClick: () => console.log("mention") },
-                            message.authorId !== user.id && { label: "Block", icon: "fas fa-ban", color: "#F54242", onClick: () => console.log("block") },
+                            message.authorId !== user.id ? { label: "Block", icon: "fas fa-ban", color: "#F54242", onClick: () => console.log("block") } : null,
 
                             { divider: true },
 

@@ -19,10 +19,15 @@ export default function News() {
     }, []);
 
     return (
-        <div className={styles.posts}>
-            {news.map((post) => (
-                <Post key={post.id} post={post} />
-            ))}
-        </div>
+        <>
+            {<div className={styles.posts}>
+                {news.map((post) => (
+                    <Post
+                        key={post.id}
+                        post={post}
+                    />
+                ))}
+            </div>}
+        </>
     );
 }

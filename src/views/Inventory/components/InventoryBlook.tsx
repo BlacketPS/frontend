@@ -18,7 +18,6 @@ export default function InventoryBlook({ blook, shiny, locked, quantity, ...prop
                 data-locked={locked}
                 draggable={false}
                 shiny={shiny}
-                shinyHue={blook.shinyHue ?? undefined}
                 shinySparkles={false}
             />
 

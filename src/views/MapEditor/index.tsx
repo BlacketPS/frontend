@@ -5,7 +5,9 @@ import { useUser } from "@stores/UserStore/index";
 import { Button } from "@components/index";
 import styles from "./mapEditor.module.scss";
 
-import { Mode } from "./mapEditor.d";
+import { Mode, TileSet } from "./mapEditor.d";
+import { TILES } from "@constants/index";
+import { ToolButton } from "./components";
 
 export default function MapEditor() {
     // return <Navigate to="/dashboard" />;
@@ -15,17 +17,6 @@ export default function MapEditor() {
     if (!user) return <Navigate to="/login" />;
 
     const BRENDER_CANVAS_REF = useRef<BrenderCanvasRef>(null);
-
-    const TILES = [
-        { id: "grass-1", width: 50, height: 50, url: window.constructCDNUrl("/content/trading-plaza/grass-1.png"), chance: 0.1 },
-        { id: "grass-2", width: 50, height: 50, url: window.constructCDNUrl("/content/trading-plaza/grass-2.png"), chance: 0.005 },
-        { id: "grass-3", width: 50, height: 50, url: window.constructCDNUrl("/content/trading-plaza/grass-3.png"), chance: 0.005 },
-        { id: "grass-4", width: 50, height: 50, url: window.constructCDNUrl("/content/trading-plaza/grass-4.png"), chance: 0.005 },
-        { id: "grass-5", width: 50, height: 50, url: window.constructCDNUrl("/content/trading-plaza/grass-5.png"), chance: 0.001 },
-        { id: "grass-6", width: 50, height: 50, url: window.constructCDNUrl("/content/trading-plaza/grass-6.png"), chance: 0.0025 },
-        { id: "spawn", width: 500, height: 500, url: window.constructCDNUrl("/content/trading-plaza/spawn.png") },
-        { id: "spawn-ring", width: 1600, height: 1600, url: window.constructCDNUrl("/content/trading-plaza/spawn-ring.png") }
-    ];
 
     let mode: Mode = Mode.EDIT;
 
@@ -40,18 +31,17 @@ export default function MapEditor() {
         const brender = BRENDER_CANVAS_REF.current;
         if (!brender) return;
 
-        const objects = brender.objects
-            .map((obj) => ({
+        const tileSets: TileSet[] = [];
+
+        for (const obj of brender.objects) {
+            tileSets.push({
                 id: obj.id,
                 x: obj.x,
-                y: obj.y,
-                z: obj.z,
-                width: obj.width,
-                height: obj.height,
-                image: obj.image?.src
-            }));
+                y: obj.y
+            });
+        }
 
-        console.log(JSON.stringify(objects));
+        console.log(JSON.stringify(tileSets));
     };
 
     useLayoutEffect(() => {
@@ -82,13 +72,15 @@ export default function MapEditor() {
             }
         };
 
+        const nextAvailableId = () => (brender.objects.length + 1).toString();
+
         const placeTile = (entity: BrenderObject) => {
             if (!tileSelected) return;
 
             if (brender.objects.some((obj) => obj.x === entity.x && obj.y === entity.y)) return;
 
             brender.createObject({
-                id: `${tileSelected.id} ${entity.x} ${entity.y}`,
+                id: `${tileSelected.id} ${nextAvailableId()}`,
                 x: entity.x,
                 y: entity.y,
                 z: 1,
@@ -212,14 +204,14 @@ export default function MapEditor() {
             }
         });
 
-        document.addEventListener("mousedown", mouseDownHandler);
-        document.addEventListener("mouseup", mouseUpHandler);
-        document.addEventListener("mousemove", mouseMoveHandler);
+        brender.raw.addEventListener("mousedown", mouseDownHandler);
+        brender.raw.addEventListener("mouseup", mouseUpHandler);
+        brender.raw.addEventListener("mousemove", mouseMoveHandler);
 
         return () => {
-            document.removeEventListener("mousedown", mouseDownHandler);
-            document.removeEventListener("mouseup", mouseUpHandler);
-            document.removeEventListener("mousemove", mouseMoveHandler);
+            brender.raw.removeEventListener("mousedown", mouseDownHandler);
+            brender.raw.removeEventListener("mouseup", mouseUpHandler);
+            brender.raw.removeEventListener("mousemove", mouseMoveHandler);
         };
     }, [BRENDER_CANVAS_REF]);
 
@@ -246,7 +238,7 @@ export default function MapEditor() {
 
     return (
         <>
-            <div className={styles.container}>
+            <div className={styles.canvasContainer}>
                 <BrenderCanvas
                     className={styles.canvas}
                     ref={BRENDER_CANVAS_REF}
@@ -254,7 +246,15 @@ export default function MapEditor() {
                 />
             </div>
 
-            <div className={styles.bottomContainer}>
+            <div className={styles.container}>
+                <div className={styles.leftContainer}>
+                    <ToolButton
+                        icon="fas fa-pencil-alt"
+                        onClick={() => mode = Mode.EDIT}
+                    />
+                </div>
+
+                {/* <div className={styles.bottomContainer}>
                 <div className={styles.left}>
                     <Button.GenericButton
                         icon="fas fa-pencil-alt"
@@ -269,11 +269,11 @@ export default function MapEditor() {
                 <div className={styles.middle}>
                     {TILES.map((tile, index) => (
                         <div key={index} className={styles.tileContainer} onClick={() => {
-                            setSelectedTile(tile.id, tile.width, tile.height, tile.url);
+                            setSelectedTile(tile.id, tile.width, tile.height, tile.image);
 
                             mode = Mode.CREATE;
                         }}>
-                            <img src={tile.url} alt={tile.id} />
+                            <img src={tile.image} alt={tile.id} />
                         </div>
                     ))}
                 </div>
@@ -282,6 +282,7 @@ export default function MapEditor() {
                     <Button.ClearButton>Import</Button.ClearButton>
                     <Button.ClearButton onClick={exportMap}>Export</Button.ClearButton>
                 </div>
+            </div> */}
             </div>
         </>
     );

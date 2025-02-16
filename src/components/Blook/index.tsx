@@ -8,7 +8,7 @@ import styles from "./blook.module.scss";
 
 import { BlookProps } from "./blook.d";
 
-export default function Blook({ custom = false, shiny = false, shinyHue, shinySparkles = true, src, alt, draggable, className, ...props }: BlookProps) {
+export default function Blook({ custom = false, shiny = false, shinySparkles = true, src, alt, draggable, className, ...props }: BlookProps) {
     const sparkleContainerRef = useRef<HTMLDivElement>(null);
 
     // this spawns in the corners only
@@ -94,9 +94,6 @@ export default function Blook({ custom = false, shiny = false, shinyHue, shinySp
                 src={src}
                 alt={alt}
                 draggable={draggable}
-                style={{
-                    filter: shiny ? `hue-rotate(${shinyHue ?? 30}deg)` : ""
-                }}
             />
         </div>
     );
