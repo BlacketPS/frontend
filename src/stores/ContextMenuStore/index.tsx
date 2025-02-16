@@ -15,36 +15,31 @@ export function useContextMenu() {
 }
 
 export function ContextMenuStoreProvider({ children }: { children: ReactNode }) {
-    // const [cursorPosition, setCursorPosition] = useState<{ x: number; y: number; }>({ x: 0, y: 0 });
     const [contextMenu, setContextMenu] = useState<ContextMenu | null>(null);
-
-    // visible so the contextmenu doesn't flicker on initial render
     const [visible, setVisible] = useState<boolean>(false);
 
-    // const cursorPosition = useRef<{ x: number; y: number; }>({ x: 0, y: 0 });
+    const cursorPosition = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
     const contextMenuRef = useRef<HTMLDivElement>(null);
 
     const openContextMenu = async (items: ContextMenu["items"]) => {
         if (window.innerWidth <= 768) {
             setVisible(true);
-
             return setContextMenu({ items });
         }
 
+        setContextMenu({ items, x: cursorPosition.current.x, y: cursorPosition.current.y });
 
-        // setContextMenu({ items, x: cursorPosition.x, y: cursorPosition.y });
-        const cursorPosition = { x: 0, y: 0 };
-
-
-        while (!contextMenuRef.current) await new Promise((resolve) => setTimeout(resolve, 0));
+        // very funny way to do this, at least no re-renders!!!
+        let preventFreeze = 0;
+        while (!contextMenuRef.current && preventFreeze++ < 100) await new Promise((resolve) => setTimeout(resolve, 0));
+        if (!contextMenuRef.current) return;
 
         const contextMenuRect = contextMenuRef.current.getBoundingClientRect();
-
         const { innerWidth, innerHeight } = window;
         const { width, height } = contextMenuRect;
 
-        const x = Math.min(cursorPosition.x, innerWidth - width);
-        const y = Math.min(cursorPosition.y, innerHeight - height);
+        const x = Math.min(cursorPosition.current.x, innerWidth - width);
+        const y = Math.min(cursorPosition.current.y, innerHeight - height);
 
         setContextMenu({ items, x, y });
 
@@ -53,18 +48,25 @@ export function ContextMenuStoreProvider({ children }: { children: ReactNode }) 
 
     const closeContextMenu = () => {
         setVisible(false);
-
         setContextMenu(null);
     };
 
     useEffect(() => {
-        // window.addEventListener("mousemove", (e) => setCursorPosition({ x: e.clientX, y: e.clientY }));
-        const handleClickOutside = (e: MouseEvent) => (contextMenuRef.current && contextMenuRef.current.contains(e.target as Node) || e.button === 0 && closeContextMenu());
+        const handleMouseMove = (e: MouseEvent) => {
+            cursorPosition.current = { x: e.clientX, y: e.clientY };
+        };
 
+        const handleClickOutside = (e: MouseEvent) => {
+            if (contextMenuRef.current && !contextMenuRef.current.contains(e.target as Node)) {
+                closeContextMenu();
+            }
+        };
+
+        window.addEventListener("mousemove", handleMouseMove);
         window.addEventListener("mousedown", handleClickOutside);
 
         return () => {
-            // window.removeEventListener("mousemove", (e) => setCursorPosition({ x: e.clientX, y: e.clientY }));
+            window.removeEventListener("mousemove", handleMouseMove);
             window.removeEventListener("mousedown", handleClickOutside);
         };
     }, []);
@@ -74,7 +76,6 @@ export function ContextMenuStoreProvider({ children }: { children: ReactNode }) 
             {contextMenu && <Container ref={contextMenuRef} visible={visible} top={contextMenu.y} left={contextMenu.x}>
                 {contextMenu.items.map((item, index) => item?.divider ? <Divider key={index} /> : item && <Item key={index} icon={item.icon} image={item.image} color={item.color} onClick={() => {
                     if (item.onClick) item.onClick();
-
                     closeContextMenu();
                 }}>{item.label}</Item>)}
             </Container>}

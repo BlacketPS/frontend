@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode, useRef } from "react";
 import { useSocket } from "@stores/SocketStore/index";
 import { useUser } from "@stores/UserStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
@@ -41,6 +41,9 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
     const [editing, setEditing] = useState<ClientMessage | null>(null);
     const [usersTyping, setUsersTyping] = useState<TypingUser[]>([]);
     const [mentions, setMentions] = useState(0);
+
+    const usersTypingRef = useRef(usersTyping);
+    usersTypingRef.current = usersTyping;
 
     let typingTimeout: number | null = null;
 
@@ -160,6 +163,12 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
         });
     };
 
+    const updateUsersTyping = () => {
+        const newUsersTyping = usersTypingRef.current.filter((user) => Date.now() - user.startedTypingAt < 2500);
+
+        if (newUsersTyping.length !== usersTypingRef.current.length) setUsersTyping(newUsersTyping);
+    };
+
     useEffect(() => {
         if (!connected || !user || !socket) return;
 
@@ -170,7 +179,8 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
         socket.on(SocketMessageType.CHAT_MESSAGES_DELETE, onChatMessagesDelete);
         socket.on(SocketMessageType.CHAT_TYPING_STARTED, onChatStartTyping);
 
-        // const typingInterval = setInterval(() => setUsersTyping((previousUsersTyping) => previousUsersTyping.filter((user) => Date.now() - user.startedTypingAt < 2500)), 1000);
+        // should we remove any? this fixes pointless state re-renders
+        const typingInterval = setInterval(() => updateUsersTyping(), 1000);
 
         return () => {
             socket.off(SocketMessageType.CHAT_MESSAGES_CREATE, onChatMessageCreate);

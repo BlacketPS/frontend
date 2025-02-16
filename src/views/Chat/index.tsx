@@ -1,4 +1,3 @@
-// TODO: editing messages doesn't update immediately
 // TODO: mobile support is completely broken
 // TODO: fix the emojis and menmtion breaking when an _ is inserted
 
