@@ -308,39 +308,92 @@ export default function MarkdownPreview({ content, color, readOnly, getEditor = 
                 }
             }
 
+            // i know this is a shit workaround but it works, you can clean it up and do this better if you want - zastix
+            const getPointAtGlobalOffset = (
+                // @ts-expect-error
+                editor,
+                // @ts-expect-error
+                globalOffset
+            ) => {
+                let currentOffset = 0;
+
+                for (const [node, path] of Node.texts(editor)) {
+                    const nodeText = Node.string(node);
+                    const nodeLength = nodeText.length;
+
+                    if (currentOffset + nodeLength >= globalOffset) {
+                        const offsetInNode = globalOffset - currentOffset;
+                        return { path, offset: offsetInNode };
+                    }
+
+                    currentOffset += nodeLength;
+                }
+
+                return null;
+            };
+
             // this is for emojis below
             if (selection && Range.isCollapsed(selection)) {
                 const [start] = Range.edges(selection);
+                let current = start;
+                let foundColon = false;
 
-                const wordBefore = Editor.before(editor, start, { unit: "word" });
-                const before = wordBefore && Editor.before(editor, wordBefore);
-                const beforeRange = before && Editor.range(editor, before, start);
-                const beforeText = beforeRange && Editor.string(editor, beforeRange);
+                while (true) {
+                    const previous = Editor.before(editor, current);
+                    if (!previous) break;
 
-                const beforeMatch = beforeText && beforeText.match(/:([\w_]+)$/);
-                const fullMatch = beforeText && beforeText.match(/(?<!\w):[\w_]+:(?!\w)/);
+                    const charRange = { anchor: previous, focus: current };
+                    const char = Editor.string(editor, charRange);
 
-                if (beforeMatch) {
-                    setEmojiTarget(beforeRange);
-                    setEmojiSearch(beforeMatch[1]);
-                    const emoji = window.constants.emojis.find((emoji) => emoji.key.toLowerCase().startsWith(beforeMatch[1].toLowerCase()))?.key || "";
-                    setEmojiName(emoji);
-                    return;
+                    if (char === ':') {
+                        foundColon = true;
+                        current = previous;
+                        break;
+                    } else if (!char.match(/^[\w_]$/)) break;
+
+                    current = previous;
                 }
 
-                if (fullMatch) {
-                    const emoji = window.constants.emojis.find((emoji) => emoji.key === fullMatch[0].replaceAll(":", ""));
-                    if (!emoji) return;
+                if (foundColon) {
+                    const beforeRange = { anchor: current, focus: start };
+                    const beforeText = Editor.string(editor, beforeRange);
+                    const match = beforeText.match(/^:([\w_]+)$/);
 
-                    Transforms.delete(editor, { at: beforeRange });
-                    insertEmoji(editor, emoji.value);
-                    return;
+                    const wordRange = Editor.range(editor, Editor.start(editor, start.path), start);
+                    const wordText = Editor.string(editor, wordRange);
+                    const fullMatch = wordText.match(/(?<!\w):[\w_]+:(?!\w)/);
+
+                    if (fullMatch) {
+                        const emoji = window.constants.emojis.find(e => e.key === fullMatch[0].replaceAll(":", ""));
+                        if (emoji) {
+                            Transforms.delete(editor, {
+                                at: {
+                                    anchor: getPointAtGlobalOffset(editor, fullMatch.index!)!,
+                                    focus: getPointAtGlobalOffset(editor, fullMatch.index! + fullMatch[0].length)!
+                                }
+                            });
+                            insertEmoji(editor, emoji.value);
+                            return;
+                        }
+                    }
+
+                    if (match) {
+                        setEmojiTarget(beforeRange);
+                        setEmojiSearch(match[1]);
+                        const emoji = window.constants.emojis.find(e => e.key.toLowerCase().startsWith(match[1].toLowerCase()));
+                        setEmojiName(emoji?.key || "");
+                        return;
+                    }
                 }
+
+
+                setEmojiTarget(null);
             }
 
             setMentionTarget(null);
             setEmojiTarget(null);
-        }}>
+        }
+        }>
             {!readOnly && mentionTarget && mentionUsers.length > 0 && (
                 <div ref={mentionRef} className={styles.typingListContainer}>
                     {mentionUsers.map((user) => (
