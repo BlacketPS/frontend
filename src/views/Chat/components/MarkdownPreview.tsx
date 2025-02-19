@@ -345,7 +345,7 @@ export default function MarkdownPreview({ content, color, readOnly, getEditor = 
                     const charRange = { anchor: previous, focus: current };
                     const char = Editor.string(editor, charRange);
 
-                    if (char === ':') {
+                    if (char === ":") {
                         foundColon = true;
                         current = previous;
                         break;
