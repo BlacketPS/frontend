@@ -7,15 +7,19 @@ import MarkdownPreview from "./MarkdownPreview.tsx";
 import styles from "../chat.module.scss";
 
 import { InputContainerProps } from "../chat.d";
+import { useUser } from "@stores/UserStore/index.tsx";
 
 const isMobile = () => window.innerWidth <= 768;
 
 export default memo(function InputContainer({ placeholder }: InputContainerProps) {
     const { messages, sendMessage, startTyping, usersTyping, replyingTo, setReplyingTo, editing, setEditing } = useChat();
     const { cachedUsers } = useCachedUser();
+    const { user } = useUser();
 
     const [editor, setEditor] = useState<Editor | null>(null);
     const [mTextareaValue, setMTextareaValue] = useState<string>("");
+
+    if (!user) return null;
 
     const clearEditor = (editor: Editor) => {
         editor.children.map(() => Transforms.delete(editor, { at: [0] }));
@@ -67,7 +71,7 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
         if (e.repeat) return;
 
         switch (e.key) {
-            case "Enter":
+            case "Enter": {
                 if (!e.shiftKey) {
                     e.preventDefault();
 
@@ -75,23 +79,27 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
                 }
 
                 break;
-            case "ArrowUp":
+            }
+            case "ArrowUp": {
+                if (!editor) return;
                 if (editing) return;
                 if (isMobile()) return;
-                if (getEditorContent(editor!) !== "") return;
+                if (getEditorContent(editor) !== "") return;
 
                 e.preventDefault();
 
                 const lastMessage = messages
                     .slice()
-                    .find((message) => message.authorId === cachedUsers[0].id)
+                    .find((message) => message.authorId === user.id)
                 if (!lastMessage) return;
 
                 setEditing(lastMessage);
 
                 break;
+            }
         }
     };
+
 
     return (
         <div className={styles.messageForm}>
