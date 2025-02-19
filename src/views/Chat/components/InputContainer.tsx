@@ -111,16 +111,23 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
             </div>}
 
             {isMobile() ? (
-                <textarea
-                    className={styles.messageInput}
-                    placeholder={placeholder}
-                    spellCheck
-                    autoFocus
-                    value={mTextareaValue}
-                    onChange={(e) => setMTextareaValue(e.target.value)}
-                    onKeyDown={(e) => handleKeyDown(e as any)}
+                <>
+                    <textarea
+                        className={styles.messageInput}
+                        placeholder={placeholder}
+                        spellCheck
+                        autoFocus
+                        value={mTextareaValue}
+                        onChange={(e) => setMTextareaValue(e.target.value)}
+                        onKeyDown={(e) => handleKeyDown(e as any)}
 
-                />
+                    />
+                    <div className={styles.inputButtonsContainer}>
+                        <div className={styles.inputButton}>
+                            <i className="fas fa-paper-plane" onClick={send} />
+                        </div>
+                    </div>
+                </>
             ) : (
                 <MarkdownPreview
                     className={styles.messageInput}
@@ -132,12 +139,6 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
                     getEditor={(editor) => setEditor(editor)}
                 />
             )}
-
-            <div className={styles.inputButtonsContainer}>
-                <div className={styles.inputButton}>
-                    <i className="fas fa-paper-plane" onClick={send} />
-                </div>
-            </div>
         </div>
     );
 });
