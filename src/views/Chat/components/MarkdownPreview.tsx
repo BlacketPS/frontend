@@ -364,7 +364,7 @@ export default function MarkdownPreview({ content, color, readOnly, getEditor = 
                     const fullMatch = wordText.match(/(?<!\w):[\w_]+:(?!\w)/);
 
                     if (fullMatch) {
-                        const emoji = window.constants.emojis.find(e => e.key === fullMatch[0].replaceAll(":", ""));
+                        const emoji = window.constants.emojis.find(e => e.key === fullMatch[0].replaceAll(":", "").toLowerCase());
                         if (emoji) {
                             Transforms.delete(editor, {
                                 at: {
