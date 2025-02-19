@@ -392,8 +392,7 @@ export default function MarkdownPreview({ content, color, readOnly, getEditor = 
 
             setMentionTarget(null);
             setEmojiTarget(null);
-        }
-        }>
+        }}>
             {!readOnly && mentionTarget && mentionUsers.length > 0 && (
                 <div ref={mentionRef} className={styles.typingListContainer}>
                     {mentionUsers.map((user) => (
