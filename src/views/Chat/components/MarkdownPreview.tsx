@@ -317,8 +317,8 @@ export default function MarkdownPreview({ content, color, readOnly, getEditor = 
                 const beforeRange = before && Editor.range(editor, before, start);
                 const beforeText = beforeRange && Editor.string(editor, beforeRange);
 
-                const beforeMatch = beforeText && beforeText.match(/:([\w_]*)$/);
-                const fullMatch = beforeText && beforeText.match(/:([\w_]*)$/);
+                const beforeMatch = beforeText && beforeText.match(/:([\w_]+)$/);
+                const fullMatch = beforeText && beforeText.match(/(?<!\w):[\w_]+:(?!\w)/);
 
                 if (beforeMatch) {
                     setEmojiTarget(beforeRange);
@@ -329,7 +329,7 @@ export default function MarkdownPreview({ content, color, readOnly, getEditor = 
                 }
 
                 if (fullMatch) {
-                    const emoji = window.constants.emojis.find((emoji) => emoji.key === fullMatch[1]);
+                    const emoji = window.constants.emojis.find((emoji) => emoji.key === fullMatch[0].replaceAll(":", ""));
                     if (!emoji) return;
 
                     Transforms.delete(editor, { at: beforeRange });
