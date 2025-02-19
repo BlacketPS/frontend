@@ -1,7 +1,7 @@
 // this file has no types and is really messy because it's awful to deal with
 // if anyone wants to make types for it you're welcome to
 
-import { memo, useCallback, useMemo, useRef, useState } from "react";
+import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Prism, { Token } from "prismjs";
 import "prismjs/components/prism-markdown";
 import { Editor, Node, Path, Text, Transforms, Range, createEditor } from "slate";
@@ -90,7 +90,7 @@ const Element = ({ attributes, children, element }: ElementProps) => {
     }
 };
 
-export default memo(function MarkdownPreview({ content, color, readOnly, getEditor = () => { }, ...props }: MarkdownPreviewProps) {
+export default function MarkdownPreview({ content, color, readOnly, getEditor = () => { }, ...props }: MarkdownPreviewProps) {
     const { createModal } = useModal();
     const { getUserAvatarPath } = useUser();
     const { cachedUsers } = useCachedUser();
@@ -464,4 +464,4 @@ export default memo(function MarkdownPreview({ content, color, readOnly, getEdit
             />
         </Slate>
     );
-});
+}

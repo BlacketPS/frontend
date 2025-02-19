@@ -1,6 +1,6 @@
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
-import { Editor } from "slate";
+import { Editor, Transforms } from "slate";
 import { useUser } from "@stores/UserStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
 import MarkdownPreview from "./MarkdownPreview.tsx";
@@ -9,7 +9,6 @@ import { ImageOrVideo, Username } from "@components/index";
 import styles from "../chat.module.scss";
 
 import { ChatMessageProps } from "../chat.d";
-import { ClientMessage } from "@stores/ChatStore/chatStore.js";
 
 export default memo(function ChatMessage({ message, newUser, mentionsMe, isSending, isEditing, messageContextMenu, userContextMenu, onEditSave, onEditCancel }: ChatMessageProps) {
     if (!messageContextMenu || isSending) messageContextMenu = () => { };
@@ -21,11 +20,26 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
     const { cachedUsers } = useCachedUser();
 
     const [editor, setEditor] = useState<Editor | null>(null);
-    // tempMessage is only used because editing messages doesn't re-render for some reason so i will just manually update the content
-    const [tempMessage, setTempMessage] = useState<ClientMessage>(message);
+    const [contentKey, setContentKey] = useState(0);
+
+    const editingInputRef = useRef<HTMLDivElement>(null);
 
     const author = cachedUsers.find((user) => user.id === message.authorId) || null;
     const replyingToAuthor = cachedUsers.find((user) => user.id === message?.replyingTo?.authorId) || null;
+
+    useEffect(() => {
+        setContentKey(contentKey + 1);
+    }, [
+        message.content,
+        message.replyingTo?.content
+    ]);
+
+    useMemo(() => {
+        if (editor) {
+            const point = Editor.end(editor, []);
+            Transforms.select(editor, point);
+        }
+    }, [editor]);
 
     const getEditorContent = (editor: Editor) => {
         let content = "";
@@ -40,11 +54,7 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
         return content.trim();
     };
 
-    const handleEditSave = (content: string) => {
-        setTempMessage({ ...tempMessage, content });
-
-        onEditSave(content);
-    };
+    const handleEditSave = (content: string) => onEditSave(content);
 
     if (author) return (
         <span className={styles.messageHolder} style={{
@@ -74,7 +84,7 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
 
                     <i className="fas fa-circle" style={{ fontSize: "0.2rem" }} />
 
-                    <MarkdownPreview content={`${message.replyingTo.content.split("\n")[0]}${message.replyingTo.content.split("\n").length > 1 ? "..." : ""}`} readOnly={true} />
+                    <MarkdownPreview key={contentKey} content={`${message.replyingTo.content.split("\n")[0]}${message.replyingTo.content.split("\n").length > 1 ? "..." : ""}`} readOnly={true} />
                 </div>}
 
                 <div className={styles.messageContainer}>
@@ -107,23 +117,28 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
                             {
                                 // TODO: badges on messages
 
-                                /* author.badges.length > 0 && <div className={styles.messageBadgeContainer}>
+                                author.badges.length > 0 && <div className={styles.messageBadgeContainer}>
                                     {
                                         // badges.map((badge, index) => <img key={index} src={badge} className={styles.messageBadge} />)
                                     }
-                                </div> */
+                                </div>
                             }
                         </div>}
 
-                        <div style={{ opacity: isSending ? 0.5 : "" }} className={styles.messageContent}>
+                        <div style={{
+                            opacity: (isSending && !message.error) ? 0.5 : "",
+                            color: message.error ? "#ce1313" : ""
+                        }} className={styles.messageContent}>
                             {!(newUser || message.replyingTo) && <div className={styles.messageSmallTimestamp}>
                                 {new Date(message.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                             </div>}
 
                             {!isEditing
-                                ? <MarkdownPreview content={tempMessage.content} readOnly={true} />
+                                ? <MarkdownPreview key={contentKey} content={message.content} readOnly={true} />
                                 : <>
                                     <MarkdownPreview
+                                        key={contentKey}
+                                        ref={editingInputRef}
                                         content={message.content}
                                         className={styles.editingMessageInput}
                                         autoFocus={true}
@@ -171,14 +186,10 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
                                     </div>
                                 </>
                             }
-
                         </div>
                     </div>
-                    {
-                        // TODO: make this next to the content of the message instead
 
-                        message.edited && <span className={styles.edited}>(edited)</span>
-                    }
+                    {message.edited && <span className={styles.edited}>(edited)</span>}
                 </div>
             </li>
         </span>

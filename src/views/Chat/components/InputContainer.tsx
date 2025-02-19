@@ -11,7 +11,7 @@ import { InputContainerProps } from "../chat.d";
 const isMobile = () => window.innerWidth <= 768;
 
 export default memo(function InputContainer({ placeholder }: InputContainerProps) {
-    const { sendMessage, startTyping, usersTyping, replyingTo, setReplyingTo } = useChat();
+    const { messages, sendMessage, startTyping, usersTyping, replyingTo, setReplyingTo, editing, setEditing } = useChat();
     const { cachedUsers } = useCachedUser();
 
     const [editor, setEditor] = useState<Editor | null>(null);
@@ -64,12 +64,32 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
     };
 
     const handleKeyDown = (e: KeyboardEvent) => {
-        if (!e.repeat) {
-            if (e.key === "Enter" && !e.shiftKey) {
+        if (e.repeat) return;
+
+        switch (e.key) {
+            case "Enter":
+                if (!e.shiftKey) {
+                    e.preventDefault();
+
+                    send();
+                }
+
+                break;
+            case "ArrowUp":
+                if (editing) return;
+                if (isMobile()) return;
+                if (getEditorContent(editor!) !== "") return;
+
                 e.preventDefault();
 
-                send();
-            }
+                const lastMessage = messages
+                    .slice()
+                    .find((message) => message.authorId === cachedUsers[0].id)
+                if (!lastMessage) return;
+
+                setEditing(lastMessage);
+
+                break;
         }
     };
 

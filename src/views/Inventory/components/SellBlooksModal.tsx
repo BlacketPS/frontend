@@ -3,7 +3,7 @@ import { useModal } from "@stores/ModalStore/index";
 import { useUser } from "@stores/UserStore";
 import { useResource } from "@stores/ResourceStore/index";
 import { useSellBlooks } from "@controllers/blooks/useSellBlooks/index";
-import { Modal, Button, Form, ErrorContainer, Blook } from "@components/index";
+import { Modal, Button, Form, ErrorContainer, Blook, Input } from "@components/index";
 import styles from "../inventory.module.scss";
 
 import { SellBlooksModalProps } from "../inventory";
@@ -81,17 +81,29 @@ export default function SellBlooksModal({ blook, shiny }: SellBlooksModalProps) 
 
             <div style={{ display: "flex", justifyContent: "center", alignItems: "center" }}>
                 <Form style={{ width: "75px" }} onSubmit={submit}>
-                    {/* <Input ref={inputRef} value={quantity} style={{ fontSize: "25px" }} onChange={(e) => {
+                    <Input ref={inputRef} value={selectedBlooks.length.toString()} style={{ fontSize: "25px" }} onChange={(e) => {
                         const value = e.target.value;
                         const parsedValue = parseInt(value);
 
                         if (value.match(/[^0-9]/)) return;
                         if (parsedValue < 1 && value !== "") return;
-                        if (parsedValue > (user.blooks[blook.id] as number)) return setQuantity(user.blooks[blook.id].toString());
+                        if (parsedValue > getUserBlookQuantity()) return setSelectedBlooks(user.blooks
+                            .filter((userBlook) => userBlook.blookId === blook.id)
+                            .filter((userBlook) => userBlook.shiny === shiny)
+                            .map((userBlook) => userBlook.id)
+                        );
 
-                        setQuantity(e.target.value);
+                        if (value === "") return setSelectedBlooks([]);
+                        setSelectedBlooks(user.blooks
+                            .filter((userBlook) => userBlook.blookId === blook.id)
+                            .filter((userBlook) => userBlook.shiny === shiny)
+                            // .sort((a, b) => b.serial - a.serial)
+                            .slice(0, parsedValue)
+                            .map((userBlook) => userBlook.id)
+                        );
+
                         setError("");
-                    }} autoComplete="off" /> */}
+                    }} autoComplete="off" />
                 </Form>
                 <Modal.ModalBody style={{ padding: "0 5px 15px", fontSize: "30px" }}>/ {getUserBlookQuantity()}</Modal.ModalBody>
             </div>

@@ -4,6 +4,7 @@ export interface ClientMessage extends Message {
     author: PublicUser;
     replyingTo?: ClientMessage | null;
     nonce?: string;
+    error?: string;
 }
 
 export interface TypingUser {

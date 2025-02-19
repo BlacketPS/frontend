@@ -45,6 +45,9 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
     const usersTypingRef = useRef(usersTyping);
     usersTypingRef.current = usersTyping;
 
+    const messagesRef = useRef(messages);
+    messagesRef.current = messages;
+
     let typingTimeout: number | null = null;
 
     const fetchMessages = async (room: number) => {
@@ -97,7 +100,11 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
 
         useSendMessage().sendMessage(0, { content, replyingTo: replyingTo ? replyingTo.id : undefined })
             .then((res) => setMessages((previousMessages) => previousMessages.map((message) => message.nonce === nonce ? res.data : message)))
-            .catch(() => { });
+            .catch((err) => {
+                message.error = err.data.message || "Something went wrong.";
+
+                setMessages((previousMessages) => previousMessages.map((message) => message.nonce === nonce ? message : message));
+            });
     };
 
     const startTyping = () => {
@@ -136,7 +143,21 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
     const onChatMessageUpdate = (data: ClientMessage) => {
         if (!user) return;
 
-        setMessages((previousMessages) => previousMessages.map((message) => message.id === data.id ? { ...message, content: data.content, edited: true } : message));
+        const previousMessage = messagesRef.current.find((message) => message.id === data.id);
+        if (!previousMessage) return;
+
+        const newMessage = { ...previousMessage, content: data.content, edited: true };
+
+        // edit other messages replies as well
+        const messagesReplyingToThisMessage = messagesRef.current.filter((message) => message.replyingTo?.id === data.id);
+
+        setMessages((previousMessages) => previousMessages.map((message) => {
+            if (message.id === data.id) return newMessage;
+
+            if (messagesReplyingToThisMessage.find((m) => m.id === message.id)) return { ...message, replyingTo: { ...(message.replyingTo as ClientMessage), content: data.content } };
+
+            return message;
+        }));
     };
 
     const onChatMessagesDelete = (data: { messageId: string }) => {
