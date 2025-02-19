@@ -72,7 +72,7 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
 
         switch (e.key) {
             case "Enter": {
-                if (!e.shiftKey) {
+                if (!e.shiftKey && !isMobile()) {
                     e.preventDefault();
 
                     send();
