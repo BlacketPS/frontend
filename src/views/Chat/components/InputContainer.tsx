@@ -90,7 +90,7 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
 
                 const lastMessage = messages
                     .slice()
-                    .find((message) => message.authorId === user.id)
+                    .find((message) => message.authorId === user.id);
                 if (!lastMessage) return;
 
                 setEditing(lastMessage);

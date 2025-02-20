@@ -6,6 +6,11 @@ export enum ErrorCode {
 }
 
 export interface ErrorProps {
-    code: ErrorCode,
+    code: ErrorCode
     reason?: string
+}
+
+export interface ImageProps {
+    src: string
+    alt: string
 }

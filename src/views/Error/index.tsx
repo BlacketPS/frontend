@@ -1,5 +1,6 @@
 import { useRouteError } from "react-router-dom";
 import { Background, Button } from "@components/index";
+import { Image } from "./components/index";
 import styles from "./error.module.scss";
 
 import { ErrorCode, ErrorProps } from "./error.d";
@@ -23,7 +24,7 @@ export default function Error({ code, reason }: ErrorProps) {
         const reasonArray = reason?.split("|");
 
         reasonText = reasonArray?.[0] ?? "breaking rules";
-        reasonEndTime = `at ${new Date(reasonArray?.[1]).toLocaleDateString()  ?? "never"}`;
+        reasonEndTime = `at ${new Date(reasonArray?.[1]).toLocaleDateString() ?? "never"}`;
     }
 
     return (
@@ -36,7 +37,7 @@ export default function Error({ code, reason }: ErrorProps) {
                         {code === ErrorCode.MAINTENANCE ? "Oops!" : code === ErrorCode.BLACKLISTED ? "Uh Oh..." : code === ErrorCode.UNKNOWN ? "Something went wrong" : ""}
                     </div>
 
-                    <img className={styles.image} src={code !== ErrorCode.UNKNOWN ? window.constructCDNUrl(`/content/${code}.png`) : window.constructCDNUrl("/content/error.png")} draggable={false} />
+                    <Image src={code !== ErrorCode.UNKNOWN ? window.constructCDNUrl(`/content/${code}.png`) : window.constructCDNUrl("/content/error.png")} alt="Error" />
 
                     <div className={styles.bottom}>
                         {code === ErrorCode.MAINTENANCE ? <>

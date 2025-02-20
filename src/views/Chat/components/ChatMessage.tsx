@@ -9,6 +9,7 @@ import { ImageOrVideo, Username } from "@components/index";
 import styles from "../chat.module.scss";
 
 import { ChatMessageProps } from "../chat.d";
+import Twemoji from "react-twemoji";
 
 export default memo(function ChatMessage({ message, newUser, mentionsMe, isSending, isEditing, messageContextMenu, userContextMenu, onEditSave, onEditCancel }: ChatMessageProps) {
     if (!messageContextMenu || isSending) messageContextMenu = () => { };
@@ -84,7 +85,7 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
 
                     <i className="fas fa-circle" style={{ fontSize: "0.2rem" }} />
 
-                    <MarkdownPreview key={contentKey} content={`${message.replyingTo.content.split("\n")[0]}${message.replyingTo.content.split("\n").length > 1 ? "..." : ""}`} readOnly={true} />
+                    <Twemoji options={{className: `${styles.emoji} ${styles.emojiReply}`}}><MarkdownPreview key={contentKey} content={`${message.replyingTo.content.split("\n")[0]}${message.replyingTo.content.split("\n").length > 1 ? "..." : ""}`} readOnly={true} /></Twemoji>
                 </div>}
 
                 <div className={styles.messageContainer}>
@@ -134,7 +135,7 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
                             </div>}
 
                             {!isEditing
-                                ? <MarkdownPreview key={contentKey} content={message.content} readOnly={true} />
+                                ? <Twemoji options={{ className: styles.emoji }}><MarkdownPreview key={contentKey} content={message.content} readOnly={true} /></Twemoji>
                                 : <>
                                     <MarkdownPreview
                                         key={contentKey}

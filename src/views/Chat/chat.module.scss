@@ -439,11 +439,15 @@
 }
 
 .emoji {
-    position: relative;
-    top: 2px;
     object-fit: contain;
-    width: 1.375em;
-    height: 1.375em;
+    width: 25px;
+    height: 25px;
+    vertical-align: middle;
+}
+
+.emojiReply {
+    width: 20px;
+    height: 20px;
 }
 
 .typingListContainer {
@@ -483,12 +487,12 @@
     align-items: center;
     width: 20px;
 
-    &>img {
+    &>*img {
         height: 20px;
         object-fit: contain;
     }
 
-    &>video {
+    &>*video {
         height: 20px;
         object-fit: contain;
     }

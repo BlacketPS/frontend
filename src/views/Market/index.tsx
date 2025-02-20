@@ -9,6 +9,7 @@ import { useSettings } from "@controllers/settings/useSettings";
 import { useOpenPack } from "@controllers/market/useOpenPack";
 import { SidebarBody, PageHeader, Modal, Button, SearchBox } from "@components/index";
 import { OpenPackModal, Category, Pack, OpenPackContainer, OpenPackBlook, Item } from "./components";
+// TODO: migrate to not using phaser for opening
 // @ts-expect-error phaser is too big for the bundle so import it externally since its only used once
 const { Game, Scale, WEBGL } = window.Phaser;
 import Particles from "./functions/PackParticles";

@@ -1,7 +1,7 @@
 // this file has no types and is really messy because it's awful to deal with
 // if anyone wants to make types for it you're welcome to
 
-import { memo, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import Prism, { Token } from "prismjs";
 import "prismjs/components/prism-markdown";
 import { Editor, Node, Path, Text, Transforms, Range, createEditor } from "slate";
@@ -11,6 +11,7 @@ import { useUser } from "@stores/UserStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
 import { ImageOrVideo, Username } from "@components/index";
 import AreYouSureLinkModal from "./AreYouSureLinkModal";
+import Twemoji from "react-twemoji";
 import styles from "../chat.module.scss";
 
 import { MarkdownPreviewProps, ElementProps } from "../chat";
@@ -338,7 +339,7 @@ export default function MarkdownPreview({ content, color, readOnly, getEditor = 
                 let current = start;
                 let foundColon = false;
 
-                while (true) {
+                while (!foundColon) {
                     const previous = Editor.before(editor, current);
                     if (!previous) break;
 
@@ -364,7 +365,7 @@ export default function MarkdownPreview({ content, color, readOnly, getEditor = 
                     const fullMatch = wordText.match(/(?<!\w):[\w_]+:(?!\w)/);
 
                     if (fullMatch) {
-                        const emoji = window.constants.emojis.find(e => e.key === fullMatch[0].replaceAll(":", "").toLowerCase());
+                        const emoji = window.constants.emojis.find((e) => e.key === fullMatch[0].replaceAll(":", "").toLowerCase());
                         if (emoji) {
                             Transforms.delete(editor, {
                                 at: {
@@ -380,12 +381,11 @@ export default function MarkdownPreview({ content, color, readOnly, getEditor = 
                     if (match) {
                         setEmojiTarget(beforeRange);
                         setEmojiSearch(match[1]);
-                        const emoji = window.constants.emojis.find(e => e.key.toLowerCase().startsWith(match[1].toLowerCase()));
+                        const emoji = window.constants.emojis.find((e) => e.key.toLowerCase().startsWith(match[1].toLowerCase()));
                         setEmojiName(emoji?.key || "");
                         return;
                     }
                 }
-
 
                 setEmojiTarget(null);
             }
@@ -430,9 +430,9 @@ export default function MarkdownPreview({ content, color, readOnly, getEditor = 
                             }}
                             data-selected={emoji.key === emojiName}
                         >
-                            <div className={styles.typingListItemImage}>
-                                <div>{emoji.value}</div>
-                            </div>
+                            <Twemoji options={{ className: styles.typingListItemImage }}>
+                                {emoji.value}
+                            </Twemoji>
 
                             <div>{emoji.key}</div>
                         </div>
