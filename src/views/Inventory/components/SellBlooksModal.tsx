@@ -29,6 +29,11 @@ export default function SellBlooksModal({ blook, shiny }: SellBlooksModalProps) 
 
     const submit = () => {
         setLoading(true);
+        if (selectedBlooks.length === 0) {
+            setLoading(false);
+            return setError("Please select at least one blook to sell.");
+        }
+
         sellBlooks({ blooks: selectedBlooks })
             .then(() => closeModal())
             .catch((err: Fetch2Response) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
