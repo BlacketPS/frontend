@@ -33,6 +33,7 @@ export default function AuctionModal({ type, blook, item }: AuctionModalProps) {
         if (price === "") return setError("Please enter a price.");
         if (duration === "") return setError("Please enter a duration.");
         if (parseInt(duration) < 60) return setError("Duration must be at least 60 minutes.");
+        if (parseInt(price) < 1) return setError("Price must be at least 1 token.");
 
         if ((auctionTax + durationTax) > user.tokens) return setError("You don't have enough tokens to auction this.");
 
