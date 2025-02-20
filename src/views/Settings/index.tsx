@@ -132,6 +132,7 @@ export default function Settings() {
             <SettingsContainer header={{ icon: "fas fa-lock", text: "Privacy" }}>
                 <Link to="/terms">Terms of Service</Link>
                 <Link to="/privacy">Privacy Policy</Link>
+                <Link to="/eula">End User License Agreement</Link>
             </SettingsContainer>
         </div>
     );
