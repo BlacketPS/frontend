@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import { useUser } from "@stores/UserStore/index";
@@ -10,6 +10,7 @@ import { PermissionTypeEnum } from "@blacket/types";
 
 export default function Sidebar() {
     const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+    const [twitter, setTwitter] = useState<boolean>(false);
 
     const location = useLocation().pathname.split("/")[1];
 
@@ -17,6 +18,25 @@ export default function Sidebar() {
     const { mentions } = useChat();
 
     if (!user) return null;
+
+    useEffect(() => {
+        const keydown = (e: KeyboardEvent) => {
+            if (e.key === "Shift") setTwitter(true);
+        }
+        const keyup = (e: KeyboardEvent) => {
+            if (e.key === "Shift") setTwitter(false);
+        }
+
+        if (location !== "chat") {
+            document.addEventListener("keydown", keydown);
+            document.addEventListener("keyup", keyup);
+        }
+
+        return () => {
+            document.removeEventListener("keydown", keydown);
+            document.removeEventListener("keyup", keyup);
+        }
+    });
 
     const pages = {
         left: [
@@ -107,8 +127,8 @@ export default function Sidebar() {
                     link: "/youtube"
                 },
                 {
-                    icon: "fab fa-x-twitter",
-                    text: "X",
+                    icon: `fab fa-${twitter ? "twitter" : "x-twitter"}`,
+                    text: twitter ? "Twitter" : "X",
                     link: "/twitter"
                 }
             ] : [
