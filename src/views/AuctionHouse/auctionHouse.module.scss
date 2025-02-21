@@ -116,14 +116,30 @@
     }
 }
 
-.noAuctionsImage {
+.noAuctionsImageContainer {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
     width: 20%;
-    height: auto;
     margin-bottom: 20px;
+}
+
+.noAuctionsImage {
+    width: 100%;
+    height: auto;
+    padding: 20px 10px 0px 10px;
 
     @media (max-width: 768px) {
         width: 60%;
     }
+}
+
+.noAuctionsImageOverlay {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    box-shadow: inset 0 0 8px 8px var(--primary-color);
 }
 
 .auctionLoaderContainer {

@@ -104,9 +104,13 @@ export default function AuctionHouse() {
                                 );
                             })}
                         </div> : <div className={styles.noAuctions}>
-                            <img className={styles.noAuctionsImage} src={
-                                easterEggList.find((egg) => egg.query === query)?.image || window.constructCDNUrl("/content/404.png")
-                            } />
+                            <div className={styles.noAuctionsImageContainer}>
+                                <img className={styles.noAuctionsImage} src={
+                                    easterEggList.find((egg) => egg.query === query)?.image || window.constructCDNUrl("/content/404.png")
+                                } />
+
+                                <div className={styles.noAuctionsImageOverlay} />
+                            </div>
                             {
                                 easterEggList.find((egg) => egg.query === query)?.title || "No auctions found."
                             }
