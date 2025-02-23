@@ -13,7 +13,8 @@ export default function InventoryBlook({ blook, shiny, locked, quantity, ...prop
         <div data-locked={locked} className={styles.blook} {...props}>
             <Blook
                 className={styles.blookImage}
-                src={!locked ? resourceIdToPath(blook.imageId) : window.constructCDNUrl("/content/blooks/Default.png")}
+                // src={!locked ? resourceIdToPath(blook.imageId) : window.constructCDNUrl("/content/blooks/Default.png")}
+                src={resourceIdToPath(blook.imageId)}
                 alt={blook.name}
                 data-locked={locked}
                 draggable={false}

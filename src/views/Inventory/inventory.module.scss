@@ -106,7 +106,8 @@
     .blookLock {
         position: absolute;
         font-size: 24px;
-        opacity: .7;
+        // opacity: .7;
+        opacity: .5;
         top: 55%;
         left: 50%;
         transform: translate(-50%, -50%);
@@ -137,13 +138,9 @@
     }
 
     &[data-locked="true"] {
-        cursor: unset;
+        cursor: not-allowed;
 
-        &:hover {
-            transform: scale(1);
-        }
-
-        &:active {
+        &:hover, &:active {
             transform: scale(1);
         }
     }
@@ -155,7 +152,8 @@
     -o-object-fit: contain;
 
     &[data-locked="true"] {
-        filter: brightness(0);
+        // filter: brightness(0);
+        filter: brightness(0.05) grayscale(1);
     }
 }
 
