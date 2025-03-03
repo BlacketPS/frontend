@@ -89,6 +89,13 @@ a {
     color: var(--accent-color);
 }
 
+.react-tooltip {
+    z-index: 100 !important;
+    background-color: var(--accent-color) !important;
+    color: var(--background-color) !important;
+    font-weight: bold;
+}
+
 .rainbow {
     background: linear-gradient(90deg, red, orange, yellow, #0f0, #0ff, blue, #f0f, red);
     background-size: 200%;

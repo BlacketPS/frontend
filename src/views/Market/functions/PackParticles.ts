@@ -10,7 +10,7 @@ function random(min, max) {
 }
 
 function randomInt(min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
+    return Math.trunc(Math.random() * (max - min)) + min;
 }
 
 function particleType(e) {

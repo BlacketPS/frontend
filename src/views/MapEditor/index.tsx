@@ -2,12 +2,11 @@ import { useLayoutEffect, useRef } from "react";
 import { Navigate } from "react-router-dom";
 import { BrenderCanvas, BrenderCanvasRef, BrenderObject } from "@brender/index";
 import { useUser } from "@stores/UserStore/index";
-import { Button } from "@components/index";
+import * as Component from "./components/index";
 import styles from "./mapEditor.module.scss";
 
 import { Mode, TileSet } from "./mapEditor.d";
 import { TILES } from "@constants/index";
-import { ToolButton } from "./components";
 
 export default function MapEditor() {
     // return <Navigate to="/dashboard" />;
@@ -248,10 +247,35 @@ export default function MapEditor() {
 
             <div className={styles.container}>
                 <div className={styles.leftContainer}>
-                    <ToolButton
-                        icon="fas fa-pencil-alt"
-                        onClick={() => mode = Mode.EDIT}
-                    />
+                    <div className={styles.tiles}>
+                        {TILES.map((tile, index) => <Component.Tile key={index} tile={tile} onClick={() => {
+                            setSelectedTile(tile.id, tile.width, tile.height, tile.image);
+                            mode = Mode.CREATE;
+                        }} />)}
+                    </div>
+
+                    <div className={styles.tools}>
+                        <Component.ToolButton
+                            name="Fill"
+                            icon="fas fa-fill"
+                            onClick={() => mode = Mode.FILL}
+                        />
+                        <Component.ToolButton
+                            name="Select"
+                            icon="fas fa-square-dashed"
+                            onClick={() => mode = Mode.SELECT}
+                        />
+                        <Component.ToolButton
+                            name="Delete"
+                            icon="fas fa-trash"
+                            onClick={() => mode = Mode.DELETE}
+                        />
+                        <Component.ToolButton
+                            name="Edit"
+                            icon="fas fa-pencil-alt"
+                            onClick={() => mode = Mode.EDIT}
+                        />
+                    </div>
                 </div>
 
                 {/* <div className={styles.bottomContainer}>

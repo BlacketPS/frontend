@@ -5,6 +5,7 @@
     outline: none;
     overflow: hidden;
     position: absolute;
+    z-index: 1;
 }
 
 .canvas {
@@ -33,34 +34,46 @@
     position: absolute;
 }
 
-.bottomContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 60px;
-    width: 100%;
-    background-color: var(--primary-color);
-    padding: 0 10px;
-    box-sizing: border-box;
-}
+// .bottomContainer {
+//     display: flex;
+//     justify-content: space-between;
+//     align-items: center;
+//     height: 60px;
+//     width: 100%;
+//     background-color: var(--primary-color);
+//     padding: 0 10px;
+//     box-sizing: border-box;
+// }
 
-.left {
+// .left {
+//     display: flex;
+//     align-items: center;
+//     justify-content: space-evenly;
+//     gap: 10px;
+//     width: 185px;
+// }
+
+// .middle {
+//     display: flex;
+//     justify-content: center;
+//     align-items: center;
+//     gap: 10px;
+//     width: calc(100% - 370px);
+// }
+
+.tiles {
     display: flex;
-    align-items: center;
-    justify-content: space-evenly;
+    flex-wrap: wrap;
     gap: 10px;
-    width: 185px;
-}
-
-.middle {
-    display: flex;
+    width: 100%;
     justify-content: center;
     align-items: center;
-    gap: 10px;
-    width: calc(100% - 370px);
+    height: 70%;
+    overflow-y: auto;
+    scrollbar-width: none;
 }
 
-.tileContainer {
+.tile {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -93,9 +106,19 @@
     width: 185px;
 }
 
+.tools {
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    flex-direction: column;
+    gap: 5px;
+    height: 30%;
+}
+
 .toolButton {
     width: 20px;
     height: 20px;
+    padding: 10px;
     background: var(--secondary-color);
     display: flex;
     justify-content: center;
@@ -103,6 +126,7 @@
     cursor: pointer;
     border-radius: 7px;
     transition: transform 0.2s;
+    font-size: 20px;
 
     &:hover {
         transform: scale(0.95);

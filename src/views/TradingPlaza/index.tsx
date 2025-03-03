@@ -37,82 +37,86 @@ export default function TradingPlaza() {
         };
 
         const PLAYER_SPEED = 4;
-        // const TILE_SIZE = 50;
-        // const COLUMNS = 50;
-        // const ROWS = 50;
+        const TILE_SIZE = 50;
+        const COLUMNS = 50;
+        const ROWS = 50;
 
         let _previousPos = { x: 0, y: 0 };
 
-        // for (let x = -ROWS; x < ROWS; x++) {
-        //     for (let y = -COLUMNS; y < COLUMNS; y++) {
-        //         let key: string = "";
-        //         let tile = tiles[0];
+        for (let x = -ROWS; x < ROWS; x++) {
+            for (let y = -COLUMNS; y < COLUMNS; y++) {
+                const tiles = TILES.filter((tile) => tile.id.includes("grass"));
 
-        //         const chanceSum = tiles.reduce((sum, tile) => sum + tile.chance, 0);
-        //         const randomChance = Math.random() * chanceSum;
+                let key: string = "";
+                let tile = tiles[0];
 
-        //         let accumulatedChance = 0;
-        //         for (const tile2 of tiles) {
-        //             accumulatedChance += tile2.chance;
+                const chanceSum = TILES.reduce((sum, tile) => sum + (tile?.chance ?? 1), 0);
+                const randomChance = Math.random() * chanceSum;
 
-        //             if (randomChance < accumulatedChance) {
-        //                 key = tile2.id;
-        //                 tile = tile2;
+                let accumulatedChance = 0;
+                for (const tile2 of tiles) {
+                    accumulatedChance += tile2.chance!;
 
-        //                 break;
-        //             }
-        //         }
+                    if (randomChance < accumulatedChance) {
+                        key = tile2.id;
+                        tile = tile2;
 
-        //         const realX = x * TILE_SIZE;
-        //         const realY = y * TILE_SIZE;
+                        break;
+                    }
+                }
 
-        //         brender.createObject({
-        //             id: `${key}-${realX}-${realY}`,
-        //             x: realX,
-        //             y: realY,
-        //             z: 0,
-        //             width: TILE_SIZE + 1,
-        //             height: TILE_SIZE + 1,
-        //             image: tile.image as HTMLImageElement
-        //         });
-        //     }
-        // }
+                const realX = x * TILE_SIZE;
+                const realY = y * TILE_SIZE;
+
+                urlToImage(tile.image).then((image) => {
+                    brender.createObject({
+                        id: `${key}-${realX}-${realY}`,
+                        x: realX,
+                        y: realY,
+                        z: 0,
+                        width: TILE_SIZE + 1,
+                        height: TILE_SIZE + 1,
+                        image
+                    });
+                });
+            }
+        }
 
         socket.emit(SocketMessageType.TRADING_PLAZA_JOIN);
 
-        const loadMap = async () => {
-            // @ts-ignore temporary
-            for (const o of window.map) {
-                // const image = o.image ? await brender.urlToImage(o.image) : undefined;
+        // const loadMap = async () => {
+        //     // @ts-ignore temporary
+        //     for (const o of window.map) {
+        //         // const image = o.image ? await brender.urlToImage(o.image) : undefined;
 
-                // brender.createObject({
-                //     id: o.id,
-                //     x: o.x,
-                //     y: o.y,
-                //     z: o.z,
-                //     width: o.width,
-                //     height: o.height,
-                //     image
-                // });
+        //         // brender.createObject({
+        //         //     id: o.id,
+        //         //     x: o.x,
+        //         //     y: o.y,
+        //         //     z: o.z,
+        //         //     width: o.width,
+        //         //     height: o.height,
+        //         //     image
+        //         // });
 
-                const tile = TILES.find((tile) => tile.id === o.id.split(" ")[0]) ?? undefined;
-                if (!tile) continue;
+        //         const tile = TILES.find((tile) => tile.id === o.id.split(" ")[0]) ?? undefined;
+        //         if (!tile) continue;
 
-                const image = tile.image ? await brender.urlToImage(tile.image) : undefined;
+        //         const image = tile.image ? await brender.urlToImage(tile.image) : undefined;
 
-                brender.createObject({
-                    id: o.id,
-                    x: o.x,
-                    y: o.y,
-                    z: 0,
-                    width: tile.width,
-                    height: tile.height,
-                    image
-                });
-            }
-        };
+        //         brender.createObject({
+        //             id: o.id,
+        //             x: o.x,
+        //             y: o.y,
+        //             z: 0,
+        //             width: tile.width,
+        //             height: tile.height,
+        //             image
+        //         });
+        //     }
+        // };
 
-        loadMap();
+        // loadMap();
 
         const renderPlayerText = (entity: PlayerEntity) => {
             const center = entity.x + (entity?.width ?? 300) / 2;
@@ -237,8 +241,13 @@ export default function TradingPlaza() {
                     moveY *= 1.5;
                 }
 
-                const nextX = entity.x + moveX;
-                const nextY = entity.y + moveY;
+                if (moveX !== 0 && moveY !== 0) {
+                    moveX /= Math.SQRT2;
+                    moveY /= Math.SQRT2;
+                }
+
+                const nextX = (entity.x + moveX) | 0;
+                const nextY = (entity.y + moveY) | 0;
 
                 if (nextX < -1500 || nextX > 1500) moveX = nextX < -1500 ? -1500 - entity.x : 1500 - entity.x;
                 if (nextY < -1500 || nextY > 1500) moveY = nextY < -1500 ? -1500 - entity.y : 1500 - entity.y;
@@ -247,8 +256,8 @@ export default function TradingPlaza() {
 
                 brender.camera.focusOn(entity as BrenderEntity, 0.05);
 
-                entity.x += Math.floor(moveX);
-                entity.y += Math.floor(moveY);
+                entity.x += moveX | 0;
+                entity.y += moveY | 0;
 
                 overlay.x = brender.camera.x;
                 overlay.y = brender.camera.y;

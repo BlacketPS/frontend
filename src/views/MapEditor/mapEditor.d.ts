@@ -1,9 +1,11 @@
+import { Tile } from "@constants/tiles";
+
 export enum Mode {
     EDIT = 1,
     CREATE = 2,
     DELETE = 3,
     SELECT = 4,
-    PAINT_BUCKET = 5
+    FILL = 5
 }
 
 export interface TileSet {
@@ -13,6 +15,12 @@ export interface TileSet {
 }
 
 export interface ToolButtonProps {
+    name: string;
     icon: string;
+    onClick: () => void;
+}
+
+export interface TileProps {
+    tile: Tile;
     onClick: () => void;
 }

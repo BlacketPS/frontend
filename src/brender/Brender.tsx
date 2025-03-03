@@ -17,6 +17,8 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
 
     let canvas = canvasRef.current;
 
+    let lastTime = Date.now();
+
     useImperativeHandle(ref, () => ({
         get raw() {
             return getCanvas();
@@ -58,9 +60,18 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
             y: 0,
             z: 0,
             onFrame: () => {
+                const now = Date.now();
+                const delta = now - lastTime;
+
+                lastTime = now;
+                const fps = (1000 / delta) | 0;
+
                 drawText({ text: `Entities: ${entities.length}`, x: 7, y: getHeight() - 10, style: { textAlign: "left" }, useCamera: false });
                 drawText({ text: `Objects: ${objects.length}`, x: 7, y: getHeight() - 30, style: { textAlign: "left" }, useCamera: false });
                 drawText({ text: `Camera: ${camera.x}, ${camera.y}`, x: 7, y: getHeight() - 50, style: { textAlign: "left" }, useCamera: false });
+
+
+                drawText({ text: `FPS: ${fps}`, x: getWidth() - 7, y: 20, style: { textAlign: "right" }, useCamera: false });
             }
         });
 
