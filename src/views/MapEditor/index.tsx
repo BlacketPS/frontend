@@ -2,6 +2,7 @@ import { useLayoutEffect, useRef } from "react";
 import { Navigate } from "react-router-dom";
 import { BrenderCanvas, BrenderCanvasRef, BrenderObject } from "@brender/index";
 import { useUser } from "@stores/UserStore/index";
+import { WaterBackground } from "@components/index";
 import * as Component from "./components/index";
 import styles from "./mapEditor.module.scss";
 
@@ -16,6 +17,7 @@ export default function MapEditor() {
     if (!user) return <Navigate to="/login" />;
 
     const BRENDER_CANVAS_REF = useRef<BrenderCanvasRef>(null);
+    const WATER_BACKGROUND_REF = useRef<HTMLDivElement>(null);
 
     let mode: Mode = Mode.EDIT;
 
@@ -66,6 +68,8 @@ export default function MapEditor() {
                 const deltaY = e.clientY - lastMousePosition.y;
 
                 brender.camera.moveBy(-deltaX / brender.camera.scale, -deltaY / brender.camera.scale);
+
+                WATER_BACKGROUND_REF.current?.style.setProperty("background-position", `${-brender.camera.x}px ${-brender.camera.y}px`);
 
                 lastMousePosition = { x: e.clientX, y: e.clientY };
             }
@@ -244,6 +248,8 @@ export default function MapEditor() {
                     debug={true}
                 />
             </div>
+
+            <WaterBackground ref={WATER_BACKGROUND_REF} />
 
             <div className={styles.container}>
                 <div className={styles.leftContainer}>

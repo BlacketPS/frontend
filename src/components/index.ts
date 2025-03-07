@@ -25,6 +25,7 @@ import Toggle from "./Toggle";
 import TopRight from "./TopRight";
 import Username from "./Username";
 import WarningContainer from "./WarningContainer";
+import WaterBackground from "./WaterBackground";
 import ZoeySign from "./ZoeySign";
 
 export {
@@ -55,5 +56,6 @@ export {
     TopRight,
     Username,
     WarningContainer,
+    WaterBackground,
     ZoeySign
 };

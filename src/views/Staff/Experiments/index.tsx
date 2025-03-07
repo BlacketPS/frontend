@@ -8,8 +8,8 @@ export default function Experiments() {
 
     return (
         <>
-            <ZoeySign style={{width: "400px"}}>
-                aa
+            <ZoeySign style={{ width: "400px" }}>
+                blooket
             </ZoeySign>
         </>
     );

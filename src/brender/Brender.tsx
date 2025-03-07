@@ -80,6 +80,7 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
 
             destroyAllObjects();
             destroyAllEntities();
+
             camera.scale = 1;
         };
     }, []);

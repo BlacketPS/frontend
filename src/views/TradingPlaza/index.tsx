@@ -1,10 +1,11 @@
 import { useLayoutEffect, useRef } from "react";
 import { Navigate } from "react-router-dom";
-import { BrenderCanvas, BrenderCanvasRef, BrenderEntity, PlayerEntity, urlToImage } from "@brender/index";
+import { BrenderCanvas, BrenderCanvasRef, BrenderEntity, isColliding, isOnScreen, PlayerEntity, urlToImage } from "@brender/index";
 import { useUser } from "@stores/UserStore/index";
 import { useSocket } from "@stores/SocketStore/index";
 import { useData } from "@stores/DataStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
+import { WaterBackground } from "@components/index";
 import { lerp } from "@functions/core/mathematics";
 import styles from "./tradingPlaza.module.scss";
 
@@ -21,6 +22,7 @@ export default function TradingPlaza() {
     if (!user) return <Navigate to="/login" />;
 
     const brenderCanvasRef = useRef<BrenderCanvasRef>(null);
+    const waterBackgroundRef = useRef<HTMLDivElement>(null);
 
     useLayoutEffect(() => {
         if (!socket) return;
@@ -38,15 +40,15 @@ export default function TradingPlaza() {
 
         const PLAYER_SPEED = 4;
         const TILE_SIZE = 50;
-        const COLUMNS = 50;
-        const ROWS = 50;
+        const COLUMNS = 35;
+        const ROWS = 40;
 
         let _previousPos = { x: 0, y: 0 };
 
+        const tiles = TILES.filter((tile) => tile.id.includes("grass"));
+
         for (let x = -ROWS; x < ROWS; x++) {
             for (let y = -COLUMNS; y < COLUMNS; y++) {
-                const tiles = TILES.filter((tile) => tile.id.includes("grass"));
-
                 let key: string = "";
                 let tile = tiles[0];
 
@@ -74,8 +76,8 @@ export default function TradingPlaza() {
                         x: realX,
                         y: realY,
                         z: 0,
-                        width: TILE_SIZE + 1,
-                        height: TILE_SIZE + 1,
+                        width: TILE_SIZE,
+                        height: TILE_SIZE,
                         image
                     });
                 });
@@ -150,6 +152,7 @@ export default function TradingPlaza() {
                     fontId: 1,
                     color: "#ffffff"
                 } as any,
+                hasCollision: true,
                 onFrame: (entity, deltaTime) => {
                     renderPlayerText(entity);
 
@@ -225,6 +228,7 @@ export default function TradingPlaza() {
             width: 300 / 6,
             height: 345 / 6,
             user,
+            hasCollision: true,
             onFrame: (entity, deltaTime) => {
                 renderPlayerText(entity);
 
@@ -249,8 +253,22 @@ export default function TradingPlaza() {
                 const nextX = (entity.x + moveX) | 0;
                 const nextY = (entity.y + moveY) | 0;
 
-                if (nextX < -1500 || nextX > 1500) moveX = nextX < -1500 ? -1500 - entity.x : 1500 - entity.x;
-                if (nextY < -1500 || nextY > 1500) moveY = nextY < -1500 ? -1500 - entity.y : 1500 - entity.y;
+                const objects = brender.objects.filter((object) => isOnScreen(object.x, object.y, object.width!, object.height!));
+
+                for (const object of objects) {
+                    if (isColliding({ ...entity, x: nextX } as BrenderEntity, object)) moveX = 0;
+                    if (isColliding({ ...entity, y: nextY } as BrenderEntity, object)) moveY = 0;
+                }
+
+                const entities = brender.entities.filter((entity) => entity.id !== user.id);
+
+                for (const entity2 of entities) {
+                    if (isColliding({ ...entity, x: nextX } as BrenderEntity, entity2)) moveX = 0;
+                    if (isColliding({ ...entity, y: nextY } as BrenderEntity, entity2)) moveY = 0;
+                }
+
+                // if (nextX < -1500 || nextX > 1500) moveX = nextX < -1500 ? -1500 - entity.x : 1500 - entity.x;
+                // if (nextY < -1500 || nextY > 1500) moveY = nextY < -1500 ? -1500 - entity.y : 1500 - entity.y;
 
                 _previousPos = { x: entity.x, y: entity.y };
 
@@ -261,6 +279,8 @@ export default function TradingPlaza() {
 
                 overlay.x = brender.camera.x;
                 overlay.y = brender.camera.y;
+
+                waterBackgroundRef.current?.style.setProperty("background-position", `${-brender.camera.x}px ${-brender.camera.y}px`);
             }
         });
 
@@ -270,6 +290,19 @@ export default function TradingPlaza() {
                 player.width = image.width / 6;
                 player.height = image.height / 6;
             });
+
+        // setTimeout(() => {
+        //     brender.createObject({
+        //         id: "test",
+        //         x: 80,
+        //         y: 80,
+        //         z: 3,
+        //         width: 1000,
+        //         height: 1000,
+        //         image: brender.loadingImage,
+        //         hasCollision: true
+        //     });
+        // }, 1000);
 
         const movementUpdateInterval = setInterval(() => {
             if (player.x === _previousPos.x && player.y === _previousPos.y) return;
@@ -297,6 +330,8 @@ export default function TradingPlaza() {
             className={styles.container}
             onContextMenu={(e) => e.preventDefault()}
         >
+            <WaterBackground ref={waterBackgroundRef} />
+
             {socket && <BrenderCanvas
                 ref={brenderCanvasRef}
                 className={styles.canvas}
@@ -312,6 +347,6 @@ export default function TradingPlaza() {
                     <div style={{ color: latency < 100 ? "unset" : latency < 200 ? "yellow" : "red" }}>Ping: {latency}ms</div>
                 </div>
             </div>
-        </div>
+        </div >
     );
 }

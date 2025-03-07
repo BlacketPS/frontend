@@ -1,5 +1,7 @@
+import Textfit from "react-textfit";
 import stylesLanding from "../landing.module.scss";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 
 type Blook = {
     src: string;
@@ -7,7 +9,19 @@ type Blook = {
 };
 
 export function AnimatedBlookPresent() {
-    const transformationsForX: string[] = ["-200%", "-125%", "-50%", "25%", "100%"];
+    // const transformationsForX: string[] = ["-250%", "-150%", "-50%", "50%", "150%"];
+    const [transformationsForX, setTransformationsForX] = useState<string[]>(["-250%", "-150%", "-50%", "50%", "150%"]);
+
+    const updatePositions = () => {
+        setTransformationsForX(window.innerWidth < 1520 ? ["-200%", "-125%", "-50%", "25%", "100%"] : ["-250%", "-150%", "-50%", "50%", "150%"]);
+    };
+
+    useEffect(() => {
+        window.addEventListener("resize", updatePositions);
+        updatePositions();
+
+        return () => window.removeEventListener("resize", updatePositions);
+    }, []);
 
     const blooks: Blook[] = [
         {
@@ -66,7 +80,7 @@ export function AnimatedBlookPresent() {
                     animate="visible"
                     variants={topVariant1}
                 >
-                    Blacket
+                    <Textfit mode="single" max={120}>Blacket</Textfit>
                 </motion.h1>
                 <motion.p
                     className={stylesLanding.subTitle}
@@ -84,10 +98,11 @@ export function AnimatedBlookPresent() {
                         key={i}
                         src={blooks[i].src}
                         alt={blooks[i].alt}
+                        draggable={false}
                         className={stylesLanding.blookTop}
                         initial={{ opacity: 0, transform: `translate(${transformation}, 100%)` }}
                         animate={{ opacity: 1, transform: `translate(${transformation}, 0)` }}
-                        transition={{ ease: "easeOut", duration: 0.75, delay: i * 0.25 }}
+                        transition={{ ease: "easeOut", duration: 0.75, delay: i * 0.1 }}
                     />
                 ))
             }

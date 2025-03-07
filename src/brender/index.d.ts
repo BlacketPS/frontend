@@ -85,6 +85,7 @@ export interface BrenderObject {
     image?: HTMLImageElement;
     imageBlendMode?: GlobalCompositeOperation;
     imageOpacity?: number;
+    hasCollision?: boolean;
     onClick?: (object: BrenderObject) => void;
     onFrame?: (object: BrenderObject, deltaTime: number) => void;
 

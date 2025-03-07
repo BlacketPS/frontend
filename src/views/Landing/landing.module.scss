@@ -82,6 +82,7 @@
 }
 
 .blookTop {
+    user-select: none;
     position: absolute;
     bottom: 0;
     left: 50%;
@@ -103,5 +104,9 @@
     &:nth-child(4) {
         height: 30rem;
         z-index: 3;
+    }
+
+    @media (max-width: 768px) {
+        // display: none;
     }
 }
