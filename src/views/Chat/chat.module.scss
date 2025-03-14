@@ -6,6 +6,15 @@
     top: 0;
 }
 
+.fileUploadContainer {
+    width: 40px;
+    display: flex;
+
+    &>i {
+        font-size: 3vh;
+    }
+}
+
 .messagesContainer {
     position: absolute;
     top: -20px;

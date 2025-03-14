@@ -8,6 +8,7 @@ import styles from "../chat.module.scss";
 
 import { InputContainerProps } from "../chat.d";
 import { useUser } from "@stores/UserStore/index.tsx";
+import FileUploadContainer from "./FileUploadContainer.tsx";
 
 const isMobile = () => window.innerWidth <= 768;
 
@@ -109,6 +110,8 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
                 <div>Replying to <b>{cachedUsers.find((user) => user.id === replyingTo.authorId)?.username}</b></div>
                 <i className="fas fa-times" onClick={() => setReplyingTo(null)} />
             </div>}
+
+            <FileUploadContainer />
 
             {isMobile() ? (
                 <>

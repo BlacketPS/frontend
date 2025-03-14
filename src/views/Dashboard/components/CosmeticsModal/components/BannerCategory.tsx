@@ -35,11 +35,8 @@ export default function BannerCategory() {
             .catch(() => setLoading(false));
     };
 
-    const onFileSelect = (_file: File) => {
+    const onFileSelect = (file: File) => {
         setLoading(true);
-
-        const file = new FormData();
-        file.append("file", _file);
 
         uploadFileSmall(file)
             .then((res) => {

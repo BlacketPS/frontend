@@ -5,17 +5,32 @@ interface Response extends Fetch2Response {
 }
 
 export function useUpload() {
-    const uploadFileSmall = (file: FormData) => new Promise<Response>((resolve, reject) => window.fetch2.upload("/api/users/upload/small", file)
-        .then((res: Response) => resolve(res))
-        .catch(reject));
+    const uploadFileSmall = (file: File) => new Promise<Response>((resolve, reject) => {
+        const formData = new FormData();
+        formData.append("file", file);
 
-    const uploadFileMedium = (file: FormData) => new Promise<Response>((resolve, reject) => window.fetch2.upload("/api/users/upload/medium", file)
-        .then((res: Response) => resolve(res))
-        .catch(reject));
+        window.fetch2.upload("/api/users/upload/small", formData)
+            .then((res: Response) => resolve(res))
+            .catch(reject);
+    });
 
-    const uploadFileLarge = (file: FormData) => new Promise<Response>((resolve, reject) => window.fetch2.upload("/api/users/upload/large", file)
-        .then((res: Response) => resolve(res))
-        .catch(reject));
+    const uploadFileMedium = (file: File) => new Promise<Response>((resolve, reject) => {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        window.fetch2.upload("/api/users/upload/medium", formData)
+            .then((res: Response) => resolve(res))
+            .catch(reject);
+    });
+
+    const uploadFileLarge = (file: File) => new Promise<Response>((resolve, reject) => {
+        const formData = new FormData();
+        formData.append("file", file);
+
+        window.fetch2.upload("/api/users/upload/large", formData)
+            .then((res: Response) => resolve(res))
+            .catch(reject);
+    });
 
     return { uploadFileSmall, uploadFileMedium, uploadFileLarge };
 }
