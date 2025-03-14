@@ -45,7 +45,7 @@ export default function TradingPlaza() {
 
         let _previousPos = { x: 0, y: 0 };
 
-        const tiles = TILES.filter((tile) => tile.id.includes("grass"));
+        const tiles = TILES.filter((tile) => tile.id.includes("sand"));
 
         for (let x = -ROWS; x < ROWS; x++) {
             for (let y = -COLUMNS; y < COLUMNS; y++) {
@@ -152,7 +152,6 @@ export default function TradingPlaza() {
                     fontId: 1,
                     color: "#ffffff"
                 } as any,
-                hasCollision: true,
                 onFrame: (entity, deltaTime) => {
                     renderPlayerText(entity);
 
@@ -256,19 +255,38 @@ export default function TradingPlaza() {
                 const objects = brender.objects.filter((object) => isOnScreen(object.x, object.y, object.width!, object.height!));
 
                 for (const object of objects) {
-                    if (isColliding({ ...entity, x: nextX } as BrenderEntity, object)) moveX = 0;
-                    if (isColliding({ ...entity, y: nextY } as BrenderEntity, object)) moveY = 0;
+                    if (isColliding({ ...entity, x: nextX } as BrenderEntity, object)) {
+                        const diffX = entity.x - object.x;
+
+                        if (diffX > 0) moveX = Math.max(0, moveX);
+                        if (diffX < 0) moveX = Math.min(0, moveX);
+                    }
+
+                    if (isColliding({ ...entity, y: nextY } as BrenderEntity, object)) {
+                        const diffY = entity.y - object.y;
+
+                        if (diffY > 0) moveY = Math.max(0, moveY);
+                        if (diffY < 0) moveY = Math.min(0, moveY);
+                    }
                 }
 
                 const entities = brender.entities.filter((entity) => entity.id !== user.id);
 
                 for (const entity2 of entities) {
-                    if (isColliding({ ...entity, x: nextX } as BrenderEntity, entity2)) moveX = 0;
-                    if (isColliding({ ...entity, y: nextY } as BrenderEntity, entity2)) moveY = 0;
-                }
+                    if (isColliding({ ...entity, x: nextX } as BrenderEntity, entity2)) {
+                        const diffX = entity.x - entity2.x;
 
-                // if (nextX < -1500 || nextX > 1500) moveX = nextX < -1500 ? -1500 - entity.x : 1500 - entity.x;
-                // if (nextY < -1500 || nextY > 1500) moveY = nextY < -1500 ? -1500 - entity.y : 1500 - entity.y;
+                        if (diffX > 0) moveX = Math.max(0, moveX);
+                        if (diffX < 0) moveX = Math.min(0, moveX);
+                    }
+
+                    if (isColliding({ ...entity, y: nextY } as BrenderEntity, entity2)) {
+                        const diffY = entity.y - entity2.y;
+
+                        if (diffY > 0) moveY = Math.max(0, moveY);
+                        if (diffY < 0) moveY = Math.min(0, moveY);
+                    }
+                }
 
                 _previousPos = { x: entity.x, y: entity.y };
 
@@ -290,19 +308,6 @@ export default function TradingPlaza() {
                 player.width = image.width / 6;
                 player.height = image.height / 6;
             });
-
-        // setTimeout(() => {
-        //     brender.createObject({
-        //         id: "test",
-        //         x: 80,
-        //         y: 80,
-        //         z: 3,
-        //         width: 1000,
-        //         height: 1000,
-        //         image: brender.loadingImage,
-        //         hasCollision: true
-        //     });
-        // }, 1000);
 
         const movementUpdateInterval = setInterval(() => {
             if (player.x === _previousPos.x && player.y === _previousPos.y) return;

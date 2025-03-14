@@ -177,11 +177,13 @@ export default function MapEditor() {
             z: 0,
             onFrame: (entity) => {
                 if (tileSelected && mode === Mode.CREATE) {
-                    const tileWidth = tileSelected.image?.width ?? 0;
-                    const tileHeight = tileSelected.image?.height ?? 0;
+                    const tileWidth = tileSelected.width ?? 0;
+                    const tileHeight = tileSelected.height ?? 0;
 
-                    const snappedX = Math.floor(brender.mousePosition.x / (tileWidth / 2)) * (tileWidth / 2);
-                    const snappedY = Math.floor(brender.mousePosition.y / (tileHeight / 2)) * (tileHeight / 2);
+                    const snap = 1;
+
+                    const snappedX = Math.floor(brender.mousePosition.x / (tileWidth / snap)) * (tileWidth / snap);
+                    const snappedY = Math.floor(brender.mousePosition.y / (tileHeight / snap)) * (tileHeight / snap);
 
                     entity.x = snappedX - tileWidth / 2;
                     entity.y = snappedY - tileHeight / 2;

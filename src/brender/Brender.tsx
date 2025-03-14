@@ -5,7 +5,7 @@ import {
     _setCanvas, getCanvas, getWidth, getHeight, start, stop,
     camera,
     pressing, mousePosition,
-    isMouseOver, urlToImage,
+    isMouseOver, isOnScreen, urlToImage,
     objects, createObject, findObject, destroyAllObjects,
     entities, createGenericEntity, findEntity, createPlayerEntity, destroyAllEntities,
     drawRect, drawText, drawImage,
@@ -70,8 +70,34 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
                 drawText({ text: `Objects: ${objects.length}`, x: 7, y: getHeight() - 30, style: { textAlign: "left" }, useCamera: false });
                 drawText({ text: `Camera: ${camera.x}, ${camera.y}`, x: 7, y: getHeight() - 50, style: { textAlign: "left" }, useCamera: false });
 
-
                 drawText({ text: `FPS: ${fps}`, x: getWidth() - 7, y: 20, style: { textAlign: "right" }, useCamera: false });
+
+                // every object that has collision on screen
+                objects.forEach((object) => {
+                    if (object.hasCollision && isOnScreen(object.x, object.y, object.width ?? object?.image?.width ?? 0, object.height ?? object?.image?.height ?? 0)) {
+                        drawRect({
+                            x: object.x,
+                            y: object.y,
+                            width: object.width ?? object?.image?.width ?? 0,
+                            height: object.height ?? object?.image?.height ?? 0,
+                            color: "rgba(0, 0, 255, 0.2)",
+                            useCamera: false
+                        });
+                    }
+                });
+
+                entities.forEach((entity) => {
+                    if (entity.hasCollision && isOnScreen(entity.x, entity.y, entity.width, entity.height)) {
+                        drawRect({
+                            x: entity.x,
+                            y: entity.y,
+                            width: entity.width,
+                            height: entity.height,
+                            color: "rgba(0, 0, 255, 0.2)",
+                            useCamera: false
+                        });
+                    }
+                });
             }
         });
 
