@@ -1,84 +1,70 @@
-import { useEffect, useRef, useState } from "react";
-import styles from "../chat.module.scss";
-import { useUpload } from "@controllers/users/useUpload";
 import { useUser } from "@stores/UserStore";
 import { PermissionTypeEnum } from "@blacket/types";
 import { useModal } from "@stores/ModalStore";
-import { ErrorModal } from "@components/Modals";
 import { useChat } from "@stores/ChatStore/index";
+import { ErrorModal } from "@components/Modals";
+import { useUpload } from "@controllers/users/useUpload";
+import { MAX_UPLOAD_SIZES } from "@constants/index";
+import styles from "../chat.module.scss";
 
 // the styling for this can be redone if needed @XOTlC, just writing it to get the implementation done
 export default function FileUploadContainer() {
-    const { uploadFileSmall, uploadFileMedium, uploadFileLarge } = useUpload();
-    const modal = useModal();
+    const { createModal } = useModal();
     const { user } = useUser();
     const { sendMessage } = useChat();
-    const input = useRef<HTMLInputElement>(document.createElement("input"));
-    const maxUploadSizes = {
-        small: 1024 * 1024 * 2,
-        medium: 1024 * 1024 * 4,
-        large: 1024 * 1024 * 8
-    }
+
+    const { uploadFileSmall, uploadFileMedium, uploadFileLarge } = useUpload();
 
     if (!user) return null;
 
-
     const onFileChange = async (event: Event) => {
         const files = (event.target as HTMLInputElement).files;
+
         const uploadedFiles = [];
 
         if (files && files.length > 0) {
-            if (files.length > 5) {
-                modal.createModal(<ErrorModal>Too many files selected, max is 5</ErrorModal>);
-                return;
-            }
+            // TODO: allow multiple files after rewrite is released
+            // if (files.length > 5) return createModal(<ErrorModal>Too many files selected, max is 5</ErrorModal>);
+            if (files.length > 1) return createModal(<ErrorModal>Only one file can be uploaded at a time</ErrorModal>);
 
-            if (!Array.from(files).every(file =>
-                file.size <= maxUploadSizes.small ||
-                (user.permissions.includes(PermissionTypeEnum.UPLOAD_FILES_MEDIUM) && file.size <= maxUploadSizes.medium) ||
-                (user.permissions.includes(PermissionTypeEnum.UPLOAD_FILES_LARGE) && file.size <= maxUploadSizes.large)
-            )) {
-                modal.createModal(<ErrorModal>File too Large, max size is {(user.permissions.includes(PermissionTypeEnum.UPLOAD_FILES_LARGE) ? maxUploadSizes.large : user.permissions.includes(PermissionTypeEnum.UPLOAD_FILES_MEDIUM) ? maxUploadSizes.medium : maxUploadSizes.small) / 1024 / 1024}MB</ErrorModal>);
-                return;
-            }
+            if (!Array.from(files).every((file) =>
+                file.size <= MAX_UPLOAD_SIZES.small ||
+                (user.permissions.includes(PermissionTypeEnum.UPLOAD_FILES_MEDIUM) && file.size <= MAX_UPLOAD_SIZES.medium) ||
+                (user.permissions.includes(PermissionTypeEnum.UPLOAD_FILES_LARGE) && file.size <= MAX_UPLOAD_SIZES.large)
+            ))
+                return createModal(<ErrorModal>File too Large, max size is {(user.permissions.includes(PermissionTypeEnum.UPLOAD_FILES_LARGE) ? MAX_UPLOAD_SIZES.large : user.permissions.includes(PermissionTypeEnum.UPLOAD_FILES_MEDIUM) ? MAX_UPLOAD_SIZES.medium : MAX_UPLOAD_SIZES.small) / 1024 / 1024}MB</ErrorModal>);
 
             for (const file of files) {
-                if (file.size <= maxUploadSizes.small) {
-                    const uploadedFile = await uploadFileSmall(file);
-                    uploadedFiles.push(uploadedFile);
-                } else if (user.permissions.includes(PermissionTypeEnum.UPLOAD_FILES_MEDIUM) && file.size <= maxUploadSizes.medium) {
-                    const uploadedFile = await uploadFileMedium(file);
-                    uploadedFiles.push(uploadedFile);
-                } else if (user.permissions.includes(PermissionTypeEnum.UPLOAD_FILES_LARGE) && file.size <= maxUploadSizes.large) {
-                    const uploadedFile = await uploadFileLarge(file);
-                    uploadedFiles.push(uploadedFile);
+                switch (true) {
+                    case file.size <= MAX_UPLOAD_SIZES.small:
+                        uploadedFiles.push(await uploadFileSmall(file));
+                        break;
+                    case user.permissions.includes(PermissionTypeEnum.UPLOAD_FILES_MEDIUM) && file.size <= MAX_UPLOAD_SIZES.medium:
+                        uploadedFiles.push(await uploadFileMedium(file));
+                        break;
+                    case user.permissions.includes(PermissionTypeEnum.UPLOAD_FILES_LARGE) && file.size <= MAX_UPLOAD_SIZES.large:
+                        uploadedFiles.push(await uploadFileLarge(file));
+                        break;
                 }
+
+                // TODO: properly implement an attachment system similar to discord's, for now this will do so we can get rewrite released.
+                sendMessage(uploadedFiles.map((file) => `${location.origin}/media/uploads${file.data.path}`).join("\n"));
             }
-            // TODO: properly implement an attachment system similar to discord's, for now this will do so we can get rewrite released.
-
-
-            // goodluck to anyone who wants to debug this stupid bullshit im not doing it
-            // sendMessage(uploadedFiles.map(file => `${location.origin}/media/uploads${file.data.path}`).join("\n"));
         }
+    };
 
+    const handleFileUpload = () => {
+        const input = document.createElement("input");
 
-    }
+        input.type = "file";
+        input.accept = "*/*";
+        input.multiple = true;
+        input.click();
 
-    const handleFileUpload = (e: React.MouseEvent<HTMLDivElement>) => {
-        e.preventDefault();
-        input.current.type = "file";
-        input.current.accept = "*/*";
-        input.current.multiple = true;
-        input.current.click();
-    }
+        input.addEventListener("change", onFileChange);
 
-    useEffect(() => {
-        input.current.addEventListener("change", onFileChange);
-
-        return () => {
-            input.current.removeEventListener("change", onFileChange);
-        }
-    }, []);
+        input.remove();
+    };
 
     return (
         <div onClick={handleFileUpload} className={styles.fileUploadContainer}>
