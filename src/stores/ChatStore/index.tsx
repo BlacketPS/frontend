@@ -3,7 +3,7 @@ import { useSocket } from "@stores/SocketStore/index";
 import { useUser } from "@stores/UserStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
 import { useMessages } from "@controllers/chat/messages/useMessages/index";
-import { useStartTyping } from "@controllers/chat/messages/:roomId/useStartTyping/index";
+import { useStartTyping } from "@controllers/chat/messages/roomId/useStartTyping/index";
 import { useSendMessage } from "@controllers/chat/messages/useSendMessage/index";
 import { useToast } from "@stores/ToastStore/index";
 

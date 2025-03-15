@@ -8,8 +8,8 @@ import { useChat } from "@stores/ChatStore/index";
 import { useContextMenu } from "@stores/ContextMenuStore/index";
 import { useToast } from "@stores/ToastStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
-import { useDeleteMessage } from "@controllers/chat/messages/:roomId/useDeleteMessage/index";
-import { useEditMessage } from "@controllers/chat/messages/:roomId/useEditMessage/index";
+import { useDeleteMessage } from "@controllers/chat/messages/roomId/useDeleteMessage/index";
+import { useEditMessage } from "@controllers/chat/messages/roomId/useEditMessage/index";
 import { ChatContainer, ChatMessagesContainer, ChatMessage, InputContainer } from "./components";
 
 import { PermissionTypeEnum } from "@blacket/types";
