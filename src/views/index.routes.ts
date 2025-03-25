@@ -7,8 +7,6 @@ export { default as Landing } from "./Landing/route";
 export { default as Login } from "./Authentication/login.route";
 export { default as Register } from "./Authentication/register.route";
 
-export { default as Form } from "./Form/route";
-
 export { default as Legal } from "./Legal/route";
 
 // TOP NAVIGATION ROUTES

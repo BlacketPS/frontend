@@ -4,7 +4,7 @@ import { useLoading } from "@stores/LoadingStore";
 import { useModal } from "@stores/ModalStore";
 import { useUser } from "@stores/UserStore";
 import { useLogin } from "@controllers/auth/useLogin/index";
-import { useCreateForm } from "@controllers/forms/useCreateForm/index";
+import { useRegister } from "@controllers/auth/useRegister/index";
 import { Input, ErrorContainer, Dropdown, Toggle, Button } from "@components/index";
 import { OtpModal } from "./components/index";
 import styles from "./authentication.module.scss";
@@ -12,16 +12,10 @@ import styles from "./authentication.module.scss";
 import { AuthenticationType, AuthenticationProps } from "./authentication.d";
 
 export default function Authentication({ type }: AuthenticationProps) {
-    const formId = localStorage.getItem("USER_FORM_ID");
-    if (formId) return <Navigate to="/form" />;
-
     const navigate = useNavigate();
 
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-    const [foundBy, setFoundBy] = useState<string>("");
-    const [otherFoundBy, setOtherFoundBy] = useState<string>("");
-    const [whyPlay, setWhyPlay] = useState<string>("");
     const [checked, setChecked] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
 
@@ -30,23 +24,13 @@ export default function Authentication({ type }: AuthenticationProps) {
     const { user } = useUser();
 
     const { login } = useLogin();
-    const { createForm } = useCreateForm();
+    const { register } = useRegister();
 
     if (user) return <Navigate to="/dashboard" />;
 
     const submitForm = async () => {
         if (username === "") return setError("Where's the username?");
-        if (type === AuthenticationType.LOGIN && import.meta.env.VITE_USER_FORMS_ENABLED === "true" && password === "") return setError("Where's the password?");
-        if (type === AuthenticationType.REGISTER) {
-            switch (true) {
-                case (foundBy === "Other" && otherFoundBy === ""):
-                    return setError("Where did you find us?");
-                case (foundBy === ""):
-                    return setError("Where did you find us?");
-                case (whyPlay === ""):
-                    return setError("Why do you want to join?");
-            }
-        }
+        if (password === "") return setError("Where's the password?");
 
         if (!/^[a-zA-Z0-9_-]+$/.test(username)) return setError("Username can only contain letters, numbers, underscores, and dashes.");
 
@@ -64,11 +48,9 @@ export default function Authentication({ type }: AuthenticationProps) {
         } else if (type === AuthenticationType.REGISTER) {
             if (!checked) return setError("You must agree to our Privacy Policy and Terms of Service.");
 
-            setLoading("Creating form");
-            createForm({
-                username, reasonToPlay: `Found by: ${foundBy === "Other" ? otherFoundBy : foundBy}\n\n${whyPlay}`, acceptedTerms: checked
-            })
-                .then(() => navigate("/form"))
+            setLoading("Registering");
+            register({ username, password })
+                .then(() => navigate("/dashboard"))
                 .catch((err) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
                 .finally(() => setLoading(false));
         }
@@ -92,7 +74,7 @@ export default function Authentication({ type }: AuthenticationProps) {
                 }}
             />
 
-            {type === AuthenticationType.LOGIN && import.meta.env.VITE_USER_FORMS_ENABLED === "true" && <Input
+            <Input
                 icon="fas fa-lock"
                 placeholder="Password"
                 type="password"
@@ -101,48 +83,9 @@ export default function Authentication({ type }: AuthenticationProps) {
                     setPassword(e.target.value);
                     setError("");
                 }}
-            />}
+            />
 
             {type === AuthenticationType.REGISTER && <>
-                <Dropdown
-                    options={[
-                        { label: "Select where you found us...", value: "" },
-                        { label: "Google", value: "Google" },
-                        { label: "YouTube", value: "YouTube" },
-                        { label: "Discord", value: "Discord" },
-                        { label: "Friend", value: "Friend" },
-                        { label: "Other", value: "Other" }
-                    ]}
-                    onChange={(value: string) => {
-                        setFoundBy(value);
-                        setOtherFoundBy("");
-                        setError("");
-                    }}
-                >
-                    Select where you found us...
-                </Dropdown>
-
-                {foundBy === "Other" && <Input
-                    icon="fas fa-location-arrow"
-                    placeholder="Where did you find us?"
-                    type="text"
-                    onChange={(e) => {
-                        setOtherFoundBy(e.target.value);
-                        setError("");
-                    }}
-                    value={otherFoundBy}
-                />}
-
-                {(foundBy && (foundBy !== "Other" || (foundBy === "Other" && otherFoundBy !== ""))) && <Input
-                    icon="fas fa-question"
-                    placeholder="Why do you want to play?"
-                    type="text"
-                    onChange={(e) => {
-                        setWhyPlay(e.target.value);
-                        setError("");
-                    }}
-                />}
-
                 <div className={styles.agreeHolder}>
                     <Toggle
                         checked={checked}

@@ -4,7 +4,7 @@ import { useSocket } from "@stores/SocketStore";
 import { AuthAuthEntity } from "@blacket/types";
 
 interface RegisterDto {
-    formId: string;
+    username: string;
     password: string;
 }
 
