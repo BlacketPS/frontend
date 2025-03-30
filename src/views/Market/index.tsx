@@ -220,8 +220,17 @@ export default function Market() {
             </SidebarBody>
 
             <div className={styles.rightSide}>
-                <img className={styles.rightSideBlook} src={window.constructCDNUrl("/content/mark.png")} alt="Blook" />
-                <img className={styles.rightSideStore} src={window.constructCDNUrl("/content/market.png")} alt="Market" />
+                <div className={styles.marketContainer}>
+                    <img className={styles.rightSideStore} src={window.constructCDNUrl("/content/market.png")} alt="Market" />
+
+                    <div className={styles.boosterContainer}>
+                        <img className={styles.boosterIcon} src={window.constructCDNUrl("/content/icons/boost.png")} alt="Boost Icon" />
+
+                        <div className={styles.boosterText}>
+                            aaa
+                        </div>
+                    </div>
+                </div>
             </div>
 
             {currentPack && <>

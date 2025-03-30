@@ -6,12 +6,14 @@ import { CategoryProps } from "../market.d";
 
 export default function Category({ header, internalName, children }: CategoryProps) {
     const { user } = useUser();
+    if (!user) return null;
+
     const { changeSetting } = useSettings();
+
     const contentRef = useRef<HTMLDivElement>(null);
 
-    const [openedState, setOpenedState] = useState(true);
-    const [isVisible, setIsVisible] = useState(false);
-    const [maxHeightSet, setMaxHeightSet] = useState(false);
+    const [openedState, setOpenedState] = useState(user.settings.categoriesClosed.includes(internalName) ? false : true);
+    const [isVisible, setIsVisible] = useState(openedState);
 
     if (!user) return null;
 
@@ -25,32 +27,11 @@ export default function Category({ header, internalName, children }: CategoryPro
     };
 
     useEffect(() => {
-        if (!contentRef.current || maxHeightSet) return;
+        if (!contentRef.current) return;
 
-        const height = contentRef.current.getBoundingClientRect().height;
-        const open = !user.settings.categoriesClosed.includes(internalName);
+        Object.assign(contentRef.current.style, { maxHeight: openedState ? `${contentRef.current.scrollHeight}px` : "0px" });
 
-        if (height > 0) {
-            contentRef.current.style.setProperty("--max-height", `${height}px`);
-            setOpenedState(open);
-            setMaxHeightSet(true);
-            setIsVisible(true);
-        }
-
-        return () => {
-            if (contentRef.current) {
-                contentRef.current.removeEventListener("transitionend", () => setMaxHeightSet(true));
-            }
-        };
-    }, [contentRef, maxHeightSet]);
-
-    useEffect(() => {
-        if (contentRef.current) {
-            Object.assign(contentRef.current.style, {
-                maxHeight: openedState ? `${contentRef.current.scrollHeight}px` : "0px"
-            });
-            setIsVisible(openedState);
-        }
+        setIsVisible(openedState);
     }, [openedState]);
 
     return (
@@ -71,11 +52,11 @@ export default function Category({ header, internalName, children }: CategoryPro
                 style={{
                     opacity: 1,
                     ...(isVisible ?
-                    {
-                        visibility: "visible"
-                    } : {
-                        visibility: "hidden"
-                    })
+                        {
+                            visibility: "visible"
+                        } : {
+                            visibility: "hidden"
+                        })
                 }}
             >
                 {children}

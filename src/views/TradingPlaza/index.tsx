@@ -45,7 +45,7 @@ export default function TradingPlaza() {
 
         let _previousPos = { x: 0, y: 0 };
 
-        const tiles = TILES.filter((tile) => tile.id.includes("sand"));
+        const tiles = TILES.filter((tile) => tile.id.includes("grass"));
 
         for (let x = -ROWS; x < ROWS; x++) {
             for (let y = -COLUMNS; y < COLUMNS; y++) {

@@ -1,13 +1,10 @@
 .rightSide {
     position: fixed;
-    right: 2.5%;
+    right: 2%;
     top: 0;
-    width: 250px;
+    width: 325px;
     height: 100vh;
     user-select: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     overflow: hidden;
 
     @media screen and (max-width: 1010px) {
@@ -16,17 +13,7 @@
 }
 
 .rightSideStore {
-    position: absolute;
     height: 400px;
-}
-
-.rightSideBlook {
-    position: absolute;
-    margin-top: 90px;
-    margin-left: 30px;
-    width: 70px;
-    height: 85px;
-    transform: rotate(10deg);
 }
 
 .leftSide {
@@ -82,7 +69,7 @@
     margin: 0 0 0 5%;
     flex-direction: column;
 
-    transition: max-height 400ms cubic-bezier(.32,.77,.84,1.02);
+    transition: max-height 400ms cubic-bezier(.32, .77, .84, 1.02);
     min-height: 0;
     overflow: clip;
 
@@ -736,4 +723,38 @@
             rotate: 360deg;
         }
     }
+}
+
+.marketContainer {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.boosterContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    margin-top: 10px;
+    width: 100%;
+    height: 60px;
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    box-shadow: inset 0 -7px rgba(0, 0, 0, .2);
+    padding-bottom: 7px;
+}
+
+.boosterIcon {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+    object-fit: contain;
+}
+
+.boosterText {
+    font-size: 22px;
 }
