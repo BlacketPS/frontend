@@ -19,7 +19,6 @@ export default function InventoryBlook({ blook, shiny, locked, quantity, ...prop
                 data-locked={locked}
                 draggable={false}
                 shiny={shiny}
-                shinySparkles={false}
             />
 
             {!locked && <div style={{

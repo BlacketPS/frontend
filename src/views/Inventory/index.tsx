@@ -178,7 +178,7 @@ export default function Inventory() {
             } noBlooksOwned={user.blooks.length < 1}>
                 {user.blooks.length > 0 && selectedBlook && <div className={styles.rightButtonContainer}>
                     <RightButton image={window.constructCDNUrl("/content/token.png")} onClick={() => createModal(<SellBlooksModal blook={selectedBlook} shiny={selectedBlookShiny} />)}>Sell</RightButton>
-                    <RightButton icon="fas fa-building-columns" onClick={() => createModal(<AuctionModal type={AuctionTypeEnum.BLOOK} blook={selectedBlook} />)}>Auction</RightButton>
+                    <RightButton icon="fas fa-building-columns" onClick={() => createModal(<AuctionModal type={AuctionTypeEnum.BLOOK} blook={selectedBlook} shiny={selectedBlookShiny} />)}>Auction</RightButton>
                 </div>}
             </RightBlook>}
 

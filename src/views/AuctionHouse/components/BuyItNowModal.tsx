@@ -21,7 +21,7 @@ export default function BuyItNowModal({ auction }: ModalProps) {
 
     if (!user) return null;
 
-    const blook = blooks.find((blook) => blook.id === auction.blookId);
+    const blook = blooks.find((blook) => blook.id === auction?.blook?.blookId);
     const item = items.find((item) => item.id === auction.item?.itemId);
 
     const submit = () => {
@@ -32,10 +32,12 @@ export default function BuyItNowModal({ auction }: ModalProps) {
             .finally(() => setLoading(false));
     };
 
+    const headerText = `${auction.type === AuctionTypeEnum.BLOOK && auction.blook && auction.blook.shiny ? "Shiny " : ""}${auction.type === AuctionTypeEnum.BLOOK ? blook!.name : item!.name}`;
+
     return (
         <>
             <Modal.ModalHeader>
-                {auction.type === AuctionTypeEnum.BLOOK ? blook!.name : item!.name}
+                {headerText}
             </Modal.ModalHeader>
 
             <Modal.ModalBody>Would you like to purchase this {

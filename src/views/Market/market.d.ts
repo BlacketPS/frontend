@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { ItemShop, MarketOpenPackDto, Pack, UserBlook } from "@blacket/types";
+import { DataBoostersEntity, ItemShop, MarketOpenPackDto, Pack, UserBlook } from "@blacket/types";
 
 export type ParticlesScene = Phaser.Scene & {
     initParticles: () => void;
@@ -67,4 +67,19 @@ export interface OpenPackBlookProps {
     userBlook: UserBlook;
     animate: boolean;
     isNew: boolean;
+}
+
+export interface BoosterContainerProps {
+    boosters?: DataBoostersEntity | null;
+}
+
+export interface TimeRemainingStrings {
+    global: {
+        chance?: string;
+        shiny?: string;
+    }
+    personal: {
+        chance?: string;
+        shiny?: string;
+    }
 }

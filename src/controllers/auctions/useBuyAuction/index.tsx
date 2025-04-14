@@ -12,7 +12,7 @@ export function useBuyAuction() {
             const userBlooks = user.blooks;
             const userItems = user.items;
 
-            if (auction.blookId) (userBlooks[auction.blookId] as number) += 1;
+            if (auction.blook) userBlooks.push(auction.blook);
             else if (auction.item) userItems.push(auction.item);
 
             setUser({ ...user, blooks: userBlooks, items: userItems, tokens: user.tokens - auction.price });

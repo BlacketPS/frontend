@@ -7,15 +7,16 @@ import { useModal } from "@stores/ModalStore/index";
 import { useData } from "@stores/DataStore/index";
 import { useSettings } from "@controllers/settings/useSettings";
 import { useOpenPack } from "@controllers/market/useOpenPack";
+import { useBoosters } from "@controllers/data/useBoosters";
 import { SidebarBody, PageHeader, Modal, Button, SearchBox } from "@components/index";
-import { OpenPackModal, Category, Pack, OpenPackContainer, OpenPackBlook, Item } from "./components";
+import { OpenPackModal, Category, Pack, OpenPackContainer, OpenPackBlook, Item, BoosterContainer } from "./components";
 // TODO: migrate to not using phaser for opening
 // @ts-expect-error phaser is too big for the bundle so import it externally since its only used once
 const { Game, Scale, WEBGL } = window.Phaser;
 import Particles from "./functions/PackParticles";
 import styles from "./market.module.scss";
 
-import { MarketOpenPackDto, Pack as PackType, RarityAnimationTypeEnum, UserBlook } from "@blacket/types";
+import { DataBoostersEntity, MarketOpenPackDto, Pack as PackType, RarityAnimationTypeEnum, UserBlook } from "@blacket/types";
 import { ParticlesScene, Config, GameState, BigButtonClickType, SearchOptions } from "./market.d";
 
 const useGame = (config: Config, containerRef: RefObject<HTMLDivElement>) => {
@@ -50,6 +51,7 @@ export default function Market() {
 
     const { changeSetting } = useSettings();
     const { openPack } = useOpenPack();
+    const { getBoosters } = useBoosters();
 
     const [game, setGame] = useState<GameState>({
         type: WEBGL,
@@ -72,6 +74,8 @@ export default function Market() {
     const [bigButtonEvent, setBigButtonEvent] = useState<BigButtonClickType>(BigButtonClickType.CLOSE);
 
     const [search, setSearch] = useState<SearchOptions>({ query: localStorage.getItem("MARKET_SEARCH_QUERY") ?? "", onlyPurchasable: localStorage.getItem("MARKET_SEARCH_ONLY_PURCHASABLE") ? true : false });
+
+    const [boosters, setBoosters] = useState<DataBoostersEntity | null>(null);
 
     const gameRef = useRef<HTMLDivElement>(null);
 
@@ -154,15 +158,22 @@ export default function Market() {
         }
     };
 
+    useEffect(() => {
+        getBoosters()
+            .then((res) => setBoosters(res.data));
+    }, []);
+
     return (
         <>
             <SidebarBody pushOnMobile={true}>
                 <PageHeader>Market</PageHeader>
 
+                <div className={styles.buttonHolderMobile}>
+                    <Button.LittleButton onClick={toggleInstantOpen}>Instant Open: {user.settings.openPacksInstantly ? "On" : "Off"}</Button.LittleButton>
+                </div>
+
                 <div className={styles.leftSide}>
-                    <div className={styles.buttonHolder}>
-                        <Button.LittleButton onClick={toggleInstantOpen}>Instant Open: {user.settings.openPacksInstantly ? "On" : "Off"}</Button.LittleButton>
-                    </div>
+                    <BoosterContainer boosters={boosters} />
 
                     <SearchBox
                         placeholder="Search for a pack..."
@@ -221,14 +232,10 @@ export default function Market() {
 
             <div className={styles.rightSide}>
                 <div className={styles.marketContainer}>
-                    <img className={styles.rightSideStore} src={window.constructCDNUrl("/content/market.png")} alt="Market" />
+                    <img className={styles.rightSideStore} src={window.constructCDNUrl("/content/shopkeeper.png")} alt="Market" />
 
-                    <div className={styles.boosterContainer}>
-                        <img className={styles.boosterIcon} src={window.constructCDNUrl("/content/icons/boost.png")} alt="Boost Icon" />
-
-                        <div className={styles.boosterText}>
-                            aaa
-                        </div>
+                    <div className={styles.buttonHolder}>
+                        <Button.LittleButton onClick={toggleInstantOpen}>Instant Open: {user.settings.openPacksInstantly ? "On" : "Off"}</Button.LittleButton>
                     </div>
                 </div>
             </div>

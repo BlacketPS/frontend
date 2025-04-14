@@ -1,5 +1,6 @@
 .canvasContainer {
-    height: 100%;
+    top: 60px;
+    height: calc(100% - 60px);
     width: calc(100% - 60px);
     margin-left: 60px;
     outline: none;
@@ -32,6 +33,37 @@
     padding: 10px 0;
     box-sizing: border-box;
     position: absolute;
+}
+
+.topContainer {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+    left: 60px;
+    width: calc(100% - 60px);
+    top: 0;
+    background-color: var(--primary-color);
+    padding: 0 10px;
+    box-sizing: border-box;
+    position: absolute;
+}
+
+.infoContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    box-sizing: border-box;
+}
+
+.info {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 7px 10px;
 }
 
 // .bottomContainer {

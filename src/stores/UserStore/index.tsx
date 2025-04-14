@@ -25,7 +25,14 @@ export function UserStoreProvider({ children }: { children: ReactNode }) {
     const { addCachedUserWithData } = useCachedUser();
 
     const setUser = (user: PrivateUser | null) => {
-        if (user) user.hasPermission = (permission: PermissionType) => user.permissions.includes(permission);
+        if (user) {
+            user.hasPermission = (permission: PermissionType) => user.permissions.includes(permission);
+            user.setTokens = (tokens: number) => {
+                setUserState({ ...user, tokens });
+
+                return tokens;
+            };
+        }
 
         setUserState(user);
     };

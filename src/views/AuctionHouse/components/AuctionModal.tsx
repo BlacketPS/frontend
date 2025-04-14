@@ -23,12 +23,7 @@ export default function AuctionModal({ auctionId }: AuctionModalProps) {
 
     const { bidAuction } = useBidAuction();
 
-    console.log(auctionId);
-    console.log(auctions);
-
     const [auction, setAuction] = useState<AuctionsAuctionEntity | null>(auctions.find((auction) => auction.id === auctionId) || null);
-
-    console.log(auction);
 
     if (!auction) return null;
     if (!user) return null;
@@ -37,10 +32,37 @@ export default function AuctionModal({ auctionId }: AuctionModalProps) {
         setAuction(auctions.find((auction) => auction.id === auctionId) || null);
     }, [auctions]);
 
-    const blook = blooks.find((blook) => blook.id === auction.blookId);
+    const blook = blooks.find((blook) => blook.id === auction?.blook?.blookId);
     const item = items.find((item) => item.id === auction.item?.itemId);
 
     const submit = () => {
+        // switch (true) {
+        //     case amount === "":
+        //         return setError("Please enter a bid amount.");
+        //     case auction.bids[0] && auction.bids[0].user.id === user.id:
+        //         return setError(Forbidden.AUCTIONS_BID_OWN_BID);
+        //     case auction.bids[0] && parseInt(amount) <= auction.bids[0].amount:
+        //         return setError(
+        //             Forbidden.AUCTIONS_BID_TOO_LOW
+        //                 .replace("%s", (auction.bids[0].amount + 1).toLocaleString())
+        //         );
+        //     case parseInt(amount) <= auction.price:
+        //         return setError(
+        //             Forbidden.AUCTIONS_BID_TOO_LOW
+        //                 .replace("%s", (auction.price + 1).toLocaleString())
+        //         );
+        //     case parseInt(amount) > user.tokens:
+        //         return setError(Forbidden.AUCTIONS_BID_NOT_ENOUGH_TOKENS);
+        // }
+
+        const userPreviousBids = auction.bids.filter((bid) => bid.user.id === user.id);
+        const highestPreviousBidAmount = userPreviousBids.length > 0
+            ? Math.max(...userPreviousBids.map((bid) => bid.amount))
+            : 0;
+
+        const additionalAmount = parseInt(amount) - highestPreviousBidAmount;
+        const remainingTokens = user.tokens - additionalAmount;
+
         switch (true) {
             case amount === "":
                 return setError("Please enter a bid amount.");
@@ -51,18 +73,20 @@ export default function AuctionModal({ auctionId }: AuctionModalProps) {
                     Forbidden.AUCTIONS_BID_TOO_LOW
                         .replace("%s", (auction.bids[0].amount + 1).toLocaleString())
                 );
-            case parseInt(amount) <= auction.price:
+            case parseInt(amount) <= highestPreviousBidAmount:
                 return setError(
                     Forbidden.AUCTIONS_BID_TOO_LOW
-                        .replace("%s", (auction.price + 1).toLocaleString())
+                        .replace("%s", (highestPreviousBidAmount + 1).toLocaleString())
                 );
-            case parseInt(amount) > user.tokens:
-                return setError(Forbidden.AUCTIONS_BID_NOT_ENOUGH_TOKENS);
         }
 
         setLoading(true);
         bidAuction(auction, { amount: parseInt(amount) })
-            .then(() => setAmount(""))
+            .then(() => {
+                setAmount("");
+
+                user.setTokens(remainingTokens);
+            })
             .catch((err) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
             .finally(() => setLoading(false));
     };

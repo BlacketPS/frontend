@@ -11,6 +11,7 @@ export const entityLoop = (entity: BrenderEntity, deltaTime: number) => {
         width: entity.width ?? entity.image.width,
         height: entity.height ?? entity.image.height,
         blendMode: entity.imageBlendMode,
+        rotation: entity.rotation ?? undefined,
         opacity: entity.imageOpacity
     });
 

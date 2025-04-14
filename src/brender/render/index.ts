@@ -32,6 +32,19 @@ export const drawImage = (image: DrawImageProps) => {
     if (image.blendMode) imageCtx.globalCompositeOperation = image.blendMode;
     if (image.opacity) imageCtx.globalAlpha = image.opacity;
 
+    // rotation, rotation is in deg
+    if (image.rotation) {
+        imageCtx.translate(
+            (image.x - camera.x) * camera.scale + image.width * camera.scale / 2,
+            (image.y - camera.y) * camera.scale + image.height * camera.scale / 2
+        );
+        imageCtx.rotate(image.rotation * Math.PI / 180);
+        imageCtx.translate(
+            -(image.x - camera.x) * camera.scale - image.width * camera.scale / 2,
+            -(image.y - camera.y) * camera.scale - image.height * camera.scale / 2
+        );
+    }
+
     if (image.useCamera && isOnScreen(image.x, image.y, image.width, image.height)) {
         imageCtx.drawImage(
             image.image,

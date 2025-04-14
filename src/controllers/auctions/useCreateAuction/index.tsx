@@ -13,8 +13,9 @@ export function useCreateAuction() {
             const userItems = user.items;
 
             if (dto.blookId) {
-                (userBlooks[dto.blookId] as number) -= 1;
-                if ((userBlooks[dto.blookId] as number) < 1) delete userBlooks[dto.blookId];
+                const index = userBlooks.findIndex((blook) => blook.id === dto.blookId);
+
+                if (index !== -1) userBlooks.splice(index, 1);
             }
 
             if (dto.itemId) {

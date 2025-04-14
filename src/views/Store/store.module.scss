@@ -2,7 +2,7 @@
     position: fixed;
     right: 2.5%;
     top: 0;
-    width: 250px;
+    width: 325px;
     height: 100vh;
     user-select: none;
     display: flex;
@@ -33,7 +33,7 @@
 .container {
     display: flex;
     margin: 0 0 35px 1%;
-    width: calc(95.5% - 310px);
+    width: calc(95.5% - 330px);
     padding-bottom: 20px;
     gap: 20px;
     flex-direction: column;
@@ -149,18 +149,18 @@
         width: 100%;
     }
 
-    & > img {
+    &>img {
         transition: .2s ease;
     }
 
     &:hover {
         transform: scale(0.97);
 
-        & > img {
+        &>img {
             transform: rotate(-5deg);
         }
 
-        & > .shine {
+        &>.shine {
             filter: blur(5px);
             pointer-events: none;
             --shineSpeed: 3s;
@@ -176,6 +176,7 @@
                 animation: shine var(--shineSpeed) ease 0.085s infinite;
                 width: 70px;
             }
+
             &:nth-child(5) {
                 background: rgba(255, 255, 255, 0.15);
                 animation: shine var(--shineSpeed) ease 0.175s infinite;
@@ -188,7 +189,7 @@
         transform: scale(0.9);
     }
 
-    & > .shine {
+    &>.shine {
         position: absolute;
         top: 0;
         left: -100px;

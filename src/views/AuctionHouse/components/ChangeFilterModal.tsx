@@ -75,10 +75,20 @@ export default function ChangeFilterModal() {
                 </Toggle>
 
                 <Toggle
+                    checked={search.shiny}
+                    onClick={() => {
+                        if (search.shiny) setSearch({ ...search, shiny: undefined });
+                        else setSearch({ ...search, shiny: true, type: AuctionTypeEnum.BLOOK });
+                    }}
+                >
+                    Shinies Only
+                </Toggle>
+
+                <Toggle
                     checked={search.type === AuctionTypeEnum.ITEM}
                     onClick={() => {
                         if (search.type === AuctionTypeEnum.ITEM) setSearch({ ...search, type: undefined });
-                        else setSearch({ ...search, type: AuctionTypeEnum.ITEM });
+                        else setSearch({ ...search, type: AuctionTypeEnum.ITEM, shiny: undefined });
                     }}
                 >
                     Items Only

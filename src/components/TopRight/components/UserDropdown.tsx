@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useModal } from "@stores/ModalStore/index";
 import { useUser } from "@stores/UserStore/index";
-import { ImageOrVideo, Modal, Username } from "@components/index";
+import { Blook, ImageOrVideo, Modal, Username } from "@components/index";
 import styles from "../topRight.module.scss";
 
 import { UserDropdownProps } from "../topRight.d";
@@ -14,7 +14,11 @@ export default function UserDropdown({ user }: UserDropdownProps) {
         <div className={styles.userContainer}>
             <div className={styles.userLeft}>
                 <div className={styles.userLeftAvatar}>
-                    <ImageOrVideo src={getUserAvatarPath(user)} draggable={false} />
+                    <Blook
+                        src={getUserAvatarPath(user)}
+                        shiny={user.avatar?.shiny}
+                        draggable={false}
+                    />
                 </div>
 
                 <Username user={user} />

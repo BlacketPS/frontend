@@ -59,5 +59,6 @@ export interface SellBlooksModalProps {
 export interface AuctionModalProps {
     type: AuctionTypeEnum;
     blook?: Blook;
+    shiny?: boolean;
     item?: Item;
 }

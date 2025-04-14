@@ -12,6 +12,7 @@ export const objectLoop = (object: BrenderObject, deltaTime: number) => {
             width: object.width ?? object.image.width,
             height: object.height ?? object.image.height,
             blendMode: object.imageBlendMode,
+            rotation: object.rotation ?? undefined,
             opacity: object.imageOpacity
         });
     }

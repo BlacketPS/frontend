@@ -71,7 +71,6 @@ export default function SellBlooksModal({ blook, shiny }: SellBlooksModalProps) 
                                     className={styles.sellBlookImage}
                                     src={resourceIdToPath(blook.imageId)}
                                     shiny={userBlook.shiny}
-                                    shinySparkles={false}
                                 />
                             </div>
 

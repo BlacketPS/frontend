@@ -252,8 +252,8 @@ export default function TradingPlaza() {
                 const nextX = (entity.x + moveX) | 0;
                 const nextY = (entity.y + moveY) | 0;
 
+                // object collision checks
                 const objects = brender.objects.filter((object) => isOnScreen(object.x, object.y, object.width!, object.height!));
-
                 for (const object of objects) {
                     if (isColliding({ ...entity, x: nextX } as BrenderEntity, object)) {
                         const diffX = entity.x - object.x;
@@ -270,8 +270,8 @@ export default function TradingPlaza() {
                     }
                 }
 
+                // entity collision checks
                 const entities = brender.entities.filter((entity) => entity.id !== user.id);
-
                 for (const entity2 of entities) {
                     if (isColliding({ ...entity, x: nextX } as BrenderEntity, entity2)) {
                         const diffX = entity.x - entity2.x;

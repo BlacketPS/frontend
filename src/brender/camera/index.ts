@@ -19,9 +19,11 @@ export const camera: BrenderCamera = {
         this.y = (this.y + dy) | 0;
     },
 
-    focusOn(entity: BrenderEntity, lerp = 1) {
-        this.x = lerpFunction(this.x, (entity.x - canvas.width / 2 / this.scale + (entity.width ?? entity?.image?.width ?? 0) / 2) | 0, lerp) | 0;
-        this.y = lerpFunction(this.y, (entity.y - canvas.height / 2 / this.scale + (entity.height ?? entity?.image?.height ?? 0) / 2) | 0, lerp) | 0;
+    focusOn(entity: BrenderEntity, lerp = 1, deltaTime = 1 / 60) {
+        const adjustedLerp = lerp * deltaTime * 60;
+
+        this.x = lerpFunction(this.x, (entity.x - canvas.width / 2 / this.scale + (entity.width ?? entity?.image?.width ?? 0) / 2) | 0, adjustedLerp) | 0;
+        this.y = lerpFunction(this.y, (entity.y - canvas.height / 2 / this.scale + (entity.height ?? entity?.image?.height ?? 0) / 2) | 0, adjustedLerp) | 0;
     },
 
     zoom(amount: number) {

@@ -1,21 +1,27 @@
 import { useEffect, useState } from "react";
 import { useModal } from "@stores/ModalStore/index";
 import { useUser } from "@stores/UserStore/index";
+import { useResource } from "@stores/ResourceStore/index";
 import { useAuctionHouse } from "@stores/AuctionHouseStore/index";
 import { useCreateAuction } from "@controllers/auctions/useCreateAuction/index";
 import { useRecentAveragePrice } from "@controllers/auctions/useRecentAveragePrice/index";
-import { Modal, Button, Form, Input, ErrorContainer, Toggle, WarningContainer } from "@components/index";
+import { Modal, Button, Form, Input, ErrorContainer, Toggle, WarningContainer, Blook } from "@components/index";
+import styles from "../inventory.module.scss";
 
 import { AuctionModalProps } from "../inventory.d";
 import { AuctionTypeEnum, PermissionTypeEnum } from "@blacket/types";
 
-export default function AuctionModal({ type, blook, item }: AuctionModalProps) {
+export default function AuctionModal({ type, blook, shiny, item }: AuctionModalProps) {
+    const { user } = useUser();
+    if (!user) return null;
+
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string>("");
     const [price, setPrice] = useState<string>("");
     const [suspicious, setSuspicious] = useState<boolean>(false);
     const [duration, setDuration] = useState<string>("");
     const [buyItNow, setBuyItNow] = useState<boolean>(false);
+    const [selectedBlook, setSelectedBlook] = useState<number | null>(null);
 
     const [auctionTax, setAuctionTax] = useState<number>(0);
     const [durationTax, setDurationTax] = useState<number>(0);
@@ -24,8 +30,8 @@ export default function AuctionModal({ type, blook, item }: AuctionModalProps) {
     const { getRecentAveragePrice } = useRecentAveragePrice();
 
     const { closeModal } = useModal();
-    const { user } = useUser();
     const { getAuctions } = useAuctionHouse();
+    const { resourceIdToPath } = useResource();
 
     if (!user) return null;
 
@@ -41,7 +47,7 @@ export default function AuctionModal({ type, blook, item }: AuctionModalProps) {
         createAuction({
             type,
             itemId: item ? item.id : undefined,
-            blookId: blook ? blook.id : undefined,
+            blookId: selectedBlook ?? undefined,
             price: parseInt(price),
             duration: parseInt(duration),
             buyItNow
@@ -75,10 +81,41 @@ export default function AuctionModal({ type, blook, item }: AuctionModalProps) {
     return (
         <>
             <Modal.ModalHeader>
-                Auctioning {type === AuctionTypeEnum.BLOOK ? blook!.name : item!.name}
+                Auctioning {shiny && "Shiny "}{type === AuctionTypeEnum.BLOOK ? blook!.name : item!.name}
             </Modal.ModalHeader>
 
             <Modal.ModalBody>Please fill out the fields below.</Modal.ModalBody>
+
+            {type === AuctionTypeEnum.BLOOK && blook && <div className={styles.sellBlooksContainer}>
+                <div className={styles.sellBlooks}>
+                    {user.blooks
+                        .filter((userBlook) => userBlook.blookId === blook.id)
+                        .filter((userBlook) => userBlook.shiny === shiny)
+                        .map((userBlook) => <div
+                            key={userBlook.id}
+                            className={styles.sellBlook}
+                            data-selected={selectedBlook === userBlook.id ? "true" : "false"}
+                            onClick={() => {
+                                if (selectedBlook === userBlook.id) setSelectedBlook(null);
+                                else setSelectedBlook(userBlook.id);
+                            }}
+                        >
+                            <div className={styles.sellBlookImageContainer}>
+                                <Blook
+                                    className={styles.sellBlookImage}
+                                    src={resourceIdToPath(blook.imageId)}
+                                    shiny={userBlook.shiny}
+                                />
+                            </div>
+
+                            <div className={styles.sellBlookInformation}>
+                                <div>{shiny && "Shiny"} {blook.name}</div>
+                                <div>Serial: #1</div>
+                            </div>
+                        </div>)
+                    }
+                </div>
+            </div>}
 
             <Form>
                 <Input

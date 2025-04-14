@@ -12,7 +12,7 @@ import {
     loadingImage
 } from ".";
 
-const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width, height, style, debug = false, ...props }, ref) => {
+const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width, height, style, debug = false, showFPS = false, ...props }, ref) => {
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     let canvas = canvasRef.current;
@@ -70,7 +70,7 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
                 drawText({ text: `Objects: ${objects.length}`, x: 7, y: getHeight() - 30, style: { textAlign: "left" }, useCamera: false });
                 drawText({ text: `Camera: ${camera.x}, ${camera.y}`, x: 7, y: getHeight() - 50, style: { textAlign: "left" }, useCamera: false });
 
-                drawText({ text: `FPS: ${fps}`, x: getWidth() - 7, y: 20, style: { textAlign: "right" }, useCamera: false });
+                if (showFPS) drawText({ text: `FPS: ${fps}`, x: getWidth() - 7, y: 20, style: { textAlign: "right" }, useCamera: false });
 
                 // every object that has collision on screen
                 objects.forEach((object) => {

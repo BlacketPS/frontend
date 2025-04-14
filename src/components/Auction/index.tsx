@@ -1,40 +1,19 @@
 import { useEffect, useState } from "react";
-import { ImageOrVideo, Username } from "@components/index";
+import { Blook, ImageOrVideo, Username } from "@components/index";
 import { useResource } from "@stores/ResourceStore/index";
 import { useData } from "@stores/DataStore/index";
+import { formatTimeRemaining } from "@functions/core/formatTimeRemaining";
 import normalStyles from "./auction.module.scss";
 import vhStyles from "./auctionVh.module.scss";
 
 import { AuctionProps } from "./auction.d";
 import { AuctionTypeEnum } from "@blacket/types";
 
-const formatTimeRemaining = (expiresAt: Date): string => {
-    const now = new Date();
-    const diff = expiresAt.getTime() - now.getTime();
-
-    if (diff <= 0) return "Expired";
-
-    const seconds = Math.floor((diff / 1000) % 60);
-    const minutes = Math.floor((diff / (1000 * 60)) % 60);
-    const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
-    const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-
-    if (days > 1) {
-        return `${days}d ${hours}h ${minutes}m`;
-    } else if (hours >= 1) {
-        return `${hours}h ${minutes}m ${seconds}s`;
-    } else if (minutes >= 1) {
-        return `${minutes}m ${seconds}s`;
-    } else {
-        return `${seconds}s`;
-    }
-};
-
 export default function Auction({ auction, useVhStyles = false, ...props }: AuctionProps) {
     const { resourceIdToPath } = useResource();
     const { blooks, items } = useData();
 
-    const item = blooks.find((blook) => blook.id === auction.blookId) || items.find((item) => item.id === auction?.item?.itemId);
+    const item = blooks.find((blook) => blook.id === auction?.blook?.blookId) || items.find((item) => item.id === auction?.item?.itemId);
 
     if (!item) return null;
     if (!auction.seller) return null;
@@ -52,12 +31,12 @@ export default function Auction({ auction, useVhStyles = false, ...props }: Auct
     return (
         <div className={styles.auction} {...props}>
             <div className={styles.auctionImageContainer}>
-                <ImageOrVideo src={resourceIdToPath(item.imageId)} alt={item.name} />
+                {(auction.type === AuctionTypeEnum.BLOOK && auction.blook) ? <Blook src={resourceIdToPath(item.imageId)} shiny={auction.blook.shiny} /> : <ImageOrVideo src={resourceIdToPath(item.imageId)} alt={item.name} />}
                 {auction.type === AuctionTypeEnum.ITEM && <div className={styles.auctionUsesLeft}>{auction.item?.usesLeft?.toLocaleString()} Use{auction.item?.usesLeft !== 1 ? "s" : ""} Left</div>}
             </div>
 
             <div className={styles.auctionInfo}>
-                <div>Name: <span>{item.name}</span></div>
+                <div>Name: <span>{auction.blook && auction.blook.shiny && "Shiny "}{item.name}</span></div>
                 <div>Type: <span>{auction.type === AuctionTypeEnum.BLOOK ? "Blook" : "Item"}</span></div>
                 <div className={styles.auctionPrice}>
                     {

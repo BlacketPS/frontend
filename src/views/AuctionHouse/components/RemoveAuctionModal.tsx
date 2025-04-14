@@ -20,7 +20,7 @@ export default function RemoveAuctionModal({ auction }: ModalProps) {
 
     if (!user) return null;
 
-    const blook = blooks.find((blook) => blook.id === auction.blookId);
+    const blook = blooks.find((blook) => blook.id === auction?.blook?.blookId);
     const item = items.find((item) => item.id === auction.item?.itemId);
 
     const submit = () => {
@@ -31,10 +31,12 @@ export default function RemoveAuctionModal({ auction }: ModalProps) {
             .finally(() => setLoading(false));
     };
 
+    const headerText = `${auction.type === AuctionTypeEnum.BLOOK && auction.blook && auction.blook.shiny ? "Shiny " : ""}${auction.type === AuctionTypeEnum.BLOOK ? blook!.name : item!.name}`;
+
     if (auction.bids.length > 0) return (
         <>
             <Modal.ModalHeader>
-                {auction.type === AuctionTypeEnum.BLOOK ? blook!.name : item!.name}
+                {headerText}
             </Modal.ModalHeader>
 
             <Modal.ModalBody>You cannot remove a listing with bids on it.</Modal.ModalBody>
@@ -47,7 +49,7 @@ export default function RemoveAuctionModal({ auction }: ModalProps) {
     else return (
         <>
             <Modal.ModalHeader>
-                {auction.type === AuctionTypeEnum.BLOOK ? blook!.name : item!.name}
+                {headerText}
             </Modal.ModalHeader>
 
             <Modal.ModalBody>Are you sure you want to remove your listing?</Modal.ModalBody>

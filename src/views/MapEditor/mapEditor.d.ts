@@ -24,3 +24,11 @@ export interface TileProps {
     tile: Tile;
     onClick: () => void;
 }
+
+export enum SnapMode {
+    OFF = 0,
+    ONE = 1,
+    HALF = 2,
+    QUARTER = 3,
+    EIGHTH = 4
+}

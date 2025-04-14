@@ -25,14 +25,15 @@ export interface DrawTextProps {
     useCamera?: boolean;
 }
 export interface DrawImageProps {
-    image: HTMLImageElement,
-    x: number,
-    y: number,
-    width: number,
-    height: number,
-    blendMode?: GlobalCompositeOperation,
-    opacity?: number
+    image: HTMLImageElement;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+    blendMode?: GlobalCompositeOperation;
+    opacity?: number;
     useCamera?: boolean;
+    rotation?: number;
 }
 
 export interface BrenderCanvasRef {
@@ -62,6 +63,7 @@ export interface BrenderCanvasProps extends HTMLAttributes<HTMLCanvasElement> {
     height?: number;
     style?: React.CSSProperties;
     debug?: boolean;
+    showFPS?: boolean;
 }
 
 export interface BrenderCamera {
@@ -86,6 +88,7 @@ export interface BrenderObject {
     imageBlendMode?: GlobalCompositeOperation;
     imageOpacity?: number;
     hasCollision?: boolean;
+    rotation?: number;
     onClick?: (object: BrenderObject) => void;
     onFrame?: (object: BrenderObject, deltaTime: number) => void;
 

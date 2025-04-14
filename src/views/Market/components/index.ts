@@ -1,3 +1,4 @@
+import BoosterContainer from "./BoosterContainer";
 import Category from "./Category";
 import Item from "./Item";
 import OpenPackBlook from "./OpenPackBlook";
@@ -6,6 +7,7 @@ import OpenPackModal from "./OpenPackModal";
 import Pack from "./Pack";
 
 export {
+    BoosterContainer,
     Category,
     Item,
     OpenPackBlook,

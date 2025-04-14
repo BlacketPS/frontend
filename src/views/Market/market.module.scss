@@ -138,6 +138,16 @@
     }
 }
 
+.buttonHolderMobile {
+    display: none;
+    margin: 15px 5% 10px;
+
+    @media only screen and (max-width: 850px) {
+        display: flex;
+        justify-content: center;
+    }
+}
+
 .packsWrapper {
     display: grid;
     grid-template-columns: repeat(auto-fill, 210px);
@@ -736,25 +746,39 @@
 
 .boosterContainer {
     display: flex;
-    justify-content: center;
+    justify-content: left;
     align-items: center;
     flex-direction: row;
-    margin-top: 10px;
-    width: 100%;
-    height: 60px;
+    margin: 20px 5% 10px;
+    width: 85%;
+    min-height: 80px;
     background-color: var(--primary-color);
     border-radius: 10px;
     box-shadow: inset 0 -7px rgba(0, 0, 0, .2);
-    padding-bottom: 7px;
+    padding: 7px 10px 10px 10px;
 }
 
 .boosterIcon {
-    width: 50px;
-    height: 50px;
+    width: 55px;
+    height: 55px;
     margin-right: 10px;
     object-fit: contain;
+
+    @media only screen and (max-width: 850px) {
+        display: none;
+    }
 }
 
 .boosterText {
-    font-size: 22px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    font-size: 20px;
+
+    @media only screen and (max-width: 850px) {
+        font-size: 16px;
+        text-align: center;
+        line-height: 1.2;
+    }
 }
