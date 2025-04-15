@@ -76,7 +76,7 @@ export default function SellBlooksModal({ blook, shiny }: SellBlooksModalProps) 
 
                             <div className={styles.sellBlookInformation}>
                                 <div>{shiny && "Shiny"} {blook.name}</div>
-                                <div>Serial: #1</div>
+                                <div>Serial: {userBlook.serial ? `#${userBlook.serial}` : "V2 Blook (N/A)"}</div>
                             </div>
                         </div>)
                     }

@@ -3,7 +3,12 @@ import styles from "./blook.module.scss";
 
 import { BlookProps } from "./blook.d";
 
+import { modifyBlook } from "./modifyBlook.ts"; // in progress
+import { useEffect } from "react";
+
 export default function Blook({ custom = false, shiny = false, src, alt, draggable, className, ...props }: BlookProps) {
+
+    // add useffect for modifiers
 
     return (
         <div
