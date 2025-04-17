@@ -8,3 +8,8 @@ export interface BlookProps extends HTMLAttributes<HTMLDivElement> {
     draggable?: boolean;
     className?: string;
 }
+
+export interface BlookModData {
+    canvas: OffscreenCanvas;
+    ctx: OffscreenCanvasRenderingContext2D;
+}

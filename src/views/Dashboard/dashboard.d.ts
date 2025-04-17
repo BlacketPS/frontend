@@ -32,6 +32,7 @@ export interface SmallButtonProps extends HTMLAttributes<HTMLDivElement> {
 export interface BlookProps extends HTMLAttributes<HTMLDivElement> {
     blook: Blook;
     quantity: number;
+    shiny?: boolean;
 }
 
 export interface ItemProps extends HTMLAttributes<HTMLDivElement> {

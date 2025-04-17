@@ -7,7 +7,7 @@
     width: 85%;
     min-width: 300px;
     padding: 10px 10px 15px 10px;
-    border-radius: 5px;
+    border-radius: 7px;
     margin: 5px auto 20px;
 
     &[data-no-padding="true"] {
@@ -24,7 +24,7 @@
     min-width: 300px;
     height: 30px;
     padding: 5px 2.5px 5px 10px;
-    border-radius: 5px;
+    border-radius: 7px;
 
     @media screen and (max-width: 850px) {
         min-width: 250px;
@@ -62,7 +62,7 @@
     font-size: 18px;
     color: var(--accent-color);
     background-color: var(--primary-color);
-    border-radius: 5px;
+    border-radius: 7px;
     height: 35px;
     width: 35px;
     display: flex !important;

@@ -8,7 +8,7 @@ import { useData } from "@stores/DataStore/index";
 import { useSettings } from "@controllers/settings/useSettings";
 import { useOpenPack } from "@controllers/market/useOpenPack";
 import { useBoosters } from "@controllers/data/useBoosters";
-import { SidebarBody, PageHeader, Modal, Button, SearchBox } from "@components/index";
+import { SidebarBody, PageHeader, Modal, Button, SearchBox, AdUnit } from "@components/index";
 import { OpenPackModal, Category, Pack, OpenPackContainer, OpenPackBlook, Item, BoosterContainer } from "./components";
 // TODO: migrate to not using phaser for opening
 // @ts-expect-error phaser is too big for the bundle so import it externally since its only used once

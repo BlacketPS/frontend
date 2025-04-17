@@ -9,7 +9,7 @@ import { useToast } from "@stores/ToastStore/index";
 import { useSearchAuction } from "@controllers/auctions/useSearchAuction/index";
 
 import { type AuctionHouseStoreContext } from "./auctionHouse.d";
-import { AuctionsAuctionEntity, AuctionsSearchAuctionDto, AuctionTypeEnum, SocketAuctionBidEntity, SocketAuctionExpireEntity, SocketMessageType, UserItem } from "@blacket/types";
+import { AuctionsAuctionEntity, AuctionsSearchAuctionDto, AuctionTypeEnum, SocketAuctionBidEntity, SocketAuctionExpireEntity, SocketMessageType, UserBlook, UserItem } from "@blacket/types";
 
 const AuctionHouseStoreContext = createContext<AuctionHouseStoreContext>({
     loading: true,
@@ -60,11 +60,11 @@ export function AuctionHouseStoreProvider({ children }: { children: ReactNode })
 
         if (!data.buyItNow && (data.sellerId === user.id && !data.buyerId) || (data.buyerId === user.id && data.sellerId !== user.id)) switch (data.type) {
             case AuctionTypeEnum.BLOOK:
-                if (!data.blookId) return;
+                if (!data?.blook?.id) return;
 
                 const userBlooks = user.blooks;
 
-                (userBlooks[data.blookId] as number) += 1;
+                userBlooks.push(data.blook as UserBlook);
 
                 setUser({ ...user, blooks: userBlooks });
 
@@ -81,7 +81,7 @@ export function AuctionHouseStoreProvider({ children }: { children: ReactNode })
                 break;
         }
 
-        const blook = data.blookId ? blooks.find((blook) => blook.id === data?.blookId) : null;
+        const blook = data?.blook?.blookId ? blooks.find((blook) => blook.id === data?.blook?.blookId) : null;
         const item = data.item ? items.find((item) => item.id === data?.item?.itemId) : null;
 
         switch (true) {
@@ -115,7 +115,7 @@ export function AuctionHouseStoreProvider({ children }: { children: ReactNode })
 
         const cachedUser = data.bidderId !== user.id ? await addCachedUser(data.bidderId) : user;
 
-        const blook = data.blookId ? blooks.find((blook) => blook.id === data?.blookId) : null;
+        const blook = data?.blook?.blookId ? blooks.find((blook) => blook.id === data?.blook?.blookId) : null;
         const item = data.item ? items.find((item) => item.id === data?.item?.itemId) : null;
 
         if (data.sellerId === user.id) createToast({

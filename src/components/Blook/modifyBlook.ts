@@ -1,48 +1,54 @@
-export async function modifyBlook(
-    blook: any,
-    modifications: Partial<any>
-): Promise<string> {
-    const size = Math.max(blook.width || 0, blook.height || 0);
-    const canvas = new OffscreenCanvas(size, size);
-    const context = canvas.getContext("2d");
+const worker = new Worker(new URL("./modifyBlookWorker.ts", import.meta.url), { type: "module" });
+let currentId = 0;
 
-    if (!context) {
-        throw new Error("Failed to get canvas context");
-    }
+function generateId() {
+    currentId += 1;
 
-    const image = new Image();
-    image.src = blook.image;
-
-    await new Promise<void>((resolve, reject) => {
-        image.onload = () => {
-            context.drawImage(image, 0, 0, canvas.width, canvas.height);
-
-            // Modification section
-            applyModifications(context, canvas, modifications);
-
-            resolve();
-        };
-        image.onerror = reject;
-    });
-
-    const blob = await canvas.convertToBlob();
-    return URL.createObjectURL(blob);
+    return currentId;
 }
 
-// 💡 Custom drawing logic based on 'modifications' object
-function applyModifications(
-    ctx: OffscreenCanvasRenderingContext2D,
-    canvas: OffscreenCanvas,
-    mods: Partial<any>
-) {
+const idMap: any = {};
 
-    // Example mod:
-    if (mods.tint) {
-        ctx.fillStyle = mods.tint;
-        ctx.globalAlpha = mods.alpha ?? 0.2;
-        ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.globalAlpha = 1.0;
-    }
+worker.onmessage = (e) => {
+    const { url, id: responseId } = e.data;
+    if (!idMap[responseId]) return;
 
-    // Add more logic here for other mod types
+    idMap[responseId].resolve(url);
+    delete idMap[responseId];
+
+    // console.log(`Processed blook with id ${responseId}`);
+
+};
+
+worker.onerror = (e) => {
+    const errorId = Object.keys(idMap).find((id) => idMap[id]?.reject);
+    if (!errorId) return;
+
+    idMap[errorId]?.reject(e);
+    delete idMap[errorId];
+};
+
+export async function modifyBlook(
+    blook: HTMLImageElement,
+    dimensions: { width?: number; height?: number } = {},
+    modifications: Partial<any>
+): Promise<string> {
+    if (!blook.crossOrigin) blook.crossOrigin = "anonymous";
+
+    const imageBitmap = await createImageBitmap(blook);
+
+    return new Promise((resolve, reject) => {
+        const id = generateId();
+        idMap[id] = { resolve, reject };
+
+        worker.postMessage({
+            id,
+            imageBitmap,
+            modifications,
+            width: dimensions.width || 300,
+            height: dimensions.height || 345
+        });
+
+        // console.log(`Processing blook with src ${blook.src} and id ${id}`);
+    });
 }

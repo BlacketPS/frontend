@@ -37,7 +37,7 @@ export default function Auction({ auction, useVhStyles = false, ...props }: Auct
 
             <div className={styles.auctionInfo}>
                 <div>Name: <span>{auction.blook && auction.blook.shiny && "Shiny "}{item.name}</span></div>
-                <div>Type: <span>{auction.type === AuctionTypeEnum.BLOOK ? "Blook" : "Item"}</span></div>
+                {auction.type === AuctionTypeEnum.BLOOK && auction.blook && `Serial: ${auction.blook.serial ? `#${auction.blook.serial}` : "V2 Blook N/A"}`}
                 <div className={styles.auctionPrice}>
                     {
                         auction.buyItNow

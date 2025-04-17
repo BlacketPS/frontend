@@ -1,3 +1,4 @@
+import AdUnit from "./AdUnit";
 import Auction from "./Auction";
 import Background from "./Background";
 import Blook from "./Blook";
@@ -29,6 +30,7 @@ import WaterBackground from "./WaterBackground";
 import ZoeySign from "./ZoeySign";
 
 export {
+    AdUnit,
     Auction,
     Background,
     Blook,

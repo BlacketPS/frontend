@@ -212,7 +212,7 @@
     align-items: center;
     gap: 4px;
     padding: 2px 4px;
-    border-radius: 5px;
+    border-radius: 7px;
     background-color: rgba(0, 0, 0, 0.2);
 }
 
@@ -263,7 +263,7 @@
     max-height: 260px;
     overflow-x: hidden;
     overflow-y: auto;
-    border-radius: 5px;
+    border-radius: 7px;
     border: 3px solid var(--secondary-color);
     padding-inline: 10px 5px;
     word-wrap: break-word;
@@ -325,7 +325,7 @@
         font-size: 1.5rem;
         cursor: pointer;
         padding: 5px;
-        border-radius: 5px;
+        border-radius: 7px;
     }
 
     @media (max-width: 768px) {
@@ -352,7 +352,7 @@
     margin-block: auto;
     color: var(--accent-color);
     background: var(--secondary-color);
-    border-radius: 5px;
+    border-radius: 7px;
     transition: 0.2s;
     display: flex;
     justify-content: center;
@@ -468,7 +468,7 @@
     justify-content: start;
     position: absolute;
     bottom: 75px;
-    border-radius: 5px;
+    border-radius: 7px;
     z-index: 1;
 }
 
@@ -479,7 +479,7 @@
     gap: 8px;
     cursor: pointer;
     padding: 5px;
-    border-radius: 5px;
+    border-radius: 7px;
 
     &>*img {
         height: 20px;
@@ -538,7 +538,7 @@
 
 .editingMessageInput {
     padding: 2px;
-    border-radius: 5px;
+    border-radius: 7px;
     background-color: rgba(0, 0, 0, 0.3);
     outline: none;
 }

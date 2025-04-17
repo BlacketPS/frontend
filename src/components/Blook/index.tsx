@@ -1,14 +1,52 @@
-import { ImageOrVideo } from "@components/index";
+// import { useEffect, useLayoutEffect, useRef } from "react";
+// import { ImageOrVideo } from "@components/index";
+// import { modifyBlook } from "./modifyBlook.ts";
 import styles from "./blook.module.scss";
 
 import { BlookProps } from "./blook.d";
 
-import { modifyBlook } from "./modifyBlook.ts"; // in progress
-import { useEffect } from "react";
-
 export default function Blook({ custom = false, shiny = false, src, alt, draggable, className, ...props }: BlookProps) {
+    // const imageRef = useRef<HTMLImageElement>(null);
 
-    // add useffect for modifiers
+    // useEffect(() => {
+    //     const load = async () => {
+    //         const imageElement = imageRef.current;
+
+    //         if (!imageElement) return;
+    //         if (!src) return;
+    //         // if (!shiny) return;
+
+    //         imageElement.crossOrigin = "anonymous";
+
+    //         imageElement.onload = async () => {
+    //             if (imageElement.dataset.loaded==="true") return;
+
+    //             try {
+    //                 const width = imageElement.naturalWidth;
+    //                 const height = imageElement.naturalHeight;
+
+    //                 const modifiedImage = await modifyBlook(
+    //                     imageElement,
+    //                     { width, height },
+    //                     {
+    //                         static: true
+    //                         // grayscale: true
+    //                         // inverted: true
+    //                     }
+    //                 );
+
+    //                 imageElement.src = modifiedImage;
+    //                 imageElement.dataset.loaded = "true";
+    //             } catch (error) {
+    //                 console.error(`Error modifying blook src ${src}:`, error);
+    //             }
+    //         };
+
+    //         imageElement.src = src;
+    //     };
+
+    //     load();
+    // }, []);
 
     return (
         <div
@@ -33,12 +71,14 @@ export default function Blook({ custom = false, shiny = false, src, alt, draggab
                 />
             </>}
 
-            <ImageOrVideo
+            <img
+                // ref={imageRef}
                 className={styles.image}
                 src={src}
                 alt={alt}
                 draggable={draggable}
             />
+
         </div>
     );
 }

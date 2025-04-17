@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { useSearchParams, useNavigate, Navigate } from "react-router-dom";
 import { useLoading } from "@stores/LoadingStore/index";
 import { useModal } from "@stores/ModalStore";
@@ -10,7 +10,7 @@ import { useAuctionHouse } from "@stores/AuctionHouseStore/index";
 import { useUsers } from "@controllers/users/useUsers/index";
 import { useSearchAuction } from "@controllers/auctions/useSearchAuction/index";
 import { useClaimDailyTokens } from "@controllers/quests/useClaimDailyTokens/index";
-import { Auction, Blook, ImageOrVideo, Username } from "@components/index";
+import { AdUnit, Auction, Blook, ImageOrVideo, Username } from "@components/index";
 import { LevelContainer, LookupUserModal, SmallButton, SectionHeader, StatContainer, InventoryBlook, InventoryItem, CosmeticsModal, DailyRewardsModal } from "./components";
 import styles from "./dashboard.module.scss";
 
@@ -108,8 +108,16 @@ export default function Dashboard() {
         return viewingUser.blooks.filter((blook) => blook.blookId === blookId).length;
     };
 
+    const getUserShinyBlookQuantity = (blookId: number) => {
+        return viewingUser.blooks.filter((blook) => blook.blookId === blookId && blook.shiny).length;
+    };
+
     const hasUserBlook = (blookId: number) => {
         return viewingUser.blooks.some((blook) => blook.blookId === blookId);
+    };
+
+    const hasShinyUserBlook = (blookId: number) => {
+        return viewingUser.blooks.some((blook) => blook.blookId === blookId && blook.shiny);
     };
 
     const nonPackBlooks = blooks
@@ -134,7 +142,7 @@ export default function Dashboard() {
                                 alt="User Avatar"
                                 draggable={false}
                                 custom={user.customAvatar ? true : false}
-                                shiny={true}
+                                shiny={user.avatar?.shiny}
                                 onClick={() => {
                                     if (viewingUser.id === user.id) createModal(<CosmeticsModal category={CosmeticsModalCategory.AVATAR} />);
                                 }}
@@ -202,6 +210,22 @@ export default function Dashboard() {
                         <span>{viewingUser.discord.username}</span>
                     </div>}
                 </div>
+
+            </div>
+
+            <div
+                style={{
+                    display: "grid",
+                    alignSelf: "center",
+                    width: "90%"
+                }}
+            >
+                <AdUnit
+                    mobileOnly
+                    slot={"7833576760"}
+                    height={150}
+                    style={{ height: 150, marginBottom: 10 }}
+                />
             </div>
 
             <div className={`${styles.section} ${styles.statsSection}`}>
@@ -267,7 +291,10 @@ export default function Dashboard() {
                                     .filter((blook) => blook.packId === pack.id)
                                     .sort((a, b) => a.priority - b.priority);
 
-                                if (filteredBlooks.length > 0) return filteredBlooks.map((blook) => hasUserBlook(blook.id) && <InventoryBlook key={blook.id} blook={blook} quantity={getUserBlookQuantity(blook.id)} />);
+                                if (filteredBlooks.length > 0) return filteredBlooks.map((blook) => <Fragment key={blook.id}>
+                                    {hasUserBlook(blook.id) && <InventoryBlook blook={blook} quantity={getUserBlookQuantity(blook.id)} />}
+                                    {hasShinyUserBlook(blook.id) && <InventoryBlook blook={blook} quantity={getUserShinyBlookQuantity(blook.id)} shiny={true} />}
+                                </Fragment>);
                             })}
 
                             {nonPackBlooks.map((blook) => hasUserBlook(blook.id) && <InventoryBlook key={blook.id} blook={blook} quantity={getUserBlookQuantity(blook.id)} />)}

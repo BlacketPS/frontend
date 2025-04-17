@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLoading } from "@stores/LoadingStore/index";
 import { useUser } from "@stores/UserStore/index";
@@ -31,14 +31,18 @@ export default function AvatarCategory() {
         return user.blooks.some((blook) => blook.blookId === blookId);
     };
 
+    const hasShinyUserBlook = (blookId: number) => {
+        return user.blooks.some((blook) => blook.blookId === blookId && blook.shiny);
+    };
+
     const nonPackBlooks = blooks
         .filter((blook) => !blook.packId)
         .sort((a, b) => a.priority - b.priority);
 
-    const onSelect = (blookId: number) => {
+    const onSelect = (blookId: number, shiny: boolean = false) => {
         setLoading(true);
 
-        const id = user.blooks.filter((blook) => blook.blookId === blookId)[0]?.id ?? 0;
+        const id = user.blooks.find((blook) => blook.blookId === blookId && blook.shiny === shiny)?.id ?? 0;
 
         changeAvatar({ id })
             .then(() => setLoading(false))
@@ -98,7 +102,10 @@ export default function AvatarCategory() {
 
                     if (filteredBlooks.length > 0) return filteredBlooks
                         .filter((blook) => blook.name.toLowerCase().includes(search.toLowerCase()))
-                        .map((blook) => hasUserBlook(blook.id) && <InventoryBlook key={blook.id} blook={blook} quantity={0} onClick={() => onSelect(blook.id)} data-selectable={true} />);
+                        .map((blook) => <Fragment key={blook.id}>
+                            {hasUserBlook(blook.id) && <InventoryBlook blook={blook} quantity={0} onClick={() => onSelect(blook.id)} data-selectable={true} />}
+                            {hasShinyUserBlook(blook.id) && <InventoryBlook blook={blook} shiny={true} quantity={0} onClick={() => onSelect(blook.id, true)} data-selectable={true} />}
+                        </Fragment>);
                 })}
 
                 {nonPackBlooks
