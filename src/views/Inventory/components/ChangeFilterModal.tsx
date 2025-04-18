@@ -8,6 +8,7 @@ import { ChangeFilterModalProps } from "../inventory.d";
 export default function ChangeFilterModal({ onSave }: ChangeFilterModalProps) {
     const [rarity, setRarity] = useState<number | null>(localStorage.getItem("INVENTORY_SEARCH_RARITY") ? parseInt(localStorage.getItem("INVENTORY_SEARCH_RARITY")!) : null);
     const [dupesOnly, setDupesOnly] = useState<boolean>(localStorage.getItem("INVENTORY_SEARCH_ONLY_DUPES") === "true" ? true : false);
+    const [onlyShiny, setOnlyShiny] = useState<boolean>(localStorage.getItem("INVENTORY_SEARCH_ONLY_SHINY") === "true" ? true : false);
     const [onlyOwned, setOnlyOwned] = useState<boolean>(localStorage.getItem("INVENTORY_SEARCH_ONLY_OWNED") === "true" ? true : false);
 
     const { closeModal } = useModal();
@@ -44,6 +45,13 @@ export default function ChangeFilterModal({ onSave }: ChangeFilterModalProps) {
                 </Toggle>
 
                 <Toggle
+                    checked={onlyShiny}
+                    onClick={() => setOnlyShiny(!onlyShiny)}
+                >
+                    Only Shiny
+                </Toggle>
+
+                <Toggle
                     checked={onlyOwned}
                     onClick={() => setOnlyOwned(!onlyOwned)}
                 >
@@ -56,6 +64,7 @@ export default function ChangeFilterModal({ onSave }: ChangeFilterModalProps) {
                     localStorage.setItem("INVENTORY_SEARCH_RARITY", rarity?.toString() || "");
                     localStorage.setItem("INVENTORY_SEARCH_ONLY_DUPES", dupesOnly.toString());
                     localStorage.setItem("INVENTORY_SEARCH_ONLY_OWNED", onlyOwned.toString());
+                    localStorage.setItem("INVENTORY_SEARCH_ONLY_SHINY", onlyShiny.toString());
 
                     onSave();
                     closeModal();

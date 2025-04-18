@@ -99,12 +99,18 @@
 .categoryTitle {
     font-size: 2.7rem;
     font-family: "Titan One";
+    width: 100%;
+
+    @media screen and (max-width: 768px) {
+        font-size: 2rem;
+    }
 }
 
 .categorySubTitle {
     font-size: 1rem;
     color: rgba(255, 255, 255, 0.8);
     margin-top: 3px;
+    width: 100%;
 }
 
 .categoryDivider {
@@ -124,6 +130,8 @@
 
     @media screen and (max-width: 768px) {
         justify-content: center;
+        align-items: center;
+        width: 100%;
     }
 }
 

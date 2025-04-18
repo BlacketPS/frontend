@@ -244,8 +244,12 @@ export default function Market() {
                 <style>{"body{overflow:hidden}"}</style>
 
                 <div className={styles.openModal} style={{
-                    background: `radial-gradient(circle, ${currentPack.innerColor} 0%, ${currentPack.outerColor} 100%)`
+                    // background: `radial-gradient(circle, ${currentPack.innerColor} 0%, ${currentPack.outerColor} 100%)`
                 }}>
+                    <div className={styles.openModalBackground}>
+                        <img src="https://blacket.org/content/packs/art/Space.webp" alt="Background" />
+                    </div>
+
                     <div ref={gameRef} className={styles.phaserContainer} data-shiny={unlockedBlook?.shiny} />
                     <OpenPackContainer
                         opening={openingPack}
@@ -254,7 +258,6 @@ export default function Market() {
                     {unlockedBlook && <OpenPackBlook userBlook={unlockedBlook} animate={
                         bigButtonEvent !== BigButtonClickType.OPEN
                     } isNew={isNew(unlockedBlook.blookId)} />}
-                    <img className={styles.openPackIcon} src={resourceIdToPath(currentPack.iconId)} alt="Icon" draggable={false} />
                     <div style={{ cursor: bigButtonEvent === BigButtonClickType.NONE ? "unset" : "" }} className={styles.openBigButton} onClick={handleBigClick} />
                 </div>
             </>}

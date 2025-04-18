@@ -39,7 +39,13 @@ export default function Inventory() {
     const [selectedBlook, setSelectedBlook] = useState<BlookType | null>(blooks.find((blook) => blook.id === randomBlookIdFromMyBlooks) || null);
     const [selectedBlookShiny, setSelectedBlookShiny] = useState<boolean>(false);
     const [selectedItem, setSelectedItem] = useState<ItemType | null>(null);
-    const [search, setSearch] = useState<SearchOptions>({ query: localStorage.getItem("INVENTORY_SEARCH_QUERY") || "", rarity: parseInt(localStorage.getItem("INVENTORY_SEARCH_RARITY")!), onlyDupes: localStorage.getItem("INVENTORY_SEARCH_ONLY_DUPES") === "true", onlyOwned: localStorage.getItem("INVENTORY_SEARCH_ONLY_OWNED") === "true" });
+    const [search, setSearch] = useState<SearchOptions>({
+        query: localStorage.getItem("INVENTORY_SEARCH_QUERY") || "",
+        rarity: parseInt(localStorage.getItem("INVENTORY_SEARCH_RARITY")!),
+        onlyDupes: localStorage.getItem("INVENTORY_SEARCH_ONLY_DUPES") === "true",
+        onlyShiny: localStorage.getItem("INVENTORY_SEARCH_ONLY_SHINY") === "true",
+        onlyOwned: localStorage.getItem("INVENTORY_SEARCH_ONLY_OWNED") === "true"
+    });
 
     const nonPackBlooks = blooks.filter((blook) => !blook.packId).map((blook) => blook.id);
 
@@ -82,6 +88,7 @@ export default function Inventory() {
                 && (!search.rarity || blook.rarityId === search.rarity)
                 && (!search.onlyDupes || getUserBlookQuantity(blook.id) > 1)
                 && (!search.onlyOwned || hasUserBlook(blook.id))
+                && (!search.onlyShiny || hasShinyUserBlook(blook.id))
             );
     }, [blooks, search]);
 
@@ -93,6 +100,7 @@ export default function Inventory() {
                 && hasUserBlook(blook.id)
                 && (!search.rarity || blook.rarityId === search.rarity)
                 && (!search.onlyDupes || getUserBlookQuantity(blook.id) > 1)
+                && (!search.onlyShiny || hasShinyUserBlook(blook.id))
             );
     }, [blooks, search]);
 
@@ -100,12 +108,14 @@ export default function Inventory() {
         const query = localStorage.getItem("INVENTORY_SEARCH_QUERY");
         const rarity = parseInt(localStorage.getItem("INVENTORY_SEARCH_RARITY")!);
         const dupesOnly = localStorage.getItem("INVENTORY_SEARCH_ONLY_DUPES");
+        const onlyShiny = localStorage.getItem("INVENTORY_SEARCH_ONLY_SHINY");
         const onlyOwned = localStorage.getItem("INVENTORY_SEARCH_ONLY_OWNED");
 
         setSearch({
             query: query || "",
             rarity: rarity ?? null,
             onlyDupes: dupesOnly === "true",
+            onlyShiny: onlyShiny === "true",
             onlyOwned: onlyOwned === "true"
         });
     };
@@ -133,10 +143,12 @@ export default function Inventory() {
                                 localStorage.removeItem("INVENTORY_SEARCH_RARITY");
                                 localStorage.removeItem("INVENTORY_SEARCH_ONLY_DUPES");
                                 localStorage.removeItem("INVENTORY_SEARCH_ONLY_OWNED");
+                                localStorage.removeItem("INVENTORY_SEARCH_ONLY_SHINY");
 
                                 setSearch({
                                     query: "",
                                     onlyDupes: false,
+                                    onlyShiny: false,
                                     onlyOwned: false
                                 });
                             }
@@ -157,7 +169,7 @@ export default function Inventory() {
                                 filterPackBlooks(pack.id).sort((a, b) => a.priority - b.priority)
                                     .map((blook, i) => (
                                         <Fragment key={i}>
-                                            <InventoryBlook blook={blook} shiny={false} locked={!hasUserBlook(blook.id)} quantity={getUserBlookQuantity(blook.id)} onClick={() => selectBlook(blook)} />
+                                            {!search.onlyShiny && <InventoryBlook blook={blook} shiny={false} locked={!hasUserBlook(blook.id)} quantity={getUserBlookQuantity(blook.id)} onClick={() => selectBlook(blook)} />}
 
                                             {hasShinyUserBlook(blook.id) && <InventoryBlook blook={blook} shiny={true} locked={false} quantity={getUserShinyBlookQuantity(blook.id)} onClick={() => selectShinyBlook(blook)} />}
                                         </Fragment>)
@@ -168,7 +180,16 @@ export default function Inventory() {
                     })}
 
                     {user.blooks.filter((blook) => nonPackBlooks.includes(blook.blookId)).length !== 0 && <SetHolder nothing={false} name="Miscellaneous">
-                        {filterMiscBlooks().map((blook) => <InventoryBlook key={blook.id} blook={blook} shiny={false} locked={!hasUserBlook(blook.id)} quantity={getUserBlookQuantity(blook.id)} onClick={() => selectBlook(blook)} />)}
+                        {
+                            filterMiscBlooks().sort((a, b) => a.priority - b.priority)
+                                .map((blook, i) => (
+                                    <Fragment key={i}>
+                                        {!search.onlyShiny && <InventoryBlook blook={blook} shiny={false} locked={!hasUserBlook(blook.id)} quantity={getUserBlookQuantity(blook.id)} onClick={() => selectBlook(blook)} />}
+
+                                        {hasShinyUserBlook(blook.id) && <InventoryBlook blook={blook} shiny={true} locked={false} quantity={getUserShinyBlookQuantity(blook.id)} onClick={() => selectShinyBlook(blook)} />}
+                                    </Fragment>)
+                                )
+                        }
                     </SetHolder>}
                 </div>
             </div>

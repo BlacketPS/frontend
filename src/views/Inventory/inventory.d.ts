@@ -7,6 +7,7 @@ export interface SearchOptions {
     query: string;
     rarity?: number;
     onlyDupes: boolean;
+    onlyShiny: boolean;
     onlyOwned: boolean;
 }
 
