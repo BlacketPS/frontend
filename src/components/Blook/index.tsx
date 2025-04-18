@@ -49,36 +49,39 @@ export default function Blook({ custom = false, shiny = false, src, alt, draggab
     // }, []);
 
     return (
-        <div
-            className={`${className ? `${className} ` : ""}${styles.blook}`}
-            {...props}
-        >
-            {custom && <div className={styles.customIndicatorContainer}>
-                <div className={styles.customIndicator}>
-                    <span>C</span>
-                </div>
-            </div>}
+        <div style={{
+            filter: shiny ? "drop-shadow(0px 0px 4px #fff)" : "none"
+        }}>
+            <div
+                className={`${className ? `${className} ` : ""}${styles.blook}`}
+                {...props}
+            >
+                {custom && <div className={styles.customIndicatorContainer}>
+                    <div className={styles.customIndicator}>
+                        <span>C</span>
+                    </div>
+                </div>}
 
-            {shiny && <>
-                <div
-                    style={{ maskImage: `url('${src.replaceAll("'", "\\'")}` }}
-                    className={styles.overlay}
+                {shiny && <>
+                    <div
+                        style={{ maskImage: `url('${src.replaceAll("'", "\\'")}` }}
+                        className={styles.overlay}
+                    />
+
+                    <div
+                        style={{ maskImage: `url('${src.replaceAll("'", "\\'")}` }}
+                        className={styles.shimmerOverlay}
+                    />
+                </>}
+
+                <img
+                    // ref={imageRef}
+                    className={styles.image}
+                    src={src}
+                    alt={alt}
+                    draggable={draggable}
                 />
-
-                <div
-                    style={{ maskImage: `url('${src.replaceAll("'", "\\'")}` }}
-                    className={styles.shimmerOverlay}
-                />
-            </>}
-
-            <img
-                // ref={imageRef}
-                className={styles.image}
-                src={src}
-                alt={alt}
-                draggable={draggable}
-            />
-
+            </div>
         </div>
     );
 }
