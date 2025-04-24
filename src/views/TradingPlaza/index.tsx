@@ -38,7 +38,7 @@ export default function TradingPlaza() {
             RUN: ["shift"]
         };
 
-        const PLAYER_SPEED = 4;
+        const PLAYER_SPEED = 6;
         const TILE_SIZE = 50;
         const COLUMNS = 35;
         const ROWS = 40;

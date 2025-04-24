@@ -1,5 +1,5 @@
-import { Product } from "@blacket/types";
+import { StripeProductEntity } from "@blacket/types";
 
 export interface ProductPurchaseModalProps {
-    product: Product;
+    product: StripeProductEntity;
 }

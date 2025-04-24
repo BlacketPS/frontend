@@ -5,7 +5,7 @@ import Loading from "../../views/Loading";
 import styles from "./dataStore.module.scss";
 
 import { type DataStoreContext } from "./dataStore.d";
-import { Banner, Blook, Emoji, Font, Item, ItemShop, Pack, Rarity, Store, Title } from "@blacket/types";
+import { Banner, Blook, Emoji, Font, Item, ItemShop, Pack, Rarity, StripeStoreEntity, Title } from "@blacket/types";
 
 const DataStoreContext = createContext<DataStoreContext>({
     badges: [],
@@ -52,7 +52,7 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
     const [packs, setPacks] = useState<Pack[]>([]);
     const [rarities, setRarities] = useState<Rarity[]>([]);
     const [titles, setTitles] = useState<Title[]>([]);
-    const [stores, setStores] = useState<Store[]>([]);
+    const [stores, setStores] = useState<StripeStoreEntity[]>([]);
 
     const { resources, resourceIdToPath, setResources } = useResource();
     const { setUser } = useUser();

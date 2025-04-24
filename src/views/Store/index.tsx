@@ -8,7 +8,7 @@ import { useUser } from "@stores/UserStore/index";
 import { useLoading } from "@stores/LoadingStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { useData } from "@stores/DataStore/index";
-import { useProducts } from "@controllers/stripe/useProducts/index";
+import { useStores } from "@controllers/stripe/useProducts/index";
 import styles from "./store.module.scss";
 
 export default function Store() {
@@ -19,14 +19,14 @@ export default function Store() {
     const { createModal } = useModal();
     const { stores, setStores } = useData();
 
-    const { getProducts } = useProducts();
+    const { getStores } = useStores();
 
     useEffect(() => {
         if (stores.length) return;
 
         setLoading(true);
 
-        getProducts()
+        getStores()
             .then((res) => {
                 if (res.length) setStores(res);
                 else return;

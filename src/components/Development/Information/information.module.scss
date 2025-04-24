@@ -1,13 +1,27 @@
-.container {
+.main {
     position: fixed;
-    width: 100%;
-    bottom: 1%;
-    right: 0.5%;
-    text-align: right;
-    font-size: 2vh;
     pointer-events: none;
     user-select: none;
     z-index: 999;
     opacity: 0.5;
+    width: 100%;
+    height: 100%;
+}
+
+.container {
+    position: fixed;
+    bottom: 1%;
+    right: 0.5%;
+    text-align: right;
+    font-size: 2vh;
     font-weight: 700;
+}
+
+.wipText {
+    position: fixed;
+    font-family: "Titan One", sans-serif;
+    width: 100%;
+    top: 1%;
+    text-align: center;
+    font-size: 2vh;
 }

@@ -1,17 +1,19 @@
 import { useEffect } from "react";
+import { useConfig } from "@stores/ConfigStore/index";
 import { useUser } from "@stores/UserStore/index";
 import styles from "./adUnit.module.scss";
 
 import { AdUnitProps } from "./adUnit.d";
-import { PermissionTypeEnum } from "@blacket/types";
+import { Mode, PermissionTypeEnum } from "@blacket/types";
 
 export default function AdUnit({ className, slot, width, height, mobileOnly = false, ...props }: AdUnitProps) {
     if (mobileOnly && !window.matchMedia("(max-width: 768px)").matches) return null;
 
+    const { config } = useConfig();
+    if (!config) return null;
+
     const { user } = useUser();
     if (!user || user.hasPermission(PermissionTypeEnum.NO_ADS)) return null;
-
-    const IS_DEV = import.meta.env.DEV;
 
     useEffect(() => {
         try {
@@ -30,7 +32,7 @@ export default function AdUnit({ className, slot, width, height, mobileOnly = fa
             }}
             {...props}
         >
-            {!IS_DEV ? <ins
+            {config.mode === Mode.PROD ? <ins
                 className="adsbygoogle"
                 style={{
                     display: "inline-block",

@@ -10,6 +10,7 @@ import { OtpModal } from "./components/index";
 import styles from "./authentication.module.scss";
 
 import { AuthenticationType, AuthenticationProps } from "./authentication.d";
+import { PurchaseProductModal } from "@components/Modals";
 
 export default function Authentication({ type }: AuthenticationProps) {
     const navigate = useNavigate();

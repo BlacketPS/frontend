@@ -1,5 +1,5 @@
 import { HTMLAttributes, ReactNode } from "react";
-import { Product } from "@blacket/types";
+import { StripeProductEntity } from "@blacket/types";
 
 export interface CategoryProps {
     title: string;
@@ -8,9 +8,9 @@ export interface CategoryProps {
 }
 
 export interface ProductProps extends HTMLAttributes<HTMLDivElement> {
-    product: Product;
+    product: StripeProductEntity;
 }
 
 export interface ProductModalProps {
-    product: Product;
+    product: StripeProductEntity;
 }

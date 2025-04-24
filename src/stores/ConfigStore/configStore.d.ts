@@ -1,7 +1,4 @@
-export interface Config {
-    version: string
-    type: string
-}
+import { Config } from "@blacket/types";
 
 export interface ConfigStoreContext {
     config: Config | null,

@@ -456,7 +456,7 @@
     filter: brightness(1.5);
 
     &[data-shiny="true"] {
-        filter: brightness(2) drop-shadow(0 0 25px #fff);
+        filter: brightness(1.5) drop-shadow(0 0 25px #fff);
     }
 }
 
@@ -737,6 +737,7 @@
     top: 0;
     left: 0;
     z-index: 0;
+    opacity: 0.8;
     animation: shinySunburst 15s linear infinite;
 
     @keyframes shinySunburst {

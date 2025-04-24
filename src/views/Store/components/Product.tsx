@@ -30,11 +30,11 @@ export default function Product({ product, ...props }: ProductProps) {
                     ${product.price} USD
                     {product.isSubscription && " monthly"}
                 </div>
-                {(product.yearlyPrice || product.lifetimePrice) && (
+                {/* {(product.yearlyPrice || product.lifetimePrice) && (
                     <div className={styles.productSubPrice}>
                         ${product.yearlyPrice || product.lifetimePrice} USD {product.yearlyPrice ? " yearly" : " lifetime"}
                     </div>
-                )}
+                )} */}
             </div>
 
             {Array.from({ length: 3 }, (_, i) => (

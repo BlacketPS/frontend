@@ -1,9 +1,9 @@
-import { Store } from "@blacket/types";
+import { StripeStoreEntity } from "@blacket/types";
 
-export function useProducts() {
-    const getProducts = () => new Promise<Store[]>((resolve, reject) => window.fetch2.get("/api/stripe/products")
-        .then((res: Fetch2Response & { data: Store[] }) => resolve(res.data))
+export function useStores() {
+    const getStores = () => new Promise<StripeStoreEntity[]>((resolve, reject) => window.fetch2.get("/api/stripe/stores")
+        .then((res: Fetch2Response & { data: StripeStoreEntity[] }) => resolve(res.data))
         .catch(reject));
 
-    return { getProducts };
+    return { getStores };
 }

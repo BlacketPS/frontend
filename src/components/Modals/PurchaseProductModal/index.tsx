@@ -3,15 +3,15 @@ import { useStripe } from "@stripe/react-stripe-js";
 import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { useResource } from "@stores/ResourceStore/index";
-import { Modal, ErrorContainer, Button, StripeElementsWrapper, ImageOrVideo, Dropdown } from "@components/index";
+import { Modal, ErrorContainer, Button, StripeElementsWrapper, ImageOrVideo, Dropdown, Toggle } from "@components/index";
 import styles from "./purchaseProductModal.module.scss";
 
 import { ProductPurchaseModalProps } from "./productPurchaseModal.d";
 import { UserPaymentMethod } from "@blacket/types";
+import { Link } from "react-router-dom";
 
 function TheModal({ product }: ProductPurchaseModalProps) {
     const stripe = useStripe();
-
     const { user } = useUser();
 
     if (!stripe || !user) return;
@@ -19,6 +19,7 @@ function TheModal({ product }: ProductPurchaseModalProps) {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
     const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<UserPaymentMethod | null>(user.paymentMethods.find((method) => method.primary) ?? null);
+    const [accepted, setAccepted] = useState<boolean>(false);
 
     const { createModal, closeModal } = useModal();
     const { resourceIdToPath } = useResource();
@@ -66,8 +67,17 @@ function TheModal({ product }: ProductPurchaseModalProps) {
                 </Dropdown>
             </Modal.ModalBody>
 
-            <Modal.ModalBody style={{ fontSize: "0.8rem", opacity: 0.5 }}>
-                By clicking "Purchase", you agree to our Terms of Service <br /> You will immediately be charged for this purchase.
+            <Modal.ModalBody>
+                <Toggle
+                    checked={accepted}
+                    onClick={() => setAccepted(!accepted)}
+                >
+                    <div style={{ marginLeft: 5, fontSize: "0.8rem", textAlign: "left" }}>
+                        I agree to the <Link to="/terms">Terms of Service</Link> and I understand that I
+                        <br />
+                        waive the right to withdrawal from this purchase.
+                    </div>
+                </Toggle>
             </Modal.ModalBody>
 
             {error !== "" && <ErrorContainer>{error}</ErrorContainer>}
@@ -75,6 +85,8 @@ function TheModal({ product }: ProductPurchaseModalProps) {
             <Modal.ModalButtonContainer loading={loading}>
                 <Button.GenericButton
                     onClick={async () => {
+                        if (!accepted) return setError("You must agree to the Terms of Service and Purchase Policy.");
+
                         setLoading(true);
 
                         window.fetch2.post(`/api/stripe/payment-intent/${product.id}`, {})

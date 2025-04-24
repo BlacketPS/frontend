@@ -140,10 +140,23 @@ export default function Market() {
                 await new Promise((r) => setTimeout(r, 250));
                 game?.scene.game.events.emit("start-particles", rarity.animationType);
 
-                await new Promise((r) => setTimeout(r,
-                    rarity.animationType === RarityAnimationTypeEnum.UNCOMMON || rarity.animationType === RarityAnimationTypeEnum.RARE
-                        ? 650 : 1250
-                ));
+                // await new Promise((r) => setTimeout(r,
+                //     rarity.animationType === RarityAnimationTypeEnum.UNCOMMON || rarity.animationType === RarityAnimationTypeEnum.RARE
+                //         ? 650 : 1250
+                // ));
+                // do this also if it's a shiny, but do * 4
+                await new Promise((r) => {
+                    let waitTime = 650;
+
+                    if (rarity.animationType === RarityAnimationTypeEnum.EPIC) waitTime += 650;
+                    if (rarity.animationType === RarityAnimationTypeEnum.LEGENDARY) waitTime += 1250;
+                    if (rarity.animationType === RarityAnimationTypeEnum.CHROMA) waitTime += 1250;
+                    if (unlockedBlook.shiny) waitTime += 2500;
+
+                    setTimeout(() => {
+                        r(true);
+                    }, waitTime);
+                });
                 setBigButtonEvent(BigButtonClickType.CLOSE);
 
                 break;

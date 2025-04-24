@@ -232,12 +232,12 @@ export default function Dashboard() {
                 <div className={styles.statsContainer}>
                     <div className={styles.statsContainerHolder}>
                         <StatContainer title="User ID" icon={window.constructCDNUrl("/content/icons/dashboardStatsUserID.png")} value={viewingUser.id} />
+                        {viewingUser.guild && <StatContainer title="Guild" icon={window.constructCDNUrl("/content/icons/dashboardStatsGuild.png")} value={viewingUser.guild ? viewingUser.guild : "None"} />}
                         <StatContainer title="Tokens" icon={window.constructCDNUrl("/content/token.png")} value={viewingUser.tokens.toLocaleString()} />
                         <StatContainer title="Experience" icon={window.constructCDNUrl("/content/experience.png")} value={viewingUser.experience.toLocaleString()} />
                         <StatContainer title="Blooks Unlocked" icon={window.constructCDNUrl("/content/icons/dashboardStatsBlooksUnlocked.png")} value={`${viewingUser.blooks.length.toLocaleString()} / ${blooks.length.toLocaleString()}`} /> {/* TODO: BACKEND (Syfe/Xotic/Zastix): Default blook does NOT count in inventory (yet). REVERT to (blooks.length - 1) when fixed. */}
                         <StatContainer title="Packs Opened" icon={window.constructCDNUrl("/content/icons/dashboardStatsPacksOpened.png")} value={viewingUser.statistics.packsOpened.toLocaleString()} />
                         <StatContainer title="Messages Sent" icon={window.constructCDNUrl("/content/icons/dashboardStatsMessagesSent.png")} value={viewingUser.statistics.messagesSent.toLocaleString()} />
-                        <StatContainer title="Guild" icon={window.constructCDNUrl("/content/icons/dashboardStatsGuild.png")} value={viewingUser.guild ? viewingUser.guild : "None"} />
                     </div>
                 </div>
             </div>
@@ -252,10 +252,8 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    <div className={styles.friendsDivider} />
-
                     <div className={styles.holdFriends}>
-                        You have no friends, go touch grass.
+                        You don't have any friends. Why don't you make some?
                     </div>
                 </div>
             </div>

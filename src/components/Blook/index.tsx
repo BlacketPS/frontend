@@ -50,7 +50,7 @@ export default function Blook({ custom = false, shiny = false, src, alt, draggab
 
     return (
         <div style={{
-            filter: shiny ? "drop-shadow(0px 0px 4px #fff)" : "none"
+            filter: shiny ? "drop-shadow(0px 0px 2px #fff)" : "none"
         }}>
             <div
                 className={`${className ? `${className} ` : ""}${styles.blook}`}

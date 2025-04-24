@@ -1,7 +1,9 @@
 import { ReactNode, createContext, useContext, useEffect, useState } from "react";
-import { type ConfigStoreContext, Config } from "./configStore.d";
-import { ErrorCode } from "../../views/Error/error.d";
 import Error from "../../views/Error/index";
+
+import { type ConfigStoreContext } from "./configStore.d";
+import { ErrorCode } from "../../views/Error/error.d";
+import { Config } from "@blacket/types";
 
 const ConfigStoreContext = createContext<ConfigStoreContext>({ config: null, setConfig: () => { } });
 
