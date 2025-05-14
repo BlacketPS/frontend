@@ -6,15 +6,6 @@
     top: 0;
 }
 
-.fileUploadContainer {
-    width: 40px;
-    display: flex;
-
-    &>i {
-        font-size: 3vh;
-    }
-}
-
 .messagesContainer {
     position: absolute;
     top: -20px;
@@ -333,7 +324,20 @@
     }
 }
 
-.inputButtonsContainer {
+.leftInputButtonsContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    height: 42px;
+    width: fit-content;
+
+    @media (max-width: 768px) {
+        height: 100%;
+    }
+}
+
+.rightInputButtonsContainer {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -360,7 +364,7 @@
     cursor: pointer;
     width: 42px;
     height: 100%;
-    font-size: 15px;
+    font-size: 20px;
 
     @media (max-width: 768px) {
         width: 45px;

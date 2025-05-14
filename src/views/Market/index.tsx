@@ -256,11 +256,9 @@ export default function Market() {
             {currentPack && <>
                 <style>{"body{overflow:hidden}"}</style>
 
-                <div className={styles.openModal} style={{
-                    // background: `radial-gradient(circle, ${currentPack.innerColor} 0%, ${currentPack.outerColor} 100%)`
-                }}>
+                <div className={styles.openModal}>
                     <div className={styles.openModalBackground}>
-                        <img src="https://blacket.org/content/packs/art/Space.webp" alt="Background" />
+                        <img src={resourceIdToPath(currentPack.backgroundId)} alt="Background" />
                     </div>
 
                     <div ref={gameRef} className={styles.phaserContainer} data-shiny={unlockedBlook?.shiny} />

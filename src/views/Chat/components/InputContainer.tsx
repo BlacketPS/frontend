@@ -111,7 +111,10 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
                 <i className="fas fa-times" onClick={() => setReplyingTo(null)} />
             </div>}
 
-            <FileUploadContainer />
+
+            <div className={styles.leftInputButtonsContainer}>
+                <FileUploadContainer />
+            </div>
 
             {isMobile() ? (
                 <>
@@ -125,11 +128,6 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
                         onKeyDown={(e) => handleKeyDown(e as any)}
 
                     />
-                    <div className={styles.inputButtonsContainer}>
-                        <div className={styles.inputButton}>
-                            <i className="fas fa-paper-plane" onClick={send} />
-                        </div>
-                    </div>
                 </>
             ) : (
                 <MarkdownPreview
@@ -142,6 +140,12 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
                     getEditor={(editor) => setEditor(editor)}
                 />
             )}
+
+            <div className={styles.rightInputButtonsContainer}>
+                <div className={styles.inputButton}>
+                    <i className="fas fa-paper-plane" onClick={send} />
+                </div>
+            </div>
         </div>
     );
 });

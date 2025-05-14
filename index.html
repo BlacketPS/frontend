@@ -3,8 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <script async
-        src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6493849435526552"
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6493849435526552"
         crossOrigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.80.1/phaser.min.js"></script>
     <script type="module" src="/src/index.tsx" defer></script>
@@ -16,6 +15,18 @@
 </head>
 
 <body>
+    <div id="preloader"
+        style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background-color: #2f2f2f;">
+
+        <div
+            style="position: fixed; width: 100%; height: 100%; top: 50%; left: 50%; transform: translate(-50%, -50%); background-image: url('preloading.gif'); background-size: 80%; background-position: center; background-repeat: no-repeat; max-width: 600px; filter: drop-shadow(0 0 20px #000)">
+        </div>
+
+        <div
+            style="position: fixed; width: 200%; height: 200%; top: 50%; left: 50%; background-size: 550px; background-position: -100px -100px; background-image: url('/media/static/content/background.png'); opacity: 0.075; transform: translate(-50%, -50%) rotate(15deg);">
+        </div>
+    </div>
+
     <div id="app"></div>
 </body>
 

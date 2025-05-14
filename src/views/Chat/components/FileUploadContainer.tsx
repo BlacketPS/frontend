@@ -67,7 +67,7 @@ export default function FileUploadContainer() {
     };
 
     return (
-        <div onClick={handleFileUpload} className={styles.fileUploadContainer}>
+        <div className={styles.inputButton} onClick={handleFileUpload}>
             <i className="fas fa-upload" />
         </div>
     );

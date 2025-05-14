@@ -205,6 +205,13 @@
     transform: translate(-50%, -50%) rotate(10deg);
 }
 
+.packBackground {
+    width: 100%;
+    height: 110%;
+    object-fit: cover;
+    filter: brightness(0.5);
+}
+
 .packRatesIcon {
     margin-right: 10px;
     cursor: pointer;
