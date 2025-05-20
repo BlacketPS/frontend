@@ -296,8 +296,36 @@
     margin: 100px auto;
     padding: 50px 0;
     box-sizing: border-box;
-    background-color: var(--primary-color);
+    background-color: rgba(255, 255, 255, 0.1);
     overflow: hidden;
+
+    @media (max-width: 768px) {
+        &>p {
+            margin: 40px 20px;
+        }
+    }
+}
+
+.breakHeader {
+    font-size: 48px;
+    line-height: 1.2;
+    font-family: "Titan One", sans-serif;
+
+    @media (max-width: 768px) {
+        max-width: 500px;
+    }
+}
+
+.breakText {
+    font-size: 24px;
+    max-width: 550px;
+    text-align: center;
+    margin: 40px auto;
+}
+
+.breakButton {
+    width: 200px;
+    font-size: 24px;
 }
 
 .howSection {

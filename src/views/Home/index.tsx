@@ -8,6 +8,8 @@ export default function Home() {
     const [scrolled, setScrolled] = useState<boolean>(false);
     const [scrolledPastRegister, setScrolledPastRegister] = useState<boolean>(false);
 
+    const PRONOUNCE_AUDIO = new Audio(window.constructCDNUrl("/content/pronunciation.ogg"));
+
     useEffect(() => {
         const handleScroll = () => {
             setScrolled(window.scrollY > 100);
@@ -20,6 +22,12 @@ export default function Home() {
             window.removeEventListener("scroll", handleScroll);
         };
     }, []);
+
+    const playPronounce = () => {
+        PRONOUNCE_AUDIO.currentTime = 0;
+
+        PRONOUNCE_AUDIO.play();
+    };
 
     return (
         <>
@@ -59,7 +67,7 @@ export default function Home() {
                                 <HeroButton to="/discord" mobileOnly>Discord</HeroButton>
                                 <HeroButton to="/login" mobileOnly>Login</HeroButton>
 
-                                <div className={styles.heroPronounceButton}>
+                                <div className={styles.heroPronounceButton} onClick={playPronounce}>
                                     <i className="fa-solid fa-volume-high" />
                                     Pronounced ("Black-it")
                                 </div>
@@ -89,7 +97,21 @@ export default function Home() {
                     </div>
 
                     <div className={styles.breakSection}>
+                        <div className={styles.breakHeader}>
+                            Break Header
+                        </div>
 
+                        <p className={styles.breakText}>
+                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.
+                        </p>
+
+                        <Button.GenericButton
+                            className={styles.breakButton}
+                            backgroundColor="var(--primary-color)"
+                            to="/register"
+                        >
+                            Play Now
+                        </Button.GenericButton>
                     </div>
 
                     <div className={styles.howSection}>
