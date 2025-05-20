@@ -107,7 +107,6 @@ export default function Home() {
 
                         <Button.GenericButton
                             className={styles.breakButton}
-                            backgroundColor="var(--primary-color)"
                             to="/register"
                         >
                             Play Now
