@@ -19,7 +19,7 @@ export function useChangeBanner() {
 
     const uploadBanner = (dto: CosmeticsUploadBannerDto) => new Promise<Fetch2Response>((resolve, reject) => window.fetch2.post("/api/cosmetics/banner/upload", dto)
         .then((res: Fetch2Response) => {
-            setUser({ ...user, customBanner: res.data.path });
+            setUser({ ...user, customBanner: res.data });
 
             resolve(res);
         })

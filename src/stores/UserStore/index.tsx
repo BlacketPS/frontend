@@ -39,14 +39,14 @@ export function UserStoreProvider({ children }: { children: ReactNode }) {
 
     const getUserAvatarPath = (user: PrivateUser | null): string => {
         if (!user) return window.constructCDNUrl("/content/icons/error.png");
-        else if (user.customAvatar) return `${import.meta.env.VITE_UPLOAD_PATH}${user.customAvatar}` as string;
+        else if (user.customAvatar) return `${import.meta.env.VITE_CDN_URL}/users/${user.customAvatar.userId}/${user.customAvatar.uploadId}/${user.customAvatar.filename}` as string;
         else if (user.avatar) return resourceIdToPath((user.avatar as UserAvatar).resourceId) || window.errorImage;
         else return window.constructCDNUrl("/content/blooks/Default.png");
     };
 
     const getUserBannerPath = (user: PrivateUser | null): string => {
         if (!user) return window.constructCDNUrl("/content/icons/error.png");
-        else if (user.customBanner) return `${import.meta.env.VITE_UPLOAD_PATH}${user.customBanner}` as string;
+        else if (user.customBanner) return `${import.meta.env.VITE_CDN_URL}/users/${user.customBanner.userId}/${user.customBanner.uploadId}/${user.customBanner.filename}` as string;
         else if (user.bannerId) return resourceIdToPath(user.bannerId) || window.errorImage;
         else return window.constructCDNUrl("/content/banners/Default.png");
     };

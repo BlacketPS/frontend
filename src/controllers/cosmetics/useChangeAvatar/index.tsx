@@ -32,7 +32,7 @@ export function useChangeAvatar() {
 
     const uploadAvatar = (dto: CosmeticsUploadAvatarDto) => new Promise<Fetch2Response>((resolve, reject) => window.fetch2.post("/api/cosmetics/avatar/upload", dto)
         .then((res: Fetch2Response) => {
-            setUser({ ...user, customAvatar: res.data.path });
+            setUser({ ...user, customAvatar: res.data });
 
             resolve(res);
         })
