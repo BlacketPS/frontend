@@ -5,7 +5,7 @@ import Loading from "../../views/Loading";
 import styles from "./dataStore.module.scss";
 
 import { type DataStoreContext } from "./dataStore.d";
-import { Banner, Blook, Emoji, Font, Item, ItemShop, Pack, Rarity, StripeStoreEntity, Title } from "@blacket/types";
+import { Banner, Blook, Emoji, Font, Item, ItemShop, Pack, Rarity, StripeProductEntity, StripeStoreEntity, Title } from "@blacket/types";
 
 const DataStoreContext = createContext<DataStoreContext>({
     badges: [],
@@ -28,6 +28,8 @@ const DataStoreContext = createContext<DataStoreContext>({
     setRarities: () => { },
     titles: [],
     setTitles: () => { },
+    products: [],
+    setProducts: () => { },
     stores: [],
     setStores: () => { },
 
@@ -52,6 +54,7 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
     const [packs, setPacks] = useState<Pack[]>([]);
     const [rarities, setRarities] = useState<Rarity[]>([]);
     const [titles, setTitles] = useState<Title[]>([]);
+    const [products, setProducts] = useState<StripeProductEntity[]>([]);
     const [stores, setStores] = useState<StripeStoreEntity[]>([]);
 
     const { resources, resourceIdToPath, setResources } = useResource();
@@ -59,7 +62,7 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
 
     const [completed, setCompleted] = useState<number>(0);
     const [fetchedResources, setFetchedResources] = useState<boolean>(false);
-    const max = 10 + (localStorage.getItem("token") ? 1 : 0);
+    const max = 11 + (localStorage.getItem("token") ? 1 : 0);
 
     useEffect(() => {
         if (!loading) return;
@@ -90,7 +93,9 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
             ["item-shop", setItemShop],
             ["packs", setPacks],
             ["rarities", setRarities],
-            ["titles", setTitles]] as [string, Dispatch<SetStateAction<any[]>>][]).forEach(([key, setter]) => window.fetch2.get(`/api/data/${key}`)
+            ["titles", setTitles],
+            ["products", setProducts]
+        ] as [string, Dispatch<SetStateAction<any[]>>][]).forEach(([key, setter]) => window.fetch2.get(`/api/data/${key}`)
                 .then((res) => {
                     setter(res.data);
                     setCompleted((completed) => completed + 1);
@@ -148,6 +153,7 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
         packs, setPacks,
         rarities, setRarities,
         titles, setTitles,
+        products, setProducts,
         stores, setStores,
 
         titleIdToText,
@@ -160,6 +166,8 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
                     backgroundColor: error ? "red" : ""
                 }} />
             </div>
+
+            Loading {completed} / {max}
         </div>
         {error ? <div className={styles.error}>
             Failed to load data.

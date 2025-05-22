@@ -22,7 +22,8 @@ export function useChangeAvatar() {
                     ...user, avatar: {
                         ...blook,
                         resourceId: blooks.filter((b) => b.id === blook.blookId)[0].imageId
-                    }
+                    },
+                    customAvatar: undefined
                 });
 
                 resolve(res);
