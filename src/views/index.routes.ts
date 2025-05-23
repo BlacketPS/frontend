@@ -19,6 +19,7 @@ export { default as Market } from "./Market/route";
 export { default as Inventory } from "./Inventory/route";
 export { default as AuctionHouse } from "./AuctionHouse/route";
 export { default as Settings } from "./Settings/route";
+export { default as SettingsBilling } from "./Settings/Billing/route";
 export { default as News } from "./News/route";
 
 // BOTTOM NAVIGATION ROUTES

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Navigate, Link } from "react-router-dom";
+import { Navigate, Link, useNavigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import { useLoading } from "@stores/LoadingStore";
 import { useModal } from "@stores/ModalStore";
@@ -30,6 +30,8 @@ export default function Settings() {
     if (!user) return <Navigate to="/login" />;
 
     const [modalAnimation, setModalAnimation] = useState<boolean>(localStorage.getItem("DISABLE_MODAL_ANIMATION") ? false : true);
+
+    const navigate = useNavigate();
 
     const friendRequestsButton = () => {
         setLoading("Changing settings");
@@ -84,8 +86,8 @@ export default function Settings() {
                     </> : "None"}
                 </div>
                 <div style={{ marginTop: 5 }}>
-                    {user.paymentMethods.length < 1 && <Button.ClearButton onClick={() => createModal(<Modal.AddPaymentMethodModal />)}>Add Payment Method</Button.ClearButton>}
-                    {user.paymentMethods.length > 0 && <Button.ClearButton onClick={() => createModal(<Modal.PaymentMethodsModal />)}>Manage Payment Methods</Button.ClearButton>}
+                    {user.paymentMethods.length < 1 && <Button.ClearButton onClick={() => navigate("/settings/billing")}>Add Payment Method</Button.ClearButton>}
+                    {user.paymentMethods.length > 0 && <Button.ClearButton onClick={() => navigate("/settings/billing")}>Manage Payment Methods</Button.ClearButton>}
                 </div>
             </SettingsContainer>
 
@@ -104,8 +106,8 @@ export default function Settings() {
             <SettingsContainer header={{ icon: "fas fa-palette", text: "Theme" }}>
                 <Tooltip id="modalAnimation" place="right">This will disable the zoom in out animation on popups.</Tooltip>
                 <Button.ClearButton data-tooltip-id="modalAnimation" onClick={modalAnimationButton}>Modal Animation: {modalAnimation ? "On" : "Off"}</Button.ClearButton>
-                {
-                    /* <Button.ClearButton onClick={() => {
+                {/* <Button.ClearButton onClick={() => {
+                    if (document.getElementById("theme")) return;
                     const style = document.createElement("style");
                     style.id = "theme";
                     style.innerHTML = `:root {
@@ -124,8 +126,8 @@ export default function Settings() {
                     if (style) style.remove();
                 }}>
                     revert to default theme
-                </Button.ClearButton>
-            */ }
+                </Button.ClearButton> */}
+
 
             </SettingsContainer>
 

@@ -19,7 +19,7 @@ export default function Home() {
         window.addEventListener("scroll", handleScroll);
 
         return () => {
-            window.removeEventListener("scroll", handleScroll);
+            window.removeEventListener("scroll", handleScroll)
         };
     }, []);
 
@@ -181,9 +181,8 @@ export default function Home() {
                     </div>
 
                     <div className={styles.copyrightText}>
-                        We are not affiliated with Blooket in any way.
+                        <b>We are not affiliated with Blooket in any way. Do not contact Blooket about any issues you may have with Blacket.</b>
                         <br />
-                        Please do not contact Blooket about any issues you may have with Blacket.
                         <br />
                         Blacket © 2025 All Rights Reserved.
                     </div>
