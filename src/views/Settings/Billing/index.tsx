@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
-import { Button, Modal } from "@components/index";
+import { Button, Modal, Textfit } from "@components/index";
 import styles from "./billing.module.scss";
+import { Transaction } from "@blacket/types";
 
 export default function SettingsBilling() {
     const { user } = useUser();
@@ -11,6 +12,7 @@ export default function SettingsBilling() {
     const { createModal } = useModal();
 
     const [paymentMethodString, setPaymentMethodString] = useState<string | null>(null);
+    const [selectedTransaction, setSelectedTransaction] = useState<Transaction | null>(null);
 
     useEffect(() => {
         const primaryPaymentMethod = user.paymentMethods.find((method) => method.primary);
@@ -26,7 +28,7 @@ export default function SettingsBilling() {
         <div className={styles.container}>
             <div className={styles.planContainer}>
                 <div className={styles.planDetailsContainer}>
-                    <img src={window.constructCDNUrl("/content/gem.png")} className={styles.planLogo} />
+                    <img src={window.constructCDNUrl("/content/logo.png")} className={styles.planLogo} />
 
                     <div className={styles.planDetails}>
                         <div className={styles.planName}>
@@ -60,7 +62,7 @@ export default function SettingsBilling() {
                 <div className={styles.card}>
                     <div className={styles.cardHeader}>Billing Information</div>
 
-                    <div>Your plan will automatically renew on 06/08/2025 and you will be charged $99.99</div>
+                    <div>Your plan will automatically renew on 06/08/2025 and you will be charged $99.99 USD</div>
                 </div>
 
                 <div className={styles.card}>
@@ -76,39 +78,38 @@ export default function SettingsBilling() {
             <div className={styles.header}>
                 Transaction History
             </div>
+
+            <div className={styles.transactionHistoryContainer}>
+                <div className={styles.transactionHistoryTopRow}>
+                    <div className={styles.transactionHistoryDate}>Date</div>
+                    <div className={styles.transactionHistoryDescription}>Description</div>
+                    <div className={styles.transactionHistoryAmount}>Amount</div>
+                </div>
+
+                <div className={styles.transactionHistory}>
+                    <div className={styles.transaction} onClick={() => setSelectedTransaction(selectedTransaction ? null : {} as Transaction)}>
+                        <Textfit className={styles.transactionDate} mode="single" min={0} max={16}>
+                            06/08/2025
+                        </Textfit>
+
+                        <Textfit className={styles.transactionDescription} mode="single" min={0} max={16}>
+                            Blacket Basic
+                        </Textfit>
+
+                        <Textfit className={styles.transactionAmount} mode="single" min={0} max={16}>
+                            $99.99 USD
+                        </Textfit>
+
+                        <i className="fa-solid fa-chevron-down" />
+
+                        {selectedTransaction && (
+                            <div className={styles.transactionDetails}>
+                                todo later
+                            </div>
+                        )}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
-
-
-// const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<UserPaymentMethod | null>(user.paymentMethods.find((method) => method.primary) ?? null);
-
-// const { createModal, closeModal } = useModal();
-// const { selectPaymentMethod } = useSelect();
-// const { removePaymentMethod } = useRemove();
-
-// return (
-//     <>
-//         <Modal.ModalHeader>Payment Methods</Modal.ModalHeader>
-
-//         <Modal.ModalBody>
-//             Please select a payment method below to modify.
-//         </Modal.ModalBody>
-
-//         <Dropdown
-//             options={[
-//                 ...user.paymentMethods.map((method) => ({
-//                     label: `${method.cardBrand} ${method.lastFour}`, value: method.id
-//                 })),
-//                 { label: "Add Payment Method", value: null }
-//             ]}
-//             onChange={(value: number | null) => {
-//                 if (value === null) {
-//                     closeModal();
-
-//                     createModal(<Modal.AddPaymentMethodModal />);
-//                 } else setSelectedPaymentMethod(user.paymentMethods.find((method) => method.id === value) ?? null);
-//             }}
-//         >
-//             {selectedPaymentMethod ? `${selectedPaymentMethod.cardBrand} ${selectedPaymentMethod.lastFour}` : "Select a payment method..."}
-//         </Dropdown>

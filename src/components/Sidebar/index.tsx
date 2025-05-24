@@ -47,11 +47,6 @@ export default function Sidebar() {
                 link: "/trading-plaza",
                 textSizeOverride: 18
             },
-            ...!user.hasPermission(PermissionTypeEnum.MANAGE_DATA) ? [{
-                icon: "fas fa-map",
-                text: "Map Editor",
-                link: "/map-editor"
-            }] : [],
             {
                 icon: "fas fa-swords",
                 text: "Guilds",
@@ -90,50 +85,60 @@ export default function Sidebar() {
                 text: "Credits",
                 link: "/credits"
             },
-            ...(!user.hasPermission(PermissionTypeEnum.VIEW_AUDIT) ? [
-                {
-                    icon: "fab fa-discord",
-                    text: "Discord",
-                    link: "/discord"
-                },
-                {
-                    icon: "fab fa-github",
-                    text: "GitHub",
-                    link: "/github"
-                },
-                {
-                    icon: "fab fa-youtube",
-                    text: "YouTube",
-                    link: "/youtube"
-                },
-                {
-                    icon: "fab fa-x-twitter",
-                    text: "X",
-                    link: "/x"
-                }
-            ] : [
-                {
-                    icon: "fas fa-screwdriver-wrench",
-                    text: "Staff",
-                    link: "/staff"
-                },
-                ...user.hasPermission(PermissionTypeEnum.MANAGE_REPORTS) ? [{
-                    icon: "fas fa-flag",
-                    text: "Reports",
-                    link: "/staff/reports"
-                }] : []
-            ])
+
+            {
+                icon: "fab fa-discord",
+                text: "Discord",
+                link: "/discord"
+            },
+            {
+                icon: "fab fa-github",
+                text: "GitHub",
+                link: "/github"
+            },
+            {
+                icon: "fab fa-youtube",
+                text: "YouTube",
+                link: "/youtube"
+            },
+            {
+                icon: "fab fa-x-twitter",
+                text: "X",
+                link: "/x"
+            }
         ]
     };
+
+    const staffPages = [
+        {
+            icon: "fas fa-wrench",
+            text: "Staff Panel",
+            link: "/staff"
+        },
+        {
+            icon: "fas fa-user-gear",
+            text: "User Manager",
+            link: "/staff/users",
+            permission: PermissionTypeEnum.MUTE_USERS,
+            textSizeOverride: 18
+        },
+        {
+            icon: "fas fa-flag",
+            text: "Report Manager",
+            link: "/staff/reports",
+            permission: PermissionTypeEnum.MANAGE_REPORTS,
+            textSizeOverride: 16
+        },
+    ];
 
     return (
         <>
             <div className={styles.sidebar}>
                 <Link className={styles.header} to="/">{import.meta.env.VITE_INFORMATION_NAME}</Link>
 
-                <div className={styles.pageScroller}>
+                <div className={styles.pageScroller} style={{ height: user.hasPermission(PermissionTypeEnum.VIEW_AUDIT) ? "60%" : undefined }}>
                     {pages.left.map((page, index) => (
-                        <Link data-active={location === page.link.split("/")[1]} key={index} className={styles.page} to={page.link}>
+                        <Link data-active={location === page.link.slice(1)} key={index} className={styles.page} to={page.link}>
                             <i className={`${styles.pageIcon} ${page.icon}`} />
                             <div className={styles.pageText} style={{ fontSize: page.textSizeOverride || 20 }}>{page.text}</div>
 
@@ -143,6 +148,15 @@ export default function Sidebar() {
                         </Link>
                     ))}
                 </div>
+
+                {user.hasPermission(PermissionTypeEnum.VIEW_AUDIT) && <div className={styles.pageScrollerStaff}>
+                    {staffPages.map((page, index) => (
+                        <Link data-active={location === page.link.slice(1)} data-staff={true} key={index} className={styles.page} to={page.link} data-tooltip-id={page.link}>
+                            <i className={`${styles.pageIcon} ${page.icon}`} />
+                            <div className={styles.pageText} style={{ fontSize: page.textSizeOverride || 20 }}>{page.text}</div>
+                        </Link>)
+                    )}
+                </div>}
 
                 <div className={styles.bottom}>
                     {window.innerWidth > 768 && <div className={styles.adContainer}>
@@ -184,6 +198,12 @@ export default function Sidebar() {
                         </div>}
                     </Link>
                 ))}
+                {staffPages.map((page, index) => (
+                    <Link data-active={location === page.link.slice(1)} data-staff={true} key={index} className={styles.page} onClick={() => setMobileSidebarOpen(false)} to={page.link} data-tooltip-id={page.link}>
+                        <i className={`${styles.pageIcon} ${page.icon}`} />
+                        <div className={styles.pageText} style={{ fontSize: page.textSizeOverride || 20 }}>{page.text}</div>
+                    </Link>)
+                )}
 
                 <div className={styles.bottom}>
                     <div className={styles.bottomItems}>

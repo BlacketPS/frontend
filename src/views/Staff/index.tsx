@@ -9,17 +9,10 @@ export default function StaffPanel() {
     const navigate = useNavigate();
 
     const { user } = useUser();
-    if (!user || user.hasPermission(PermissionTypeEnum.VIEW_AUDIT)) return <Navigate to="/login" />;
+    if (!user || !user.hasPermission(PermissionTypeEnum.VIEW_AUDIT)) return <Navigate to="/login" />;
 
     return (
         <div className={styles.panelContainer}>
-            <Container.LabeledContainer
-                label="Experiments"
-                icon="fas fa-flask"
-                onClick={() => navigate("/staff/experiments")}
-            >
-                Manage experiments.
-            </Container.LabeledContainer>
         </div>
     );
 }

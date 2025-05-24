@@ -31,7 +31,7 @@ export default function OpenPackBlook({ userBlook, animate, isNew }: OpenPackBlo
                 />
             </div>
             <div className={styles.openPackBlookTopText}>
-                <Textfit className={styles.openPackBlookBlookText} mode="single" min={10} max={40}>
+                <Textfit className={styles.openPackBlookBlookText} mode="single" min={0} max={40}>
                     {userBlook.shiny && "Shiny"} {blook.name}
                 </Textfit>
                 <div className={styles.openPackBlookRarityText} style={{ color: rarity.color }}>
@@ -39,7 +39,7 @@ export default function OpenPackBlook({ userBlook, animate, isNew }: OpenPackBlo
                 </div>
             </div>
             <div className={styles.openPackBlookBottomText}>
-                {blook.chance}%{isNew ? " - NEW!" : ""}
+                {blook.chance / (userBlook.shiny ? 100 : 1)}%{isNew ? " - NEW!" : ""}
             </div>
             <div className={styles.openPackBlookShadow} />
         </div>
