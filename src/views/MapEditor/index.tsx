@@ -164,6 +164,7 @@ export default function MapEditor() {
                     brender.drawRect({
                         x: objectUnderMouse.x,
                         y: objectUnderMouse.y,
+                        z: objectUnderMouse.z ?? 0,
                         width: objectUnderMouse?.image?.width ?? 0,
                         height: objectUnderMouse?.image?.height ?? 0,
                         color: "rgba(255, 255, 255, 0.2)"

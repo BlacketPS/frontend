@@ -2,7 +2,7 @@
     display: flex;
     flex-wrap: wrap;
     align-items: center;
-    gap: 10px;
+    gap: 7px;
 
     &[data-column="true"] {
         flex-direction: column;
@@ -53,7 +53,7 @@
     background: rgba(0, 0, 0, 0.2);
     cursor: pointer;
     transition: transform .2s;
-    font-size: 15px;
+    font-size: 25px;
 
     &:hover {
         transform: scale(0.95);
@@ -128,8 +128,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 6vh;
-    height: 7vh;
+    width: 60px;
+    height: 70px;
     cursor: pointer;
     transition: transform .2s;
 

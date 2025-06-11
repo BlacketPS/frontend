@@ -1,10 +1,11 @@
-import { useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { Navigate } from "react-router-dom";
 import { BrenderCanvas, BrenderCanvasRef, BrenderEntity, isColliding, isOnScreen, PlayerEntity, urlToImage } from "@brender/index";
 import { useUser } from "@stores/UserStore/index";
 import { useSocket } from "@stores/SocketStore/index";
 import { useData } from "@stores/DataStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
+import { useChat } from "@stores/ChatStore/index";
 import { WaterBackground } from "@components/index";
 import { lerp } from "@functions/core/mathematics";
 import styles from "./tradingPlaza.module.scss";
@@ -12,17 +13,25 @@ import styles from "./tradingPlaza.module.scss";
 import { SocketMessageType } from "@blacket/types";
 import { TILES } from "@constants/index";
 import map from "./map";
+import { ClientMessage } from "@stores/ChatStore/chatStore";
 
 export default function TradingPlaza() {
     const { user, getUserAvatarPath } = useUser();
     const { socket, connected, latency } = useSocket();
     const { fontIdToName } = useData();
     const { addCachedUser } = useCachedUser();
+    const { messages, sendMessage, setRoom } = useChat();
 
     if (!user) return <Navigate to="/login" />;
 
     const brenderCanvasRef = useRef<BrenderCanvasRef>(null);
     const waterBackgroundRef = useRef<HTMLDivElement>(null);
+
+    const messagesRef = useRef(messages);
+
+    useEffect(() => {
+        messagesRef.current = messages;
+    }, [messages]);
 
     useLayoutEffect(() => {
         if (!socket) return;
@@ -38,7 +47,7 @@ export default function TradingPlaza() {
             RUN: ["shift"]
         };
 
-        const PLAYER_SPEED = 6;
+        const PLAYER_SPEED = 12;
         const TILE_SIZE = 50;
         const COLUMNS = 35;
         const ROWS = 40;
@@ -86,6 +95,8 @@ export default function TradingPlaza() {
 
         socket.emit(SocketMessageType.TRADING_PLAZA_JOIN);
 
+        setRoom(1);
+
         // const loadMap = async () => {
         //     // @ts-ignore temporary
         //     for (const o of window.map) {
@@ -120,13 +131,14 @@ export default function TradingPlaza() {
 
         // loadMap();
 
-        const renderPlayerText = (entity: PlayerEntity) => {
+        const renderPlayerText = (entity: PlayerEntity, z: number = 0) => {
             const center = entity.x + (entity?.width ?? 300) / 2;
 
             brender.drawText({
                 text: entity.user.username,
                 x: center,
                 y: entity.y + (entity?.height ?? 345 / 6) + 20,
+                z,
                 style: {
                     fontFamily: fontIdToName(entity.user.fontId) ?? "Nunito Bold",
                     fontSize: 20,
@@ -141,7 +153,7 @@ export default function TradingPlaza() {
                 id: userId,
                 x: 0,
                 y: 0,
-                z: 4,
+                z: 1,
                 image: brender.loadingImage,
                 width: 300 / 6,
                 height: 345 / 6,
@@ -152,11 +164,68 @@ export default function TradingPlaza() {
                     fontId: 1,
                     color: "#ffffff"
                 } as any,
-                onFrame: (entity, deltaTime) => {
+                onFrame: async (entity, deltaTime) => {
                     renderPlayerText(entity);
 
                     entity.x = lerp(entity.x, entity?.targetX ?? 0, (entity?.targetEasingSpeed ?? 0.1 * deltaTime));
                     entity.y = lerp(entity.y, entity?.targetY ?? 0, (entity?.targetEasingSpeed ?? 0.1 * deltaTime));
+
+                    let currentMessage: ClientMessage | null = null;
+
+                    if (!currentMessage) {
+                        const msg = messagesRef.current.find((message) =>
+                            message.authorId === userId &&
+                            message.roomId === 1
+                            && new Date(message.createdAt).getTime() > Date.now() - 1000
+                        );
+
+                        currentMessage = msg ?? null;
+
+                        if (currentMessage) {
+                            setTimeout(() => {
+                                if (currentMessage && currentMessage.authorId === userId) {
+                                    currentMessage = null;
+                                }
+                            }, (3000 + currentMessage.content.length * 1000));
+                        }
+                    }
+
+                    if (currentMessage) {
+                        const chatBottomImage = await brender.urlToImage(window.constructCDNUrl("/content/chat-bottom.png"));
+
+                        brender.drawImage({
+                            image: chatBottomImage,
+                            x: entity.x + (entity.width ?? 300) / 2 - 30 / 2,
+                            y: entity.y - 20 - 10,
+                            z: 1,
+                            width: 30,
+                            height: 30
+                        });
+
+                        brender.drawRect({
+                            x: entity.x + (entity.width ?? 300) / 2 - (currentMessage.content.length * 10 + 20) / 2,
+                            y: entity.y - 20 - 20,
+                            z: 2,
+                            width: currentMessage.content.length * 10 + 20,
+                            height: 30,
+                            color: "#ffffff",
+                            useCamera: true
+                        });
+
+                        brender.drawText({
+                            text: currentMessage.content,
+                            x: entity.x + (entity.width ?? 300) / 2,
+                            y: entity.y - 20,
+                            z: 3,
+                            style: {
+                                fontFamily: "Nunito",
+                                fontSize: 20,
+                                textAlign: "center",
+                                color: "#000000"
+                            },
+                            useCamera: true
+                        });
+                    }
                 }
             });
 
@@ -206,9 +275,9 @@ export default function TradingPlaza() {
             id: "overlay",
             x: 0,
             y: 0,
-            z: 10,
+            z: 99,
             imageBlendMode: "overlay",
-            imageOpacity: 0.2,
+            imageOpacity: 0.1,
             width: brender.getWidth(),
             height: brender.getHeight()
         });
@@ -222,14 +291,14 @@ export default function TradingPlaza() {
             id: user.id,
             x: 0,
             y: 0,
-            z: 5,
+            z: 10,
             image: brender.loadingImage,
             width: 300 / 6,
             height: 345 / 6,
             user,
             hasCollision: true,
             onFrame: (entity, deltaTime) => {
-                renderPlayerText(entity);
+                renderPlayerText(entity, 10);
 
                 let moveX = 0;
                 let moveY = 0;
@@ -290,7 +359,7 @@ export default function TradingPlaza() {
 
                 _previousPos = { x: entity.x, y: entity.y };
 
-                brender.camera.focusOn(entity as BrenderEntity, 0.05);
+                brender.camera.focusOn(entity as BrenderEntity, 0.05 * deltaTime);
 
                 entity.x += moveX | 0;
                 entity.y += moveY | 0;
@@ -314,6 +383,17 @@ export default function TradingPlaza() {
 
             socket.emit(SocketMessageType.TRADING_PLAZA_MOVE, { x: player.x, y: player.y });
         }, 1000 / 20);
+
+        brender.createObject({
+            id: "block",
+            x: 300,
+            y: 200,
+            z: 1,
+            image: brender.loadingImage,
+            width: 300,
+            height: 300,
+            hasCollision: true,
+        });
 
         return () => {
             player.destroy?.();
@@ -341,6 +421,7 @@ export default function TradingPlaza() {
                 ref={brenderCanvasRef}
                 className={styles.canvas}
                 debug={true}
+                showFPS={true}
             />}
 
             <div className={styles.ui}>

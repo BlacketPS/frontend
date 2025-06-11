@@ -11,6 +11,7 @@ export interface TextStyle {
 export interface DrawRectProps {
     x: number;
     y: number;
+    z: number;
     width: number;
     height: number;
     color: string;
@@ -21,6 +22,7 @@ export interface DrawTextProps {
     text: string;
     x: number;
     y: number;
+    z: number;
     style?: TextStyle;
     useCamera?: boolean;
 }
@@ -28,10 +30,12 @@ export interface DrawImageProps {
     image: HTMLImageElement;
     x: number;
     y: number;
+    z: number;
     width: number;
     height: number;
     blendMode?: GlobalCompositeOperation;
     opacity?: number;
+    tint?: string;
     useCamera?: boolean;
     rotation?: number;
 }
@@ -87,11 +91,11 @@ export interface BrenderObject {
     image?: HTMLImageElement;
     imageBlendMode?: GlobalCompositeOperation;
     imageOpacity?: number;
+    imageTint?: string;
     hasCollision?: boolean;
     rotation?: number;
     onClick?: (object: BrenderObject) => void;
     onFrame?: (object: BrenderObject, deltaTime: number) => void;
-
     destroy?: () => void;
 }
 

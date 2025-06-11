@@ -8,9 +8,11 @@ export const entityLoop = (entity: BrenderEntity, deltaTime: number) => {
         image: entity.image,
         x: entity.x,
         y: entity.y,
+        z: entity.z,
         width: entity.width ?? entity.image.width,
         height: entity.height ?? entity.image.height,
         blendMode: entity.imageBlendMode,
+        tint: entity.imageTint ?? undefined,
         rotation: entity.rotation ?? undefined,
         opacity: entity.imageOpacity
     });

@@ -17,6 +17,9 @@ export default function RightItem({ item, children, ...props }: RightItemProps) 
 
     const { createModal } = useModal();
 
+    const rarity = rarities.find((r) => r.id === (item.rarityId));
+    if (!rarity) return null;
+
     return (
         <div className={styles.rightSide} {...props}>
             <div className={styles.rightSideContent}>
@@ -27,8 +30,8 @@ export default function RightItem({ item, children, ...props }: RightItemProps) 
                 <div className={styles.rightTopText}>
                     <Textfit mode="single" min={0} max={window.innerWidth > 1000 ? 40 : 25} className={styles.rightBlookName}>{item.name}</Textfit>
                     <div style={{
-                        color: rarities.find((r) => r.id === (item.rarityId))!.color
-                    }} className={styles.rightBlookRarity}>{rarities.find((r) => r.id === item.rarityId)!.name}</div>
+                        color: rarity.color
+                    }} className={`${styles.rightBlookRarity} ${rarity.color === "rainbow" ? "rainbow" : ""}`}>{rarities.find((r) => r.id === item.rarityId)!.name}</div>
                 </div>
 
                 <div className={styles.rightItemImage}>

@@ -128,7 +128,7 @@ export default function Sidebar() {
             link: "/staff/reports",
             permission: PermissionTypeEnum.MANAGE_REPORTS,
             textSizeOverride: 16
-        },
+        }
     ];
 
     return (

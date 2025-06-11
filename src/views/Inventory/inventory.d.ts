@@ -11,13 +11,6 @@ export interface SearchOptions {
     onlyOwned: boolean;
 }
 
-export interface BlookProps extends HTMLAttributes<HTMLDivElement> {
-    blook: Blook;
-    shiny: boolean;
-    locked: boolean;
-    quantity: number;
-}
-
 export interface ChangeFilterModalProps {
     onSave: () => void;
 }

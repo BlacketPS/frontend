@@ -2,6 +2,7 @@ import AdUnit from "./AdUnit";
 import Auction from "./Auction";
 import Background from "./Background";
 import Blook from "./Blook";
+import InventoryBlook from "./Blook/InventoryBlook";
 import * as Button from "./Buttons";
 import ColorPicker from "./ColorPicker";
 import Container from "./Container";
@@ -34,6 +35,7 @@ export {
     Auction,
     Background,
     Blook,
+    InventoryBlook,
     Button,
     ColorPicker,
     Container,

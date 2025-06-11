@@ -60,13 +60,19 @@ declare module "*.module.scss" {
     export default content;
 }
 
-declare module "@assets/*" {
-    const content: string;
+declare module "@brender/*" {
+    const content: ComponentType;
 
     export default content;
 }
 
 declare module "@components/*" {
+    const content: ComponentType;
+
+    export default content;
+}
+
+declare module "@constants/*" {
     const content: ComponentType;
 
     export default content;

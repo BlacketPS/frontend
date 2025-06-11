@@ -1,48 +1,90 @@
 import { Navigate } from "react-router-dom";
 import { useUser } from "@stores/UserStore/index";
-import { ZoeySign } from "@components/index";
+import { BrenderCanvas, BrenderCanvasRef } from "@brender/index";
+import { useEffect, useRef } from "react";
 
 export default function Experiments() {
     const { user } = useUser();
     if (!user) return <Navigate to="/login" />;
 
-    const fileInput = document.createElement("input");
-    fileInput.type = "file";
-    fileInput.accept = ".png, .jpg, .jpeg, .gif";
-    fileInput.onchange = async (e) => {
-        const file = (e.target as HTMLInputElement).files?.[0];
-        if (!file) return;
+    const brenderCanvasRef = useRef<BrenderCanvasRef>(null);
 
-        const upload = await window.fetch2.get(`/api/s3/upload/small?filename=${file.name}&mimetype=${file.type}`);
+    useEffect(() => {
+        const brender = brenderCanvasRef.current;
+        if (!brender) return;
 
-        const formData = new FormData();
-        Object.entries(upload.data.fields).forEach(([k, v]) => formData.append(k, v as string));
-        formData.append("file", file);
+        const images = [
+            // window.constructCDNUrl("/content/uncommon.png"),
+            // window.constructCDNUrl("/content/rare.png"),
+            // window.constructCDNUrl("/content/epic.png"),
+            // window.constructCDNUrl("/content/legendary.png"),
+            window.constructCDNUrl("/content/token.png"),
+            window.constructCDNUrl("/content/experience.png"),
+            window.constructCDNUrl("/content/gem.png"),
+        ];
 
-        const s3Upload = await fetch(upload.data.url, {
-            method: "POST",
-            body: formData
-        });
+        brender.camera.moveTo(0, 0);
 
-        if (s3Upload.ok) {
-            const verify = await window.fetch2.post("/api/s3/verify", {
-                uploadId: upload.data.fields.key.split("/")[2]
+        let id = 0;
+
+        const createConfettiPiece = async () => {
+            const image = await brender.urlToImage(images[Math.floor(Math.random() * images.length)]);
+
+            // const fallSpeed = 7 + Math.random() * 5;
+            const fallSpeed = 10;
+            const rotationSpeed = 0.5 + Math.random() * 1.5;
+            // const zIndex = Math.floor(Math.random() * 200);
+            const rotation = Math.random() * Math.PI * 2;
+
+            id++;
+
+            return brender.createObject({
+                id: id.toString(),
+                x: Math.random() * brender.getWidth(),
+                y: Math.random() * brender.getHeight() - brender.getHeight(),
+                z: 0,
+                width: 50,
+                height: 50,
+                rotation,
+                image,
+                onFrame: (object, deltaTime) => {
+                    object.y += fallSpeed * deltaTime;
+                    object.rotation! += rotationSpeed * deltaTime;
+
+                    console.log(object.y);
+
+                    if (object.y > brender.getHeight()) {
+                        object.destroy!();
+                    }
+                }
             });
+        };
 
-            console.log(verify);
-        } else {
-            console.error("Upload failed");
-        }
-    };
+        const confetti = setInterval(() => {
+            createConfettiPiece();
+        }, 5);
+
+        return () => {
+            clearInterval(confetti);
+        };
+    }, []);
 
     return (
         <>
-            {/* <ZoeySign style={{ width: "400px" }}>
-                blooket
-            </ZoeySign> */}
-            <div style={{ width: "400px", height: "400px", backgroundColor: "red" }} onClick={() => fileInput.click()}>
-                click me
-            </div>
+            <BrenderCanvas
+                ref={brenderCanvasRef}
+                width={window.innerWidth}
+                height={window.innerHeight}
+                style={{
+                    position: "absolute",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    zIndex: 1
+                }}
+                debug={true}
+            />
         </>
     );
 }

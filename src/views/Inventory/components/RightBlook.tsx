@@ -16,6 +16,9 @@ export default function RightBlook({ blook, shiny, owned, noBlooksOwned, childre
     const { createModal } = useModal();
     const { rarities } = useData();
 
+    const rarity = rarities.find((r) => r.id === (blook.rarityId));
+    if (!rarity) return null;
+
     if (noBlooksOwned) return null;
 
     return (
@@ -26,9 +29,10 @@ export default function RightBlook({ blook, shiny, owned, noBlooksOwned, childre
                 </div>
                 <div className={styles.rightTopText}>
                     <Textfit mode="single" min={0} max={window.innerWidth > 1000 ? 40 : 25} className={styles.rightBlookName}>{shiny && "Shiny"} {blook.name}</Textfit>
+
                     <div style={{
-                        color: rarities.find((r) => r.id === (blook.rarityId))!.color
-                    }} className={styles.rightBlookRarity}>{rarities.find((r) => r.id === blook.rarityId)!.name}</div>
+                        color: rarity.color
+                    }} className={`${styles.rightBlookRarity} ${rarity.color === "rainbow" ? "rainbow" : ""}`}>{rarities.find((r) => r.id === blook.rarityId)!.name}</div>
                 </div>
 
                 <div className={styles.rightBlookImage}>

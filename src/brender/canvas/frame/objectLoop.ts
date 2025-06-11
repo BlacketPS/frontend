@@ -9,9 +9,11 @@ export const objectLoop = (object: BrenderObject, deltaTime: number) => {
             image: object.image,
             x: object.x,
             y: object.y,
+            z: object.z,
             width: object.width ?? object.image.width,
             height: object.height ?? object.image.height,
             blendMode: object.imageBlendMode,
+            tint: object.imageTint ?? undefined,
             rotation: object.rotation ?? undefined,
             opacity: object.imageOpacity
         });

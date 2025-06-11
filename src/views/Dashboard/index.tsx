@@ -10,13 +10,12 @@ import { useAuctionHouse } from "@stores/AuctionHouseStore/index";
 import { useUsers } from "@controllers/users/useUsers/index";
 import { useSearchAuction } from "@controllers/auctions/useSearchAuction/index";
 import { useClaimDailyTokens } from "@controllers/quests/useClaimDailyTokens/index";
-import { AdUnit, Auction, Blook, ImageOrVideo, Username } from "@components/index";
-import { LevelContainer, LookupUserModal, SmallButton, SectionHeader, StatContainer, InventoryBlook, InventoryItem, CosmeticsModal, DailyRewardsModal } from "./components";
+import { AdUnit, Auction, Blook, ImageOrVideo, Username, InventoryBlook } from "@components/index";
+import { LevelContainer, LookupUserModal, SmallButton, SectionHeader, StatContainer, InventoryItem, CosmeticsModal, DailyRewardsModal } from "./components";
 import styles from "./dashboard.module.scss";
 
 import { AuctionsAuctionEntity, PrivateUser, PublicUser } from "@blacket/types";
 import { CosmeticsModalCategory } from "./dashboard.d";
-import { flushSync } from "react-dom";
 
 export default function Dashboard() {
     const { setLoading } = useLoading();
@@ -290,12 +289,12 @@ export default function Dashboard() {
                                     .sort((a, b) => a.priority - b.priority);
 
                                 if (filteredBlooks.length > 0) return filteredBlooks.map((blook) => <Fragment key={blook.id}>
-                                    {hasUserBlook(blook.id) && <InventoryBlook blook={blook} quantity={getUserBlookQuantity(blook.id)} />}
-                                    {hasShinyUserBlook(blook.id) && <InventoryBlook blook={blook} quantity={getUserShinyBlookQuantity(blook.id)} shiny={true} />}
+                                    {hasUserBlook(blook.id) && <InventoryBlook blook={blook} quantity={getUserBlookQuantity(blook.id)} selectable={false} useVhStyles={true} />}
+                                    {hasShinyUserBlook(blook.id) && <InventoryBlook blook={blook} quantity={getUserShinyBlookQuantity(blook.id)} shiny={true} selectable={false} useVhStyles={true} />}
                                 </Fragment>);
                             })}
 
-                            {nonPackBlooks.map((blook) => hasUserBlook(blook.id) && <InventoryBlook key={blook.id} blook={blook} quantity={getUserBlookQuantity(blook.id)} />)}
+                            {nonPackBlooks.map((blook) => hasUserBlook(blook.id) && <InventoryBlook key={blook.id} blook={blook} quantity={getUserBlookQuantity(blook.id)} selectable={false} useVhStyles={true} />)}
                         </div>
                     </div>
                 </div>

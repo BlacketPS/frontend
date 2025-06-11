@@ -8,37 +8,12 @@ import { useData } from "@stores/DataStore/index";
 import { useSettings } from "@controllers/settings/useSettings";
 import { useOpenPack } from "@controllers/market/useOpenPack";
 import { useBoosters } from "@controllers/data/useBoosters";
-import { SidebarBody, PageHeader, Modal, Button, SearchBox, AdUnit } from "@components/index";
-import { OpenPackModal, Category, Pack, OpenPackContainer, OpenPackBlook, Item, BoosterContainer } from "./components";
-// TODO: migrate to not using phaser for opening
-// @ts-expect-error phaser is too big for the bundle so import it externally since its only used once
-const { Game, Scale, WEBGL } = window.Phaser;
-import Particles from "./functions/PackParticles";
+import { SidebarBody, PageHeader, Modal, Button, SearchBox } from "@components/index";
+import { OpenPackModal, Category, Pack, OpenPackContainer, OpenPackBlook, Item, BoosterContainer, ParticleCanvas } from "./components";
 import styles from "./market.module.scss";
 
 import { DataBoostersEntity, MarketOpenPackDto, Pack as PackType, RarityAnimationTypeEnum, UserBlook } from "@blacket/types";
-import { ParticlesScene, Config, GameState, BigButtonClickType, SearchOptions } from "./market.d";
-
-const useGame = (config: Config, containerRef: RefObject<HTMLDivElement>) => {
-    const [game, setGame] = useState<typeof Game | null>(null);
-    const oldConfig = useRef<Config | null>(null);
-
-    useEffect(() => {
-        if ((!game && containerRef.current) || config !== oldConfig.current) {
-            if (!containerRef.current) return;
-            oldConfig.current = config;
-            const newGame = new Game({ ...config, parent: containerRef.current });
-            config.scene.game = newGame;
-            config.scene.initParticles();
-            setGame(newGame);
-        }
-        return () => {
-            game?.destroy(true);
-        };
-    }, [config, containerRef, game]);
-
-    return game;
-};
+import { BigButtonClickType, ParticleCanvasRef, SearchOptions } from "./market.d";
 
 export default function Market() {
     const { setLoading } = useLoading();
@@ -53,19 +28,6 @@ export default function Market() {
     const { openPack } = useOpenPack();
     const { getBoosters } = useBoosters();
 
-    const [game, setGame] = useState<GameState>({
-        type: WEBGL,
-        parent: "phaser-market",
-        width: "100%",
-        height: "100%",
-        transparent: true,
-        scale: { mode: Scale.NONE, autoCenter: Scale.CENTER_BOTH },
-        physics: { default: "arcade" },
-        scene: {
-            game: {} as typeof Game,
-            initParticles: () => { }
-        } as ParticlesScene
-    });
     const [currentPack, setCurrentPack] = useState<any | null>(null);
     const [openingPack, setOpeningPack] = useState<boolean>(false);
 
@@ -77,9 +39,7 @@ export default function Market() {
 
     const [boosters, setBoosters] = useState<DataBoostersEntity | null>(null);
 
-    const gameRef = useRef<HTMLDivElement>(null);
-
-    useGame(game, gameRef);
+    const particleCanvasRef = useRef<ParticleCanvasRef>(null);
 
     const toggleInstantOpen = () => {
         setLoading("Changing settings");
@@ -100,15 +60,6 @@ export default function Market() {
 
         openPack(dto)
             .then(async (res) => {
-                const blook = blooks.find((blook) => blook.id === res.data.blookId)!;
-                const rarity = rarities.find((rarity) => rarity.id === blook.rarityId)!;
-
-                setGame({
-                    type: WEBGL, parent: "phaser-market", width: "100%", height: "100%", transparent: true,
-                    scale: { mode: Scale.NONE, autoCenter: Scale.CENTER_BOTH },
-                    physics: { default: "arcade" },
-                    scene: new Particles(rarity.animationType, rarity.color) as ParticlesScene
-                });
                 setCurrentPack(packs.find((pack: PackType) => pack.id === dto.packId));
 
                 setBigButtonEvent(BigButtonClickType.NONE);
@@ -137,14 +88,8 @@ export default function Market() {
 
                 setBigButtonEvent(BigButtonClickType.NONE);
 
-                await new Promise((r) => setTimeout(r, 250));
-                game?.scene.game.events.emit("start-particles", rarity.animationType);
+                particleCanvasRef.current?.start();
 
-                // await new Promise((r) => setTimeout(r,
-                //     rarity.animationType === RarityAnimationTypeEnum.UNCOMMON || rarity.animationType === RarityAnimationTypeEnum.RARE
-                //         ? 650 : 1250
-                // ));
-                // do this also if it's a shiny, but do * 4
                 await new Promise((r) => {
                     let waitTime = 650;
 
@@ -157,10 +102,12 @@ export default function Market() {
                         r(true);
                     }, waitTime);
                 });
+
                 setBigButtonEvent(BigButtonClickType.CLOSE);
 
                 break;
             case BigButtonClickType.CLOSE:
+                particleCanvasRef.current?.stop();
                 setCurrentPack(null);
                 setUnlockedBlook(null);
                 setOpeningPack(false);
@@ -261,14 +208,25 @@ export default function Market() {
                         <img src={resourceIdToPath(currentPack.backgroundId)} alt="Background" />
                     </div>
 
-                    <div ref={gameRef} className={styles.phaserContainer} data-shiny={unlockedBlook?.shiny} />
+                    {unlockedBlook && <ParticleCanvas
+                        ref={particleCanvasRef}
+                        color={
+                            rarities.find((rarity) => rarity.id === blooks.find((blook) => blook.id === unlockedBlook.blookId)!.rarityId)!.color
+                        }
+                        animationType={
+                            rarities.find((rarity) => rarity.id === blooks.find((blook) => blook.id === unlockedBlook.blookId)!.rarityId)!.animationType
+                        }
+                    />}
+
                     <OpenPackContainer
                         opening={openingPack}
                         image={resourceIdToPath(currentPack.imageId)}
                     />
+
                     {unlockedBlook && <OpenPackBlook userBlook={unlockedBlook} animate={
                         bigButtonEvent !== BigButtonClickType.OPEN
                     } isNew={isNew(unlockedBlook.blookId)} />}
+
                     <div style={{ cursor: bigButtonEvent === BigButtonClickType.NONE ? "unset" : "" }} className={styles.openBigButton} onClick={handleBigClick} />
                 </div>
             </>}

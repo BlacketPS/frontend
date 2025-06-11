@@ -1,0 +1,93 @@
+.blook {
+    width: 6vh;
+    height: 7vh;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    outline: none;
+    will-change: transform;
+    transition: transform .2s;
+
+    .blookLock {
+        position: absolute;
+        font-size: 2.4vh;
+        // opacity: .7;
+        opacity: .5;
+        top: 55%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .blookQuantity {
+        position: absolute;
+        font-family: "Titan One", sans-serif;
+        font-size: 1.2vh;
+        -webkit-text-stroke: #000000 0.1vh;
+        border-radius: 0.7vh;
+        padding: 0 0.5vh;
+        height: 1.5vh;
+        line-height: 1.5vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        bottom: 0.2vh;
+        left: -0.2vh;
+    }
+
+    .blookQuantityImage {
+        position: absolute;
+        width: 2vh;
+        height: 2vh;
+        object-fit: contain;
+        z-index: 0;
+    }
+
+    .blookQuantityText {
+        position: absolute;
+        z-index: 1;
+    }
+
+    &:hover {
+        transform: scale(0.95);
+    }
+
+    &:active {
+        transform: scale(0.9);
+    }
+
+    &[data-locked="true"] {
+        cursor: not-allowed;
+
+        &:hover,
+        &:active {
+            transform: scale(1);
+        }
+    }
+
+    &[data-selectable="false"] {
+        cursor: unset;
+
+        &:hover,
+        &:active {
+            transform: scale(1);
+        }
+    }
+}
+
+.blookImage {
+    height: 6.5vh;
+    object-fit: contain;
+    -o-object-fit: contain;
+
+    &[data-locked="true"] {
+        // filter: brightness(0);
+        filter: brightness(0.1) grayscale(1);
+    }
+}

@@ -66,18 +66,18 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
                 lastTime = now;
                 const fps = (1000 / delta) | 0;
 
-                drawText({ text: `Entities: ${entities.length}`, x: 7, y: getHeight() - 10, style: { textAlign: "left" }, useCamera: false });
-                drawText({ text: `Objects: ${objects.length}`, x: 7, y: getHeight() - 30, style: { textAlign: "left" }, useCamera: false });
-                drawText({ text: `Camera: ${camera.x}, ${camera.y}`, x: 7, y: getHeight() - 50, style: { textAlign: "left" }, useCamera: false });
+                drawText({ text: `Entities: ${entities.length}`, x: 7, y: getHeight() - 10, z: 999, style: { textAlign: "left" }, useCamera: false });
+                drawText({ text: `Objects: ${objects.length}`, x: 7, y: getHeight() - 30, z: 999, style: { textAlign: "left" }, useCamera: false });
+                drawText({ text: `Camera: ${camera.x}, ${camera.y}`, x: 7, y: getHeight() - 50, z: 999, style: { textAlign: "left" }, useCamera: false });
 
-                if (showFPS) drawText({ text: `FPS: ${fps}`, x: getWidth() - 7, y: 20, style: { textAlign: "right" }, useCamera: false });
+                if (showFPS) drawText({ text: `FPS: ${fps}`, x: getWidth() - 7, y: 20, z: 999, style: { textAlign: "right" }, useCamera: false });
 
-                // every object that has collision on screen
                 objects.forEach((object) => {
                     if (object.hasCollision && isOnScreen(object.x, object.y, object.width ?? object?.image?.width ?? 0, object.height ?? object?.image?.height ?? 0)) {
                         drawRect({
                             x: object.x,
                             y: object.y,
+                            z: object.z ? object.z + 1 : 0,
                             width: object.width ?? object?.image?.width ?? 0,
                             height: object.height ?? object?.image?.height ?? 0,
                             color: "rgba(0, 0, 255, 0.2)",
@@ -87,12 +87,13 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
                 });
 
                 entities.forEach((entity) => {
-                    if (entity.hasCollision && isOnScreen(entity.x, entity.y, entity.width, entity.height)) {
+                    if (entity.hasCollision && isOnScreen(entity.x, entity.y, entity.width ?? entity?.image?.width ?? 0, entity.height ?? entity?.image?.height ?? 0)) {
                         drawRect({
                             x: entity.x,
                             y: entity.y,
-                            width: entity.width,
-                            height: entity.height,
+                            z: entity.z ? entity.z + 1 : 0,
+                            width: entity.width ?? entity?.image?.width ?? 0,
+                            height: entity.height ?? entity?.image?.height ?? 0,
                             color: "rgba(0, 0, 255, 0.2)",
                             useCamera: false
                         });

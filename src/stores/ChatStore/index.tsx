@@ -21,7 +21,9 @@ const ChatStoreContext = createContext<ChatStoreContext>({
     sendMessage: () => { },
     startTyping: () => { },
     mentions: 0,
-    resetMentions: () => { }
+    resetMentions: () => { },
+    room: 0,
+    setRoom: () => { }
 });
 
 export function useChat() {
@@ -37,6 +39,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
     const { getMessages } = useMessages();
 
     const [messages, setMessages] = useState<ClientMessage[]>([]);
+    const [room, setRoom] = useState<number>(1);
     const [replyingTo, setReplyingTo] = useState<ClientMessage | null>(null);
     const [editing, setEditing] = useState<ClientMessage | null>(null);
     const [usersTyping, setUsersTyping] = useState<TypingUser[]>([]);
@@ -50,10 +53,10 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
 
     let typingTimeout: number | null = null;
 
-    const fetchMessages = async (room: number) => {
+    const fetchMessages = async (r: number = room) => {
         if (!user) return [];
 
-        const messages = await getMessages(room, 50)
+        const messages = await getMessages(r, 50)
             .then((res) => res.data)
             .catch(() => []);
 
@@ -77,7 +80,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
         const nonce = ((Math.floor(Date.now() / 1000).toString()) + Math.floor(1000000 + Math.random() * 9000000)).toString();
         const message: ClientMessage = {
             id: nonce,
-            roomId: 0,
+            roomId: room,
             authorId: user.id,
             author: user,
             content,
@@ -98,7 +101,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
         typingTimeout = null;
         setReplyingTo(null);
 
-        useSendMessage().sendMessage(0, { content, replyingTo: replyingTo ? replyingTo.id : undefined })
+        useSendMessage().sendMessage(room, { content, replyingTo: replyingTo ? replyingTo.id : undefined })
             .then((res) => setMessages((previousMessages) => previousMessages.map((message) => message.nonce === nonce ? res.data : message)))
             .catch((err) => {
                 message.error = err.data.message || "Something went wrong.";
@@ -193,7 +196,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
     useEffect(() => {
         if (!connected || !user || !socket) return;
 
-        fetchMessages(0);
+        fetchMessages(room);
 
         socket.on(SocketMessageType.CHAT_MESSAGES_CREATE, onChatMessageCreate);
         socket.on(SocketMessageType.CHAT_MESSAGES_UPDATE, onChatMessageUpdate);
@@ -215,6 +218,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
 
     return <ChatStoreContext.Provider value={{
         messages, usersTyping, replyingTo, setReplyingTo, editing, setEditing,
-        fetchMessages, sendMessage, startTyping, mentions, resetMentions
+        fetchMessages, sendMessage, startTyping, mentions, resetMentions,
+        room, setRoom
     }}>{children}</ChatStoreContext.Provider>;
 }

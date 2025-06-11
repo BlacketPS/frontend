@@ -24,4 +24,6 @@ export interface ChatStoreContext {
     startTyping: () => void;
     mentions: number;
     resetMentions: () => void;
+    room: number;
+    setRoom: (room: number) => void;
 }

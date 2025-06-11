@@ -1,32 +1,38 @@
 import { HTMLAttributes } from "react";
-import { DataBoostersEntity, ItemShop, MarketOpenPackDto, Pack, UserBlook } from "@blacket/types";
+import { DataBoostersEntity, ItemShop, MarketOpenPackDto, Pack, RarityAnimationType, UserBlook } from "@blacket/types";
+import { BrenderObject } from "@brender/index";
 
-export type ParticlesScene = Phaser.Scene & {
-    initParticles: () => void;
-    game: Game;
-};
+// export type ColorMode = "iridescent" | "mythical" | "rainbow" | string;
 
-export type Config = {
-    type: number;
-    parent: string | HTMLDivElement | null;
-    width: string;
-    height: string;
-    transparent: boolean;
-    scale: { mode: number; autoCenter: number };
-    physics: { default: string };
-    scene: ParticlesScene;
-};
+export interface ParticleCanvasRef {
+    start: () => void;
+    stop: () => void;
+    setColor: (color: string) => void;
+    setAnimationType: (animationType: RarityAnimationType) => void;
+}
 
-export type GameState = {
-    type: number;
-    parent: string;
-    width: string;
-    height: string;
-    transparent: boolean;
-    scale: { mode: number; autoCenter: number; };
-    physics: { default: string; };
-    scene: ParticlesScene;
-};
+export interface ParticleCanvasProps {
+    color: string;
+    animationType: RarityAnimationType
+}
+
+export enum ParticleType {
+    CENTER,
+    RIGHT_BOTTOM,
+    LEFT_BOTTOM,
+    RIGHT_SHOWER,
+    LEFT_SHOWER,
+    TOP,
+    RIGHT_DIAMOND,
+    LEFT_DIAMOND
+}
+
+export interface ParticleObject extends BrenderObject {
+    vx?: number;
+    vy?: number;
+    gravity?: number;
+    angVelocity?: number;
+}
 
 export enum BigButtonClickType {
     OPEN = 1,

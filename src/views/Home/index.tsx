@@ -1,8 +1,9 @@
-import { Button, Header } from "@components/index";
-import { HeaderButton, HeroButton, HowColumn, Section, Waves } from "./components/index";
-import styles from "./home.module.scss";
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { TypeAnimation } from "react-type-animation";
+import { Button } from "@components/index";
+import { HeaderButton, HeroButton, HowColumn, Section, Waves } from "./components/index";
+import styles from "./home.module.scss";
 
 export default function Home() {
     const [scrolled, setScrolled] = useState<boolean>(false);
@@ -29,12 +30,15 @@ export default function Home() {
         PRONOUNCE_AUDIO.play();
     };
 
+    const name = import.meta.env.VITE_INFORMATION_NAME;
+    const pronounceName = import.meta.env.VITE_INFORMATION_PRONUNCIATION;
+
     return (
         <>
             <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
                 <div className={styles.headerInside}>
                     <div className={styles.headerTitle}>
-                        {window.innerWidth > 768 ? import.meta.env.VITE_INFORMATION_NAME : !scrolled ? import.meta.env.VITE_INFORMATION_NAME : import.meta.env.VITE_INFORMATION_NAME.charAt(0)}
+                        {window.innerWidth > 768 ? name : !scrolled ? name : name.charAt(0)}
                     </div>
 
                     <div className={styles.headerButtons} style={{
@@ -56,9 +60,29 @@ export default function Home() {
                         <img src={window.constructCDNUrl("/content/logo.png")} className={styles.heroImageM} />
 
                         <img src={window.constructCDNUrl("/content/logo.png")} className={styles.heroImage} />
+
                         <div className={styles.heroCenter}>
                             <div className={styles.heroText}>
-                                Fun, free, and open source for everyone!
+                                A fun, competitive,{" "}
+                                <TypeAnimation
+                                    sequence={[
+                                        "trading",
+                                        2000,
+                                        "collecting",
+                                        2000,
+                                        "RNG",
+                                        2000,
+                                        "multiplayer",
+                                        2000
+                                    ]}
+                                    wrapper="span"
+                                    speed={50}
+                                    repeat={Infinity}
+                                />
+
+                                <br />
+
+                                game for everyone!
                             </div>
 
                             <div className={styles.heroButtons}>
@@ -69,10 +93,11 @@ export default function Home() {
 
                                 <div className={styles.heroPronounceButton} onClick={playPronounce}>
                                     <i className="fa-solid fa-volume-high" />
-                                    Pronounced ("Black-it")
+                                    Pronounced ("{pronounceName}")
                                 </div>
                             </div>
                         </div>
+
                         <img src={window.constructCDNUrl("/content/logo.png")} className={styles.heroImage} />
                     </div>
 
@@ -83,34 +108,28 @@ export default function Home() {
 
                 <div className={styles.mainContent}>
                     <div className={styles.normalSection}>
-                        <Section header={"Header 1"} image={window.constructCDNUrl("/content/logo.png")}>
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.
+                        <Section header={"More Than a Game"} image={window.constructCDNUrl("/content/logo.png")}>
+                            From a real-time Trading Plaza to a dynamic Auction House, {name} goes beyond the basics—it's a full ecosystem, not just a game.
                         </Section>
 
                         <Section header={"Header 2"} image={window.constructCDNUrl("/content/logo.png")} reverse>
                             Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.
                         </Section>
 
-                        <Section header={"Header 3"} image={window.constructCDNUrl("/content/logo.png")}>
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.
+                        <Section header={"Growing Community"} image={window.constructCDNUrl("/content/logo.png")}>
+                            With 50,000+ users and growing, our community is welcoming, active, and supportive.
+                            From friendly staff to helpful peers, you'll always find someone to trade with, compete with, or just vibe with.
                         </Section>
                     </div>
 
                     <div className={styles.breakSection}>
                         <div className={styles.breakHeader}>
-                            Break Header
+                            Open Source. Open Community.
                         </div>
 
                         <p className={styles.breakText}>
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.
+                            {name} is an open-source project, meaning you can view the source code, contribute, and help us improve the game. We welcome contributions from anyone who wants to help make {name} better!
                         </p>
-
-                        <Button.GenericButton
-                            className={styles.breakButton}
-                            to="/register"
-                        >
-                            Play Now
-                        </Button.GenericButton>
                     </div>
 
                     <div className={styles.howSection}>
@@ -128,13 +147,13 @@ export default function Home() {
                             </HowColumn>
 
                             <HowColumn image={window.constructCDNUrl("/content/icons/dashboardStatsPacksOpened.png")}>
-                                Open packs to get blooks
+                                Open packs to pull blooks
                             </HowColumn>
                         </div>
                     </div>
 
                     <div className={styles.normalSection} style={{ marginTop: 100 }}>
-                        <Section header={"Header 4"} image={window.constructCDNUrl("/content/logo.png")}>
+                        <Section header={"What Are You Waiting For?"} image={window.constructCDNUrl("/content/logo.png")}>
                             Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.
                         </Section>
                     </div>

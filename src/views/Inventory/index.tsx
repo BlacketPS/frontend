@@ -4,8 +4,8 @@ import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { useData } from "@stores/DataStore/index";
 import { useResource } from "@stores/ResourceStore/index";
-import { SearchBox } from "@components/index";
-import { ChangeFilterModal, SetHolder, InventoryBlook, Item, RightBlook, RightItem, RightButton, SellBlooksModal, AuctionModal } from "./components";
+import { InventoryBlook, SearchBox } from "@components/index";
+import { ChangeFilterModal, SetHolder, Item, RightBlook, RightItem, RightButton, SellBlooksModal, AuctionModal } from "./components";
 import styles from "./inventory.module.scss";
 
 import { AuctionTypeEnum, Blook as BlookType, Item as ItemType } from "@blacket/types";

@@ -72,19 +72,19 @@
     }
 
     &[data-staff="true"] {
-        color: red;
+        color: #00ff00;
 
         &:hover {
-            background-color: rgba(255, 0, 0, 0.2);
+            background-color: rgba(0, 255, 0, 0.2);
         }
 
         &:active {
-            background-color: red;
+            background-color: #00ff00;
             color: var(--primary-color);
         }
 
         &[data-active="true"] {
-            background-color: red;
+            background-color: #00ff00;
             color: var(--primary-color);
         }
     }

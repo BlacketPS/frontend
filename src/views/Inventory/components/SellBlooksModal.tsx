@@ -101,7 +101,7 @@ export default function SellBlooksModal({ blook, shiny }: SellBlooksModalProps) 
                         setSelectedBlooks(user.blooks
                             .filter((userBlook) => userBlook.blookId === blook.id)
                             .filter((userBlook) => userBlook.shiny === shiny)
-                            // .sort((a, b) => b.serial - a.serial)
+                            .sort((a, b) => (b.serial || 0) - (a.serial || 0))
                             .slice(0, parsedValue)
                             .map((userBlook) => userBlook.id)
                         );
