@@ -121,7 +121,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 20%;
+    max-width: 400px;
+    min-width: 200px;
     margin-bottom: 20px;
 
     @media (max-width: 768px) {

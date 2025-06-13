@@ -18,28 +18,44 @@ export function useSocket() {
 export function SocketStoreProvider({ children }: { children: ReactNode }) {
     const socketRef = useRef<Socket | null>(null);
     const [connected, setConnected] = useState<boolean>(false);
+    const [latency, setLatency] = useState<number>(0);
 
-    let latency = 0;
-    const setLatency = (value: number) => latency = value;
+    const last10Latency = useRef<number[]>([]);
 
     const initializeSocket = useCallback(() => {
         setConnected(false);
 
         const socket = io(`${window.location.protocol}//${window.location.host}`, { path: "/gateway", auth: { token: localStorage.getItem("token") }, transports: ["websocket"] });
 
-        const pingInterval = setInterval(() => {
+        let pinging = true;
+
+        const pingLoop = () => {
+            if (!pinging || !socket.connected) return;
+
             const start = Date.now();
 
             socket.emit(SocketMessageType.PING);
             socket.once(SocketMessageType.PONG, () => {
-                socket.emit(SocketMessageType.PONG);
+                if (!pinging || !socket.connected) return;
 
-                setLatency(Date.now() - start);
+                socket.emit(SocketMessageType.PONG);
+                const currentPing = Date.now() - start;
+
+                last10Latency.current.push(currentPing);
+                if (last10Latency.current.length > 10) last10Latency.current.shift();
+
+                const averageLatency = last10Latency.current.length < 10 ? Math.min(...last10Latency.current) : last10Latency.current.reduce((a, b) => a + b, 0) / last10Latency.current.length;
+
+                setLatency(Number(averageLatency.toFixed(0)));
+
+                setTimeout(pingLoop, 1000);
             });
-        }, 1000 * 2);
+        };
 
         socket.on("connect", () => {
             setConnected(true);
+
+            pingLoop();
 
             console.info("[Blacket] Connected to WebSocket server.");
         });
@@ -55,7 +71,7 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
                 initializeSocket();
             }
 
-            clearInterval(pingInterval);
+            pinging = false;
         });
 
         socket.onAny((event: string, data: object) => {
@@ -67,8 +83,9 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
         socketRef.current = socket;
 
         return () => {
+            pinging = false;
+
             socket.close();
-            clearInterval(pingInterval);
         };
     }, []);
 

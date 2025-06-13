@@ -21,10 +21,23 @@ export default function Auction({ auction, useVhStyles = false, ...props }: Auct
     const [timeRemainingString, setTimeRemainingString] = useState<string>(formatTimeRemaining(new Date(auction.expiresAt)));
 
     useEffect(() => {
-        const interval = setInterval(() => setTimeRemainingString(formatTimeRemaining(new Date(auction.expiresAt))), 1000);
+        let active = true;
 
-        return () => clearInterval(interval);
+        const tick = () => {
+            if (!active) return;
+
+            setTimeRemainingString(formatTimeRemaining(new Date(auction.expiresAt)));
+
+            setTimeout(tick, 1000);
+        };
+
+        tick();
+
+        return () => {
+            active = false;
+        };
     }, []);
+
 
     const styles = useVhStyles ? vhStyles : normalStyles;
 

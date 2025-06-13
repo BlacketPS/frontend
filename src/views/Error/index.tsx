@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { useRouteError } from "react-router-dom";
 import { Background, Button } from "@components/index";
 import { Image } from "./components/index";
@@ -6,15 +7,6 @@ import styles from "./error.module.scss";
 import { ErrorCode, ErrorProps } from "./error.d";
 
 export default function Error({ code, reason }: ErrorProps) {
-    if (code === ErrorCode.UNKNOWN) document.title = `Error | ${import.meta.env.VITE_INFORMATION_NAME}`;
-    else if (code === ErrorCode.NOT_FOUND) document.title = `Not Found | ${import.meta.env.VITE_INFORMATION_NAME}`;
-    else if (code === ErrorCode.BLACKLISTED) document.title = `Blacklisted | ${import.meta.env.VITE_INFORMATION_NAME}`;
-    else if (code === ErrorCode.MAINTENANCE) {
-        document.title = `Maintenance | ${import.meta.env.VITE_INFORMATION_NAME}`;
-
-        setInterval(() => window.fetch2.get("/api").then(() => window.location.reload()).catch(() => null), 1000);
-    }
-
     const error: any = useRouteError();
 
     let reasonText = "breaking rules";
@@ -26,6 +18,31 @@ export default function Error({ code, reason }: ErrorProps) {
         reasonText = reasonArray?.[0] ?? "breaking rules";
         reasonEndTime = `at ${new Date(reasonArray?.[1]).toLocaleDateString() ?? "never"}`;
     }
+
+    useEffect(() => {
+        if (code === ErrorCode.UNKNOWN) document.title = `Error | ${import.meta.env.VITE_INFORMATION_NAME}`;
+        else if (code === ErrorCode.NOT_FOUND) document.title = `Not Found | ${import.meta.env.VITE_INFORMATION_NAME}`;
+        else if (code === ErrorCode.BLACKLISTED) document.title = `Blacklisted | ${import.meta.env.VITE_INFORMATION_NAME}`;
+        else if (code === ErrorCode.MAINTENANCE) {
+            document.title = `Maintenance | ${import.meta.env.VITE_INFORMATION_NAME}`;
+
+            let active = true;
+
+            const pollServer = () => {
+                if (!active) return;
+
+                window.fetch2.get("/api")
+                    .then(() => window.location.reload())
+                    .catch(() => setTimeout(pollServer, 1000));
+            };
+
+            pollServer();
+
+            return () => {
+                active = false;
+            };
+        }
+    }, [code]);
 
     return (
         <>

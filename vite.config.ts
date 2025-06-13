@@ -37,7 +37,10 @@ export default defineConfig({
         allowedHosts: [
             ".blacket.org",
             ".blacket.net"
-        ]
+        ],
+        fs: {
+            strict: true
+        }
     },
     css: {
         modules: {

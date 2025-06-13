@@ -86,35 +86,39 @@
 
 .heroImageM {
     display: none;
-    width: 250px;
-    height: 250px;
     aspect-ratio: auto 300 / 300;
     margin: 10px auto 5px;
-    max-height: 30vh;
+    max-height: 25vh;
+    transform: scale(1.2);
     width: auto;
     object-fit: contain;
     user-select: none;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
 
     @media (orientation: portrait) and (max-width: 768px) {
         display: flex;
-        justify-content: center;
-        align-items: center;
     }
 }
 
-.heroImage {
-    max-width: 400px;
-    width: 30%;
-    background: white;
-    object-fit: contain;
+.heroImageContainer {
+    position: relative;
     display: flex;
     justify-content: center;
     align-items: center;
     user-select: none;
+    max-width: 600px;
+    width: 30%;
 
     @media (max-width: 768px) {
         display: none;
     }
+}
+
+.heroImage {
+    width: 100%;
+    object-fit: contain;
 }
 
 .heroCenter {
@@ -140,8 +144,8 @@
     line-height: 1.2;
 
     @media (max-width: 768px) {
-        font-size: 28px;
-        max-width: 400px;
+        font-size: 24px;
+        max-width: 380px;
         margin: 0 auto 20px;
     }
 }
@@ -159,9 +163,10 @@
 }
 
 .heroButton {
-    margin: 10px 0;
+    margin: 10px auto;
     font-size: 30px;
     width: 100%;
+    max-width: 360px;
 
     @media (max-width: 768px) {
         font-size: 24px;

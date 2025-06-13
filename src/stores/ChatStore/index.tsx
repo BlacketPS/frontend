@@ -203,16 +203,25 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
         socket.on(SocketMessageType.CHAT_MESSAGES_DELETE, onChatMessagesDelete);
         socket.on(SocketMessageType.CHAT_TYPING_STARTED, onChatStartTyping);
 
-        // should we remove any? this fixes pointless state re-renders
-        const typingInterval = setInterval(() => updateUsersTyping(), 1000);
+        let active = true;
+
+        const tick = () => {
+            if (!active) return;
+
+            updateUsersTyping();
+
+            setTimeout(tick, 1000);
+        };
+
+        tick();
 
         return () => {
+            active = false;
+
             socket.off(SocketMessageType.CHAT_MESSAGES_CREATE, onChatMessageCreate);
             socket.off(SocketMessageType.CHAT_MESSAGES_UPDATE, onChatMessageUpdate);
             socket.off(SocketMessageType.CHAT_MESSAGES_DELETE, onChatMessagesDelete);
             socket.off(SocketMessageType.CHAT_TYPING_STARTED, onChatStartTyping);
-
-            clearInterval(typingInterval);
         };
     }, [connected]);
 

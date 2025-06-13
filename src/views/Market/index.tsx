@@ -108,6 +108,7 @@ export default function Market() {
                 break;
             case BigButtonClickType.CLOSE:
                 particleCanvasRef.current?.stop();
+
                 setCurrentPack(null);
                 setUnlockedBlook(null);
                 setOpeningPack(false);

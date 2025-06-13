@@ -44,44 +44,63 @@ export function ToastStoreProvider({ children }: { children: ReactNode }) {
     const clearToasts = () => setToasts([]);
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            if (!toastRef.current[0]) return;
-            if (toastRef.current[0].aboutToClose) return;
+        let active = true;
 
-            new Audio(window.constructCDNUrl("/content/notification.ogg")).play();
+        const toastLoop = () => {
+            if (!active) return;
 
             const toast = toastRef.current[0];
 
-            try {
-                if (!window.constants.APPLE_DEVICE) {
-                    if (document.visibilityState === "hidden" && Notification.permission === "granted") {
-                        const notification = new Notification(toast.header, { body: toast.body, icon: toast.icon, silent: true });
+            if (toast && !toast.aboutToClose) {
+                new Audio(window.constructCDNUrl("/content/notification.ogg")).play();
+
+                try {
+                    if (
+                        !window.constants.APPLE_DEVICE &&
+                        document.visibilityState === "hidden" &&
+                        Notification.permission === "granted"
+                    ) {
+                        const notification = new Notification(toast.header, {
+                            body: toast.body,
+                            icon: toast.icon,
+                            silent: true
+                        });
 
                         notification.addEventListener("click", () => {
                             if (toast.onClick) toast.onClick();
                             closeToast(toast.id!);
                         });
                     }
+                } catch (err) {
+                    console.warn("browser most likely doesn't support notifications");
                 }
-            } catch (err) {
-                console.warn("browser most likely doesn't support notifications");
+
+                setTimeout(() => closeToast(toast.id!), toast.expires);
+                toast.aboutToClose = true;
             }
 
-            setTimeout(() => closeToast(toast.id!), toast.expires);
+            setTimeout(toastLoop, 100);
+        };
 
-            toastRef.current[0].aboutToClose = true;
-        }, 100);
+        toastLoop();
 
         try {
-            if (!window.constants.APPLE_DEVICE) {
-                if (Notification.permission !== "granted" && Notification.permission !== "denied") createModal(<NotificationAccessModal />);
+            if (
+                !window.constants.APPLE_DEVICE &&
+                Notification.permission !== "granted" &&
+                Notification.permission !== "denied"
+            ) {
+                createModal(<NotificationAccessModal />);
             }
         } catch (err) {
             console.warn("browser most likely doesn't support notifications");
         }
 
-        return () => clearInterval(interval);
+        return () => {
+            active = false;
+        };
     }, []);
+
 
     useEffect(() => {
         toastRef.current = toasts;

@@ -18,7 +18,11 @@ export default function BoosterContainer({ boosters }: BoosterContainerProps) {
     });
 
     useEffect(() => {
-        const interval = setInterval(() => {
+        let active = true;
+
+        const updateTimes = () => {
+            if (!active) return;
+
             setTimeRemainingStrings({
                 global: {
                     chance: boosters?.global.chance ? formatTimeRemaining(new Date(boosters.global.chance.expiresAt)) : "",
@@ -29,10 +33,17 @@ export default function BoosterContainer({ boosters }: BoosterContainerProps) {
                     shiny: boosters?.personal.shiny ? formatTimeRemaining(new Date(boosters.personal.shiny.expiresAt)) : ""
                 }
             });
-        }, 1000);
 
-        return () => clearInterval(interval);
+            setTimeout(updateTimes, 1000);
+        };
+
+        updateTimes();
+
+        return () => {
+            active = false;
+        };
     }, [boosters]);
+
 
     return (
         <div className={styles.boosterContainer}>

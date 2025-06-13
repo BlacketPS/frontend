@@ -9,65 +9,65 @@ export default function Experiments() {
 
     const brenderCanvasRef = useRef<BrenderCanvasRef>(null);
 
-    useEffect(() => {
-        const brender = brenderCanvasRef.current;
-        if (!brender) return;
+    // useEffect(() => {
+    //     const brender = brenderCanvasRef.current;
+    //     if (!brender) return;
 
-        const images = [
-            // window.constructCDNUrl("/content/uncommon.png"),
-            // window.constructCDNUrl("/content/rare.png"),
-            // window.constructCDNUrl("/content/epic.png"),
-            // window.constructCDNUrl("/content/legendary.png"),
-            window.constructCDNUrl("/content/token.png"),
-            window.constructCDNUrl("/content/experience.png"),
-            window.constructCDNUrl("/content/gem.png"),
-        ];
+    //     const images = [
+    //         // window.constructCDNUrl("/content/uncommon.png"),
+    //         // window.constructCDNUrl("/content/rare.png"),
+    //         // window.constructCDNUrl("/content/epic.png"),
+    //         // window.constructCDNUrl("/content/legendary.png"),
+    //         window.constructCDNUrl("/content/token.png"),
+    //         window.constructCDNUrl("/content/experience.png"),
+    //         window.constructCDNUrl("/content/gem.png"),
+    //     ];
 
-        brender.camera.moveTo(0, 0);
+    //     brender.camera.moveTo(0, 0);
 
-        let id = 0;
+    //     let id = 0;
 
-        const createConfettiPiece = async () => {
-            const image = await brender.urlToImage(images[Math.floor(Math.random() * images.length)]);
+    //     const createConfettiPiece = async () => {
+    //         const image = await brender.urlToImage(images[Math.floor(Math.random() * images.length)]);
 
-            // const fallSpeed = 7 + Math.random() * 5;
-            const fallSpeed = 10;
-            const rotationSpeed = 0.5 + Math.random() * 1.5;
-            // const zIndex = Math.floor(Math.random() * 200);
-            const rotation = Math.random() * Math.PI * 2;
+    //         // const fallSpeed = 7 + Math.random() * 5;
+    //         const fallSpeed = 10;
+    //         const rotationSpeed = 0.5 + Math.random() * 1.5;
+    //         // const zIndex = Math.floor(Math.random() * 200);
+    //         const rotation = Math.random() * Math.PI * 2;
 
-            id++;
+    //         id++;
 
-            return brender.createObject({
-                id: id.toString(),
-                x: Math.random() * brender.getWidth(),
-                y: Math.random() * brender.getHeight() - brender.getHeight(),
-                z: 0,
-                width: 50,
-                height: 50,
-                rotation,
-                image,
-                onFrame: (object, deltaTime) => {
-                    object.y += fallSpeed * deltaTime;
-                    object.rotation! += rotationSpeed * deltaTime;
+    //         return brender.createObject({
+    //             id: id.toString(),
+    //             x: Math.random() * brender.getWidth(),
+    //             y: Math.random() * brender.getHeight() - brender.getHeight(),
+    //             z: 0,
+    //             width: 50,
+    //             height: 50,
+    //             rotation,
+    //             image,
+    //             onFrame: (object, deltaTime) => {
+    //                 object.y += fallSpeed * deltaTime;
+    //                 object.rotation! += rotationSpeed * deltaTime;
 
-                    console.log(object.y);
+    //                 console.log(object.y);
 
-                    if (object.y > brender.getHeight()) {
-                        object.destroy!();
-                    }
-                }
-            });
-        };
+    //                 if (object.y > brender.getHeight()) {
+    //                     object.destroy!();
+    //                 }
+    //             }
+    //         });
+    //     };
 
-        const confetti = setInterval(() => {
-            createConfettiPiece();
-        }, 5);
+    //     const confetti = setInterval(() => {
+    //         createConfettiPiece();
+    //     }, 5);
 
-        return () => {
-            clearInterval(confetti);
-        };
-    }, []);
+    //     return () => {
+    //         clearInterval(confetti);
+    //     };
+    // }, []);
 
     return (
         <>

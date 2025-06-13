@@ -39,6 +39,8 @@ export default function TradingPlaza() {
         const brender = brenderCanvasRef.current;
         if (!brender) return;
 
+        let active = true;
+
         const MOVEMENT_KEYS = {
             UP: ["w", "arrowup"],
             LEFT: ["a", "arrowleft"],
@@ -378,11 +380,20 @@ export default function TradingPlaza() {
                 player.height = image.height / 6;
             });
 
-        const movementUpdateInterval = setInterval(() => {
-            if (player.x === _previousPos.x && player.y === _previousPos.y) return;
+        const movementLoop = () => {
+            if (!active) return;
 
-            socket.emit(SocketMessageType.TRADING_PLAZA_MOVE, { x: player.x, y: player.y });
-        }, 1000 / 20);
+            if (player.x !== _previousPos.x || player.y !== _previousPos.y) {
+                socket.emit(SocketMessageType.TRADING_PLAZA_MOVE, { x: player.x, y: player.y });
+
+                _previousPos.x = player.x;
+                _previousPos.y = player.y;
+            }
+
+            setTimeout(movementLoop, 1000 / 20);
+        };
+
+        movementLoop();
 
         brender.createObject({
             id: "block",
@@ -392,10 +403,12 @@ export default function TradingPlaza() {
             image: brender.loadingImage,
             width: 300,
             height: 300,
-            hasCollision: true,
+            hasCollision: true
         });
 
         return () => {
+            active = false;
+
             player.destroy?.();
 
             socket.emit(SocketMessageType.TRADING_PLAZA_LEAVE);
@@ -405,8 +418,6 @@ export default function TradingPlaza() {
             socket.off(SocketMessageType.TRADING_PLAZA_LEAVE, handleLeave);
 
             socket.off(SocketMessageType.LAGBACK, handleLagback);
-
-            clearInterval(movementUpdateInterval);
         };
     }, [socket]);
 

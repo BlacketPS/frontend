@@ -130,6 +130,7 @@ const ParticleCanvas = forwardRef<ParticleCanvasRef, ParticleCanvasProps>(({ col
     const brenderCanvasRef = useRef<BrenderCanvasRef>(null);
     const animationFrameRef = useRef<number | null>(null);
     const lastSpawnRef = useRef<number>(0);
+    const activeRef = useRef<boolean>(false);
 
     const images = [
         window.constructCDNUrl("/content/particles/1.png"),
@@ -144,50 +145,57 @@ const ParticleCanvas = forwardRef<ParticleCanvasRef, ParticleCanvasProps>(({ col
 
     let id = 0;
 
-    let hue = 0,
-        hueDirection = 1;
-    let lightness = 1,
-        lightnessDirection = -1;
-
     const spawnParticle = async (t: ParticleType, brender: BrenderCanvasRef) => {
-        const type = particleType(t, brender);
-        const image = await brender.urlToImage(images[Math.floor(Math.random() * images.length)]);
-
-        id++;
-
-        const rad = type.angle * Math.PI / 180;
-        const vx = Math.cos(rad) * type.velocity;
-        const vy = Math.sin(rad) * type.velocity;
-
-        return brender.createObject({
-            id: id.toString(),
-            x: type.x,
-            y: type.y,
+        brender.createObject({
+            id: `particle-${t}-${id}`,
+            x: 99999,
+            y: 99999,
             z: 0,
-            vx,
-            vy,
-            gravity: type.gravity,
-            angVelocity: type.angVelocity,
             width: 30,
             height: 30,
-            rotation: rad,
-            image,
-            imageTint: color,
-            onFrame: (object: ParticleObject, deltaTime) => {
+            imageTint: color
+        });
+
+        id++;
+    };
+
+    const setupParticles = async (t: ParticleType, brender: BrenderCanvasRef) => {
+        brender.createGenericEntity({
+            id: `__particle-emitter-${t}__`,
+            x: 0,
+            y: 0,
+            z: 0,
+            onFrame: async (_, deltaTime) => {
                 const fakeDeltaTime = deltaTime * 2;
 
-                object.vy = (object.vy ?? 0) + (object.gravity ?? 0) * fakeDeltaTime;
+                for (const object of brender.objects.filter((o) => o.id.startsWith(`particle-${t}`)) as ParticleObject[]) {
+                    object.vy = (object.vy ?? 0) + (object.gravity ?? 0) * fakeDeltaTime;
 
-                object.x += (object.vx ?? 0) * fakeDeltaTime;
-                object.y += object.vy * fakeDeltaTime;
+                    object.x += (object.vx ?? 0) * fakeDeltaTime;
+                    object.y += object.vy * fakeDeltaTime;
 
-                object.rotation! += (object.angVelocity ?? 0) * fakeDeltaTime;
+                    object.rotation! += (object.angVelocity ?? 0) * fakeDeltaTime;
 
-                if (object.y > brender.getHeight() || object.y < -50 || object.x < -50 || object.x > brender.getWidth() + 50) {
-                    object.destroy!();
+                    if (object.y > brender.getHeight() || object.y < -50 || object.x < -50 || object.x > brender.getWidth() + 50) {
+                        const type = particleType(t, brender);
+                        const image = await brender.urlToImage(images[Math.floor(Math.random() * images.length)]);
+
+                        const rad = type.angle * Math.PI / 180;
+                        const vx = Math.cos(rad) * type.velocity;
+                        const vy = Math.sin(rad) * type.velocity;
+
+                        object.x = type.x;
+                        object.y = type.y;
+                        object.vx = vx;
+                        object.vy = vy;
+                        object.gravity = type.gravity;
+                        object.angVelocity = type.angVelocity;
+                        object.rotation = rad;
+                        object.image = image;
+                    }
                 }
             }
-        } as ParticleObject);
+        });
     };
 
     useEffect(() => {
@@ -210,28 +218,26 @@ const ParticleCanvas = forwardRef<ParticleCanvasRef, ParticleCanvasProps>(({ col
             const brender = brenderCanvasRef.current;
             if (!brender) return;
 
+            activeRef.current = true;
+
             lastSpawnRef.current = performance.now();
 
-            const spawnLoop = async (now: number) => {
-                const brender = brenderCanvasRef.current;
-                if (!brender) return;
+            for (const t of animationTypeToParticleType(animationType)!) {
+                setupParticles(t, brender);
 
-                if (now - lastSpawnRef.current >= 10) {
-                    for (const t of animationTypeToParticleType(animationType)!) await spawnParticle(t, brender);
+                (async () => {
+                    for (let i = 0; i < 200; i++) {
+                        if (!activeRef.current) break;
 
-                    lastSpawnRef.current = now;
-                }
+                        spawnParticle(t, brender);
 
-                animationFrameRef.current = requestAnimationFrame(spawnLoop);
-            };
-
-            animationFrameRef.current = requestAnimationFrame(spawnLoop);
+                        await new Promise((r) => setTimeout(r, 10));
+                    }
+                })();
+            }
         },
         stop: () => {
-            if (animationFrameRef.current !== null) {
-                cancelAnimationFrame(animationFrameRef.current);
-                animationFrameRef.current = null;
-            }
+            activeRef.current = false;
         },
         setColor: (newColor: string) => {
             color = newColor;

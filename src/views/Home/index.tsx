@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { TypeAnimation } from "react-type-animation";
-import { Button } from "@components/index";
-import { HeaderButton, HeroButton, HowColumn, Section, Waves } from "./components/index";
+import { HeaderButton, HeroButton, HeroImage, HowColumn, Section, Waves } from "./components/index";
 import styles from "./home.module.scss";
+import ImageOrVideo from "@components/ImageOrVideo";
 
 export default function Home() {
     const [scrolled, setScrolled] = useState<boolean>(false);
@@ -20,7 +20,7 @@ export default function Home() {
         window.addEventListener("scroll", handleScroll);
 
         return () => {
-            window.removeEventListener("scroll", handleScroll)
+            window.removeEventListener("scroll", handleScroll);
         };
     }, []);
 
@@ -57,9 +57,11 @@ export default function Home() {
             <main>
                 <div className={styles.heroSection}>
                     <div className={styles.heroContainer}>
-                        <img src={window.constructCDNUrl("/content/logo.png")} className={styles.heroImageM} />
+                        {/* <img src={window.constructCDNUrl("/content/logo.png")} className={styles.heroImageM} /> */}
+                        <HeroImage src={"https://files.catbox.moe/r003j5.webm"} alt="Hero Image" mobile />
 
-                        <img src={window.constructCDNUrl("/content/logo.png")} className={styles.heroImage} />
+                        {/* <img src={window.constructCDNUrl("/content/logo.png")} className={styles.heroImage} /> */}
+                        <HeroImage src={"https://files.catbox.moe/r003j5.webm"} alt="Hero Image" />
 
                         <div className={styles.heroCenter}>
                             <div className={styles.heroText}>
@@ -70,9 +72,9 @@ export default function Home() {
                                         2000,
                                         "collecting",
                                         2000,
-                                        "RNG",
-                                        2000,
                                         "multiplayer",
+                                        2000,
+                                        "RNG",
                                         2000
                                     ]}
                                     wrapper="span"
@@ -98,7 +100,8 @@ export default function Home() {
                             </div>
                         </div>
 
-                        <img src={window.constructCDNUrl("/content/logo.png")} className={styles.heroImage} />
+                        {/* <img src={window.constructCDNUrl("/content/logo.png")} className={styles.heroImage} /> */}
+                        <HeroImage src={"https://files.catbox.moe/r003j5.webm"} alt="Hero Image" />
                     </div>
 
                     <div className={`${styles.heroArrowContainer} ${scrolled ? styles.heroArrowContainerScrolled : ""}`}>
@@ -112,11 +115,11 @@ export default function Home() {
                             From a real-time Trading Plaza to a dynamic Auction House, {name} goes beyond the basics—it's a full ecosystem, not just a game.
                         </Section>
 
-                        <Section header={"Header 2"} image={window.constructCDNUrl("/content/logo.png")} reverse>
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.
+                        <Section header={"Constantly Updating"} image={window.constructCDNUrl("/content/logo.png")} reverse>
+                            With regular updates and new features, {name} is always evolving. We listen to our community and strive to make the game better every day.
                         </Section>
 
-                        <Section header={"Growing Community"} image={window.constructCDNUrl("/content/logo.png")}>
+                        <Section header={"Always Growing"} image={window.constructCDNUrl("/content/logo.png")}>
                             With 50,000+ users and growing, our community is welcoming, active, and supportive.
                             From friendly staff to helpful peers, you'll always find someone to trade with, compete with, or just vibe with.
                         </Section>
@@ -154,7 +157,7 @@ export default function Home() {
 
                     <div className={styles.normalSection} style={{ marginTop: 100 }}>
                         <Section header={"What Are You Waiting For?"} image={window.constructCDNUrl("/content/logo.png")}>
-                            Lorem ipsum dolor sit amet consectetur adipiscing elit. Dolor sit amet consectetur adipiscing elit quisque faucibus.
+                            Join the fun and start your journey in {name} today! Register now and become part of our growing community!
                         </Section>
                     </div>
                 </div>

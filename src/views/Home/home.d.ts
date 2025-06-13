@@ -20,3 +20,9 @@ export interface SectionProps extends HTMLAttributes<HTMLDivElement> {
 export interface HowColumnProps extends HTMLAttributes<HTMLDivElement> {
     image: string;
 }
+
+export interface HeroImageProps extends HTMLAttributes<HTMLDivElement> {
+    src: string;
+    alt?: string;
+    mobile?: boolean;
+}
