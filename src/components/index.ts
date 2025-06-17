@@ -18,6 +18,7 @@ import Loader from "./Loader";
 import Markdown from "./Markdown";
 import * as Modal from "./Modals";
 import PageHeader from "./PageHeader";
+import ParticleCanvas from "./ParticleCanvas";
 import SearchBox from "./SearchBox";
 import Sidebar from "./Sidebar";
 import SidebarBody from "./SidebarBody";
@@ -51,6 +52,7 @@ export {
     Markdown,
     Modal,
     PageHeader,
+    ParticleCanvas,
     SearchBox,
     Sidebar,
     SidebarBody,

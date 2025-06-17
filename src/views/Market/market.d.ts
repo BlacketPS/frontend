@@ -1,38 +1,5 @@
 import { HTMLAttributes } from "react";
-import { DataBoostersEntity, ItemShop, MarketOpenPackDto, Pack, RarityAnimationType, UserBlook } from "@blacket/types";
-import { BrenderObject } from "@brender/index";
-
-// export type ColorMode = "iridescent" | "mythical" | "rainbow" | string;
-
-export interface ParticleCanvasRef {
-    start: () => void;
-    stop: () => void;
-    setColor: (color: string) => void;
-    setAnimationType: (animationType: RarityAnimationType) => void;
-}
-
-export interface ParticleCanvasProps {
-    color: string;
-    animationType: RarityAnimationType
-}
-
-export enum ParticleType {
-    CENTER,
-    RIGHT_BOTTOM,
-    LEFT_BOTTOM,
-    RIGHT_SHOWER,
-    LEFT_SHOWER,
-    TOP,
-    RIGHT_DIAMOND,
-    LEFT_DIAMOND
-}
-
-export interface ParticleObject extends BrenderObject {
-    vx?: number;
-    vy?: number;
-    gravity?: number;
-    angVelocity?: number;
-}
+import { DataBoostersEntity, ItemShop, MarketOpenPackDto, Pack, UserBlook } from "@blacket/types";
 
 export enum BigButtonClickType {
     OPEN = 1,

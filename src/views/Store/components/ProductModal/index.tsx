@@ -52,7 +52,16 @@ export default function ProductModal({ product }: ProductModalProps) {
                     closeModal();
 
                     createModal(<Modal.PurchaseProductModal product={product} />);
-                }} type="submit">${product.price} USD</Button.GenericButton>
+                }} type="submit">${product.price} USD{product.isSubscription && product.price > 0 ? " lifetime" : ""}</Button.GenericButton>
+                {product.isSubscription && (
+                    <Button.GenericButton onClick={() => {
+                        closeModal();
+
+                        createModal(<Modal.PurchaseProductModal product={product} subscription={true} />);
+                    }}>
+                        ${product.subscriptionPrice} USD monthly
+                    </Button.GenericButton>
+                )}
                 <Button.GenericButton onClick={closeModal}>Close</Button.GenericButton>
             </Modal.ModalButtonContainer>
         </>

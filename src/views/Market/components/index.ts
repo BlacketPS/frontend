@@ -5,7 +5,6 @@ import OpenPackBlook from "./OpenPackBlook";
 import OpenPackContainer from "./OpenPackContainer";
 import OpenPackModal from "./OpenPackModal";
 import Pack from "./Pack";
-import ParticleCanvas from "./ParticleCanvas";
 
 export {
     BoosterContainer,
@@ -14,6 +13,5 @@ export {
     OpenPackBlook,
     OpenPackContainer,
     OpenPackModal,
-    Pack,
-    ParticleCanvas
+    Pack
 };

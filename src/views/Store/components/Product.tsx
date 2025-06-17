@@ -26,15 +26,28 @@ export default function Product({ product, ...props }: ProductProps) {
                 >
                     {product.name}
                 </Textfit>
-                <div className={styles.productPrice}>
+                {/* <div className={styles.productPrice}>
                     ${product.price} USD
                     {product.isSubscription && " monthly"}
-                </div>
+                </div> */}
                 {/* {(product.yearlyPrice || product.lifetimePrice) && (
                     <div className={styles.productSubPrice}>
                         ${product.yearlyPrice || product.lifetimePrice} USD {product.yearlyPrice ? " yearly" : " lifetime"}
                     </div>
                 )} */}
+                {!product.isSubscription
+                    ? <div className={styles.productPrice}>
+                        ${product.price} USD
+                    </div>
+                    : <>
+                        <div className={styles.productPrice}>
+                            ${product.subscriptionPrice} USD monthly
+                        </div>
+                        {(product.price > 0) && <div className={styles.productSubPrice}>
+                            ${product.price} USD lifetime
+                        </div>}
+                    </>
+                }
             </div>
 
             {Array.from({ length: 3 }, (_, i) => (

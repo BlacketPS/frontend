@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import Textfit from "react-textfit";
-import { ImageOrVideo, SidebarBody } from "@components/index";
+import { SidebarBody } from "@components/index";
 import { Category, Product, ProductModal } from "./components/index";
 import { useUser } from "@stores/UserStore/index";
 import { useLoading } from "@stores/LoadingStore/index";
@@ -17,7 +17,7 @@ export default function Store() {
 
     const { setLoading } = useLoading();
     const { createModal } = useModal();
-    const { stores, setStores } = useData();
+    const { stores, setStores, products } = useData();
 
     const { getStores } = useStores();
 
@@ -69,12 +69,18 @@ export default function Store() {
                         .map((store, i) => (
                             <Category key={i} title={store.name} subTitle={store.description}>
                                 {store.products && store.products
-                                    .sort((a, b) => a.priority - b.priority)
-                                    .map((product, i) => <Product
-                                        key={i}
-                                        product={product}
-                                        onClick={() => createModal(<ProductModal product={product} />)}
-                                    />)}
+                                    .map((productId, i) => {
+                                        const product = products.find((p) => p.id === productId);
+                                        if (!product) return null;
+
+                                        return (
+                                            <Product
+                                                key={i}
+                                                product={product}
+                                                onClick={() => createModal(<ProductModal product={product} />)}
+                                            />
+                                        );
+                                    })}
                             </Category>
                         ))}
                 </div>

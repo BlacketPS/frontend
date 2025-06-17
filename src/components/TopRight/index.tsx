@@ -1,5 +1,5 @@
 import { useUser } from "@stores/UserStore";
-import { ExperienceBalance, TokenBalance, UserDropdown } from "./components";
+import { ExperienceBalance, GemBalance, TokenBalance, UserDropdown } from "./components";
 import styles from "./topRight.module.scss";
 
 import { TopRightProps } from "./topRight.d";
@@ -21,6 +21,7 @@ export default function TopRight({ content, desktopOnly = false }: TopRightProps
     if (user) return (
         <div className={styles.container} data-desktop-only={desktopOnly}>
             {content.includes("experience") && <ExperienceBalance user={user} />}
+            {content.includes("gems") && <GemBalance user={user} />}
             {content.includes("tokens") && <TokenBalance user={user} />}
 
             {user && <UserDropdown user={user} />}

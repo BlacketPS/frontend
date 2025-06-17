@@ -166,8 +166,6 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
                     backgroundColor: error ? "red" : ""
                 }} />
             </div>
-
-            Loading {completed} / {max}
         </div>
         {error ? <div className={styles.error}>
             Failed to load data.

@@ -4,4 +4,5 @@ export interface GenericModalProps extends HTMLAttributes<HTMLDivElement> {
     closing?: boolean;
     noAnimation?: boolean;
     children: ReactNode;
+    outside?: ReactNode;
 }

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, RefObject } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Navigate } from "react-router-dom";
 import { useLoading } from "@stores/LoadingStore";
 import { useUser } from "@stores/UserStore/index";
@@ -8,12 +8,13 @@ import { useData } from "@stores/DataStore/index";
 import { useSettings } from "@controllers/settings/useSettings";
 import { useOpenPack } from "@controllers/market/useOpenPack";
 import { useBoosters } from "@controllers/data/useBoosters";
-import { SidebarBody, PageHeader, Modal, Button, SearchBox } from "@components/index";
-import { OpenPackModal, Category, Pack, OpenPackContainer, OpenPackBlook, Item, BoosterContainer, ParticleCanvas } from "./components";
+import { SidebarBody, PageHeader, Modal, Button, SearchBox, ParticleCanvas } from "@components/index";
+import type { ParticleCanvasRef } from "@components/ParticleCanvas/particleCanvas.d";
+import { OpenPackModal, Category, Pack, OpenPackContainer, OpenPackBlook, Item, BoosterContainer } from "./components";
 import styles from "./market.module.scss";
 
 import { DataBoostersEntity, MarketOpenPackDto, Pack as PackType, RarityAnimationTypeEnum, UserBlook } from "@blacket/types";
-import { BigButtonClickType, ParticleCanvasRef, SearchOptions } from "./market.d";
+import { BigButtonClickType, SearchOptions } from "./market.d";
 
 export default function Market() {
     const { setLoading } = useLoading();
@@ -217,6 +218,17 @@ export default function Market() {
                         animationType={
                             rarities.find((rarity) => rarity.id === blooks.find((blook) => blook.id === unlockedBlook.blookId)!.rarityId)!.animationType
                         }
+                        images={[
+                            window.constructCDNUrl("/content/particles/1.png"),
+                            window.constructCDNUrl("/content/particles/2.png"),
+                            window.constructCDNUrl("/content/particles/3.png"),
+                            window.constructCDNUrl("/content/particles/4.png"),
+                            window.constructCDNUrl("/content/particles/5.png"),
+                            window.constructCDNUrl("/content/particles/6.png"),
+                            window.constructCDNUrl("/content/particles/7.png"),
+                            window.constructCDNUrl("/content/particles/8.png")
+                        ]}
+                        className={styles.canvas}
                     />}
 
                     <OpenPackContainer

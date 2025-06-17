@@ -1,8 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef } from "react";
-import styles from "../market.module.scss";
-
-import { ParticleType, ParticleCanvasProps, ParticleCanvasRef, ParticleObject } from "../market.d";
 import { BrenderCanvas, BrenderCanvasRef } from "@brender/index";
+
+import { ParticleType, ParticleCanvasProps, ParticleCanvasRef, ParticleObject } from "./particleCanvas.d";
 import { RarityAnimationType, RarityAnimationTypeEnum } from "@blacket/types";
 
 function random(min: number, max: number) {
@@ -112,36 +111,20 @@ function animationTypeToParticleType(animationType: string) {
             return [ParticleType.RIGHT_DIAMOND, ParticleType.LEFT_DIAMOND];
         case RarityAnimationTypeEnum.IRIDESCENT:
             return [
-                ParticleType.CENTER,
-                ParticleType.RIGHT_BOTTOM,
-                ParticleType.LEFT_BOTTOM,
                 ParticleType.RIGHT_SHOWER,
                 ParticleType.LEFT_SHOWER,
-                ParticleType.TOP,
-                ParticleType.RIGHT_DIAMOND,
-                ParticleType.LEFT_DIAMOND
+                ParticleType.TOP
             ];
         default:
             return [ParticleType.CENTER];
     }
 }
 
-const ParticleCanvas = forwardRef<ParticleCanvasRef, ParticleCanvasProps>(({ color, animationType }, ref) => {
+const ParticleCanvas = forwardRef<ParticleCanvasRef, ParticleCanvasProps>(({ width, height, color, animationType, images, particleWidth = 30, particleHeight = 30, particleCount = 200, speed = 2, ...props }, ref) => {
     const brenderCanvasRef = useRef<BrenderCanvasRef>(null);
     const animationFrameRef = useRef<number | null>(null);
     const lastSpawnRef = useRef<number>(0);
     const activeRef = useRef<boolean>(false);
-
-    const images = [
-        window.constructCDNUrl("/content/particles/1.png"),
-        window.constructCDNUrl("/content/particles/2.png"),
-        window.constructCDNUrl("/content/particles/3.png"),
-        window.constructCDNUrl("/content/particles/4.png"),
-        window.constructCDNUrl("/content/particles/5.png"),
-        window.constructCDNUrl("/content/particles/6.png"),
-        window.constructCDNUrl("/content/particles/7.png"),
-        window.constructCDNUrl("/content/particles/8.png")
-    ];
 
     let id = 0;
 
@@ -151,8 +134,8 @@ const ParticleCanvas = forwardRef<ParticleCanvasRef, ParticleCanvasProps>(({ col
             x: 99999,
             y: 99999,
             z: 0,
-            width: 30,
-            height: 30,
+            width: particleWidth,
+            height: particleHeight,
             imageTint: color
         });
 
@@ -166,7 +149,7 @@ const ParticleCanvas = forwardRef<ParticleCanvasRef, ParticleCanvasProps>(({ col
             y: 0,
             z: 0,
             onFrame: async (_, deltaTime) => {
-                const fakeDeltaTime = deltaTime * 2;
+                const fakeDeltaTime = deltaTime * speed;
 
                 for (const object of brender.objects.filter((o) => o.id.startsWith(`particle-${t}`)) as ParticleObject[]) {
                     object.vy = (object.vy ?? 0) + (object.gravity ?? 0) * fakeDeltaTime;
@@ -177,6 +160,8 @@ const ParticleCanvas = forwardRef<ParticleCanvasRef, ParticleCanvasProps>(({ col
                     object.rotation! += (object.angVelocity ?? 0) * fakeDeltaTime;
 
                     if (object.y > brender.getHeight() || object.y < -50 || object.x < -50 || object.x > brender.getWidth() + 50) {
+                        if (!activeRef.current) object.destroy!();
+
                         const type = particleType(t, brender);
                         const image = await brender.urlToImage(images[Math.floor(Math.random() * images.length)]);
 
@@ -192,6 +177,10 @@ const ParticleCanvas = forwardRef<ParticleCanvasRef, ParticleCanvasProps>(({ col
                         object.angVelocity = type.angVelocity;
                         object.rotation = rad;
                         object.image = image;
+
+                        object.width = particleWidth;
+                        object.height = particleHeight;
+                        object.imageTint = color;
                     }
                 }
             }
@@ -226,7 +215,7 @@ const ParticleCanvas = forwardRef<ParticleCanvasRef, ParticleCanvasProps>(({ col
                 setupParticles(t, brender);
 
                 (async () => {
-                    for (let i = 0; i < 200; i++) {
+                    for (let i = 0; i < particleCount; i++) {
                         if (!activeRef.current) break;
 
                         spawnParticle(t, brender);
@@ -244,15 +233,27 @@ const ParticleCanvas = forwardRef<ParticleCanvasRef, ParticleCanvasProps>(({ col
         },
         setAnimationType: (newAnimationType: RarityAnimationType) => {
             animationType = newAnimationType;
+        },
+        setImages: (newImages: string[]) => {
+            images = newImages;
+        },
+        setParticleWidth: (width: number) => {
+            particleWidth = width;
+        },
+        setParticleHeight: (height: number) => {
+            particleHeight = height;
+        },
+        setParticleCount: (count: number) => {
+            particleCount = count;
         }
     }));
 
     return (
         <BrenderCanvas
             ref={brenderCanvasRef}
-            className={styles.canvas}
-            debug={true}
-            showFPS={true}
+            width={width ?? window.innerWidth}
+            height={height ?? window.innerHeight}
+            {...props}
         />
     );
 });

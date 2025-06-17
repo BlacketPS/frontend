@@ -1,8 +1,10 @@
 import { ReactNode, createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
 import { Socket, io } from "socket.io-client";
+import { useUser } from "@stores/UserStore";
 
 import { type SocketStoreContext } from "./socket.d";
-import { SocketMessageType } from "@blacket/types";
+import { PrivateUser, SocketMessageType } from "@blacket/types";
+import { use } from "motion/react-client";
 
 const SocketStoreContext = createContext<SocketStoreContext>({
     socket: null,
@@ -16,11 +18,14 @@ export function useSocket() {
 }
 
 export function SocketStoreProvider({ children }: { children: ReactNode }) {
-    const socketRef = useRef<Socket | null>(null);
+    const { user, setUser } = useUser();
+
     const [connected, setConnected] = useState<boolean>(false);
     const [latency, setLatency] = useState<number>(0);
 
+    const socketRef = useRef<Socket | null>(null);
     const last10Latency = useRef<number[]>([]);
+    const userRef = useRef<PrivateUser | null>(user);
 
     const initializeSocket = useCallback(() => {
         setConnected(false);
@@ -74,6 +79,42 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
             pinging = false;
         });
 
+        socket.on(SocketMessageType.PURCHASE_SUCCEEDED, (data: any) => {
+            if (!userRef.current) return;
+
+            const newUser = {
+                ...userRef.current,
+                blooks: [
+                    ...userRef.current.blooks,
+                    ...(data.blooks || [])
+                ],
+                items: [
+                    ...userRef.current.items,
+                    ...(data.items || [])
+                ],
+                fonts: [
+                    ...userRef.current.fonts,
+                    ...(data.fonts || [])
+                ],
+                titles: [
+                    ...userRef.current.titles,
+                    ...(data.titles || [])
+                ],
+                banners: [
+                    ...userRef.current.banners,
+                    ...(data.banners || [])
+                ],
+                permissions: [
+                    ...userRef.current.permissions,
+                    ...(data.permissions || [])
+                ],
+                gems: userRef.current.gems + data.gems,
+                tokens: userRef.current.tokens + data.tokens
+            };
+
+            setUser(newUser);
+        });
+
         socket.onAny((event: string, data: object) => {
             if (import.meta.env.MODE === "development") console.log({ event, data });
         });
@@ -99,6 +140,12 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
             socketRef.current = null;
         };
     }, [initializeSocket]);
+
+    useEffect(() => {
+        if (!user) return;
+
+        userRef.current = user;
+    }, [user]);
 
     return (
         <SocketStoreContext.Provider value={{

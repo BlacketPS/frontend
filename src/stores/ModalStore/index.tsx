@@ -18,10 +18,10 @@ export function ModalStoreProvider({ children }: { children: ReactNode }) {
     const [modals, setModals] = useState<Modals[]>([]);
     const [closing, setClosing] = useState<boolean>(false);
 
-    const createModal = (modal: ReactNode) => {
+    const createModal = (modal: ReactNode, outsideModal?: ReactNode) => {
         const id = Math.random().toString(36).slice(2);
 
-        setModals((modals) => [...modals, { id, modal }]);
+        setModals((modals) => [...modals, { id, modal, outsideModal }]);
 
         return id;
     };
@@ -43,7 +43,11 @@ export function ModalStoreProvider({ children }: { children: ReactNode }) {
 
     return (
         <ModalStoreContext.Provider value={{ modals, setModals, createModal, closeModal }}>
-            {modals[0] && <Modal.GenericModal closing={closing} noAnimation={localStorage.getItem("DISABLE_MODAL_ANIMATION") === "true"}>{modals[0].modal}</Modal.GenericModal>}
+            {modals[0] && (
+                <Modal.GenericModal closing={closing} noAnimation={localStorage.getItem("DISABLE_MODAL_ANIMATION") === "true"} outside={modals[0].outsideModal}>
+                    {modals[0].modal}
+                </Modal.GenericModal>
+            )}
 
             {children}
         </ModalStoreContext.Provider>
