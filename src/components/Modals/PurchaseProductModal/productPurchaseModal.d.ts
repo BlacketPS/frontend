@@ -8,4 +8,5 @@ export interface ProductPurchaseModalProps {
 export interface ProductSuccessModalProps {
     product: StripeProductEntity;
     quantity: number;
+    subscription?: boolean;
 }

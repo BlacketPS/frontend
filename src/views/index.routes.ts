@@ -7,6 +7,7 @@ export { default as Login } from "./Authentication/login.route";
 export { default as Register } from "./Authentication/register.route";
 
 export { default as Legal } from "./Legal/route";
+export { default as Rules } from "./Rules/route";
 
 // TOP NAVIGATION ROUTES
 export { default as Dashboard } from "./Dashboard/route";

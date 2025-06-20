@@ -198,19 +198,78 @@
     width: 20%;
 
     @media screen and (max-width: 768px) {
+        width: 50%;
+    }
+}
+
+.transactionImage {
+    width: 24px;
+    height: 24 px;
+    margin-right: 8px;
+    object-fit: contain;
+
+    @media screen and (max-width: 768px) {
+        width: 20px;
+        height: 20px;
+    }
+}
+
+.transactionDescriptionContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    flex: 1 1 40%;
+}
+
+.transactionDescription {
+    display: flex;
+    justify-items: center;
+    align-items: center;
+
+    @media screen and (max-width: 768px) {
+        width: 40%;
+        font-size: 14px;
+    }
+}
+
+.transactionStatus {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 5px 10px;
+    width: 10%;
+    font-weight: 700;
+    border-radius: 7px;
+
+    @media screen and (max-width: 768px) {
+        width: 5%;
+        padding: 1px 5px;
+        margin-right: 5px;
+    }
+}
+
+.transactionAmountContainer {
+    display: flex;
+    justify-content: right;
+    align-items: center;
+    width: 20%;
+    margin-right: 5%;
+
+    @media screen and (max-width: 768px) {
         width: 30%;
         font-size: 14px;
     }
 }
 
-.transactionDescription {
-    display: flex;
-    flex: 1 1 50%;
+.transactionAmountImage {
+    width: 24px;
+    height: 24px;
     margin-left: 8px;
+    object-fit: contain;
 
     @media screen and (max-width: 768px) {
-        width: 50%;
-        font-size: 14px;
+        width: 20px;
+        height: 20px;
     }
 }
 
@@ -218,10 +277,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 20%;
 
     @media screen and (max-width: 768px) {
-        width: 30%;
         font-size: 14px;
     }
 }

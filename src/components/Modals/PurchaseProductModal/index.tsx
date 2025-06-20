@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useStripe } from "@stripe/react-stripe-js";
 import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { useResource } from "@stores/ResourceStore/index";
 import { Modal, ErrorContainer, Button, StripeElementsWrapper, ImageOrVideo, Dropdown, Toggle, ParticleCanvas, Input } from "@components/index";
 import { ParticleCanvasRef } from "@components/ParticleCanvas/particleCanvas";
+import { useSelect } from "@controllers/stripe/payment-methods/useSelect";
 import styles from "./purchaseProductModal.module.scss";
 
 import { ProductPurchaseModalProps, ProductSuccessModalProps } from "./productPurchaseModal.d";
@@ -43,7 +44,8 @@ function SuccessModalOutside() {
                 zIndex: -1
             }}
             images={[
-                window.constructCDNUrl("/content/token.png")
+                window.constructCDNUrl("/content/token.png"),
+                window.constructCDNUrl("/content/gem.png")
             ]}
             particleWidth={50}
             particleHeight={50}
@@ -53,7 +55,7 @@ function SuccessModalOutside() {
     );
 }
 
-function SuccessModal({ product, quantity }: ProductSuccessModalProps) {
+function SuccessModal({ product, quantity, subscription }: ProductSuccessModalProps) {
     const { closeModal } = useModal();
     const { resourceIdToPath } = useResource();
 
@@ -77,7 +79,7 @@ function SuccessModal({ product, quantity }: ProductSuccessModalProps) {
                             />
                             {!product.isQuantityCapped ? `x${quantity} ` : ""}{product.name}
                         </span>
-                        <span>${product.price * quantity} USD</span>
+                        <span>${((subscription ? (product.subscriptionPrice ?? 0) : product.price) * quantity).toFixed(2)} USD</span>
                     </div>
                 </div>
 
@@ -105,11 +107,10 @@ function TheModal({ product, subscription = false }: ProductPurchaseModalProps) 
 
     const { createModal, closeModal } = useModal();
     const { resourceIdToPath } = useResource();
-
-    const navigate = useNavigate();
+    const { selectPaymentMethod } = useSelect();
 
     const showSuccessModal = () => {
-        createModal(<SuccessModal product={product} quantity={parseInt(quantity)} />, <SuccessModalOutside />);
+        createModal(<SuccessModal product={product} quantity={parseInt(quantity)} subscription={subscription} />, <SuccessModalOutside />);
         closeModal();
     };
 
@@ -150,7 +151,7 @@ function TheModal({ product, subscription = false }: ProductPurchaseModalProps) 
                                 autoComplete="off"
                             />{" "}</>}{product.name}
                         </span>
-                        <span>${(subscription ? (product.subscriptionPrice ?? 0) : product.price) * parseInt(quantity !== "" ? quantity : "1")} USD</span>
+                        <span>${((subscription ? (product.subscriptionPrice ?? 0) : product.price) * parseInt(quantity !== "" ? quantity : "1")).toFixed(2)} USD</span>
                     </div>
                 </div>
 
@@ -166,7 +167,9 @@ function TheModal({ product, subscription = false }: ProductPurchaseModalProps) 
                             closeModal();
 
                             createModal(<Modal.AddPaymentMethodModal />);
-                        } else setSelectedPaymentMethod(user.paymentMethods.find((method) => method.id === value) ?? null);
+                        } else {
+                            setSelectedPaymentMethod(user.paymentMethods.find((method) => method.id === value) ?? null);
+                        }
                     }}
                 >
                     {selectedPaymentMethod ? `${selectedPaymentMethod.cardBrand} ${selectedPaymentMethod.lastFour}` : "Select a payment method..."}
@@ -196,32 +199,37 @@ function TheModal({ product, subscription = false }: ProductPurchaseModalProps) 
                     onClick={async () => {
                         if (!accepted) return setError("You must agree to the Terms of Service and Purchase Policy.");
                         if (quantity === "" || parseInt(quantity) < 1) return setError("You must select a quantity of at least 1.");
+                        if (!selectedPaymentMethod) return setError("You must select a payment method.");
 
                         setLoading(true);
 
-                        if (subscription) {
-                            window.fetch2.post(`/api/stripe/invoice/${product.id}`, {})
+                        if (subscription) selectPaymentMethod(selectedPaymentMethod.id)
+                            .then(() => window.fetch2.post(`/api/stripe/invoice/${product.id}`, {})
                                 .then(async () => {
-                                    closeModal();
-                                    navigate("/settings/billing");
-                                })
-                                .catch((err) => {
-                                    setError(err?.data?.message ?? "Something went wrong.");
-                                    setLoading(false);
-                                });
-                        } else {
-                            window.fetch2.post(`/api/stripe/payment-intent/${product.id}`, { quantity: parseInt(quantity) })
-                                .then(async (res) => {
-                                    const { error: verifyError } = await stripe.confirmCardPayment(res.data.client_secret);
-                                    if (verifyError) return setError(verifyError?.message ?? "Something went wrong.");
-
                                     showSuccessModal();
                                 })
                                 .catch((err) => {
                                     setError(err?.data?.message ?? "Something went wrong.");
                                     setLoading(false);
-                                });
-                        }
+                                }))
+                            .catch((err) => {
+                                setError(err?.data?.message ?? "Something went wrong.");
+                                setLoading(false);
+                            });
+                        else window.fetch2.post(`/api/stripe/payment-intent/${product.id}`, {
+                            quantity: parseInt(quantity),
+                            paymentMethodId: selectedPaymentMethod.id
+                        })
+                            .then(async (res) => {
+                                const { error: verifyError } = await stripe.confirmCardPayment(res.data.client_secret);
+                                if (verifyError) return setError(verifyError?.message ?? "Something went wrong.");
+
+                                showSuccessModal();
+                            })
+                            .catch((err) => {
+                                setError(err?.data?.message ?? "Something went wrong.");
+                                setLoading(false);
+                            });
                     }}
                 >
                     {subscription ? "Subscribe" : "Purchase"}

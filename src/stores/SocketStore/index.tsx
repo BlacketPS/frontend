@@ -1,10 +1,10 @@
 import { ReactNode, createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Socket, io } from "socket.io-client";
 import { useUser } from "@stores/UserStore";
 
 import { type SocketStoreContext } from "./socket.d";
 import { PrivateUser, SocketMessageType } from "@blacket/types";
-import { use } from "motion/react-client";
 
 const SocketStoreContext = createContext<SocketStoreContext>({
     socket: null,
@@ -26,6 +26,8 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
     const socketRef = useRef<Socket | null>(null);
     const last10Latency = useRef<number[]>([]);
     const userRef = useRef<PrivateUser | null>(user);
+
+    const navigate = useNavigate();
 
     const initializeSocket = useCallback(() => {
         setConnected(false);
@@ -84,6 +86,7 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
 
             const newUser = {
                 ...userRef.current,
+
                 blooks: [
                     ...userRef.current.blooks,
                     ...(data.blooks || [])
@@ -108,11 +111,16 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
                     ...userRef.current.permissions,
                     ...(data.permissions || [])
                 ],
-                gems: userRef.current.gems + data.gems,
-                tokens: userRef.current.tokens + data.tokens
+
+                gems: userRef.current.gems + (data.gems ?? 0),
+                tokens: userRef.current.tokens + (data.tokens ?? 0),
+
+                subscription: data.subscription || userRef.current.subscription
             };
 
             setUser(newUser);
+
+            navigate("/settings/billing");
         });
 
         socket.onAny((event: string, data: object) => {

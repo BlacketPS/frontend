@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import { TypeAnimation } from "react-type-animation";
 import { HeaderButton, HeroButton, HeroImage, HowColumn, Section, Waves } from "./components/index";
 import styles from "./home.module.scss";
-import ImageOrVideo from "@components/ImageOrVideo";
 
 export default function Home() {
     const [scrolled, setScrolled] = useState<boolean>(false);
@@ -75,6 +74,8 @@ export default function Home() {
                                         "multiplayer",
                                         2000,
                                         "RNG",
+                                        2000,
+                                        "community",
                                         2000
                                     ]}
                                     wrapper="span"
@@ -84,7 +85,7 @@ export default function Home() {
 
                                 <br />
 
-                                game for everyone!
+                                web-game for everyone!
                             </div>
 
                             <div className={styles.heroButtons}>
@@ -187,7 +188,7 @@ export default function Home() {
                             <div className={styles.footerMenuTitle}>Connect</div>
                             <ul>
                                 <li>
-                                    <a href="https://discord.gg/blacket">Discord</a>
+                                    <a href="/discord" target="_blank">Discord</a>
                                 </li>
                             </ul>
                         </div>
