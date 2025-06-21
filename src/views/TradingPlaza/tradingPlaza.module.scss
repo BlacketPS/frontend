@@ -42,3 +42,21 @@
     mix-blend-mode: overlay;
     opacity: 0.2;
 }
+
+.mRunButtonBase {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    width: 100px;
+    height: 100px;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    touch-action: none;
+
+    &>i {
+        font-size: 60px;
+    }
+}

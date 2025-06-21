@@ -14,6 +14,7 @@ import Header from "./Header";
 import HeaderBody from "./HeaderBody";
 import ImageOrVideo from "./ImageOrVideo";
 import Input from "./Input";
+import Joystick from "./Joystick";
 import Loader from "./Loader";
 import Markdown from "./Markdown";
 import * as Modal from "./Modals";
@@ -48,6 +49,7 @@ export {
     HeaderBody,
     ImageOrVideo,
     Input,
+    Joystick,
     Loader,
     Markdown,
     Modal,

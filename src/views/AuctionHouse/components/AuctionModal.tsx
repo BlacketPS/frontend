@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Turnstile from "react-turnstile";
 import { useAuctionHouse } from "@stores/AuctionHouseStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { useData } from "@stores/DataStore/index";
@@ -15,6 +16,7 @@ export default function AuctionModal({ auctionId }: AuctionModalProps) {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
     const [amount, setAmount] = useState<string>("");
+    const [captchaToken, setCaptchaToken] = useState<string>("");
 
     const { auctions } = useAuctionHouse();
     const { closeModal } = useModal();
@@ -54,6 +56,7 @@ export default function AuctionModal({ auctionId }: AuctionModalProps) {
         //     case parseInt(amount) > user.tokens:
         //         return setError(Forbidden.AUCTIONS_BID_NOT_ENOUGH_TOKENS);
         // }
+        if (captchaToken === "") return setError("Please complete the captcha.");
 
         const userPreviousBids = auction.bids.filter((bid) => bid.user.id === user.id);
         const highestPreviousBidAmount = userPreviousBids.length > 0
@@ -66,6 +69,11 @@ export default function AuctionModal({ auctionId }: AuctionModalProps) {
         switch (true) {
             case amount === "":
                 return setError("Please enter a bid amount.");
+            case parseInt(amount) < auction.price && auction.bids.length === 0:
+                return setError(
+                    Forbidden.AUCTIONS_BID_TOO_LOW
+                        .replace("%s", (auction.price).toLocaleString())
+                );
             case auction.bids[0] && auction.bids[0].user.id === user.id:
                 return setError(Forbidden.AUCTIONS_BID_OWN_BID);
             case auction.bids[0] && parseInt(amount) <= auction.bids[0].amount:
@@ -81,7 +89,7 @@ export default function AuctionModal({ auctionId }: AuctionModalProps) {
         }
 
         setLoading(true);
-        bidAuction(auction, { amount: parseInt(amount) })
+        bidAuction(auction, { amount: parseInt(amount), captchaToken })
             .then(() => {
                 setAmount("");
 
@@ -135,6 +143,8 @@ export default function AuctionModal({ auctionId }: AuctionModalProps) {
                     placeholder="Bid Amount"
                     value={amount}
                     onChange={(e) => {
+                        setError("");
+
                         const value = e.target.value;
 
                         if (!value.match(/^[0-9]*$/)) return;
@@ -152,6 +162,13 @@ export default function AuctionModal({ auctionId }: AuctionModalProps) {
                     } <img className={styles.tokenPrice} src={window.constructCDNUrl("/content/token.png")} />
                 </div>
             </Modal.ModalBody >
+
+            <Turnstile
+                key={JSON.stringify(auction)}
+                sitekey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
+                onVerify={setCaptchaToken}
+                theme="dark"
+            />
 
             {error !== "" && <ErrorContainer>{error}</ErrorContainer>}
 

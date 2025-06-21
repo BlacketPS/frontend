@@ -45,14 +45,6 @@ export default function AuctionHouse() {
         setSearch({ ...search, id: parseInt(id) });
     }, [searchParams]);
 
-    const easterEggList = [
-        {
-            query: "fartpoopshit542",
-            image: window.constructCDNUrl("/content/easter-eggs/fartpoopshit542.png"),
-            title: "No bitches found."
-        }
-    ];
-
     return (
         <>
             <SearchBox
@@ -105,15 +97,11 @@ export default function AuctionHouse() {
                             })}
                         </div> : <div className={styles.noAuctions}>
                             <div className={styles.noAuctionsImageContainer}>
-                                <img className={styles.noAuctionsImage} src={
-                                    easterEggList.find((egg) => egg.query === query)?.image || window.constructCDNUrl("/content/404.png")
-                                } />
+                                <img className={styles.noAuctionsImage} src={window.constructCDNUrl("/content/404.png")} />
 
                                 <div className={styles.noAuctionsImageOverlay} />
                             </div>
-                            {
-                                easterEggList.find((egg) => egg.query === query)?.title || "No auctions found."
-                            }
+                            No auctions found.
                         </div> : <div className={styles.auctionLoaderContainer}><Loader noModal style={{ marginBottom: 50 }} /></div>}
                     </div>
                 </div>

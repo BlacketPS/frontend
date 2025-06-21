@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Turnstile from "react-turnstile";
 import { useModal } from "@stores/ModalStore/index";
 import { useData } from "@stores/DataStore/index";
 import { useUser } from "@stores/UserStore";
@@ -12,6 +13,7 @@ import { AuctionTypeEnum } from "@blacket/types";
 export default function BuyItNowModal({ auction }: ModalProps) {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
+    const [captchaToken, setCaptchaToken] = useState<string>("");
 
     const { closeModal } = useModal();
     const { blooks, items } = useData();
@@ -25,8 +27,10 @@ export default function BuyItNowModal({ auction }: ModalProps) {
     const item = items.find((item) => item.id === auction.item?.itemId);
 
     const submit = () => {
+        if (captchaToken === "") return setError("Please complete the captcha.");
+
         setLoading(true);
-        buyAuction(auction)
+        buyAuction(auction, { captchaToken })
             .then(() => closeModal())
             .catch((err) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
             .finally(() => setLoading(false));
@@ -45,6 +49,12 @@ export default function BuyItNowModal({ auction }: ModalProps) {
                     ? "blook"
                     : "item"
             } for <img className={styles.tokenPrice} src={window.constructCDNUrl("/content/token.png")} /> {auction.price.toLocaleString()} tokens?</Modal.ModalBody>
+
+            <Turnstile
+                sitekey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
+                onVerify={setCaptchaToken}
+                theme="dark"
+            />
 
             {error !== "" && <ErrorContainer>{error}</ErrorContainer>}
 

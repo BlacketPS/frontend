@@ -1,13 +1,13 @@
 import { useUser } from "@stores/UserStore/index";
 
-import { AuctionsAuctionEntity, NotFound } from "@blacket/types";
+import { AuctionsAuctionEntity, AuctionsBuyAuctionDto, NotFound } from "@blacket/types";
 
 export function useBuyAuction() {
     const { user, setUser } = useUser();
 
     if (!user) throw new Error(NotFound.UNKNOWN_USER);
 
-    const buyAuction = (auction: AuctionsAuctionEntity) => new Promise<Fetch2Response>((resolve, reject) => window.fetch2.put(`/api/auctions/${auction.id}/bin`, {})
+    const buyAuction = (auction: AuctionsAuctionEntity, dto: AuctionsBuyAuctionDto) => new Promise<Fetch2Response>((resolve, reject) => window.fetch2.put(`/api/auctions/${auction.id}/bin`, dto)
         .then((res: Fetch2Response) => {
             const userBlooks = user.blooks;
             const userItems = user.items;

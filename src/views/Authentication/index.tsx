@@ -1,16 +1,16 @@
 import { useState } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import Turnstile from "react-turnstile";
 import { useLoading } from "@stores/LoadingStore";
 import { useModal } from "@stores/ModalStore";
 import { useUser } from "@stores/UserStore";
 import { useLogin } from "@controllers/auth/useLogin/index";
 import { useRegister } from "@controllers/auth/useRegister/index";
-import { Input, ErrorContainer, Dropdown, Toggle, Button } from "@components/index";
+import { Input, ErrorContainer, Toggle, Button } from "@components/index";
 import { OtpModal } from "./components/index";
 import styles from "./authentication.module.scss";
 
 import { AuthenticationType, AuthenticationProps } from "./authentication.d";
-import { PurchaseProductModal } from "@components/Modals";
 
 export default function Authentication({ type }: AuthenticationProps) {
     const navigate = useNavigate();
@@ -18,7 +18,9 @@ export default function Authentication({ type }: AuthenticationProps) {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [checked, setChecked] = useState<boolean>(false);
+    const [captchaToken, setCaptchaToken] = useState<string>("");
     const [error, setError] = useState<string>("");
+    const [tries, setTries] = useState<number>(0);
 
     const { setLoading } = useLoading();
     const { createModal } = useModal();
@@ -37,9 +39,11 @@ export default function Authentication({ type }: AuthenticationProps) {
 
         if (type === AuthenticationType.LOGIN) {
             setLoading("Logging in");
-            login(username, password)
+            login({ username, password, captchaToken })
                 .then(() => navigate("/dashboard"))
                 .catch((err) => {
+                    setTries((prev) => prev + 1);
+
                     if (err.status === 401) return createModal(<OtpModal username={username} password={password} />);
 
                     if (err?.data?.message) setError(err.data.message);
@@ -50,9 +54,14 @@ export default function Authentication({ type }: AuthenticationProps) {
             if (!checked) return setError("You must agree to our Privacy Policy and Terms of Service.");
 
             setLoading("Registering");
-            register({ username, password })
+            register({ username, password, captchaToken })
                 .then(() => navigate("/dashboard"))
-                .catch((err) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
+                .catch((err) => {
+                    setTries((prev) => prev + 1);
+
+                    if (err?.data?.message) setError(err.data.message);
+                    else setError("Something went wrong.");
+                })
                 .finally(() => setLoading(false));
         }
     };
@@ -101,6 +110,13 @@ export default function Authentication({ type }: AuthenticationProps) {
                     </Toggle>
                 </div>
             </>}
+
+            <Turnstile
+                key={tries}
+                sitekey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
+                onVerify={setCaptchaToken}
+                theme="dark"
+            />
 
             <Button.ClearButton className={styles.button} onClick={submitForm}>Let's Go!</Button.ClearButton>
 

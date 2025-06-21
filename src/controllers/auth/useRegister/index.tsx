@@ -6,6 +6,7 @@ import { AuthAuthEntity } from "@blacket/types";
 interface RegisterDto {
     username: string;
     password: string;
+    captchaToken: string;
 }
 
 export function useRegister() {

@@ -3,11 +3,18 @@ import { useSocket } from "@stores/SocketStore";
 
 import { LoginResponse } from "./useLogin.d";
 
+interface LoginDto {
+    username: string;
+    password: string;
+    otpCode?: string;
+    captchaToken: string;
+}
+
 export function useLogin() {
     const { setUser } = useUser();
     const { initializeSocket } = useSocket();
 
-    const login = (username: string, password: string, otpCode?: string) => new Promise<LoginResponse>((resolve, reject) => window.fetch2.post("/api/auth/login", { username, password, otpCode })
+    const login = (dto: LoginDto) => new Promise<LoginResponse>((resolve, reject) => window.fetch2.post("/api/auth/login", dto)
         .then((res: LoginResponse) => {
             localStorage.setItem("token", res.data.token);
 

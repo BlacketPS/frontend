@@ -6,7 +6,7 @@ import { useSocket } from "@stores/SocketStore/index";
 import { useData } from "@stores/DataStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
 import { useChat } from "@stores/ChatStore/index";
-import { WaterBackground } from "@components/index";
+import { Joystick, WaterBackground } from "@components/index";
 import { lerp } from "@functions/core/mathematics";
 import styles from "./tradingPlaza.module.scss";
 
@@ -14,6 +14,8 @@ import { SocketMessageType } from "@blacket/types";
 import { TILES } from "@constants/index";
 import map from "./map";
 import { ClientMessage } from "@stores/ChatStore/chatStore";
+import { Direction } from "@components/Joystick/joystick.d";
+import { MobileRunButton } from "./components";
 
 export default function TradingPlaza() {
     const { user, getUserAvatarPath } = useUser();
@@ -49,7 +51,7 @@ export default function TradingPlaza() {
             RUN: ["shift"]
         };
 
-        const PLAYER_SPEED = 12;
+        const PLAYER_SPEED = (window.innerWidth < 1024 ? 8 : 10);
         const TILE_SIZE = 50;
         const COLUMNS = 35;
         const ROWS = 40;
@@ -159,7 +161,7 @@ export default function TradingPlaza() {
                 image: brender.loadingImage,
                 width: 300 / 6,
                 height: 345 / 6,
-                targetEasingSpeed: 0.15,
+                targetEasingSpeed: 0.1,
                 user: {
                     id: userId,
                     username: "",
@@ -273,22 +275,6 @@ export default function TradingPlaza() {
         socket.on(SocketMessageType.TRADING_PLAZA_LEAVE, handleLeave);
         socket.on(SocketMessageType.LAGBACK, handleLagback);
 
-        const overlay = brender.createObject({
-            id: "overlay",
-            x: 0,
-            y: 0,
-            z: 99,
-            imageBlendMode: "overlay",
-            imageOpacity: 0.1,
-            width: brender.getWidth(),
-            height: brender.getHeight()
-        });
-
-        brender.urlToImage(window.constructCDNUrl("/content/trading-plaza/overlay.png"))
-            .then((image) => {
-                overlay.image = image;
-            });
-
         const player = brender.createPlayerEntity({
             id: user.id,
             x: 0,
@@ -361,13 +347,10 @@ export default function TradingPlaza() {
 
                 _previousPos = { x: entity.x, y: entity.y };
 
-                brender.camera.focusOn(entity as BrenderEntity, 0.05 * deltaTime);
+                brender.camera.focusOn(entity as BrenderEntity, (window.innerWidth < 1024 ? 0.15 : 0.1) * deltaTime);
 
                 entity.x += moveX | 0;
                 entity.y += moveY | 0;
-
-                overlay.x = brender.camera.x;
-                overlay.y = brender.camera.y;
 
                 waterBackgroundRef.current?.style.setProperty("background-position", `${-brender.camera.x}px ${-brender.camera.y}px`);
             }
@@ -395,16 +378,18 @@ export default function TradingPlaza() {
 
         movementLoop();
 
-        brender.createObject({
-            id: "block",
-            x: 300,
-            y: 200,
-            z: 1,
-            image: brender.loadingImage,
-            width: 300,
-            height: 300,
-            hasCollision: true
-        });
+        (async () => {
+            brender.createObject({
+                id: "block",
+                x: 300,
+                y: 200,
+                z: 1,
+                image: (await brender.urlToImage(window.constructCDNUrl("/content/blooks/Astronaut.png"))),
+                width: 300,
+                height: 345,
+                hasCollision: true
+            });
+        })();
 
         return () => {
             active = false;
@@ -444,6 +429,46 @@ export default function TradingPlaza() {
                     <div style={{ color: latency < 100 ? "unset" : latency < 200 ? "yellow" : "red" }}>Ping: {latency}ms</div>
                 </div>
             </div>
+
+            <MobileRunButton
+                onPress={() => {
+                    const brender = brenderCanvasRef.current;
+                    if (!brender) return;
+
+                    brender.pressing["shift"] = true;
+                }}
+                onRelease={() => {
+                    const brender = brenderCanvasRef.current;
+                    if (!brender) return;
+
+                    brender.pressing["shift"] = false;
+                }}
+            />
+
+            <Joystick onMove={(a) => {
+                const brender = brenderCanvasRef.current;
+                if (!brender) return;
+
+                const direction = {
+                    x: Math.cos(a),
+                    y: Math.sin(a)
+                };
+
+                brender.pressing["w"] = direction.y < -0.5;
+                brender.pressing["s"] = direction.y > 0.5;
+                brender.pressing["a"] = direction.x < -0.5;
+                brender.pressing["d"] = direction.x > 0.5;
+            }}
+                onStop={() => {
+                    const brender = brenderCanvasRef.current;
+                    if (!brender) return;
+
+                    brender.pressing["w"] = false;
+                    brender.pressing["s"] = false;
+                    brender.pressing["a"] = false;
+                    brender.pressing["d"] = false;
+                }}
+            />
         </div >
     );
 }
