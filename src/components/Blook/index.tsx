@@ -1,3 +1,4 @@
+import { ImageOrVideo } from "@components/index";
 import styles from "./blook.module.scss";
 
 import { BlookProps } from "./blook.d";
@@ -29,7 +30,7 @@ export default function Blook({ custom = false, shiny = false, src, alt, draggab
                     />
                 </>}
 
-                <img
+                <ImageOrVideo
                     className={styles.image}
                     src={src}
                     alt={alt}

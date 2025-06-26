@@ -13,6 +13,9 @@ const ImageOrVideo = forwardRef<HTMLImageElement | HTMLVideoElement, ImageOrVide
             muted={true}
             loop
             {...props}
+            onError={(e) => {
+                (e.target as HTMLImageElement).src = window.constructCDNUrl("/content/icons/error.png");
+            }}
         />
     );
     else return (
@@ -21,6 +24,9 @@ const ImageOrVideo = forwardRef<HTMLImageElement | HTMLVideoElement, ImageOrVide
             src={src}
             alt={alt}
             {...props}
+            onError={(e) => {
+                (e.target as HTMLImageElement).src = window.constructCDNUrl("/content/icons/error.png");
+            }}
         />
     );
 });

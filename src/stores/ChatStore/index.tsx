@@ -39,7 +39,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
     const { getMessages } = useMessages();
 
     const [messages, setMessages] = useState<ClientMessage[]>([]);
-    const [room, setRoom] = useState<number>(1);
+    const [room, setRoom] = useState<number>(0);
     const [replyingTo, setReplyingTo] = useState<ClientMessage | null>(null);
     const [editing, setEditing] = useState<ClientMessage | null>(null);
     const [usersTyping, setUsersTyping] = useState<TypingUser[]>([]);

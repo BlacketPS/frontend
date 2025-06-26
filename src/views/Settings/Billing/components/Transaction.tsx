@@ -1,6 +1,7 @@
 import Textfit from "react-textfit";
 import { useData } from "@stores/DataStore/index";
 import { useResource } from "@stores/ResourceStore/index";
+import { ImageOrVideo } from "@components/index";
 import styles from "../billing.module.scss";
 
 import { TransactionProps } from "../billing.d";
@@ -48,7 +49,7 @@ export default function Transaction({ transaction, selected, ...props }: Transac
             </Textfit>
 
             <div className={styles.transactionDescriptionContainer}>
-                {window.innerWidth > 768 && <img src={resourceIdToPath(product.imageId)} className={styles.transactionImage} />}
+                {window.innerWidth > 768 && <ImageOrVideo src={resourceIdToPath(product.imageId)} className={styles.transactionImage} />}
 
                 <Textfit className={styles.transactionDescription} mode="single" min={0} max={16}>
                     {!product.isQuantityCapped ? `x${transaction.quantity} ` : ""}{product.name}
