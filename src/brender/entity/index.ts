@@ -15,8 +15,6 @@ export const createGenericEntity = (entity: BrenderEntity): BrenderEntity => {
     };
 
     entities.push(entity);
-    // TODO: good z index sorting system
-    // entities = entities.sort((a, b) => a.z - b.z);
 
     return entity;
 };

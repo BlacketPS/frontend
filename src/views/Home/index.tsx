@@ -151,7 +151,7 @@ export default function Home() {
                             </HowColumn>
 
                             <HowColumn image={window.constructCDNUrl("/content/icons/dashboardStatsPacksOpened.png")}>
-                                Open packs to pull blooks
+                                Open packs to pull items
                             </HowColumn>
                         </div>
                     </div>

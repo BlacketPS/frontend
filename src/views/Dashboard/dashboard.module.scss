@@ -47,10 +47,16 @@
 
 .inventorySection {
     grid-area: 6 / 3 / 2 / 1;
+    margin: 1vh 1vh 1vh 3vh !important;
+
+    @media screen and (max-width: 1350px) {
+        margin: 1vh !important;
+    }
 }
 
 .friendsSection {
     grid-area: 1 / 5 / 6 / 6;
+    margin: 1vh 3vh 1vh 1vh !important;
 
     @media screen and (max-width: 1350px) {
         display: none;

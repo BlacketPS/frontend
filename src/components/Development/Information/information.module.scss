@@ -16,6 +16,13 @@
     font-size: 2vh;
     font-weight: 700;
     pointer-events: none;
+    max-width: 50%;
+
+    &[data-left="true"] {
+        right: unset;
+        left: 0.5%;
+        text-align: left;
+    }
 }
 
 .wipText {

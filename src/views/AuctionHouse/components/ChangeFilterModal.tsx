@@ -71,7 +71,7 @@ export default function ChangeFilterModal() {
                         else setSearch({ ...search, type: AuctionTypeEnum.BLOOK });
                     }}
                 >
-                    Blooks Only
+                    Avatars Only
                 </Toggle>
 
                 <Toggle

@@ -4,7 +4,7 @@ import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { useData } from "@stores/DataStore/index";
 import { useResource } from "@stores/ResourceStore/index";
-import { InventoryBlook, SearchBox } from "@components/index";
+import { InventoryBlook, InventoryItem, SearchBox } from "@components/index";
 import { ChangeFilterModal, SetHolder, Item, RightBlook, RightItem, RightButton, SellBlooksModal, AuctionModal } from "./components";
 import styles from "./inventory.module.scss";
 
@@ -158,7 +158,7 @@ export default function Inventory() {
 
                 <div className={styles.inventoryHolder}>
                     {filterItems().length > 0 && <SetHolder name="My Items" nothing={false}>
-                        {filterItems().map((item) => <Item key={item.id} item={items.find((i) => i.id === item.itemId)!} usesLeft={item.usesLeft} onClick={() => selectItem(items.find((i) => i.id === item.itemId)!)} />)}
+                        {filterItems().map((item) => <InventoryItem key={item.id} item={item} onClick={() => selectItem(items.find((i) => i.id === item.itemId)!)} />)}
                     </SetHolder>}
 
                     {packs.sort((a, b) => a.priority - b.priority).map((pack) => {

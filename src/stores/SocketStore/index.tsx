@@ -23,6 +23,7 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
     const [connected, setConnected] = useState<boolean>(false);
     const [latency, setLatency] = useState<number>(0);
 
+    const cleanupRef = useRef<(() => void) | null>(null);
     const socketRef = useRef<Socket | null>(null);
     const last10Latency = useRef<number[]>([]);
     const userRef = useRef<PrivateUser | null>(user);
@@ -30,20 +31,27 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
     const navigate = useNavigate();
 
     const initializeSocket = useCallback(() => {
+        if (cleanupRef.current) {
+            cleanupRef.current();
+            cleanupRef.current = null;
+        }
+
         setConnected(false);
 
         const socket = io(`${window.location.protocol}//${window.location.host}`, { path: "/gateway", auth: { token: localStorage.getItem("token") }, transports: ["websocket"] });
 
         let pinging = true;
 
-        const pingLoop = () => {
+        const pingLoop = (sid: string) => {
             if (!pinging || !socket.connected) return;
+            if (sid !== socket.id) return;
 
             const start = Date.now();
 
             socket.emit(SocketMessageType.PING);
             socket.once(SocketMessageType.PONG, () => {
                 if (!pinging || !socket.connected) return;
+                if (sid !== socket.id) return;
 
                 socket.emit(SocketMessageType.PONG);
                 const currentPing = Date.now() - start;
@@ -55,14 +63,16 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
 
                 setLatency(Number(averageLatency.toFixed(0)));
 
-                setTimeout(pingLoop, 1000);
+                setTimeout(() => {
+                    pingLoop(sid);
+                }, 1000);
             });
         };
 
         socket.on("connect", () => {
             setConnected(true);
 
-            pingLoop();
+            pingLoop(socket.id!);
 
             console.info("[Blacket] Connected to WebSocket server.");
         });
@@ -131,6 +141,13 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
 
         socketRef.current = socket;
 
+        cleanupRef.current = () => {
+            pinging = false;
+
+            socket.offAny();
+            socket.close();
+        };
+
         return () => {
             pinging = false;
 
@@ -142,8 +159,7 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
         initializeSocket();
 
         return () => {
-            socketRef.current?.offAny();
-            socketRef.current?.close();
+            if (cleanupRef.current) cleanupRef.current();
 
             socketRef.current = null;
         };

@@ -2,7 +2,6 @@ import AdUnit from "./AdUnit";
 import Auction from "./Auction";
 import Background from "./Background";
 import Blook from "./Blook";
-import InventoryBlook from "./Blook/InventoryBlook";
 import * as Button from "./Buttons";
 import ColorPicker from "./ColorPicker";
 import Container from "./Container";
@@ -13,6 +12,8 @@ import Form from "./Form";
 import Header from "./Header";
 import HeaderBody from "./HeaderBody";
 import ImageOrVideo from "./ImageOrVideo";
+import InventoryBlook from "./InventoryBlook";
+import InventoryItem from "./InventoryItem";
 import Input from "./Input";
 import Joystick from "./Joystick";
 import Loader from "./Loader";
@@ -37,7 +38,6 @@ export {
     Auction,
     Background,
     Blook,
-    InventoryBlook,
     Button,
     ColorPicker,
     Container,
@@ -48,6 +48,8 @@ export {
     Header,
     HeaderBody,
     ImageOrVideo,
+    InventoryBlook,
+    InventoryItem,
     Input,
     Joystick,
     Loader,

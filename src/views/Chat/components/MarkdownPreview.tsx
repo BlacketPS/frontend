@@ -1,6 +1,8 @@
 // this file has no types and is really messy because it's awful to deal with
 // if anyone wants to make types for it you're welcome to
 
+// TODO: clean this up and make it more readable, add types, and fix any issues after release
+
 import { useCallback, useMemo, useRef, useState } from "react";
 import Prism, { Token } from "prismjs";
 import "prismjs/components/prism-markdown";
@@ -19,12 +21,12 @@ import { PublicUser } from "@blacket/types";
 import { useNavigate } from "react-router-dom";
 
 Prism.languages.blacketMarkdown = {
-    colorBoldItalic: { pattern: /{#([0-9a-fA-F]{6})}\*\*\*([^*]+)\*\*\*{#([0-9a-fA-F]{6})}/g },
-    colorBold: { pattern: /{#([0-9a-fA-F]{6})}\*\*([^*]+)\*\*{#([0-9a-fA-F]{6})}/g },
-    colorItalic: { pattern: /{#([0-9a-fA-F]{6})}\*([^*]+)\*{#([0-9a-fA-F]{6})}/g },
-    colorStrikethrough: { pattern: /{#([0-9a-fA-F]{6})}~~([^~]+)~~{#([0-9a-fA-F]{6})}/g },
-    colorUnderlined: { pattern: /{#([0-9a-fA-F]{6})}__([^_]+)__{#([0-9a-fA-F]{6})}/g },
-    color: { pattern: /{#([0-9a-fA-F]{6})}([^{]+){#([0-9a-fA-F]{6})}/g },
+    // colorBoldItalic: { pattern: /{#([0-9a-fA-F]{6})}\*\*\*([^*]+)\*\*\*{#([0-9a-fA-F]{6})}/g },
+    // colorBold: { pattern: /{#([0-9a-fA-F]{6})}\*\*([^*]+)\*\*{#([0-9a-fA-F]{6})}/g },
+    // colorItalic: { pattern: /{#([0-9a-fA-F]{6})}\*([^*]+)\*{#([0-9a-fA-F]{6})}/g },
+    // colorStrikethrough: { pattern: /{#([0-9a-fA-F]{6})}~~([^~]+)~~{#([0-9a-fA-F]{6})}/g },
+    // colorUnderlined: { pattern: /{#([0-9a-fA-F]{6})}__([^_]+)__{#([0-9a-fA-F]{6})}/g },
+    // color: { pattern: /{#([0-9a-fA-F]{6})}([^{]+){#([0-9a-fA-F]{6})}/g },
     boldItalic: { pattern: /\*\*\*([^*]+)\*\*\*/g },
     bold: { pattern: /\*\*([^*]+)\*\*/g },
     italic: { pattern: /\*([^*]+)\*/g },
@@ -132,13 +134,13 @@ export default function MarkdownPreview({ content, color, readOnly, getEditor = 
 
                     createModal(<AreYouSureLinkModal link={leaf.content} />);
                 }}>{readOnly ? leaf.content : children}</a>;
-            case leaf.color:
-                return <span {...attributes} className={`
-                        ${(leaf.colorBold || leaf.colorBoldItalic) ? "bold" : ""}
-                        ${(leaf.colorItalic || leaf.colorBoldItalic) ? "italic" : ""}
-                        ${leaf.colorStrikethrough ? "strikethrough" : ""}
-                        ${leaf.colorUnderlined ? "underline" : ""}
-                    `} style={{ color: leaf.hexcode }}>{readOnly ? leaf.content : children}</span>;
+            // case leaf.color:
+            //     return <span {...attributes} className={`
+            //             ${(leaf.colorBold || leaf.colorBoldItalic) ? "bold" : ""}
+            //             ${(leaf.colorItalic || leaf.colorBoldItalic) ? "italic" : ""}
+            //             ${leaf.colorStrikethrough ? "strikethrough" : ""}
+            //             ${leaf.colorUnderlined ? "underline" : ""}
+            //         `} style={{ color: leaf.hexcode }}>{readOnly ? leaf.content : children}</span>;
             case leaf.mention:
                 const user = cachedUsers.find((user) => user.id === leaf.content.replace(/<@|>/g, ""))?.username;
 
@@ -206,65 +208,65 @@ export default function MarkdownPreview({ content, color, readOnly, getEditor = 
                             focus: { path, offset: end }
                         });
                         break;
-                    case "colorBoldItalic":
-                        ranges.push({
-                            color: true,
-                            colorBoldItalic: true,
-                            hexcode: token.content[1] + token.content[2] + token.content[3] + token.content[4] + token.content[5] + token.content[6] + token.content[7],
-                            content: node.text.slice(start, end).replace(/{#([0 - 9a - fA - F]{ 6})}\*\*\*|\*\*\*{#([0 - 9a - fA - F]{ 6})}/g, ""),
-                            anchor: { path, offset: start },
-                            focus: { path, offset: end }
-                        });
-                        break;
-                    case "colorBold":
-                        ranges.push({
-                            color: true,
-                            colorBold: true,
-                            hexcode: token.content[1] + token.content[2] + token.content[3] + token.content[4] + token.content[5] + token.content[6] + token.content[7],
-                            content: node.text.slice(start, end).replace(/{#([0 - 9a - fA - F]{ 6})}\*\*|\*\*{#([0 - 9a - fA - F]{ 6})}/g, ""),
-                            anchor: { path, offset: start },
-                            focus: { path, offset: end }
-                        });
-                        break;
-                    case "colorItalic":
-                        ranges.push({
-                            color: true,
-                            colorItalic: true,
-                            hexcode: token.content[1] + token.content[2] + token.content[3] + token.content[4] + token.content[5] + token.content[6] + token.content[7],
-                            content: node.text.slice(start, end).replace(/{#([0 - 9a - fA - F]{ 6})}\*|\*{#([0 - 9a - fA - F]{ 6})}/g, ""),
-                            anchor: { path, offset: start },
-                            focus: { path, offset: end }
-                        });
-                        break;
-                    case "colorStrikethrough":
-                        ranges.push({
-                            color: true,
-                            colorStrikethrough: true,
-                            hexcode: token.content[1] + token.content[2] + token.content[3] + token.content[4] + token.content[5] + token.content[6] + token.content[7],
-                            content: node.text.slice(start, end).replace(/{#([0 - 9a - fA - F]{ 6})}~~|~~{#([0 - 9a - fA - F]{ 6})}/g, ""),
-                            anchor: { path, offset: start },
-                            focus: { path, offset: end }
-                        });
-                        break;
-                    case "colorUnderlined":
-                        ranges.push({
-                            color: true,
-                            colorUnderlined: true,
-                            hexcode: token.content[1] + token.content[2] + token.content[3] + token.content[4] + token.content[5] + token.content[6] + token.content[7],
-                            content: node.text.slice(start, end).replace(/{#([0 - 9a - fA - F]{ 6})}__|__{#([0 - 9a - fA - F]{ 6})}/g, ""),
-                            anchor: { path, offset: start },
-                            focus: { path, offset: end }
-                        });
-                        break;
-                    case "color":
-                        ranges.push({
-                            color: true,
-                            hexcode: token.content[1] + token.content[2] + token.content[3] + token.content[4] + token.content[5] + token.content[6] + token.content[7],
-                            content: node.text.slice(start, end).replace(/{#([0 - 9a - fA - F]{ 6})}|{#([0 - 9a - fA - F]{ 6})}/g, ""),
-                            anchor: { path, offset: start },
-                            focus: { path, offset: end }
-                        });
-                        break;
+                    // case "colorBoldItalic":
+                    //     ranges.push({
+                    //         color: true,
+                    //         colorBoldItalic: true,
+                    //         hexcode: token.content[1] + token.content[2] + token.content[3] + token.content[4] + token.content[5] + token.content[6] + token.content[7],
+                    //         content: node.text.slice(start, end).replace(/{#([0 - 9a - fA - F]{ 6})}\*\*\*|\*\*\*{#([0 - 9a - fA - F]{ 6})}/g, ""),
+                    //         anchor: { path, offset: start },
+                    //         focus: { path, offset: end }
+                    //     });
+                    //     break;
+                    // case "colorBold":
+                    //     ranges.push({
+                    //         color: true,
+                    //         colorBold: true,
+                    //         hexcode: token.content[1] + token.content[2] + token.content[3] + token.content[4] + token.content[5] + token.content[6] + token.content[7],
+                    //         content: node.text.slice(start, end).replace(/{#([0 - 9a - fA - F]{ 6})}\*\*|\*\*{#([0 - 9a - fA - F]{ 6})}/g, ""),
+                    //         anchor: { path, offset: start },
+                    //         focus: { path, offset: end }
+                    //     });
+                    //     break;
+                    // case "colorItalic":
+                    //     ranges.push({
+                    //         color: true,
+                    //         colorItalic: true,
+                    //         hexcode: token.content[1] + token.content[2] + token.content[3] + token.content[4] + token.content[5] + token.content[6] + token.content[7],
+                    //         content: node.text.slice(start, end).replace(/{#([0 - 9a - fA - F]{ 6})}\*|\*{#([0 - 9a - fA - F]{ 6})}/g, ""),
+                    //         anchor: { path, offset: start },
+                    //         focus: { path, offset: end }
+                    //     });
+                    //     break;
+                    // case "colorStrikethrough":
+                    //     ranges.push({
+                    //         color: true,
+                    //         colorStrikethrough: true,
+                    //         hexcode: token.content[1] + token.content[2] + token.content[3] + token.content[4] + token.content[5] + token.content[6] + token.content[7],
+                    //         content: node.text.slice(start, end).replace(/{#([0 - 9a - fA - F]{ 6})}~~|~~{#([0 - 9a - fA - F]{ 6})}/g, ""),
+                    //         anchor: { path, offset: start },
+                    //         focus: { path, offset: end }
+                    //     });
+                    //     break;
+                    // case "colorUnderlined":
+                    //     ranges.push({
+                    //         color: true,
+                    //         colorUnderlined: true,
+                    //         hexcode: token.content[1] + token.content[2] + token.content[3] + token.content[4] + token.content[5] + token.content[6] + token.content[7],
+                    //         content: node.text.slice(start, end).replace(/{#([0 - 9a - fA - F]{ 6})}__|__{#([0 - 9a - fA - F]{ 6})}/g, ""),
+                    //         anchor: { path, offset: start },
+                    //         focus: { path, offset: end }
+                    //     });
+                    //     break;
+                    // case "color":
+                    //     ranges.push({
+                    //         color: true,
+                    //         hexcode: token.content[1] + token.content[2] + token.content[3] + token.content[4] + token.content[5] + token.content[6] + token.content[7],
+                    //         content: node.text.slice(start, end).replace(/{#([0 - 9a - fA - F]{ 6})}|{#([0 - 9a - fA - F]{ 6})}/g, ""),
+                    //         anchor: { path, offset: start },
+                    //         focus: { path, offset: end }
+                    //     });
+                    //     break;
                     case "mention":
                         ranges.push({
                             mention: true,

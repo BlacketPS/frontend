@@ -1,4 +1,5 @@
-import { createContext, useContext, useEffect, useState, ReactNode, useRef } from "react";
+import { createContext, useContext, useEffect, useState, ReactNode, useRef, useCallback } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useSocket } from "@stores/SocketStore/index";
 import { useUser } from "@stores/UserStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
@@ -45,6 +46,12 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
     const [usersTyping, setUsersTyping] = useState<TypingUser[]>([]);
     const [mentions, setMentions] = useState(0);
 
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    const locationRef = useRef(location);
+    locationRef.current = location;
+
     const usersTypingRef = useRef(usersTyping);
     usersTypingRef.current = usersTyping;
 
@@ -52,6 +59,56 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
     messagesRef.current = messages;
 
     let typingTimeout: number | null = null;
+
+    const parseContent = async (content: string): Promise<string> => {
+        const matches = [...content.matchAll(/<@(\d+)>/g)];
+        if (matches.length === 0) return content;
+
+        const replacements = await Promise.all(
+            matches.map(async (match) => {
+                const userId = match[1];
+                const cachedUser = await addCachedUser(userId);
+
+                return {
+                    original: match[0],
+                    replacement: cachedUser ? `@${cachedUser.username}` : `<@${userId}>`
+                };
+            })
+        );
+
+        let result = content;
+
+        for (const { original, replacement } of replacements) result = result.replace(original, replacement);
+
+        return result;
+    };
+
+    const addMention = useCallback(async (message: ClientMessage) => {
+        if (!user) return;
+
+        const l = locationRef.current.pathname.split("/")[1];
+        console.log(l);
+
+        const isInChat = l === "chat";
+        if (isInChat) return;
+
+        const cachedUser = await addCachedUser(message.authorId);
+
+        if (message.mentions.includes(user.id) || (message.replyingTo && message.replyingTo.authorId === user.id)) {
+            new Audio(window.constructCDNUrl("/content/mention.ogg")).play();
+            setMentions((previousMentions) => previousMentions + 1);
+
+            createToast({
+                header: cachedUser.username,
+                body: await parseContent(message.content),
+                icon: getUserAvatarPath(cachedUser),
+                onClick: () => {
+                    navigate("/chat");
+                    setReplyingTo(message);
+                }
+            });
+        }
+    }, [user, location, addCachedUser, createToast, getUserAvatarPath, navigate]);
 
     const fetchMessages = async (r: number = room) => {
         if (!user) return [];
@@ -63,8 +120,6 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
         const userMap = new Map<string, boolean>();
         messages.forEach((message: Message) => {
             userMap.set(message.authorId, true);
-            if (message.mentions.includes(user.id)
-                || (message.replyingTo && message.replyingTo.authorId === user.id)) setMentions((previousMentions) => previousMentions + 1);
         });
 
         await Promise.all(Array.from(userMap.keys()).map((user) => addCachedUser(user)));
@@ -125,19 +180,7 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
 
         if (data.authorId === user.id) return;
 
-        const cachedUser = await addCachedUser(data.authorId);
-
-        if (data.mentions.includes(user.id)
-            || (data.replyingTo && data.replyingTo.authorId === user.id)) {
-            new Audio(window.constructCDNUrl("/content/mention.ogg")).play();
-            setMentions((previousMentions) => previousMentions + 1);
-
-            createToast({
-                header: cachedUser.username,
-                body: data.content,
-                icon: getUserAvatarPath(cachedUser)
-            });
-        }
+        addMention(data);
 
         setMessages((previousMessages) => [data, ...previousMessages]);
         setUsersTyping((previousUsersTyping) => previousUsersTyping.filter((user) => user.userId !== data.authorId));

@@ -1,5 +1,4 @@
-// TODO: mobile support is completely broken
-// TODO: fix the emojis and menmtion breaking when an _ is inserted
+// TODO: mobile support is buggy
 
 import { memo, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
@@ -30,6 +29,7 @@ export default memo(function Chat() {
 
     useEffect(() => {
         resetMentions();
+
         setEditing(null);
     }, []);
 

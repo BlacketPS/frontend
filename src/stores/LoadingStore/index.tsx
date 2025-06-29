@@ -1,8 +1,9 @@
 import { ReactNode, createContext, useContext, useState } from "react";
-import { type LoadingStoreContext } from "./loading.d";
 import Loader from "@components/Loader/index";
 
-const LoadingStoreContext = createContext<LoadingStoreContext>({ loading: false, setLoading: () => {} });
+import { type LoadingStoreContext } from "./loading.d";
+
+const LoadingStoreContext = createContext<LoadingStoreContext>({ loading: false, setLoading: () => { } });
 
 export function useLoading() {
     return useContext(LoadingStoreContext);

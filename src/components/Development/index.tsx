@@ -1,5 +1,7 @@
 import Information from "./Information";
+import UIDFlasher from "./UIDFlasher";
 
 export {
-    Information
+    Information,
+    UIDFlasher
 };

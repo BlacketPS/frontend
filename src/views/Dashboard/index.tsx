@@ -10,8 +10,8 @@ import { useAuctionHouse } from "@stores/AuctionHouseStore/index";
 import { useUsers } from "@controllers/users/useUsers/index";
 import { useSearchAuction } from "@controllers/auctions/useSearchAuction/index";
 import { useClaimDailyTokens } from "@controllers/quests/useClaimDailyTokens/index";
-import { AdUnit, Auction, Blook, ImageOrVideo, Username, InventoryBlook } from "@components/index";
-import { LevelContainer, LookupUserModal, SmallButton, SectionHeader, StatContainer, InventoryItem, CosmeticsModal, DailyRewardsModal } from "./components";
+import { AdUnit, Auction, Blook, ImageOrVideo, Username, InventoryBlook, InventoryItem } from "@components/index";
+import { LevelContainer, LookupUserModal, SmallButton, SectionHeader, StatContainer, CosmeticsModal, DailyRewardsModal } from "./components";
 import styles from "./dashboard.module.scss";
 
 import { AuctionsAuctionEntity, PrivateUser, PublicUser } from "@blacket/types";
@@ -234,7 +234,7 @@ export default function Dashboard() {
                         {viewingUser.guild && <StatContainer title="Guild" icon={window.constructCDNUrl("/content/icons/dashboardStatsGuild.png")} value={viewingUser.guild ? viewingUser.guild : "None"} />}
                         <StatContainer title="Tokens" icon={window.constructCDNUrl("/content/token.png")} value={viewingUser.tokens.toLocaleString()} />
                         <StatContainer title="Experience" icon={window.constructCDNUrl("/content/experience.png")} value={viewingUser.experience.toLocaleString()} />
-                        <StatContainer title="Blooks Unlocked" icon={window.constructCDNUrl("/content/icons/dashboardStatsBlooksUnlocked.png")} value={`${viewingUser.blooks.length.toLocaleString()} / ${blooks.length.toLocaleString()}`} /> {/* TODO: BACKEND (Syfe/Xotic/Zastix): Default blook does NOT count in inventory (yet). REVERT to (blooks.length - 1) when fixed. */}
+                        <StatContainer title="Blooks Unlocked" icon={window.constructCDNUrl("/content/icons/dashboardStatsBlooksUnlocked.png")} value={`${viewingUser.blooks.length.toLocaleString()} / ${blooks.length.toLocaleString()}`} /> {/* TODO: BACKEND (Syfe/Xotic): Default blook does NOT count in inventory (yet). REVERT to (blooks.length - 1) when fixed. */}
                         <StatContainer title="Packs Opened" icon={window.constructCDNUrl("/content/icons/dashboardStatsPacksOpened.png")} value={viewingUser.statistics.packsOpened.toLocaleString()} />
                         <StatContainer title="Messages Sent" icon={window.constructCDNUrl("/content/icons/dashboardStatsMessagesSent.png")} value={viewingUser.statistics.messagesSent.toLocaleString()} />
                     </div>
@@ -280,7 +280,7 @@ export default function Dashboard() {
                             {items.sort((a, b) => a.priority - b.priority).map((item) => {
                                 const filteredItems = viewingUser.items.filter((i) => i.itemId === item.id);
 
-                                if (filteredItems.length > 0) return filteredItems.map((i) => <InventoryItem key={i.id} item={item} usesLeft={i.usesLeft} />);
+                                if (filteredItems.length > 0) return filteredItems.map((i) => <InventoryItem key={i.id} item={i} selectable={false} useVhStyles={true} />);
                             })}
 
                             {packs.sort((a, b) => a.priority - b.priority).map((pack) => {

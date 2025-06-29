@@ -13,6 +13,7 @@ const router = createBrowserRouter([{
     errorElement: <Error code={0} />,
     element: <StoreWrapper>
         <Development.Information />
+        <Development.UIDFlasher />
 
         <Outlet />
     </StoreWrapper>,

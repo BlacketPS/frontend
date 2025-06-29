@@ -142,8 +142,8 @@ export default function Sidebar() {
                             <i className={`${styles.pageIcon} ${page.icon}`} />
                             <div className={styles.pageText} style={{ fontSize: page.textSizeOverride || 20 }}>{page.text}</div>
 
-                            {page.isChat && <div className={styles.notificationIndicator}>
-                                <div>5</div>
+                            {page.isChat && mentions > 0 && <div className={styles.notificationIndicator}>
+                                <div>{mentions}</div>
                             </div>}
                         </Link>
                     ))}
@@ -193,7 +193,7 @@ export default function Sidebar() {
                         <i className={`${styles.pageIcon} ${page.icon}`} />
                         <div className={styles.pageText} style={{ fontSize: page.textSizeOverride || 20 }}>{page.text}</div>
 
-                        {page.isChat && <div className={styles.notificationIndicator}>
+                        {page.isChat && mentions > 0 && <div className={styles.notificationIndicator}>
                             <div>{mentions}</div>
                         </div>}
                     </Link>
