@@ -1,4 +1,4 @@
-import { Banner, Blook, Emoji, Font, Item, ItemShop, Pack, Rarity, StripeProductEntity, StripeStoreEntity, Title } from "@blacket/types";
+import { Banner, Blook, Emoji, Font, Item, ItemShop, Pack, Rarity, SpinnyWheel, StripeProductEntity, StripeStoreEntity, Title } from "@blacket/types";
 
 export interface DataStoreContext {
     badges: any[];
@@ -25,6 +25,8 @@ export interface DataStoreContext {
     setProducts: (products: StripeProductEntity[]) => void;
     stores: StripeStoreEntity[];
     setStores: (stores: StripeStoreEntity[]) => void;
+    spinnyWheels: SpinnyWheel[];
+    setSpinnyWheels: (spinnyWheels: SpinnyWheel[]) => void;
 
     titleIdToText: (id: number) => string;
     fontIdToName: (id: number) => string;

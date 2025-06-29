@@ -5,7 +5,7 @@ import Loading from "../../views/Loading";
 import styles from "./dataStore.module.scss";
 
 import { type DataStoreContext } from "./dataStore.d";
-import { Banner, Blook, Emoji, Font, Item, ItemShop, Pack, Rarity, StripeProductEntity, StripeStoreEntity, Title } from "@blacket/types";
+import { Banner, Blook, Emoji, Font, Item, ItemShop, Pack, Rarity, SpinnyWheel, StripeProductEntity, StripeStoreEntity, Title } from "@blacket/types";
 
 const DataStoreContext = createContext<DataStoreContext>({
     badges: [],
@@ -32,6 +32,8 @@ const DataStoreContext = createContext<DataStoreContext>({
     setProducts: () => { },
     stores: [],
     setStores: () => { },
+    spinnyWheels: [],
+    setSpinnyWheels: () => { },
 
     titleIdToText: () => "",
     fontIdToName: () => ""
@@ -56,13 +58,14 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
     const [titles, setTitles] = useState<Title[]>([]);
     const [products, setProducts] = useState<StripeProductEntity[]>([]);
     const [stores, setStores] = useState<StripeStoreEntity[]>([]);
+    const [spinnyWheels, setSpinnyWheels] = useState<SpinnyWheel[]>([]);
 
     const { resources, resourceIdToPath, setResources } = useResource();
     const { setUser } = useUser();
 
     const [completed, setCompleted] = useState<number>(0);
     const [fetchedResources, setFetchedResources] = useState<boolean>(false);
-    const max = 11 + (localStorage.getItem("token") ? 1 : 0);
+    const max = 12 + (localStorage.getItem("token") ? 1 : 0);
 
     useEffect(() => {
         if (!loading) return;
@@ -94,7 +97,8 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
             ["packs", setPacks],
             ["rarities", setRarities],
             ["titles", setTitles],
-            ["products", setProducts]
+            ["products", setProducts],
+            ["spinny-wheels", setSpinnyWheels]
         ] as [string, Dispatch<SetStateAction<any[]>>][]).forEach(([key, setter]) => window.fetch2.get(`/api/data/${key}`)
                 .then((res) => {
                     setter(res.data);
@@ -155,6 +159,7 @@ export function DataStoreProvider({ children }: { children: ReactNode }) {
         titles, setTitles,
         products, setProducts,
         stores, setStores,
+        spinnyWheels, setSpinnyWheels,
 
         titleIdToText,
         fontIdToName
