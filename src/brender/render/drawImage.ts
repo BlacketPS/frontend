@@ -1,5 +1,11 @@
 import { getLayerCtx, camera, isOnScreen, DrawImageProps } from "@brender/index";
 
+const shineVideo = document.createElement("video");
+shineVideo.src = "https://files.catbox.moe/97k1uf.mp4";
+shineVideo.muted = true;
+shineVideo.loop = true;
+shineVideo.play();
+
 export const drawImage = (image: DrawImageProps) => {
     const imageCtx = getLayerCtx(image.z);
 
@@ -22,6 +28,48 @@ export const drawImage = (image: DrawImageProps) => {
 
     if (image.blendMode) imageCtx.globalCompositeOperation = image.blendMode;
     if (image.opacity) imageCtx.globalAlpha = image.opacity;
+
+    if (
+        image.shiny &&
+        shineVideo instanceof HTMLVideoElement &&
+        shineVideo.readyState >= 2
+    ) {
+        const screenX = (image.x - camera.x) * camera.scale;
+        const screenY = (image.y - camera.y) * camera.scale;
+        const screenW = image.width * camera.scale;
+        const screenH = image.height * camera.scale;
+
+        const baseCtx = getLayerCtx(image.z);
+        const shineLayerCtx = getLayerCtx(image.z + 1);
+
+        const shineCanvas = document.createElement("canvas");
+        shineCanvas.width = screenW;
+        shineCanvas.height = screenH;
+        const shineCtx = shineCanvas.getContext("2d")!;
+
+        shineCtx.globalAlpha = 0.65;
+        shineCtx.globalCompositeOperation = "lighter";
+
+        shineCtx.fillStyle = "rgba(255,255,255,1)";
+        shineCtx.fillRect(0, 0, screenW, screenH);
+
+        shineCtx.drawImage(shineVideo, 0, 0, screenW, screenH);
+
+        shineCtx.globalCompositeOperation = "destination-in";
+        shineCtx.drawImage(image.image, 0, 0, screenW, screenH);
+
+        shineLayerCtx.drawImage(shineCanvas, screenX, screenY);
+
+        baseCtx.save();
+
+        baseCtx.shadowColor = "rgba(255, 255, 255, 1)";
+        baseCtx.shadowBlur = 10;
+        baseCtx.shadowOffsetX = 0;
+        baseCtx.shadowOffsetY = 0;
+        baseCtx.drawImage(image.image, screenX, screenY, screenW, screenH);
+
+        baseCtx.restore();
+    }
 
     if (image.useCamera && isOnScreen(image.x, image.y, image.width, image.height)) {
         imageCtx.drawImage(

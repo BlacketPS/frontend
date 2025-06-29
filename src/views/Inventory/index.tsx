@@ -1,14 +1,14 @@
 import { Fragment, useCallback, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { useData } from "@stores/DataStore/index";
 import { useResource } from "@stores/ResourceStore/index";
 import { InventoryBlook, InventoryItem, SearchBox } from "@components/index";
-import { ChangeFilterModal, SetHolder, Item, RightBlook, RightItem, RightButton, SellBlooksModal, AuctionModal } from "./components";
+import { ChangeFilterModal, SetHolder, RightBlook, RightItem, RightButton, SellBlooksModal, AuctionModal } from "./components";
 import styles from "./inventory.module.scss";
 
-import { AuctionTypeEnum, Blook as BlookType, Item as ItemType } from "@blacket/types";
+import { AuctionTypeEnum, Blook as BlookType, Item as ItemType, ItemTypeEnum } from "@blacket/types";
 import { SearchOptions } from "./inventory.d";
 
 export default function Inventory() {
@@ -18,6 +18,8 @@ export default function Inventory() {
     const { resourceIdToPath } = useResource();
 
     if (!user) return <Navigate to="/login" />;
+
+    const navigate = useNavigate();
 
     const getUserBlookQuantity = (blookId: number) => {
         return user.blooks.filter((blook) => blook.blookId === blookId && !blook.shiny).length;
@@ -120,6 +122,13 @@ export default function Inventory() {
         });
     };
 
+    const useItem = (item: ItemType) => {
+        switch (item.type) {
+            case ItemTypeEnum.DAILY_SPINNY_WHEEL_TICKET:
+                navigate("/dashboard");
+        }
+    };
+
     return (
         <>
             <div className={styles.leftSide}>
@@ -203,9 +212,9 @@ export default function Inventory() {
                 </div>}
             </RightBlook>}
 
-            {user.items.length > 0 && selectedItem && <RightItem item={selectedItem}>
+            {user.items.length > 0 && selectedItem && <RightItem item={selectedItem} onUse={() => useItem(selectedItem)}>
                 <div className={styles.rightButtonContainer}>
-                    {selectedItem.canUse && <RightButton image={window.constructCDNUrl("/content/use.png")}>Use</RightButton>}
+                    {selectedItem.canUse && <RightButton image={window.constructCDNUrl("/content/use.png")} onClick={() => useItem(selectedItem)}>Use</RightButton>}
                     {selectedItem.canAuction && <RightButton icon="fas fa-building-columns" onClick={() => createModal(<AuctionModal type={AuctionTypeEnum.ITEM} item={selectedItem} />)}>Auction</RightButton>}
                 </div>
             </RightItem>}

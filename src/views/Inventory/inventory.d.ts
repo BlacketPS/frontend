@@ -29,6 +29,7 @@ export interface RightBlookProps extends HTMLAttributes<HTMLDivElement> {
 
 export interface RightItemProps extends HTMLAttributes<HTMLDivElement> {
     item: Item;
+    onUse?: () => void;
 }
 
 export interface RightButtonProps extends GenericButtonProps {

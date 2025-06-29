@@ -36,6 +36,8 @@ export interface DrawImageProps {
     blendMode?: GlobalCompositeOperation;
     opacity?: number;
     tint?: string;
+    shiny?: boolean;
+    shineOffset?: number;
     useCamera?: boolean;
     rotation?: number;
 }
@@ -92,6 +94,7 @@ export interface BrenderObject {
     imageBlendMode?: GlobalCompositeOperation;
     imageOpacity?: number;
     imageTint?: string;
+    imageShiny?: boolean;
     hasCollision?: boolean;
     rotation?: number;
     onClick?: (object: BrenderObject) => void;

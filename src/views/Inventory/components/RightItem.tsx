@@ -10,7 +10,7 @@ import styles from "../inventory.module.scss";
 import { RightItemProps } from "../inventory";
 import { AuctionTypeEnum } from "@blacket/types";
 
-export default function RightItem({ item, children, ...props }: RightItemProps) {
+export default function RightItem({ item, onUse, children, ...props }: RightItemProps) {
     const { resourceIdToPath } = useResource();
     const { openContextMenu } = useContextMenu();
     const { rarities } = useData();
@@ -46,7 +46,11 @@ export default function RightItem({ item, children, ...props }: RightItemProps) 
                     className={styles.rightButtonMobile}
                     backgroundColor="var(--primary-color)"
                     onClick={() => openContextMenu([
-                        { label: "Use", image: window.constructCDNUrl("/content/use.png") },
+                        ...(item.canUse ? [{
+                            label: "Use", image: window.constructCDNUrl("/content/use.png"), onClick: () => {
+                                if (onUse) onUse();
+                            }
+                        }] : []),
                         ...(item.canAuction ? [{ label: "Auction", icon: "fas fa-building-columns", onClick: () => createModal(<AuctionModal type={AuctionTypeEnum.ITEM} item={item} />) }] : [])
                     ])}
                 >

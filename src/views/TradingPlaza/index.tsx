@@ -162,6 +162,7 @@ export default function TradingPlaza() {
                 width: 300 / 6,
                 height: 345 / 6,
                 targetEasingSpeed: 0.1,
+                // make it glow
                 user: {
                     id: userId,
                     username: "",
@@ -241,8 +242,10 @@ export default function TradingPlaza() {
             brender.urlToImage(getUserAvatarPath(user))
                 .then((image) => {
                     entity.image = image;
-                    entity.width = image.width / 6;
-                    entity.height = image.height / 6;
+                    if (user?.avatar?.shiny) entity.imageShiny = true;
+
+                    entity.width = 300 / 6;
+                    entity.height = 345 / 6;
                 });
 
             return entity;
@@ -359,8 +362,10 @@ export default function TradingPlaza() {
         brender.urlToImage(getUserAvatarPath(user))
             .then((image) => {
                 player.image = image;
-                player.width = image.width / 6;
-                player.height = image.height / 6;
+                if (user?.avatar?.shiny) player.imageShiny = true;
+
+                player.width = 300 / 6;
+                player.height = 345 / 6;
             });
 
         const movementLoop = () => {

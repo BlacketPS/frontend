@@ -72,33 +72,33 @@ const BrenderCanvas = forwardRef<BrenderCanvasRef, BrenderCanvasProps>(({ width,
 
                 if (showFPS) drawText({ text: `FPS: ${fps}`, x: getWidth() - 7, y: 20, z: 999, style: { textAlign: "right" }, useCamera: false });
 
-                objects.forEach((object) => {
-                    if (object.hasCollision && isOnScreen(object.x, object.y, object.width ?? object?.image?.width ?? 0, object.height ?? object?.image?.height ?? 0)) {
-                        drawRect({
-                            x: object.x,
-                            y: object.y,
-                            z: object.z ? object.z + 1 : 0,
-                            width: object.width ?? object?.image?.width ?? 0,
-                            height: object.height ?? object?.image?.height ?? 0,
-                            color: "rgba(0, 0, 255, 0.2)",
-                            useCamera: false
-                        });
-                    }
-                });
+                // objects.forEach((object) => {
+                //     if (object.hasCollision && isOnScreen(object.x, object.y, object.width ?? object?.image?.width ?? 0, object.height ?? object?.image?.height ?? 0)) {
+                //         drawRect({
+                //             x: object.x,
+                //             y: object.y,
+                //             z: object.z ? object.z + 1 : 0,
+                //             width: object.width ?? object?.image?.width ?? 0,
+                //             height: object.height ?? object?.image?.height ?? 0,
+                //             color: "rgba(0, 0, 255, 0.2)",
+                //             useCamera: false
+                //         });
+                //     }
+                // });
 
-                entities.forEach((entity) => {
-                    if (entity.hasCollision && isOnScreen(entity.x, entity.y, entity.width ?? entity?.image?.width ?? 0, entity.height ?? entity?.image?.height ?? 0)) {
-                        drawRect({
-                            x: entity.x,
-                            y: entity.y,
-                            z: entity.z ? entity.z + 1 : 0,
-                            width: entity.width ?? entity?.image?.width ?? 0,
-                            height: entity.height ?? entity?.image?.height ?? 0,
-                            color: "rgba(0, 0, 255, 0.2)",
-                            useCamera: false
-                        });
-                    }
-                });
+                // entities.forEach((entity) => {
+                //     if (entity.hasCollision && isOnScreen(entity.x, entity.y, entity.width ?? entity?.image?.width ?? 0, entity.height ?? entity?.image?.height ?? 0)) {
+                //         drawRect({
+                //             x: entity.x,
+                //             y: entity.y,
+                //             z: entity.z ? entity.z + 1 : 0,
+                //             width: entity.width ?? entity?.image?.width ?? 0,
+                //             height: entity.height ?? entity?.image?.height ?? 0,
+                //             color: "rgba(0, 0, 255, 0.2)",
+                //             useCamera: false
+                //         });
+                //     }
+                // });
             }
         });
 
