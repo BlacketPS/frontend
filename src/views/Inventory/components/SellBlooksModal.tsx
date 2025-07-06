@@ -52,9 +52,7 @@ export default function SellBlooksModal({ blook, shiny }: SellBlooksModalProps) 
 
             {/* <Modal.ModalBody>Please select the blooks you would like to sell.</Modal.ModalBody> */}
 
-            <div className={styles.sellBlooksFlex}>
-                <i className={`fas fa-x ${styles.sellBlookExitSell}`} onClick={closeModal} />
-
+            <div className={styles.sellBlooksFlex} style={{ height: "10rem" }}>
                 <div className={styles.sellBlooksContainer}>
                     <div className={styles.sellBlooks}>
                         {user.blooks
@@ -87,8 +85,10 @@ export default function SellBlooksModal({ blook, shiny }: SellBlooksModalProps) 
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", width: "20rem", textAlign: "left" }}>
-                    <h1 className={styles.sellBlookBlookName}>{shiny && "Shiny"} {blook.name}</h1>
-                    
+                    <h1 className={styles.sellBlookBlookName}>
+                        {shiny && "Shiny"} {blook.name}
+                    </h1>
+
                     <div className={styles.sellBlookHoldInput}>
                         <div className={styles.sellBlookInput}>
                             <Form style={{ width: "75px", margin: "0 0 0 -5px" }} onSubmit={submit}>
@@ -119,8 +119,8 @@ export default function SellBlooksModal({ blook, shiny }: SellBlooksModalProps) 
                             <p style={{ fontSize: "25px", margin: 0 }}>/ {getUserBlookQuantity()}</p>
                         </div>
                         <div className={styles.sellBlookExtraOptions}>
-                            <button 
-                                className={styles.sellBlookExtraOptionButton} 
+                            <button
+                                className={styles.sellBlookExtraOptionButton}
                                 onClick={() => {
                                     const newQuantity = Math.min(selectedBlooks.length + 1, getUserBlookQuantity());
                                     setSelectedBlooks(user.blooks
@@ -136,8 +136,8 @@ export default function SellBlooksModal({ blook, shiny }: SellBlooksModalProps) 
                                 +1
                             </button>
                             {getUserBlookQuantity() >= 5 && (
-                                <button 
-                                    className={styles.sellBlookExtraOptionButton} 
+                                <button
+                                    className={styles.sellBlookExtraOptionButton}
                                     onClick={() => {
                                         const newQuantity = Math.min(selectedBlooks.length + 5, getUserBlookQuantity());
                                         setSelectedBlooks(user.blooks
@@ -154,8 +154,8 @@ export default function SellBlooksModal({ blook, shiny }: SellBlooksModalProps) 
                                 </button>
                             )}
                             {getUserBlookQuantity() >= 10 && (
-                                <button 
-                                    className={styles.sellBlookExtraOptionButton} 
+                                <button
+                                    className={styles.sellBlookExtraOptionButton}
                                     onClick={() => {
                                         const newQuantity = Math.min(selectedBlooks.length + 10, getUserBlookQuantity());
                                         setSelectedBlooks(user.blooks
@@ -172,8 +172,8 @@ export default function SellBlooksModal({ blook, shiny }: SellBlooksModalProps) 
                                 </button>
                             )}
                             {(
-                                <button 
-                                    className={styles.sellBlookExtraOptionButton} 
+                                <button
+                                    className={styles.sellBlookExtraOptionButton}
                                     onClick={() => {
                                         const newQuantity = getUserBlookQuantity() - 1;
                                         setSelectedBlooks(user.blooks
@@ -189,8 +189,8 @@ export default function SellBlooksModal({ blook, shiny }: SellBlooksModalProps) 
                                     1 LEFT
                                 </button>
                             )}
-                            <button 
-                                className={styles.sellBlookExtraOptionButton} 
+                            <button
+                                className={styles.sellBlookExtraOptionButton}
                                 onClick={() => {
                                     setSelectedBlooks([]);
                                     setError("");
@@ -199,19 +199,20 @@ export default function SellBlooksModal({ blook, shiny }: SellBlooksModalProps) 
                                 <i className="fa-solid fa-arrows-rotate" />
                             </button>
                         </div>
-                        <Button.GenericButton onClick={submit} type="submit" style={{width: "100%", marginTop: "7px", fontSize: "1.35rem" }}>
-                            Sell for <img src="/media/content/token.png" style={{ width: "20px", margin: "0 7px" }} /> {(selectedBlooks.length * blook.price * (shiny ? 10 : 1)).toLocaleString()} tokens
-                        </Button.GenericButton>
                     </div>
                 </div>
-            </div>
+            </div >
 
-            {error !== "" && <ErrorContainer>{error}</ErrorContainer>}
+            {error !== "" && <ErrorContainer>{error}</ErrorContainer>
+            }
 
-            {/* <Modal.ModalButtonContainer loading={loading}>
-                <Button.GenericButton onClick={submit} type="submit">Sell</Button.GenericButton>
+            <Modal.ModalButtonContainer loading={loading}>
+                <Button.GenericButton onClick={submit} type="submit">
+                    Sell for <img src="/media/content/token.png" style={{ width: "20px", margin: "0 7px" }} /> {(selectedBlooks.length * blook.price * (shiny ? 10 : 1)).toLocaleString()} tokens
+                </Button.GenericButton>
+
                 <Button.GenericButton onClick={closeModal}>Cancel</Button.GenericButton>
-            </Modal.ModalButtonContainer> */}
+            </Modal.ModalButtonContainer>
         </>
     );
 }

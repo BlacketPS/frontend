@@ -80,98 +80,104 @@ export default function AuctionModal({ type, blook, shiny, item }: AuctionModalP
 
     return (
         <>
-            <Modal.ModalHeader>
-                Auctioning {shiny && "Shiny "}{type === AuctionTypeEnum.BLOOK ? blook!.name : item!.name}
-            </Modal.ModalHeader>
+            <div className={styles.sellBlooksFlex}>
+                {type === AuctionTypeEnum.BLOOK && blook && <div className={styles.sellBlooksContainer}>
+                    <div className={styles.sellBlooks}>
+                        {user.blooks
+                            .filter((userBlook) => userBlook.blookId === blook.id)
+                            .filter((userBlook) => userBlook.shiny === shiny)
+                            .map((userBlook) => <div
+                                key={userBlook.id}
+                                className={styles.sellBlook}
+                                data-selected={selectedBlook === userBlook.id ? "true" : "false"}
+                                onClick={() => {
+                                    if (selectedBlook === userBlook.id) setSelectedBlook(null);
+                                    else setSelectedBlook(userBlook.id);
+                                }}
+                            >
+                                <div className={styles.sellBlookImageContainer}>
+                                    <Blook
+                                        className={styles.sellBlookImage}
+                                        src={resourceIdToPath(blook.imageId)}
+                                        shiny={userBlook.shiny}
+                                    />
+                                </div>
 
-            <Modal.ModalBody>Please fill out the fields below.</Modal.ModalBody>
+                                <div className={styles.sellBlookInformation}>
+                                    <div>{shiny && "Shiny"} {blook.name}</div>
+                                    <div>Serial: {userBlook.serial ? `#${userBlook.serial}` : "V2 Blook (N/A)"}</div>
+                                </div>
+                            </div>)
+                        }
+                    </div>
+                </div>}
 
-            {type === AuctionTypeEnum.BLOOK && blook && <div className={styles.sellBlooksContainer}>
-                <div className={styles.sellBlooks}>
-                    {user.blooks
-                        .filter((userBlook) => userBlook.blookId === blook.id)
-                        .filter((userBlook) => userBlook.shiny === shiny)
-                        .map((userBlook) => <div
-                            key={userBlook.id}
-                            className={styles.sellBlook}
-                            data-selected={selectedBlook === userBlook.id ? "true" : "false"}
-                            onClick={() => {
-                                if (selectedBlook === userBlook.id) setSelectedBlook(null);
-                                else setSelectedBlook(userBlook.id);
+                <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", width: "20rem", textAlign: "left" }}>
+                    <h1 className={styles.sellBlookBlookName}>{shiny && "Shiny"} {type === AuctionTypeEnum.BLOOK ? blook!.name : item!.name}</h1>
+
+                    <Form style={{ marginTop: 15 }}>
+                        <Input
+                            value={price}
+                            icon="fas fa-dollar-sign"
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                const parsedValue = parseInt(value);
+
+                                if (value.match(/[^0-9]/)) return;
+                                if (parsedValue < 1 && value !== "") return;
+                                if (parsedValue > 999999999) return;
+
+                                setPrice(e.target.value);
+                                setError("");
                             }}
-                        >
-                            <div className={styles.sellBlookImageContainer}>
-                                <Blook
-                                    className={styles.sellBlookImage}
-                                    src={resourceIdToPath(blook.imageId)}
-                                    shiny={userBlook.shiny}
-                                />
-                            </div>
+                            placeholder={
+                                !buyItNow ? "Starting Bid" : "Price"
+                            }
+                            autoComplete="off"
+                            containerProps={{
+                                style: { marginLeft: 0 }
+                            }}
+                        />
 
-                            <div className={styles.sellBlookInformation}>
-                                <div>{shiny && "Shiny"} {blook.name}</div>
-                                <div>Serial: {userBlook.serial ? `#${userBlook.serial}` : "V2 Blook (N/A)"}</div>
-                            </div>
-                        </div>)
-                    }
+                        <Input
+                            value={duration}
+                            icon="fas fa-clock"
+                            onChange={(e) => {
+                                const value = e.target.value;
+                                const parsedValue = parseInt(value);
+
+                                if (value.match(/[^0-9]/)) return;
+                                if (parsedValue < 1 && value !== "") return;
+                                if (parsedValue > 10080) return;
+
+                                setDuration(e.target.value);
+                                setError("");
+                            }}
+                            placeholder="Duration (minutes)"
+                            autoComplete="off"
+                            containerProps={{
+                                style: { marginLeft: 0 }
+                            }}
+                        />
+                    </Form>
+
+                    {/* <Modal.ModalBody>
+                        <div style={{ display: "flex", flexDirection: "column" }}>
+                            <div style={{ color: auctionTax > user.tokens ? "#ff0000" : "" }}>Auction Tax: {auctionTax.toLocaleString()}</div>
+                            <div style={{ color: durationTax > user.tokens ? "#ff0000" : "" }}>Duration Tax: {durationTax.toLocaleString()}</div>
+                            <div style={{ color: (auctionTax + durationTax) > user.tokens ? "#ff0000" : "" }}>Total: {(auctionTax + durationTax).toLocaleString()}</div>
+
+                            {user.permissions.includes(PermissionTypeEnum.LESS_AUCTION_TAX) && <div style={{ fontSize: "0.8rem", marginTop: 13 }}>You have a 25% discount on auction tax!</div>}
+                        </div>
+                    </Modal.ModalBody> */}
+
+                    <Modal.ModalToggleContainer style={{ justifyContent: "left" }}>
+                        <Toggle checked={buyItNow} onClick={() => setBuyItNow(!buyItNow)}>
+                            Buy It Now
+                        </Toggle>
+                    </Modal.ModalToggleContainer>
                 </div>
-            </div>}
-
-            <Form>
-                <Input
-                    value={price}
-                    icon="fas fa-dollar-sign"
-                    onChange={(e) => {
-                        const value = e.target.value;
-                        const parsedValue = parseInt(value);
-
-                        if (value.match(/[^0-9]/)) return;
-                        if (parsedValue < 1 && value !== "") return;
-                        if (parsedValue > 999999999) return;
-
-                        setPrice(e.target.value);
-                        setError("");
-                    }}
-                    placeholder={
-                        !buyItNow ? "Starting Bid" : "Price"
-                    }
-                    autoComplete="off"
-                />
-
-                <Input
-                    value={duration}
-                    icon="fas fa-clock"
-                    onChange={(e) => {
-                        const value = e.target.value;
-                        const parsedValue = parseInt(value);
-
-                        if (value.match(/[^0-9]/)) return;
-                        if (parsedValue < 1 && value !== "") return;
-                        if (parsedValue > 10080) return;
-
-                        setDuration(e.target.value);
-                        setError("");
-                    }}
-                    placeholder="Duration (minutes)"
-                    autoComplete="off"
-                />
-            </Form>
-
-            <Modal.ModalBody>
-                <div style={{ display: "flex", flexDirection: "column" }}>
-                    <div style={{ color: auctionTax > user.tokens ? "#ff0000" : "" }}>Auction Tax: {auctionTax.toLocaleString()}</div>
-                    <div style={{ color: durationTax > user.tokens ? "#ff0000" : "" }}>Duration Tax: {durationTax.toLocaleString()}</div>
-                    <div style={{ color: (auctionTax + durationTax) > user.tokens ? "#ff0000" : "" }}>Total: {(auctionTax + durationTax).toLocaleString()}</div>
-
-                    {user.permissions.includes(PermissionTypeEnum.LESS_AUCTION_TAX) && <div style={{ fontSize: "0.8rem", marginTop: 13 }}>You have a 25% discount on auction tax!</div>}
-                </div>
-            </Modal.ModalBody>
-
-            <Modal.ModalToggleContainer>
-                <Toggle checked={buyItNow} onClick={() => setBuyItNow(!buyItNow)}>
-                    Buy It Now
-                </Toggle>
-            </Modal.ModalToggleContainer>
+            </div>
 
             {suspicious && <WarningContainer>This item's recent average price seems suspicious. <b>Be careful when choosing a price for this item.</b></WarningContainer>}
             {error !== "" && <ErrorContainer>{error}</ErrorContainer>}

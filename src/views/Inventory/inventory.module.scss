@@ -267,12 +267,12 @@
     }
 
     @media only screen and (max-width: 685px) {
-        width: unset;
+        width: 143px;
         height: 50%;
-        bottom: 20%;
-        left: 50%;
-        transform: translateX(-50%);
+        bottom: 22%;
         justify-content: center;
+        align-items: center;
+        transform: scale(0.8);
     }
 
     &>img {
@@ -510,7 +510,7 @@
     @media only screen and (max-width: 685px) {
         flex-direction: column;
         width: unset;
-        height: unset;
+        height: unset !important;
     }
 }
 
@@ -519,6 +519,10 @@
     font-weight: 100;
     font-family: "Titan One", sans-serif;
     margin: 0;
+
+    @media only screen and (max-width: 685px) {
+        margin-bottom: 15px;
+    }
 }
 
 .sellBlookPackName {
