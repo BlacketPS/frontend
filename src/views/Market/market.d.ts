@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { DataBoostersEntity, ItemShop, MarketOpenPackDto, Pack, UserBlook } from "@blacket/types";
+import { DataBoostersEntity, ItemShop, MarketOpenPackDto, Pack, RarityAnimationType, UserBlook } from "@blacket/types";
 
 export enum BigButtonClickType {
     OPEN = 1,
@@ -34,6 +34,7 @@ export interface OpenPackModalProps {
 export interface OpenPackContainerProps {
     opening: boolean;
     image: string;
+    animationType: RarityAnimationType;
 }
 
 export interface OpenPackBlookProps {

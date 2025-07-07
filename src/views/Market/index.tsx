@@ -41,6 +41,21 @@ export default function Market() {
     const [boosters, setBoosters] = useState<DataBoostersEntity | null>(null);
 
     const particleCanvasRef = useRef<ParticleCanvasRef>(null);
+    const raritySoundRef = useRef<HTMLAudioElement | null>(null);
+
+    const playRaritySound = (r: RarityAnimationTypeEnum) => {
+        if (!raritySoundRef.current) raritySoundRef.current = new Audio();
+
+        raritySoundRef.current.src = window.constructCDNUrl(`/content/audio/sound/pack/${r.toLowerCase()}.mp3`);
+        raritySoundRef.current.play();
+    };
+
+    const stopRaritySound = () => {
+        if (!raritySoundRef.current) return;
+
+        raritySoundRef.current.pause();
+        raritySoundRef.current.currentTime = 0;
+    };
 
     const toggleInstantOpen = () => {
         setLoading("Changing settings");
@@ -89,15 +104,26 @@ export default function Market() {
 
                 setBigButtonEvent(BigButtonClickType.NONE);
 
-                particleCanvasRef.current?.start();
-
                 await new Promise((r) => {
-                    let waitTime = 650;
+                    let waitTime = 700;
 
-                    if (rarity.animationType === RarityAnimationTypeEnum.EPIC) waitTime += 650;
-                    if (rarity.animationType === RarityAnimationTypeEnum.LEGENDARY) waitTime += 1250;
-                    if (rarity.animationType === RarityAnimationTypeEnum.CHROMA) waitTime += 1250;
-                    if (unlockedBlook.shiny) waitTime += 2500;
+                    setTimeout(() => {
+                        playRaritySound(rarity.animationType as RarityAnimationTypeEnum);
+                    }, 500);
+
+                    let particleDelay = 0;
+                    if (rarity.animationType === RarityAnimationTypeEnum.CHROMA) particleDelay = 5000;
+                    if (rarity.animationType === RarityAnimationTypeEnum.MYTHICAL) particleDelay = 9000;
+
+                    setTimeout(() => {
+                        particleCanvasRef.current?.start();
+                    }, particleDelay);
+
+                    if (rarity.animationType === RarityAnimationTypeEnum.EPIC) waitTime += 400;
+                    if (rarity.animationType === RarityAnimationTypeEnum.LEGENDARY) waitTime += 1300;
+                    if (rarity.animationType === RarityAnimationTypeEnum.CHROMA) waitTime += 8000;
+                    if (rarity.animationType === RarityAnimationTypeEnum.MYTHICAL) waitTime += 20000;
+                    if (unlockedBlook.shiny) waitTime += 2000;
 
                     setTimeout(() => {
                         r(true);
@@ -108,6 +134,8 @@ export default function Market() {
 
                 break;
             case BigButtonClickType.CLOSE:
+                stopRaritySound();
+
                 particleCanvasRef.current?.stop();
 
                 setCurrentPack(null);
@@ -210,31 +238,36 @@ export default function Market() {
                         <img src={resourceIdToPath(currentPack.backgroundId)} alt="Background" />
                     </div>
 
-                    {unlockedBlook && <ParticleCanvas
-                        ref={particleCanvasRef}
-                        color={
-                            rarities.find((rarity) => rarity.id === blooks.find((blook) => blook.id === unlockedBlook.blookId)!.rarityId)!.color
-                        }
-                        animationType={
-                            rarities.find((rarity) => rarity.id === blooks.find((blook) => blook.id === unlockedBlook.blookId)!.rarityId)!.animationType
-                        }
-                        images={[
-                            window.constructCDNUrl("/content/particles/1.png"),
-                            window.constructCDNUrl("/content/particles/2.png"),
-                            window.constructCDNUrl("/content/particles/3.png"),
-                            window.constructCDNUrl("/content/particles/4.png"),
-                            window.constructCDNUrl("/content/particles/5.png"),
-                            window.constructCDNUrl("/content/particles/6.png"),
-                            window.constructCDNUrl("/content/particles/7.png"),
-                            window.constructCDNUrl("/content/particles/8.png")
-                        ]}
-                        className={styles.canvas}
-                    />}
+                    {unlockedBlook && <>
+                        <ParticleCanvas
+                            ref={particleCanvasRef}
+                            color={
+                                rarities.find((rarity) => rarity.id === blooks.find((blook) => blook.id === unlockedBlook.blookId)!.rarityId)!.color
+                            }
+                            animationType={
+                                rarities.find((rarity) => rarity.id === blooks.find((blook) => blook.id === unlockedBlook.blookId)!.rarityId)!.animationType
+                            }
+                            images={[
+                                window.constructCDNUrl("/content/particles/1.png"),
+                                window.constructCDNUrl("/content/particles/2.png"),
+                                window.constructCDNUrl("/content/particles/3.png"),
+                                window.constructCDNUrl("/content/particles/4.png"),
+                                window.constructCDNUrl("/content/particles/5.png"),
+                                window.constructCDNUrl("/content/particles/6.png"),
+                                window.constructCDNUrl("/content/particles/7.png"),
+                                window.constructCDNUrl("/content/particles/8.png")
+                            ]}
+                            className={styles.canvas}
+                        />
 
-                    <OpenPackContainer
-                        opening={openingPack}
-                        image={resourceIdToPath(currentPack.imageId)}
-                    />
+                        <OpenPackContainer
+                            opening={openingPack}
+                            image={resourceIdToPath(currentPack.imageId)}
+                            animationType={
+                                rarities.find((rarity) => rarity.id === blooks.find((blook) => blook.id === unlockedBlook.blookId)!.rarityId)!.animationType
+                            }
+                        />
+                    </>}
 
                     {unlockedBlook && <OpenPackBlook userBlook={unlockedBlook} animate={
                         bigButtonEvent !== BigButtonClickType.OPEN

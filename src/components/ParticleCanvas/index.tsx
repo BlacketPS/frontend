@@ -99,7 +99,7 @@ function particleType(e: ParticleType, brender: BrenderCanvasRef) {
 
 function animationTypeToParticleType(animationType: string) {
     switch (animationType) {
-        case RarityAnimationTypeEnum.UNCOMMON:
+        case RarityAnimationTypeEnum.COMMON:
             return [ParticleType.CENTER];
         case RarityAnimationTypeEnum.RARE:
             return [ParticleType.RIGHT_BOTTOM, ParticleType.LEFT_BOTTOM];
@@ -109,7 +109,7 @@ function animationTypeToParticleType(animationType: string) {
             return [ParticleType.TOP];
         case RarityAnimationTypeEnum.CHROMA:
             return [ParticleType.RIGHT_DIAMOND, ParticleType.LEFT_DIAMOND];
-        case RarityAnimationTypeEnum.IRIDESCENT:
+        case RarityAnimationTypeEnum.MYTHICAL:
             return [
                 ParticleType.RIGHT_SHOWER,
                 ParticleType.LEFT_SHOWER,

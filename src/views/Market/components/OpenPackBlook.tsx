@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { Blook, ImageOrVideo } from "@components/index";
 import { useResource } from "@stores/ResourceStore/index";
 import { useData } from "@stores/DataStore/index";
@@ -17,9 +18,32 @@ export default function OpenPackBlook({ userBlook, animate, isNew }: OpenPackBlo
     const rarity = rarities.find((rarity) => rarity.id === blook.rarityId);
     if (!rarity) return null;
 
+    let delay = 0;
+
+    if (rarity.animationType === RarityAnimationTypeEnum.CHROMA) delay = 4500;
+    if (rarity.animationType === RarityAnimationTypeEnum.MYTHICAL) delay = 8500;
+
+    const [show, setShow] = useState(delay === 0);
+
+    useEffect(() => {
+        setShow(false);
+
+        if (delay > 0) {
+            setShow(false);
+
+            const timeout = setTimeout(() => setShow(true), delay);
+
+            return () => clearTimeout(timeout);
+        } else {
+            setShow(true);
+        }
+    }, [delay, animate]);
+
+    if (!show) return null;
+
     return (
         <div
-            className={`${styles.openPackBlookContainer} ${animate ? styles[`openPackBlookContainerAnimation${Object.keys(RarityAnimationTypeEnum).indexOf(rarity.animationType) + 1}`] : ""}`}>
+            className={`${styles.openPackBlookContainer} ${animate ? styles.openPackBlookContainerAnimation1 : ""}`}>
             <ImageOrVideo src={resourceIdToPath(blook.backgroundId)} className={styles.openPackBlookBackground} />
 
             {userBlook.shiny && <ImageOrVideo className={styles.shinySunburst} src={window.constructCDNUrl("/content/sunburst.svg")} />}
