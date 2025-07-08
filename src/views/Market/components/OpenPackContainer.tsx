@@ -171,7 +171,6 @@ export default function OpenPackContainer({ opening, image, animationType }: Ope
         };
     }, [opening, animationType]);
 
-
     return (
         <>
             {![

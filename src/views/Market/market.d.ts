@@ -19,6 +19,7 @@ export interface CategoryProps extends HTMLAttributes<HTMLDivElement> {
 
 export interface PackProps extends HTMLAttributes<HTMLDivElement> {
     pack: Pack;
+    ambienceEnabled?: boolean;
 }
 
 export interface ItemProps extends HTMLAttributes<HTMLDivElement> {

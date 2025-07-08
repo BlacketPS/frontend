@@ -42,12 +42,37 @@ export default function Market() {
 
     const particleCanvasRef = useRef<ParticleCanvasRef>(null);
     const raritySoundRef = useRef<HTMLAudioElement | null>(null);
+    const ambienceSoundRef = useRef<HTMLAudioElement | null>(null);
 
     const playRaritySound = (r: RarityAnimationTypeEnum) => {
         if (!raritySoundRef.current) raritySoundRef.current = new Audio();
 
-        raritySoundRef.current.src = window.constructCDNUrl(`/content/audio/sound/pack/${r.toLowerCase()}.mp3`);
-        raritySoundRef.current.play();
+        let sound = "";
+
+        switch (r) {
+            case RarityAnimationTypeEnum.COMMON:
+                sound = "common";
+                break;
+            case RarityAnimationTypeEnum.RARE:
+                sound = "rare";
+                break;
+            case RarityAnimationTypeEnum.EPIC:
+                sound = "epic";
+                break;
+            case RarityAnimationTypeEnum.LEGENDARY:
+                sound = "legendary";
+                break;
+            default:
+                sound = "none";
+                break;
+        }
+
+        if (user.settings.onlyRareSounds && sound !== "legendary") return;
+
+        if (sound !== "none") {
+            raritySoundRef.current.src = window.constructCDNUrl(`/content/audio/sound/pack/${sound}.mp3`);
+            raritySoundRef.current.play();
+        }
     };
 
     const stopRaritySound = () => {
@@ -119,7 +144,6 @@ export default function Market() {
                         particleCanvasRef.current?.start();
                     }, particleDelay);
 
-                    if (rarity.animationType === RarityAnimationTypeEnum.EPIC) waitTime += 400;
                     if (rarity.animationType === RarityAnimationTypeEnum.LEGENDARY) waitTime += 1300;
                     if (rarity.animationType === RarityAnimationTypeEnum.CHROMA) waitTime += 8000;
                     if (rarity.animationType === RarityAnimationTypeEnum.MYTHICAL) waitTime += 20000;
@@ -152,6 +176,13 @@ export default function Market() {
         getBoosters()
             .then((res) => setBoosters(res.data));
     }, []);
+
+    useEffect(() => {
+        if (!ambienceSoundRef.current) return;
+
+        ambienceSoundRef.current.volume = 0.2;
+        ambienceSoundRef.current.play().catch(() => { });
+    }, [ambienceSoundRef.current]);
 
     return (
         <>
@@ -195,7 +226,7 @@ export default function Market() {
                             {packs.map((pack) =>
                                 pack.name.toLowerCase().includes(search.query.toLowerCase())
                                 && (!search.onlyPurchasable || user.tokens >= pack.price)
-                                && <Pack key={pack.id} pack={pack} onClick={() => {
+                                && <Pack key={pack.id} pack={pack} ambienceEnabled={!currentPack} onClick={() => {
                                     if (!user.settings.openPacksInstantly) createModal(<OpenPackModal
                                         pack={pack}
                                         userTokens={user.tokens}
@@ -267,6 +298,8 @@ export default function Market() {
                                 rarities.find((rarity) => rarity.id === blooks.find((blook) => blook.id === unlockedBlook.blookId)!.rarityId)!.animationType
                             }
                         />
+
+                        <audio src={resourceIdToPath(currentPack.ambienceId)} loop ref={ambienceSoundRef} />
                     </>}
 
                     {unlockedBlook && <OpenPackBlook userBlook={unlockedBlook} animate={

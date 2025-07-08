@@ -44,6 +44,18 @@ export default function Settings() {
             .finally(() => setLoading(false));
     };
 
+
+    const onlyRareSoundsButton = () => {
+        setLoading("Changing settings");
+        changeSetting({
+            key: "onlyRareSounds",
+            value: !user.settings.onlyRareSounds
+        })
+            .then(() => setLoading(false))
+            .catch(() => createModal(<Modal.ErrorModal>Failed to change settings.</Modal.ErrorModal>))
+            .finally(() => setLoading(false));
+    };
+
     const modalAnimationButton = () => {
         if (localStorage.getItem("DISABLE_MODAL_ANIMATION")) {
             localStorage.removeItem("DISABLE_MODAL_ANIMATION");
@@ -103,9 +115,12 @@ export default function Settings() {
                 <Button.ClearButton onClick={() => createModal(user.settings.otpEnabled ? <DisableOTPModal /> : <EnableOTPModal />)}>{user.settings.otpEnabled ? "Disable" : "Enable"} OTP / 2FA</Button.ClearButton>
             </SettingsContainer>
 
-            <SettingsContainer header={{ icon: "fas fa-palette", text: "Theme" }}>
+            <SettingsContainer header={{ icon: "fas fa-palette", text: "Cosmetics" }}>
                 <Tooltip id="modalAnimation" place="right">This will disable the zoom in out animation on popups.</Tooltip>
                 <Button.ClearButton data-tooltip-id="modalAnimation" onClick={modalAnimationButton}>Modal Animation: {modalAnimation ? "On" : "Off"}</Button.ClearButton>
+
+                <Tooltip id="onlyRareSounds" place="right">This will disable sounds for common blooks such as epic and below.</Tooltip>
+                <Button.ClearButton data-tooltip-id="onlyRareSounds" onClick={onlyRareSoundsButton}>Only Rare Sounds: {user.settings.onlyRareSounds ? "On" : "Off"}</Button.ClearButton>
                 {/* <Button.ClearButton onClick={() => {
                     if (document.getElementById("theme")) return;
                     const style = document.createElement("style");
