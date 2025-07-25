@@ -112,18 +112,19 @@ function SuccessModal({ product, quantity, subscription }: ProductSuccessModalPr
 function TheModal({ product, subscription = false }: ProductPurchaseModalProps) {
     const stripe = useStripe();
     const { user } = useUser();
-
-    if (!stripe || !user) return;
-
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string>("");
-    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<UserPaymentMethod | null>(user.paymentMethods.find((method) => method.primary) ?? null);
-    const [quantity, setQuantity] = useState<string>("1");
-    const [accepted, setAccepted] = useState<boolean>(false);
-
     const { createModal, closeModal } = useModal();
     const { resourceIdToPath } = useResource();
     const { selectPaymentMethod } = useSelect();
+
+    const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<string>("");
+    const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<UserPaymentMethod | null>(
+        user?.paymentMethods.find((method) => method.primary) ?? null
+    );
+    const [quantity, setQuantity] = useState<string>("1");
+    const [accepted, setAccepted] = useState<boolean>(false);
+
+    if (!stripe || !user) return null;
 
     const showSuccessModal = () => {
         createModal(<SuccessModal product={product} quantity={parseInt(quantity)} subscription={subscription} />, <SuccessModalOutside />);

@@ -6,12 +6,12 @@ import { useData } from "@stores/DataStore/index";
 import { useResource } from "@stores/ResourceStore/index";
 import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
-import { Blook, Button, InventoryBlook, Markdown, PageHeader, RarityLabel, SearchBox } from "@components/index";
+import { Blook, Button, ItemContainer, InventoryBlook, Markdown, PageHeader, RarityLabel, SearchBox } from "@components/index";
 import { Info } from "./components/index";
 import { SellBlooksModal } from "../Inventory copy/components/index";
 import styles from "./inventory.module.scss";
 
-import { SelectedTypeEnum } from "./inventory.d";
+import { SelectedTypeEnum } from "@components/ItemContainer/itemContainer.d";
 import { Blook as BlookType, Item as ItemType, Rarity, UserBlook, UserItem } from "@blacket/types";
 
 export default function Inventory() {
@@ -79,9 +79,22 @@ export default function Inventory() {
                     placeholder="Search for an item..."
                 />
 
-                <div className={styles.itemsContainer}>
+                <ItemContainer
+                    user={user}
+                    options={{
+                        showItems: true,
+                        showBlooks: true,
+                        showBlooksShiny: true,
+                        showLocked: true,
+                        showPacks: true
+                    }}
+                    onClick={(item) => {
+                        setSelectedType(item.type);
+                        setSelected(item.item || null);
+                    }}
+                />
+                {/* <div className={styles.itemsContainer}>
                     {packs
-
                         .map((pack) => (
                             <div className={styles.setContainer}>
                                 <div className={styles.setTopContainer}>
@@ -143,7 +156,7 @@ export default function Inventory() {
                                 </div>
                             </div>
                         ))}
-                </div>
+                </div> */}
             </div>
 
             {selected && rarity && <div className={styles.rightSide}>

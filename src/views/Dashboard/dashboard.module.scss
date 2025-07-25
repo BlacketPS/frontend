@@ -554,17 +554,11 @@
 .inventoryItemsContainer {
     display: block;
     height: 100%;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
 }
 
 .inventoryItems {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    width: 100%;
-    justify-content: left;
-    gap: 0.9vh;
+    height: calc(100% - 20px);
 }
 
 .statContainer {

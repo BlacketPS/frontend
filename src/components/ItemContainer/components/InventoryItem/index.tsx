@@ -3,7 +3,7 @@ import { useData } from "@stores/DataStore/index";
 import stylesNormal from "./inventoryItem.module.scss";
 import stylesVh from "./inventoryItemVh.module.scss";
 
-import { InventoryItemProps } from "./inventoryItem.d";
+import { InventoryItemProps } from "./inventoryItem";
 
 export default function InventoryItem({ item, selectable = true, useVhStyles = false, ...props }: InventoryItemProps) {
     const { resourceIdToPath } = useResource();

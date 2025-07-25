@@ -10,7 +10,7 @@ import { useAuctionHouse } from "@stores/AuctionHouseStore/index";
 import { useUsers } from "@controllers/users/useUsers/index";
 import { useSearchAuction } from "@controllers/auctions/useSearchAuction/index";
 import { useClaimDailyTokens } from "@controllers/quests/useClaimDailyTokens/index";
-import { Auction, Blook, ImageOrVideo, Username, InventoryBlook, InventoryItem } from "@components/index";
+import { Auction, Blook, ImageOrVideo, Username, InventoryBlook, InventoryItem, ItemContainer } from "@components/index";
 import { LevelContainer, LookupUserModal, SmallButton, SectionHeader, StatContainer, CosmeticsModal, DailyRewardsModal } from "./components";
 import styles from "./dashboard.module.scss";
 
@@ -248,7 +248,7 @@ export default function Dashboard() {
 
                 <div className={styles.statsContainer}>
                     <div className={styles.inventoryItemsContainer}>
-                        <div className={styles.inventoryItems}>
+                        {/* <div className={styles.inventoryItems}>
                             {items.sort((a, b) => a.priority - b.priority).map((item) => {
                                 const filteredItems = viewingUser.items.filter((i) => i.itemId === item.id);
 
@@ -267,7 +267,21 @@ export default function Dashboard() {
                             })}
 
                             {nonPackBlooks.map((blook) => hasUserBlook(blook.id) && <InventoryBlook key={blook.id} blook={blook} amount={getBlookAmount(blook.id, false, viewingUser)} selectable={false} useVhStyles={true} />)}
-                        </div>
+                        </div> */}
+                        <ItemContainer
+                            user={viewingUser}
+                            options={{
+                                showBlooks: true,
+                                showShiny: true,
+                                showLocked: false,
+                                showPacks: false,
+                                showItems: true
+                            }}
+                            className={styles.inventoryItems}
+                            onClick={() => {
+                                navigate(`/inventory?name=${viewingUser.username}`);
+                            }}
+                        />
                     </div>
                 </div>
             </div>

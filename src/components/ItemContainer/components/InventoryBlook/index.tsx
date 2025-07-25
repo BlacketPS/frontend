@@ -1,10 +1,10 @@
 import { useResource } from "@stores/ResourceStore/index";
 import { useData } from "@stores/DataStore/index";
-import Blook from "../Blook/index";
+import Blook from "../../../Blook/index";
 import stylesNormal from "./inventoryBlook.module.scss";
 import stylesVh from "./inventoryBlookVh.module.scss";
 
-import { InventoryBlookProps } from "./inventoryBlook.d";
+import { InventoryBlookProps } from "./inventoryBlook";
 
 export default function InventoryBlook({ blook, shiny = false, big = false, locked = false, amount = 0, selectable = true, useVhStyles = false, ...props }: InventoryBlookProps) {
     const { resourceIdToPath } = useResource();

@@ -11,9 +11,10 @@ import Form from "./Form";
 import Header from "./Header";
 import HeaderBody from "./HeaderBody";
 import ImageOrVideo from "./ImageOrVideo";
-import InventoryBlook from "./InventoryBlook";
-import InventoryItem from "./InventoryItem";
+import InventoryBlook from "./ItemContainer/components/InventoryBlook";
+import InventoryItem from "./ItemContainer/components/InventoryItem";
 import Input from "./Input";
+import ItemContainer from "./ItemContainer";
 import Joystick from "./Joystick";
 import Loader from "./Loader";
 import Markdown from "./Markdown";
@@ -50,6 +51,7 @@ export {
     InventoryBlook,
     InventoryItem,
     Input,
+    ItemContainer,
     Joystick,
     Loader,
     Markdown,
