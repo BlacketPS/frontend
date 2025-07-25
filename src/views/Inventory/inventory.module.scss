@@ -1,634 +1,423 @@
 .leftSide {
     position: absolute;
-    top: 35px;
-    left: 2.5%;
-    height: calc(100% - 60px);
-    width: calc(95% - 430px);
+    top: 100px;
+    left: 1%;
+    height: calc(100% - 110px);
+    width: calc(100% - 45vh);
     border-radius: 10px;
     background-color: var(--primary-color);
-    padding: 10px 10px 19px;
-    box-shadow: inset 0 -9px rgba(0, 0, 0, .2), 0 5px rgba(0, 0, 0, .25);
+    padding: 10px 10px 20px;
+    box-shadow: inset 0 0 0 5px rgba(0, 0, 0, 0.1);
     box-sizing: border-box;
 
-    @media only screen and (max-width: 1000px) {
-        width: calc(95% - 330px);
-    }
-
-    @media only screen and (max-width: 685px) {
+    @media only screen and (max-width: 768px) {
         top: unset;
-        bottom: 0px;
-        height: calc(50% - 15px);
+        left: 2.5%;
+        height: calc(45% - 10px);
         width: 95%;
-        bottom: 15px;
-    }
-}
-
-.inventoryHolder {
-    width: 99%;
-    height: calc(100% - 70px);
-    padding-left: 5px;
-    overflow-y: auto;
-    overflow-x: hidden;
-}
-
-.setHolder {
-    margin-bottom: 20px;
-    position: relative;
-}
-
-.setTop {
-    margin-bottom: 5px;
-    position: relative;
-    height: 50px;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-}
-
-.setTopBackground {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    opacity: .15;
-}
-
-.setTopCanvas {
-    width: 100%;
-    height: 100%;
-}
-
-.setTopText {
-    margin: auto 0;
-    font-family: "Titan One", sans-serif;
-    color: var(--accent-color);
-    text-shadow: 3px 3px rgba(0, 0, 0, .2);
-    font-size: 26px;
-    z-index: 1;
-}
-
-.setTopDivider {
-    width: 100%;
-    height: 3px;
-    background-color: var(--accent-color);
-    border-radius: 2px;
-}
-
-.setItems {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 60px);
-    grid-gap: 10px;
-
-    &[data-nothing="true"] {
-        margin-top: 10px;
-        grid-template-columns: unset;
-    }
-}
-
-.item {
-    width: 60px;
-    height: 70px;
-    box-sizing: border-box;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    cursor: pointer;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
-    outline: none;
-    will-change: transform;
-    transition: transform .2s;
-
-    .itemsLeft {
-        font-family: "Titan One", sans-serif;
-        font-size: 12px;
-        -webkit-text-stroke: #000000 1px;
-        border-radius: 7px;
-        padding: 0 5px;
-        height: 14px;
-        line-height: 14px;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-top: 10px;
-    }
-
-    &:hover {
-        transform: scale(0.95);
-    }
-
-    &:active {
-        transform: scale(0.9);
-    }
-
-    &>img {
-        width: 55px;
-        object-fit: contain;
-        -o-object-fit: contain;
-    }
-
-    &>video {
-        width: 55px;
-        object-fit: contain;
-        -o-object-fit: contain;
+        bottom: 5px
     }
 }
 
 .rightSide {
     position: absolute;
-    top: 45%;
-    transform: translateY(-50%);
-    right: 2.5%;
-    width: 400px;
+    top: 100px;
+    right: 1%;
+    height: calc(100% - 110px);
+    width: 40vh;
+    background-color: var(--primary-color);
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    flex-direction: column;
     border-radius: 10px;
+    gap: 1vh;
 
-    @media only screen and (max-width: 1000px) {
-        width: 300px;
-    }
-
-    @media only screen and (max-width: 685px) {
-        top: 25px;
-        transform: unset;
-        right: unset;
-        left: unset;
-        margin-inline: auto;
-        position: relative;
-        height: calc(45% - 25px);
-    }
-}
-
-.rightSideContent {
-    transition: transform .6s cubic-bezier(.3, .7, .4, 1);
-}
-
-.rightBlookBackground {
-    user-select: none;
-
-    &>img {
-        height: 100%;
-        width: 100%;
-        object-fit: fill;
-        border-radius: 10px;
-
-        @media only screen and (max-width: 685px) {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-        }
-    }
-
-    &>video {
-        height: 100%;
-        width: 100%;
-        object-fit: fill;
-        border-radius: 10px;
-
-        @media only screen and (max-width: 685px) {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-        }
-    }
-}
-
-.rightTopText {
-    position: absolute;
-    top: 15px;
-    left: 5%;
-    width: 90%;
-    font-family: "Titan One", sans-serif;
-    color: var(--accent-color);
-    text-align: center;
-
-    @media only screen and (max-width: 1000px) {
-        top: 5px;
-        left: 2.5%;
-        width: 95%
-    }
-
-    @media only screen and (max-width: 685px) {
+    @media only screen and (max-width: 768px) {
         top: 10px;
-        bottom: 15px;
-        left: 5%;
-        text-align: left;
-    }
-
-    .rightBlookName {
-        text-shadow: 0 3px 3px rgba(0, 0, 0, .2);
-        width: 100%;
-        height: 50px;
-        -webkit-text-stroke: #000000 1px;
-
-        @media only screen and (max-width: 1000px) {
-            height: 30px;
-        }
-
-        @media only screen and (max-width: 685px) {
-            width: 90%;
-            text-shadow: 0 0 4px rgba(0, 0, 0, 1);
-        }
-    }
-
-    .rightBlookRarity {
-        text-shadow: 0 3px 3px rgba(0, 0, 0, .2);
-        font-size: 30px;
-        -webkit-text-stroke: #000000 1px;
-
-        @media only screen and (max-width: 1000px) {
-            font-size: 20px;
-        }
-
-        @media only screen and (max-width: 685px) {
-            width: 90%;
-        }
-    }
-}
-
-.rightBlookImage {
-    display: flex;
-    position: absolute;
-    bottom: 85px;
-    left: 105px;
-    width: 190px;
-    height: 210px;
-    justify-content: center;
-
-    @media only screen and (max-width: 1000px) {
-        bottom: 64px;
-        left: 78.5px;
-        width: 143px;
-    }
-
-    @media only screen and (max-width: 685px) {
-        width: 143px;
+        left: 2.5%;
         height: 50%;
-        bottom: 22%;
-        justify-content: center;
-        align-items: center;
-        transform: scale(0.8);
-    }
-
-    &>img {
-        height: 100%;
-        -o-object-fit: contain;
-        object-fit: contain;
-    }
-
-    &>video {
-        height: 100%;
-        -o-object-fit: contain;
-        object-fit: contain;
-
-        @media only screen and (max-width: 685px) {
-            width: unset;
-        }
+        width: 95%;
     }
 }
 
-.rightItemImage {
+.top {
+    position: relative;
     display: flex;
-    position: absolute;
-    bottom: 110px;
     justify-content: center;
     align-items: center;
     width: 100%;
-    height: 220px;
-    animation: hover 1s ease-in-out infinite alternate;
+    height: 50%;
 
-    @keyframes hover {
-        0% {
-            transform: translateY(-5px);
-        }
-
-        100% {
-            transform: translateY(5px);
-        }
+    @media only screen and (max-width: 768px) {
+        height: 40%;
     }
+}
 
-    @media only screen and (max-width: 1000px) {
-        bottom: 60px;
-        width: 100%;
-        transform: scale(0.8);
-    }
-
-    @media only screen and (max-width: 685px) {
-        height: 50%;
-        bottom: 28%;
-        left: 50%;
-        transform: translateX(-50%);
-        justify-content: center;
-        animation: mHover 1s ease-in-out infinite alternate;
-
-        @keyframes mHover {
-            0% {
-                transform: translateX(-50%) translateY(-5px);
-            }
-
-            100% {
-                transform: translateX(-50%) translateY(5px);
-            }
-        }
-    }
+.topBackgroundImage {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    user-select: none;
+    pointer-events: none;
 
     &>img {
+        border-radius: 10px;
         width: 100%;
-        height: 60%;
-        -o-object-fit: contain;
-        object-fit: contain;
-
-        @media only screen and (max-width: 685px) {
-            width: unset;
-        }
+        height: 100%;
+        object-fit: cover;
     }
 
-    &>video {
-        width: 100%;
-        height: 60%;
-        -o-object-fit: contain;
-        object-fit: contain;
-
-        @media only screen and (max-width: 685px) {
-            width: unset;
-        }
-    }
-}
-
-.rightBottomText {
-    position: absolute;
-    bottom: 25px;
-    left: 5%;
-    width: 90%;
-    font-family: "Titan One", sans-serif;
-    color: var(--accent-color);
-    text-align: center;
-    font-size: 30px;
-    text-shadow: 0 0 4px rgba(0, 0, 0, .4);
-
-    @media only screen and (max-width: 1000px) {
-        bottom: 20px;
-        font-size: 20px;
-    }
-
-    @media only screen and (max-width: 685px) {
-        text-align: left;
-        text-shadow: 0 0 4px rgba(0, 0, 0, 1);
-    }
-}
-
-.rightBottomDescription {
-    width: 100%;
-    height: 50px;
-    word-wrap: break-word;
-    font-size: 20px;
-    font-family: "Nunito", sans-serif;
-    font-weight: 700;
-
-    @media only screen and (max-width: 685px) {
-        height: 35px;
-    }
-}
-
-.rightButtonMobile {
-    display: none;
-
-    @media only screen and (max-width: 685px) {
-        display: unset;
-        min-width: 40px;
-        width: 40px;
+    &::after {
+        content: '';
         position: absolute;
-        top: 15px;
-        right: 4%;
-    }
-
-}
-
-.rightShadow {
-    width: 100%;
-    position: absolute;
-    bottom: 6px;
-    left: 0;
-    height: 50px;
-    box-shadow: inset 0 -9px rgba(0, 0, 0, .25);
-    border-bottom-left-radius: 10px;
-    border-bottom-right-radius: 10px;
-    transition: transform .6s cubic-bezier(.3, .7, .4, 1);
-
-    @media only screen and (max-width: 685px) {
         bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 20%;
+        background: linear-gradient(to bottom, transparent 0%, var(--primary-color) 100%);
+        pointer-events: none;
     }
-}
 
-.rightButtonContainer {
-    position: absolute;
-    top: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-evenly;
-
-    @media only screen and (max-width: 685px) {
+    @media only screen and (max-width: 768px) {
         display: none;
     }
 }
 
-.rightButton {
-    width: 180px;
-    margin: 10px;
-
-    @media only screen and (max-width: 1000px) {
-        width: 140px;
-    }
-
-    .rightButtonInside {
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: center;
-        height: 40px;
-        color: var(--accent-color);
-        text-shadow: 1px 2px rgba(0, 0, 0, .2);
-        font-family: "Titan One", sans-serif;
-        font-size: 28px;
-        font-weight: 400 !important;
-
-        @media only screen and (max-width: 1000px) {
-            height: 30px;
-            font-size: 22px;
-        }
-
-        &>img {
-            width: 28px;
-            height: 28px;
-            margin-right: 7px;
-
-            @media only screen and (max-width: 1000px) {
-                width: 22px;
-                height: 22px;
-                margin-top: 3px;
-            }
-        }
-    }
-}
-
-.rightNoBlooksOwned {
+.backgroundImageM {
+    position: absolute;
     width: 100%;
     height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 20px;
+    user-select: none;
+    pointer-events: none;
+
+    &>img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 10px;
+        filter: blur(2px) brightness(0.5);
+    }
+
+    @media only screen and (min-width: 769px) {
+        display: none;
+    }
 }
 
-.noBlooks {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--accent-color);
-}
-
-.sellBlookExitSell {
-    cursor: pointer;
-    position: absolute;
-    top: 15px;
-    right: 15px;
-}
-
-.sellBlooksFlex {
-    display: flex;
+.itemContainer {
     width: 100%;
-    padding: 20px;
-    gap: 20px;
-    height: 13.5rem;
-
-    @media only screen and (max-width: 685px) {
-        flex-direction: column;
-        width: unset;
-        height: unset !important;
-    }
-}
-
-.sellBlookBlookName {
-    font-size: 2.25rem;
-    font-weight: 100;
-    font-family: "Titan One", sans-serif;
-    margin: 0;
-
-    @media only screen and (max-width: 685px) {
-        margin-bottom: 15px;
-    }
-}
-
-.sellBlookPackName {
-    font-size: 1.2rem;
-    font-weight: 700;
-    font-family: "Nunito", sans-serif;
-    margin: 0;
-}
-
-.sellBlookHoldInput {
+    height: 100%;
     display: flex;
     flex-direction: column;
-    gap: 7px;
+    gap: 1vh;
+
+    @media only screen and (max-width: 768px) {
+        display: none;
+    }
 }
 
-.sellBlooksContainer {
+.itemContainerM {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    @media only screen and (min-width: 769px) {
+        display: none;
+    }
+}
+
+.basicInfo {
+    position: absolute;
+    top: 1vh;
+    left: 5%;
+    width: 90%;
+    height: 30%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    user-select: none;
+
+    @media only screen and (max-width: 768px) {
+        display: none;
+    }
+}
+
+.basicInfoM {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 50%;
+    height: 100%;
+    gap: 1vh;
+    padding: 1vh 1vh 0 1vh;
+    user-select: none;
+
+    @media only screen and (min-width: 769px) {
+        display: none;
+    }
+}
+
+.itemName {
     display: flex;
     justify-content: center;
     align-items: center;
-}
-
-.sellBlookExtraOptionButton {
-    padding: 4px 10px;
-    background-color: rgba(0, 0, 0, .2);
-    border-radius: 7px;
-    transition: ease .2s;
-    cursor: pointer;
-    font-weight: 600;
-
-    &:hover {
-        background-color: rgba(0, 0, 0, .1);
-    }
-}
-
-.sellBlookExtraOptions {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    margin-top: -10px;
-}
-
-.sellBlookInput {
-    display: flex;
-    align-items: baseline;
-}
-
-.sellBlooks {
-    width: 15rem;
+    width: 100%;
     height: 100%;
-    max-height: 15rem;
-    display: flex;
-    justify-content: space-evenly;
-    align-items: center;
-    border: 5px solid var(--secondary-color);
-    // margin: 20px;
-    border-radius: 7px;
-    flex-wrap: wrap;
-    overflow-x: hidden;
-    overflow-y: auto;
-
-    @media only screen and (max-width: 685px) {
-        width: unset;
-        height: 80%;
-    }
+    font-family: "Titan One", sans-serif;
+    // text-shadow: 0.2rem 0.2rem 0 rgba(0, 0, 0, .4);
+    // text outline
+    text-shadow: 0.2rem 0.2rem 0rem rgba(0, 0, 0, .5);
 }
 
-.sellBlook {
-    width: 250px;
+.itemNameM {
+    width: 100%;
+    height: 40%;
+    font-family: "Titan One", sans-serif;
+    text-shadow: 0.2rem 0.2rem 0 rgba(0, 0, 0, .2);
+}
+
+.itemDescriptionM {
+    width: 100%;
+    height: 60%;
+    text-shadow: 0.1rem 0.1rem 0 rgba(0, 0, 0, .2);
+}
+
+.rarityLabelContainer {
+    width: 100%;
+    height: 30%;
+    margin-bottom: 2vh;
+    position: relative;
+    top: 1vh;
     display: flex;
-    justify-content: left;
+    justify-content: center;
     align-items: center;
     flex-direction: row;
-    gap: 10px;
-    background-color: rgba(0, 0, 0, .2);
-    padding: 10px;
-    border-radius: 7px;
-    margin: 10px;
-    cursor: pointer;
-    transition: background-color .2s;
-
-    &:hover {
-        background-color: rgba(0, 0, 0, .4);
-    }
-
-    &[data-selected="true"] {
-        background-color: rgba(255, 255, 255, .4);
-    }
+    gap: 1vh;
 }
 
-.sellBlookImageContainer {
-    width: 50px;
+.rarityLabel {
     display: flex;
     justify-content: center;
     align-items: center;
+    height: 100%;
 }
 
-.sellBlookImage {
+.rarityDivider {
     display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 1vh;
+    height: 1vh;
+    border-radius: 50%;
+    background-color: var(--primary-color);
+}
+
+.itemImageContainer {
+    position: relative;
+    top: 7%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+.itemImageContainerM {
+    position: relative;
+    height: 100%;
+    right: 1vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
+    user-select: none;
+}
+
+.itemImage {
+    width: 45%;
+}
+
+.itemImageM {
+    display: flex;
+    justify-content: right;
+    align-items: center;
     width: 100%;
     height: 100%;
     object-fit: contain;
 }
 
-.sellBlookInformation {
+.bottom {
     display: flex;
     flex-direction: column;
-    text-align: left;
-    font-weight: 700;
+    justify-content: space-between;
+    width: 95%;
+    height: 50%;
+    font-size: 2vh;
+    z-index: 1;
+    margin: 1.5vh;
+
+    @media only screen and (max-width: 768px) {
+        height: 60%;
+    }
+}
+
+.description {
+    width: 100%;
+    height: 10%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+
+    @media only screen and (max-width: 768px) {
+        display: none;
+    }
+}
+
+.infoContainer {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    height: 70%;
+    font-size: 2vh;
+
+    @media only screen and (max-width: 768px) {
+        max-height: 15vh;
+        overflow-y: auto;
+        line-height: 2.5vh;
+    }
+}
+
+.info {
+    display: flex;
+    justify-content: space-between;
+}
+
+.infoText {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 1vh;
+
+    &>i {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 2vh;
+    }
+}
+
+.actionsContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 100%;
+    height: 10%;
+
+    @media only screen and (max-width: 768px) {
+        height: 15%;
+    }
+}
+
+.actions {
+    display: flex;
+    gap: 1vh;
+
+    &>* {
+        flex: 1;
+    }
+}
+
+.itemsContainer {
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+    gap: 20px;
+    width: calc(100% - 20px);
+    height: calc(100% - 80px);
+    overflow-y: auto;
+    overflow-x: hidden;
+    background: var(--primary-color);
+}
+
+.setContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: fit-content;
+}
+
+.setTopContainer {
+    position: relative;
+    display: flex;
+    width: 100%;
+    height: 50px;
+
+    @media screen and (max-width: 768px) {
+        height: 30px;
+    }
+}
+
+.setTopTile {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: 50px 50px;
+    opacity: 0.1;
+
+    @media screen and (max-width: 768px) {
+        background-size: 30px 30px;
+    }
+}
+
+.setTopText {
+    position: relative;
+    display: flex;
+    align-items: center;
+    background: var(--primary-color);
+    font-family: "Titan One", sans-serif;
+    font-size: 40px;
+    width: fit-content;
+    z-index: 1;
+
+    @media only screen and (max-width: 768px) {
+        font-size: 25px;
+    }
+}
+
+.setGradient {
+    position: absolute;
+    left: calc(100% + 0px);
+    top: 0;
+    width: 50%;
+    height: 100%;
+    background: linear-gradient(to right, var(--primary-color), transparent);
+    z-index: 1;
+}
+
+.setDivider {
+    width: 100%;
+    height: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    margin: 10px 0;
+    border-radius: 10px;
+}
+
+.setContent {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+    min-height: 50px;
 }

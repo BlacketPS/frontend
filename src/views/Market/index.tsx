@@ -1,9 +1,11 @@
 import { useState, useEffect, useRef } from "react";
 import { Navigate } from "react-router-dom";
+import { BitCrusher, Chorus, gainToDb, Synth } from "tone";
 import { useLoading } from "@stores/LoadingStore";
 import { useUser } from "@stores/UserStore/index";
 import { useResource } from "@stores/ResourceStore";
 import { useModal } from "@stores/ModalStore/index";
+import { useSound } from "@stores/SoundStore/index";
 import { useData } from "@stores/DataStore/index";
 import { useSettings } from "@controllers/settings/useSettings";
 import { useOpenPack } from "@controllers/market/useOpenPack";
@@ -21,6 +23,7 @@ export default function Market() {
     const { createModal } = useModal();
     const { user } = useUser();
     const { resourceIdToPath } = useResource();
+    const { playSound, playSounds, stopSound, stopSounds, defineSounds, getSound } = useSound();
     const { packs, rarities, blooks, itemShop } = useData();
 
     if (!user) return <Navigate to="/login" />;
@@ -31,55 +34,56 @@ export default function Market() {
 
     const [currentPack, setCurrentPack] = useState<any | null>(null);
     const [openingPack, setOpeningPack] = useState<boolean>(false);
-
     const [unlockedBlook, setUnlockedBlook] = useState<UserBlook | null>(null);
-
     const [bigButtonEvent, setBigButtonEvent] = useState<BigButtonClickType>(BigButtonClickType.CLOSE);
-
     const [search, setSearch] = useState<SearchOptions>({ query: localStorage.getItem("MARKET_SEARCH_QUERY") ?? "", onlyPurchasable: localStorage.getItem("MARKET_SEARCH_ONLY_PURCHASABLE") ? true : false });
-
     const [boosters, setBoosters] = useState<DataBoostersEntity | null>(null);
 
     const particleCanvasRef = useRef<ParticleCanvasRef>(null);
-    const raritySoundRef = useRef<HTMLAudioElement | null>(null);
-    const ambienceSoundRef = useRef<HTMLAudioElement | null>(null);
 
-    const playRaritySound = (r: RarityAnimationTypeEnum) => {
-        if (!raritySoundRef.current) raritySoundRef.current = new Audio();
+    const playRaritySound = async (r: RarityAnimationTypeEnum) => {
+        if (!user.settings) return;
 
         let sound = "";
 
         switch (r) {
             case RarityAnimationTypeEnum.COMMON:
-                sound = "common";
-                break;
+                sound = "common"; break;
             case RarityAnimationTypeEnum.RARE:
-                sound = "rare";
-                break;
+                sound = "rare"; break;
             case RarityAnimationTypeEnum.EPIC:
-                sound = "epic";
-                break;
+                sound = "epic"; break;
             case RarityAnimationTypeEnum.LEGENDARY:
-                sound = "legendary";
-                break;
+                sound = "legendary"; break;
             default:
-                sound = "none";
-                break;
+                return;
         }
 
         if (user.settings.onlyRareSounds && sound !== "legendary") return;
 
-        if (sound !== "none") {
-            raritySoundRef.current.src = window.constructCDNUrl(`/content/audio/sound/pack/${sound}.mp3`);
-            raritySoundRef.current.play();
-        }
+        playSound(sound);
     };
 
     const stopRaritySound = () => {
-        if (!raritySoundRef.current) return;
+        stopSounds(["common", "rare", "epic", "legendary"]);
+    };
 
-        raritySoundRef.current.pause();
-        raritySoundRef.current.currentTime = 0;
+    const setAmbienceSound = async (pack: PackType) => {
+        const sounds = packs.map((p) => `pack-ambience-${p.id}`);
+
+        for (const soundId of sounds) {
+            const sound = await getSound(soundId);
+
+            if (sound) {
+                if (soundId === `pack-ambience-${pack.id}`) sound.volume.value = gainToDb(0.1);
+                else sound.volume.value = -Infinity;
+            }
+        }
+    };
+
+    const muteAmbience = async () => {
+        const sound = await getSound(`pack-ambience-${currentPack?.id}`);
+        if (sound) sound.volume.value = -Infinity;
     };
 
     const toggleInstantOpen = () => {
@@ -101,7 +105,15 @@ export default function Market() {
 
         openPack(dto)
             .then(async (res) => {
-                setCurrentPack(packs.find((pack: PackType) => pack.id === dto.packId));
+                const pack = packs.find((pack: PackType) => pack.id === dto.packId);
+                if (!pack) {
+                    createModal(<Modal.ErrorModal>Pack not found.</Modal.ErrorModal>);
+                    return reject(new Error("Pack not found"));
+                }
+
+                setCurrentPack(pack);
+
+                setAmbienceSound(pack!);
 
                 setBigButtonEvent(BigButtonClickType.NONE);
                 setTimeout(() => setBigButtonEvent(BigButtonClickType.OPEN), 100);
@@ -126,8 +138,7 @@ export default function Market() {
         switch (bigButtonEvent) {
             case BigButtonClickType.OPEN:
                 setOpeningPack(true);
-
-                setBigButtonEvent(BigButtonClickType.NONE);
+                setBigButtonEvent(BigButtonClickType.OPENING);
 
                 await new Promise((r) => {
                     let waitTime = 700;
@@ -155,10 +166,11 @@ export default function Market() {
                 });
 
                 setBigButtonEvent(BigButtonClickType.CLOSE);
-
                 break;
+
             case BigButtonClickType.CLOSE:
                 stopRaritySound();
+                muteAmbience();
 
                 particleCanvasRef.current?.stop();
 
@@ -167,7 +179,8 @@ export default function Market() {
                 setOpeningPack(false);
 
                 break;
-            case BigButtonClickType.NONE:
+
+            default:
                 break;
         }
     };
@@ -175,14 +188,36 @@ export default function Market() {
     useEffect(() => {
         getBoosters()
             .then((res) => setBoosters(res.data));
+
+        defineSounds([
+            { id: "common", url: window.constructCDNUrl("/content/audio/sound/pack/common.mp3") },
+            { id: "rare", url: window.constructCDNUrl("/content/audio/sound/pack/rare.mp3") },
+            { id: "epic", url: window.constructCDNUrl("/content/audio/sound/pack/epic.mp3") },
+            { id: "legendary", url: window.constructCDNUrl("/content/audio/sound/pack/legendary.mp3") },
+            { id: "shiny", url: window.constructCDNUrl("/content/audio/sound/pack/shiny.mp3") }
+        ]);
+
+        for (const pack of packs) {
+            if (!pack.ambienceId) continue;
+
+            defineSounds([{
+                id: `pack-ambience-${pack.id}`,
+                url: resourceIdToPath(pack.ambienceId!),
+                options: {
+                    loop: true,
+                    volume: gainToDb(0.1),
+                    preload: true
+                }
+            }]);
+        }
+
+        return () => {
+            stopSounds(["common", "rare", "epic", "legendary"]);
+            stopSounds(packs.map((pack) => `pack-ambience-${pack.id}`));
+
+            particleCanvasRef.current?.stop();
+        };
     }, []);
-
-    useEffect(() => {
-        if (!ambienceSoundRef.current) return;
-
-        ambienceSoundRef.current.volume = 0.2;
-        ambienceSoundRef.current.play().catch(() => { });
-    }, [ambienceSoundRef.current]);
 
     return (
         <>
@@ -294,16 +329,13 @@ export default function Market() {
                         <OpenPackContainer
                             opening={openingPack}
                             image={resourceIdToPath(currentPack.imageId)}
-                            animationType={
-                                rarities.find((rarity) => rarity.id === blooks.find((blook) => blook.id === unlockedBlook.blookId)!.rarityId)!.animationType
-                            }
+                            video={resourceIdToPath(blooks.find((blook) => blook.id === unlockedBlook.blookId)!.videoId!) || undefined}
+                            animationType={rarities.find((rarity) => rarity.id === blooks.find((blook) => blook.id === unlockedBlook.blookId)!.rarityId)!.animationType}
                         />
-
-                        <audio src={resourceIdToPath(currentPack.ambienceId)} loop ref={ambienceSoundRef} />
                     </>}
 
                     {unlockedBlook && <OpenPackBlook userBlook={unlockedBlook} animate={
-                        bigButtonEvent !== BigButtonClickType.OPEN
+                        bigButtonEvent === BigButtonClickType.OPENING || bigButtonEvent === BigButtonClickType.CLOSE
                     } isNew={isNew(unlockedBlook.blookId)} />}
 
                     <div style={{ cursor: bigButtonEvent === BigButtonClickType.NONE ? "unset" : "" }} className={styles.openBigButton} onClick={handleBigClick} />

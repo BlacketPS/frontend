@@ -8,6 +8,7 @@ export default function SetHolder({ name, icon, nothing, children }: SetHolderPr
             <div className={styles.setTop}>
                 <div className={styles.setTopBackground}>
                     {/* TODO: icon at the top of the set */}
+                    {icon}
                 </div>
                 <div className={styles.setTopText}>{name}</div>
                 <div className={styles.setTopDivider} />

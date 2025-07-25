@@ -1,6 +1,9 @@
 import { Config } from "@blacket/types";
 
-export interface ConfigStoreContext {
-    config: Config | null,
-    setConfig: (config: Config) => void
+export interface ConfigStore {
+    config: Config | null;
+    setConfig: (config: Config) => void;
+    loading: boolean;
+    error: string | boolean;
+    fetchConfig: () => void;
 }

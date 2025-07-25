@@ -1,10 +1,10 @@
 import { AuctionsAuctionEntity, AuctionsSearchAuctionDto } from "@blacket/types";
 
-export interface AuctionHouseStoreContext {
+export interface AuctionHouseStore {
     loading: boolean;
     setLoading: (loading: boolean) => void;
     auctions: AuctionsAuctionEntity[];
-    setAuctions: (auctions: AuctionsAuctionEntity[]) => void;
+    setAuctions: (auctions: AuctionsAuctionEntity[] | ((prev: AuctionsAuctionEntity[]) => AuctionsAuctionEntity[])) => void;
     search: AuctionsSearchAuctionDto;
     setSearch: (search: AuctionsSearchAuctionDto) => void;
     getAuctions: () => void;

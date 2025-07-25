@@ -63,6 +63,7 @@
     font-size: 3rem;
     font-family: "Titan One";
     width: 95%;
+    height: 50px;
 
     @media screen and (max-width: 768px) {
         font-size: 1.5rem;
@@ -253,6 +254,7 @@
     justify-content: center;
     align-items: center;
     width: 200px;
+    height: 30px;
     font-family: "Titan One", sans-serif;
     user-select: none;
 }

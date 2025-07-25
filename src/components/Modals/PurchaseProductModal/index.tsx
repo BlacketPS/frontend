@@ -4,6 +4,7 @@ import { useStripe } from "@stripe/react-stripe-js";
 import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { useResource } from "@stores/ResourceStore/index";
+import { useSound } from "@stores/SoundStore/index";
 import { Modal, ErrorContainer, Button, StripeElementsWrapper, ImageOrVideo, Dropdown, Toggle, ParticleCanvas, Input } from "@components/index";
 import { ParticleCanvasRef } from "@components/ParticleCanvas/particleCanvas";
 import { useSelect } from "@controllers/stripe/payment-methods/useSelect";
@@ -15,21 +16,36 @@ import { RarityAnimationTypeEnum, UserPaymentMethod } from "@blacket/types";
 function SuccessModalOutside() {
     const particleCanvasRef = useRef<ParticleCanvasRef>(null);
 
+    const { defineSounds, playSound, playSounds, stopSounds } = useSound();
+
     useEffect(() => {
         if (!particleCanvasRef.current) return;
+
         particleCanvasRef.current.start();
 
-        const audios = [
-            window.constructCDNUrl("/content/audio/sound/cha-ching.mp3"),
-            window.constructCDNUrl("/content/audio/sound/token-shower.mp3")
-        ];
+        defineSounds([
+            { id: "party-popper", url: window.constructCDNUrl("/content/audio/sound/party-popper.mp3") },
+            { id: "cha-ching", url: window.constructCDNUrl("/content/audio/sound/cha-ching.mp3") },
+            { id: "token-shower", url: window.constructCDNUrl("/content/audio/sound/token-shower.mp3") }
+        ])
+            .then(() => {
+                setTimeout(() => {
+                    playSound("party-popper");
+                }, 100);
 
-        for (const audio of audios) new Audio(audio).play();
+                setTimeout(() => {
+                    playSounds(["cha-ching", "token-shower"]);
+                }, 400);
+            });
 
-        setTimeout(() => {
-            if (!particleCanvasRef.current) return;
-            particleCanvasRef.current.stop();
+        const stopTimeout = setTimeout(() => {
+            if (particleCanvasRef.current) particleCanvasRef.current.stop();
         }, 2500);
+
+        return () => {
+            stopSounds(["cha-ching", "token-shower"]);
+            clearTimeout(stopTimeout);
+        };
     }, []);
 
     return (

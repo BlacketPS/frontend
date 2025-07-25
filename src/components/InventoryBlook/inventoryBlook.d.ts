@@ -1,11 +1,11 @@
 import { HTMLAttributes } from "react";
-import { Blook } from "@blacket/types";
 
 export interface InventoryBlookProps extends HTMLAttributes<HTMLDivElement> {
-    blook: Blook;
+    blook: UserBlook;
     shiny?: boolean;
+    big?: boolean;
     locked?: boolean;
-    quantity?: number;
+    amount?: number;
     selectable?: boolean;
     useVhStyles?: boolean;
 }

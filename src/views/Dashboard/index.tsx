@@ -10,7 +10,7 @@ import { useAuctionHouse } from "@stores/AuctionHouseStore/index";
 import { useUsers } from "@controllers/users/useUsers/index";
 import { useSearchAuction } from "@controllers/auctions/useSearchAuction/index";
 import { useClaimDailyTokens } from "@controllers/quests/useClaimDailyTokens/index";
-import { AdUnit, Auction, Blook, ImageOrVideo, Username, InventoryBlook, InventoryItem } from "@components/index";
+import { Auction, Blook, ImageOrVideo, Username, InventoryBlook, InventoryItem } from "@components/index";
 import { LevelContainer, LookupUserModal, SmallButton, SectionHeader, StatContainer, CosmeticsModal, DailyRewardsModal } from "./components";
 import styles from "./dashboard.module.scss";
 
@@ -20,7 +20,7 @@ import { CosmeticsModalCategory } from "./dashboard.d";
 export default function Dashboard() {
     const { setLoading } = useLoading();
     const { createModal } = useModal();
-    const { user, getUserAvatarPath, getUserBannerPath } = useUser();
+    const { user, getUserAvatarPath, getUserBannerPath, getBlookAmount } = useUser();
     const { cachedUsers, addCachedUserWithData } = useCachedUser();
     const { blooks, packs, items, titleIdToText } = useData();
     const { resourceIdToPath } = useResource();
@@ -103,21 +103,8 @@ export default function Dashboard() {
         setViewingUser(user);
     }, [user]);
 
-    const getUserBlookQuantity = (blookId: number) => {
-        return viewingUser.blooks.filter((blook) => blook.blookId === blookId).length;
-    };
-
-    const getUserShinyBlookQuantity = (blookId: number) => {
-        return viewingUser.blooks.filter((blook) => blook.blookId === blookId && blook.shiny).length;
-    };
-
-    const hasUserBlook = (blookId: number) => {
-        return viewingUser.blooks.some((blook) => blook.blookId === blookId);
-    };
-
-    const hasShinyUserBlook = (blookId: number) => {
-        return viewingUser.blooks.some((blook) => blook.blookId === blookId && blook.shiny);
-    };
+    const hasUserBlook = (blookId: number) => getBlookAmount(blookId, false, viewingUser) > 0;
+    const hasShinyUserBlook = (blookId: number) => getBlookAmount(blookId, true, viewingUser) > 0;
 
     const nonPackBlooks = blooks
         .filter((blook) => !blook.packId)
@@ -212,21 +199,6 @@ export default function Dashboard() {
 
             </div>
 
-            <div
-                style={{
-                    display: "grid",
-                    alignSelf: "center",
-                    width: "90%"
-                }}
-            >
-                <AdUnit
-                    mobileOnly
-                    slot={"7833576760"}
-                    height={150}
-                    style={{ height: 150, marginBottom: 10 }}
-                />
-            </div>
-
             <div className={`${styles.section} ${styles.statsSection}`}>
                 <div className={styles.statsContainer}>
                     <div className={styles.statsContainerHolder}>
@@ -289,12 +261,12 @@ export default function Dashboard() {
                                     .sort((a, b) => a.priority - b.priority);
 
                                 if (filteredBlooks.length > 0) return filteredBlooks.map((blook) => <Fragment key={blook.id}>
-                                    {hasUserBlook(blook.id) && <InventoryBlook blook={blook} quantity={getUserBlookQuantity(blook.id)} selectable={false} useVhStyles={true} />}
-                                    {hasShinyUserBlook(blook.id) && <InventoryBlook blook={blook} quantity={getUserShinyBlookQuantity(blook.id)} shiny={true} selectable={false} useVhStyles={true} />}
+                                    {hasUserBlook(blook.id) && <InventoryBlook blook={blook} amount={getBlookAmount(blook.id, false, viewingUser)} selectable={false} useVhStyles={true} />}
+                                    {hasShinyUserBlook(blook.id) && <InventoryBlook blook={blook} amount={getBlookAmount(blook.id, true, viewingUser)} shiny={true} selectable={false} useVhStyles={true} />}
                                 </Fragment>);
                             })}
 
-                            {nonPackBlooks.map((blook) => hasUserBlook(blook.id) && <InventoryBlook key={blook.id} blook={blook} quantity={getUserBlookQuantity(blook.id)} selectable={false} useVhStyles={true} />)}
+                            {nonPackBlooks.map((blook) => hasUserBlook(blook.id) && <InventoryBlook key={blook.id} blook={blook} amount={getBlookAmount(blook.id, false, viewingUser)} selectable={false} useVhStyles={true} />)}
                         </div>
                     </div>
                 </div>

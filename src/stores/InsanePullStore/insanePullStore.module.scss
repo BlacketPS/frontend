@@ -1,0 +1,21 @@
+.flash {
+    position: fixed;
+    inset: 0;
+    z-index: 9998;
+    background-color: white;
+}
+
+.video {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 9999;
+    opacity: 0;
+    object-fit: cover;
+    transition: opacity 1s linear;
+    will-change: transform, opacity;
+    transform: translateZ(0);
+    pointer-events: none;
+    user-select: none;
+}

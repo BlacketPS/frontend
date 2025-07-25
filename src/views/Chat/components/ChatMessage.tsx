@@ -191,7 +191,7 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
                         </div>
                     </div>
 
-                    {message.edited && <span className={styles.edited}>(edited)</span>}
+                    {message.editedAt && <span className={styles.edited}>(edited)</span>}
                 </div>
             </li>
         </span>

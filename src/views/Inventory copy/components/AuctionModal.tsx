@@ -5,7 +5,7 @@ import { useResource } from "@stores/ResourceStore/index";
 import { useAuctionHouse } from "@stores/AuctionHouseStore/index";
 import { useCreateAuction } from "@controllers/auctions/useCreateAuction/index";
 import { useRecentAveragePrice } from "@controllers/auctions/useRecentAveragePrice/index";
-import { Modal, Button, Form, Input, ErrorContainer, Toggle, WarningContainer, Blook } from "@components/index";
+import { Modal, Button, Form, Input, ErrorContainer, Toggle, WarningContainer, Blook, Textfit } from "@components/index";
 import styles from "../inventory.module.scss";
 
 import { AuctionModalProps } from "../inventory.d";
@@ -32,8 +32,6 @@ export default function AuctionModal({ type, blook, shiny, item }: AuctionModalP
     const { closeModal } = useModal();
     const { getAuctions } = useAuctionHouse();
     const { resourceIdToPath } = useResource();
-
-    if (!user) return null;
 
     const submit = () => {
         if (price === "") return setError("Please enter a price.");
@@ -113,7 +111,9 @@ export default function AuctionModal({ type, blook, shiny, item }: AuctionModalP
                 </div>}
 
                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", width: "20rem", textAlign: "left" }}>
-                    <h1 className={styles.sellBlookBlookName}>{shiny && "Shiny"} {type === AuctionTypeEnum.BLOOK ? blook!.name : item!.name}</h1>
+                    <Textfit className={styles.sellBlookBlookName} mode="single" min={0} max={40}>
+                        {shiny && "Shiny"} {type === AuctionTypeEnum.BLOOK ? blook!.name : item!.name}
+                    </Textfit>
 
                     <Form style={{ marginTop: 15 }}>
                         <Input

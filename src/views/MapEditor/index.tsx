@@ -180,6 +180,7 @@ export default function MapEditor() {
                         text: objectSelected.id,
                         x,
                         y: 20,
+                        z: 999,
                         style: { textAlign: "right" },
                         useCamera: false
                     });
@@ -187,6 +188,7 @@ export default function MapEditor() {
                         text: `X: ${objectSelected.x}`,
                         x,
                         y: 40,
+                        z: 999,
                         style: { textAlign: "right" },
                         useCamera: false
                     });
@@ -194,6 +196,7 @@ export default function MapEditor() {
                         text: `Y: ${objectSelected.y}`,
                         x,
                         y: 60,
+                        z: 999,
                         style: { textAlign: "right" },
                         useCamera: false
                     });
@@ -201,6 +204,7 @@ export default function MapEditor() {
                         text: `Z: ${objectSelected.z}`,
                         x,
                         y: 80,
+                        z: 999,
                         style: { textAlign: "right" },
                         useCamera: false
                     });
@@ -208,6 +212,7 @@ export default function MapEditor() {
                         text: `W: ${objectSelected.width ?? objectSelected?.image?.width ?? 0}`,
                         x,
                         y: 100,
+                        z: 999,
                         style: { textAlign: "right" },
                         useCamera: false
                     });
@@ -215,6 +220,7 @@ export default function MapEditor() {
                         text: `H: ${objectSelected.height ?? objectSelected?.image?.height ?? 0}`,
                         x,
                         y: 120,
+                        z: 999,
                         style: { textAlign: "right" },
                         useCamera: false
                     });
@@ -259,6 +265,7 @@ export default function MapEditor() {
                         text: `${entity.x}, ${entity.y}`,
                         x: entity.x + tileWidth / 2,
                         y: entity.y + tileHeight + 30,
+                        z: 999,
                         style: { fontSize: 25, textAlign: "center" },
                         useCamera: true
                     });

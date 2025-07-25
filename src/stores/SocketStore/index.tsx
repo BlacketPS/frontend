@@ -1,136 +1,68 @@
-import { ReactNode, createContext, useCallback, useContext, useEffect, useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { Socket, io } from "socket.io-client";
-import { useUser } from "@stores/UserStore";
+import { create } from "zustand";
+import { io } from "socket.io-client";
+import { SocketMessageType } from "@blacket/types";
 
-import { type SocketStoreContext } from "./socket.d";
-import { PrivateUser, SocketMessageType } from "@blacket/types";
+import { SocketStore } from "./socketStore.d";
 
-const SocketStoreContext = createContext<SocketStoreContext>({
+export const useSocket = create<SocketStore>((set, get) => ({
     socket: null,
     connected: false,
     latency: 0,
-    initializeSocket: () => { }
-});
 
-export function useSocket() {
-    return useContext(SocketStoreContext);
-}
-
-export function SocketStoreProvider({ children }: { children: ReactNode }) {
-    const { user, setUser } = useUser();
-
-    const [connected, setConnected] = useState<boolean>(false);
-    const [latency, setLatency] = useState<number>(0);
-
-    const cleanupRef = useRef<(() => void) | null>(null);
-    const socketRef = useRef<Socket | null>(null);
-    const last10Latency = useRef<number[]>([]);
-    const userRef = useRef<PrivateUser | null>(user);
-
-    const navigate = useNavigate();
-
-    const initializeSocket = useCallback(() => {
-        if (cleanupRef.current) {
-            cleanupRef.current();
-            cleanupRef.current = null;
-        }
-
-        setConnected(false);
-
-        const socket = io(`${window.location.protocol}//${window.location.host}`, { path: "/gateway", auth: { token: localStorage.getItem("token") }, transports: ["websocket"] });
+    initializeSocket: () => {
+        const socket = io(`${location.protocol}//${location.host}`, {
+            path: "/gateway",
+            auth: { token: localStorage.getItem("token") },
+            transports: ["websocket"]
+        });
 
         let pinging = true;
-
-        const pingLoop = (sid: string) => {
-            if (!pinging || !socket.connected) return;
-            if (sid !== socket.id) return;
-
-            const start = Date.now();
-
-            socket.emit(SocketMessageType.PING);
-            socket.once(SocketMessageType.PONG, () => {
-                if (!pinging || !socket.connected) return;
-                if (sid !== socket.id) return;
-
-                socket.emit(SocketMessageType.PONG);
-                const currentPing = Date.now() - start;
-
-                last10Latency.current.push(currentPing);
-                if (last10Latency.current.length > 10) last10Latency.current.shift();
-
-                const averageLatency = last10Latency.current.length < 10 ? Math.min(...last10Latency.current) : last10Latency.current.reduce((a, b) => a + b, 0) / last10Latency.current.length;
-
-                setLatency(Number(averageLatency.toFixed(0)));
-
-                setTimeout(() => {
-                    pingLoop(sid);
-                }, 1000);
-            });
-        };
+        const last10Latency: number[] = [];
 
         socket.on("connect", () => {
-            setConnected(true);
+            set({ connected: true });
 
-            pingLoop(socket.id!);
+            const sid = socket.id!;
+
+            const pingLoop = () => {
+                if (!pinging || socket.id !== sid) return;
+
+                const start = Date.now();
+
+                socket.emit(SocketMessageType.PING);
+                socket.once(SocketMessageType.PONG, () => {
+                    const latency = Date.now() - start;
+                    last10Latency.push(latency);
+                    if (last10Latency.length > 10) last10Latency.shift();
+
+                    const average = last10Latency.length < 10
+                        ? Math.min(...last10Latency)
+                        : last10Latency.reduce((a, b) => a + b, 0) / last10Latency.length;
+
+                    set({ latency: Math.round(average) });
+                    setTimeout(pingLoop, 1000);
+                });
+            };
+
+            pingLoop();
 
             console.info("[Blacket] Connected to WebSocket server.");
         });
 
         socket.on("disconnect", () => {
-            setConnected(false);
+            set({ connected: false });
 
             console.info("[Blacket] Disconnected from WebSocket server.");
 
             if (localStorage.getItem("token")) {
                 console.info("[Blacket] Reconnecting to WebSocket server...");
 
-                initializeSocket();
+                setTimeout(() => {
+                    get().initializeSocket();
+                }, 1000);
             }
 
             pinging = false;
-        });
-
-        socket.on(SocketMessageType.PURCHASE_SUCCEEDED, (data: any) => {
-            if (!userRef.current) return;
-
-            const newUser = {
-                ...userRef.current,
-
-                blooks: [
-                    ...userRef.current.blooks,
-                    ...(data.blooks || [])
-                ],
-                items: [
-                    ...userRef.current.items,
-                    ...(data.items || [])
-                ],
-                fonts: [
-                    ...userRef.current.fonts,
-                    ...(data.fonts || [])
-                ],
-                titles: [
-                    ...userRef.current.titles,
-                    ...(data.titles || [])
-                ],
-                banners: [
-                    ...userRef.current.banners,
-                    ...(data.banners || [])
-                ],
-                permissions: [
-                    ...userRef.current.permissions,
-                    ...(data.permissions || [])
-                ],
-
-                gems: userRef.current.gems + (data.gems ?? 0),
-                tokens: userRef.current.tokens + (data.tokens ?? 0),
-
-                subscription: data.subscription || userRef.current.subscription
-            };
-
-            setUser(newUser);
-
-            navigate("/settings/billing");
         });
 
         socket.onAny((event: string, data: object) => {
@@ -139,45 +71,6 @@ export function SocketStoreProvider({ children }: { children: ReactNode }) {
 
         if (import.meta.env.MODE === "development") window.socket = socket;
 
-        socketRef.current = socket;
-
-        cleanupRef.current = () => {
-            pinging = false;
-
-            socket.offAny();
-            socket.close();
-        };
-
-        return () => {
-            pinging = false;
-
-            socket.close();
-        };
-    }, []);
-
-    useEffect(() => {
-        initializeSocket();
-
-        return () => {
-            if (cleanupRef.current) cleanupRef.current();
-
-            socketRef.current = null;
-        };
-    }, [initializeSocket]);
-
-    useEffect(() => {
-        if (!user) return;
-
-        userRef.current = user;
-    }, [user]);
-
-    return (
-        <SocketStoreContext.Provider value={{
-            socket: socketRef.current,
-            connected, latency,
-            initializeSocket
-        }}>
-            {children}
-        </SocketStoreContext.Provider>
-    );
-}
+        set({ socket });
+    }
+}));

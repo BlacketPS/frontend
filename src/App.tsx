@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider, Outlet } from "react-router-dom";
-import StoreWrapper from "./stores/index";
 import * as routes from "./views/index.routes";
+import Wrapper from "./Wrapper";
 import useCreateRoute from "./useCreateRoute";
 import Error from "./views/Error";
 
@@ -11,12 +11,11 @@ import "./all.scss";
 const router = createBrowserRouter([{
     id: "app",
     errorElement: <Error code={0} />,
-    element: <StoreWrapper>
+    element: <Wrapper>
         <Development.Information />
-        <Development.UIDFlasher />
 
         <Outlet />
-    </StoreWrapper>,
+    </Wrapper>,
     children: Object.values(routes).map((route: BlacketRoute) => useCreateRoute(route))
 }]);
 

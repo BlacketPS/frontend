@@ -6,9 +6,11 @@ export interface Modals {
     outsideModal?: ReactNode;
 }
 
-export interface ModalStoreContext {
+export interface ModalStore {
     modals: Modals[];
-    setModals: (modals: { id: string, modal: ReactNode }[]) => void;
+    setModals: (modals: Modals[]) => void;
     createModal: (modal: ReactNode, outsideModal?: ReactNode) => string;
     closeModal: () => void;
+    closing: boolean;
+    setClosing: (closing: boolean) => void;
 }

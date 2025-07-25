@@ -1,8 +1,8 @@
 import { PublicUser } from "@blacket/types";
 
-export interface CachedUserStoreContext {
+export interface CachedUserStore {
     cachedUsers: PublicUser[];
-    setCachedUsers: (cachedUsers: PublicUser[]) => void;
-    addCachedUser: (userId: string) => Promise<PublicUser>;
+    setCachedUsers: (users: PublicUser[]) => void;
+    addCachedUser: (userIdOrName: string) => Promise<PublicUser>;
     addCachedUserWithData: (user: PublicUser) => void;
 }

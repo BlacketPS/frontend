@@ -1,6 +1,19 @@
-import { Banner, Blook, Emoji, Font, Item, ItemShop, Pack, Rarity, SpinnyWheel, StripeProductEntity, StripeStoreEntity, Title } from "@blacket/types";
+import {
+    Banner,
+    Blook,
+    Emoji,
+    Font,
+    Item,
+    ItemShop,
+    Pack,
+    Rarity,
+    SpinnyWheel,
+    StripeProductEntity,
+    StripeStoreEntity,
+    Title
+} from "@blacket/types";
 
-export interface DataStoreContext {
+export interface DataStore {
     badges: any[];
     setBadges: (badges: any[]) => void;
     banners: Banner[];

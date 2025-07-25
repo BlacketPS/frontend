@@ -6,7 +6,7 @@ import stylesVh from "./inventoryBlookVh.module.scss";
 
 import { InventoryBlookProps } from "./inventoryBlook.d";
 
-export default function InventoryBlook({ blook, shiny = false, locked = false, quantity = 0, selectable = true, useVhStyles = false, ...props }: InventoryBlookProps) {
+export default function InventoryBlook({ blook, shiny = false, big = false, locked = false, amount = 0, selectable = true, useVhStyles = false, ...props }: InventoryBlookProps) {
     const { resourceIdToPath } = useResource();
     const { rarities } = useData();
 
@@ -19,15 +19,15 @@ export default function InventoryBlook({ blook, shiny = false, locked = false, q
         <div data-locked={locked} data-selectable={selectable} className={styles.blook} {...props}>
             <Blook
                 className={styles.blookImage}
-                // src={!locked ? resourceIdToPath(blook.imageId) : window.constructCDNUrl("/content/blooks/Default.png")}
                 src={resourceIdToPath(blook.imageId)}
                 alt={blook.name}
                 data-locked={locked}
                 draggable={false}
                 shiny={shiny}
+                big={big}
             />
 
-            {!locked && quantity > 0 && <div
+            {!locked && amount > 0 && <div
                 className={styles.blookQuantity}
                 style={{
                     backgroundColor: !rarity.imageId ? rarity.color : "transparent"
@@ -47,7 +47,7 @@ export default function InventoryBlook({ blook, shiny = false, locked = false, q
                     className={styles.blookQuantityImage}
                 />}
 
-                <div className={styles.blookQuantityText}>{quantity >= 99 ? "99+" : quantity.toLocaleString()}</div>
+                <div className={styles.blookQuantityText}>{amount >= 99 ? "99+" : amount.toLocaleString()}</div>
             </div>}
 
             {locked && <i className={`${styles.blookLock} fas fa-lock`} />}

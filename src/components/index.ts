@@ -1,4 +1,3 @@
-import AdUnit from "./AdUnit";
 import Auction from "./Auction";
 import Background from "./Background";
 import Blook from "./Blook";
@@ -21,6 +20,7 @@ import Markdown from "./Markdown";
 import * as Modal from "./Modals";
 import PageHeader from "./PageHeader";
 import ParticleCanvas from "./ParticleCanvas";
+import RarityLabel from "./RarityLabel";
 import SearchBox from "./SearchBox";
 import Sidebar from "./Sidebar";
 import SidebarBody from "./SidebarBody";
@@ -34,7 +34,6 @@ import WaterBackground from "./WaterBackground";
 import ZoeySign from "./ZoeySign";
 
 export {
-    AdUnit,
     Auction,
     Background,
     Blook,
@@ -57,6 +56,7 @@ export {
     Modal,
     PageHeader,
     ParticleCanvas,
+    RarityLabel,
     SearchBox,
     Sidebar,
     SidebarBody,

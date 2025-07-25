@@ -1,53 +1,56 @@
-import { createContext, useContext, useEffect, useState, ReactNode, useRef, useCallback } from "react";
+import { create } from "zustand";
+import { useEffect, useRef } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { useSocket } from "@stores/SocketStore/index";
-import { useUser } from "@stores/UserStore/index";
-import { useCachedUser } from "@stores/CachedUserStore/index";
-import { useMessages } from "@controllers/chat/messages/useMessages/index";
-import { useStartTyping } from "@controllers/chat/messages/roomId/useStartTyping/index";
-import { useSendMessage } from "@controllers/chat/messages/useSendMessage/index";
-import { useToast } from "@stores/ToastStore/index";
+import { useSocket } from "@stores/SocketStore";
+import { useUser } from "@stores/UserStore";
+import { useCachedUser } from "@stores/CachedUserStore";
+import { useSound } from "@stores/SoundStore";
+import { useMessages } from "@controllers/chat/messages/useMessages";
+import { useStartTyping } from "@controllers/chat/messages/roomId/useStartTyping";
+import { useSendMessage } from "@controllers/chat/messages/useSendMessage";
+import { useToast } from "@stores/ToastStore";
 
-import { ClientMessage, TypingUser, type ChatStoreContext } from "./chatStore.d";
+import { ClientMessage, TypingUser, ChatStore } from "./chatStore.d";
 import { Message, NotFound, PermissionTypeEnum, SocketMessageType } from "@blacket/types";
 
-const ChatStoreContext = createContext<ChatStoreContext>({
+export const useChatStore = create<ChatStore>((set, get) => ({
     messages: [],
     usersTyping: [],
     replyingTo: null,
-    setReplyingTo: () => { },
     editing: null,
-    setEditing: () => { },
+    mentions: 0,
+    room: 0,
+
+    setReplyingTo: (message) => set({ replyingTo: message }),
+    setEditing: (message) => set({ editing: message }),
+    setRoom: (room) => set({ room }),
+    resetMentions: () => set({ mentions: 0 }),
+
     fetchMessages: () => { },
     sendMessage: () => { },
     startTyping: () => { },
-    mentions: 0,
-    resetMentions: () => { },
-    room: 0,
-    setRoom: () => { }
-});
+
+    _typingTimeout: null
+}));
 
 export function useChat() {
-    return useContext(ChatStoreContext);
-}
+    const {
+        messages, usersTyping, replyingTo, editing,
+        mentions, room,
+        setReplyingTo, setEditing,
+        resetMentions, setRoom,
+        _typingTimeout
+    } = useChatStore.getState();
 
-export function ChatStoreProvider({ children }: { children: ReactNode }) {
     const { connected, socket } = useSocket();
     const { user, getUserAvatarPath } = useUser();
     const { addCachedUser } = useCachedUser();
     const { createToast } = useToast();
-
     const { getMessages } = useMessages();
+    const { playSound, defineSounds } = useSound();
 
-    const [messages, setMessages] = useState<ClientMessage[]>([]);
-    const [room, setRoom] = useState<number>(0);
-    const [replyingTo, setReplyingTo] = useState<ClientMessage | null>(null);
-    const [editing, setEditing] = useState<ClientMessage | null>(null);
-    const [usersTyping, setUsersTyping] = useState<TypingUser[]>([]);
-    const [mentions, setMentions] = useState(0);
-
-    const navigate = useNavigate();
     const location = useLocation();
+    const navigate = useNavigate();
 
     const locationRef = useRef(location);
     locationRef.current = location;
@@ -58,7 +61,73 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
     const messagesRef = useRef(messages);
     messagesRef.current = messages;
 
-    let typingTimeout: number | null = null;
+    const fetchMessages = async (roomOverride?: number): Promise<ClientMessage[]> => {
+        const r = roomOverride ?? room;
+
+        if (!user) return [];
+
+        const messages = await getMessages(r, 50).then((res) => res.data).catch(() => []);
+        const userMap = new Map<string, boolean>();
+
+        messages.forEach((m: Message) => userMap.set(m.authorId, true));
+
+        await Promise.all(Array.from(userMap.keys()).map((uid) => addCachedUser(uid)));
+
+        useChatStore.setState({ messages });
+
+        return messages;
+    };
+
+    const sendMessage = async (content: string) => {
+        if (!user) throw new Error(NotFound.UNKNOWN_USER);
+
+        const nonce = `${Math.floor(Date.now() / 1000)}${Math.floor(1000000 + Math.random() * 9000000)}`;
+        const now = new Date();
+        const message: ClientMessage = {
+            id: nonce,
+            roomId: room,
+            authorId: user.id,
+            author: user,
+            content,
+            mentions: [],
+            replyingToId: replyingTo?.id ?? null,
+            replyingTo: replyingTo ?? undefined,
+            createdAt: now,
+            updatedAt: now,
+            discordMessageId: null,
+            deletedAt: null,
+            editedAt: null,
+            nonce
+        };
+
+        const previousMessages = messages;
+        useChatStore.setState({ messages: [message, ...previousMessages], replyingTo: null });
+
+        useSendMessage().sendMessage(room, {
+            content,
+            replyingTo: replyingTo?.id
+        }).then((res) => {
+            useChatStore.setState({
+                messages: messages.map((m) => (m.nonce === nonce ? res.data : m))
+            });
+        }).catch((err) => {
+            message.error = err?.data?.message || "Something went wrong.";
+
+            useChatStore.setState({
+                messages: messages.map((m) => (m.nonce === nonce ? message : m))
+            });
+        });
+    };
+
+    const startTyping = () => {
+        const now = Date.now();
+
+        const typingTimeout = _typingTimeout;
+        if (typingTimeout && now - typingTimeout < 2000) return;
+
+        useChatStore.setState({ _typingTimeout: now });
+        useStartTyping().startTyping(0);
+    };
 
     const parseContent = async (content: string): Promise<string> => {
         const matches = [...content.matchAll(/<@(\d+)>/g)];
@@ -77,27 +146,21 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
         );
 
         let result = content;
-
         for (const { original, replacement } of replacements) result = result.replace(original, replacement);
-
         return result;
     };
 
-    const addMention = useCallback(async (message: ClientMessage) => {
+    const addMention = async (message: ClientMessage) => {
         if (!user) return;
 
         const l = locationRef.current.pathname.split("/")[1];
-        console.log(l);
-
-        const isInChat = l === "chat";
-        if (isInChat) return;
+        if (l === "chat") return;
 
         const cachedUser = await addCachedUser(message.authorId);
 
-        if (message.mentions.includes(user.id) || (message.replyingTo && message.replyingTo.authorId === user.id)) {
-            new Audio(window.constructCDNUrl("/content/mention.ogg")).play();
-            setMentions((previousMentions) => previousMentions + 1);
-
+        if (message.mentions.includes(user.id) || message.replyingTo?.authorId === user.id) {
+            playSound("mention");
+            useChatStore.setState((s) => ({ mentions: s.mentions + 1 }));
             createToast({
                 header: cachedUser.username,
                 body: await parseContent(message.content),
@@ -108,159 +171,90 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
                 }
             });
         }
-    }, [user, location, addCachedUser, createToast, getUserAvatarPath, navigate]);
-
-    const fetchMessages = async (r: number = room) => {
-        if (!user) return [];
-
-        const messages = await getMessages(r, 50)
-            .then((res) => res.data)
-            .catch(() => []);
-
-        const userMap = new Map<string, boolean>();
-        messages.forEach((message: Message) => {
-            userMap.set(message.authorId, true);
-        });
-
-        await Promise.all(Array.from(userMap.keys()).map((user) => addCachedUser(user)));
-
-        setMessages(messages);
-
-        return messages;
-    };
-
-    const sendMessage = async (content: string) => {
-        if (!user) throw new Error(NotFound.UNKNOWN_USER);
-
-        const nonce = ((Math.floor(Date.now() / 1000).toString()) + Math.floor(1000000 + Math.random() * 9000000)).toString();
-        const message: ClientMessage = {
-            id: nonce,
-            roomId: room,
-            authorId: user.id,
-            author: user,
-            content,
-            mentions: [],
-            replyingToId: replyingTo ? replyingTo.id : null,
-            replyingTo: replyingTo || undefined,
-            createdAt: new Date(Date.now()),
-            updatedAt: new Date(Date.now()),
-            discordMessageId: null,
-            deleted: false,
-            edited: false,
-            nonce
-        };
-
-        const previousMessages = messages;
-        setMessages([message, ...previousMessages]);
-
-        typingTimeout = null;
-        setReplyingTo(null);
-
-        useSendMessage().sendMessage(room, { content, replyingTo: replyingTo ? replyingTo.id : undefined })
-            .then((res) => setMessages((previousMessages) => previousMessages.map((message) => message.nonce === nonce ? res.data : message)))
-            .catch((err) => {
-                message.error = err.data.message || "Something went wrong.";
-
-                setMessages((previousMessages) => previousMessages.map((message) => message.nonce === nonce ? message : message));
-            });
-    };
-
-    const startTyping = () => {
-        if (typingTimeout && Date.now() - typingTimeout < 2000) return;
-
-        useStartTyping().startTyping(0);
-
-        typingTimeout = Date.now();
-    };
-
-    const resetMentions = () => setMentions(0);
-
-    const onChatMessageCreate = async (data: ClientMessage) => {
-        if (!user) return;
-
-        if (data.authorId === user.id) return;
-
-        addMention(data);
-
-        setMessages((previousMessages) => [data, ...previousMessages]);
-        setUsersTyping((previousUsersTyping) => previousUsersTyping.filter((user) => user.userId !== data.authorId));
-    };
-
-    const onChatMessageUpdate = (data: ClientMessage) => {
-        if (!user) return;
-
-        const previousMessage = messagesRef.current.find((message) => message.id === data.id);
-        if (!previousMessage) return;
-
-        const newMessage = { ...previousMessage, content: data.content, edited: true };
-
-        // edit other messages replies as well
-        const messagesReplyingToThisMessage = messagesRef.current.filter((message) => message.replyingTo?.id === data.id);
-
-        setMessages((previousMessages) => previousMessages.map((message) => {
-            if (message.id === data.id) return newMessage;
-
-            if (messagesReplyingToThisMessage.find((m) => m.id === message.id)) return { ...message, replyingTo: { ...(message.replyingTo as ClientMessage), content: data.content } };
-
-            return message;
-        }));
-    };
-
-    const onChatMessagesDelete = (data: { messageId: string }) => {
-        if (!user) return;
-
-        if (user.hasPermission(PermissionTypeEnum.MANAGE_MESSAGES)) return setMessages((previousMessages) => previousMessages.map((message) => message.id === data.messageId ? { ...message, deleted: true } : message));
-        else setMessages((previousMessages) => previousMessages.filter((message) => message.id !== data.messageId));
-    };
-
-    const onChatStartTyping = (data: TypingUser) => {
-        if (!user) return;
-
-        if (data.userId === user.id) return;
-
-        addCachedUser(data.userId);
-
-        data.startedTypingAt = Date.now();
-
-        setUsersTyping((previousUsersTyping) => {
-            const user = previousUsersTyping.find((user) => user.userId === data.userId);
-            if (user) return previousUsersTyping;
-
-            return [...new Set([...previousUsersTyping, data])];
-        });
-    };
-
-    const updateUsersTyping = () => {
-        const newUsersTyping = usersTypingRef.current.filter((user) => Date.now() - user.startedTypingAt < 2500);
-
-        if (newUsersTyping.length !== usersTypingRef.current.length) setUsersTyping(newUsersTyping);
     };
 
     useEffect(() => {
         if (!connected || !user || !socket) return;
 
+        defineSounds([{ id: "mention", url: window.constructCDNUrl("/content/audio/sound/mention.mp3") }]);
+
         fetchMessages(room);
 
-        socket.on(SocketMessageType.CHAT_MESSAGES_CREATE, onChatMessageCreate);
-        socket.on(SocketMessageType.CHAT_MESSAGES_UPDATE, onChatMessageUpdate);
-        socket.on(SocketMessageType.CHAT_MESSAGES_DELETE, onChatMessagesDelete);
-        socket.on(SocketMessageType.CHAT_TYPING_STARTED, onChatStartTyping);
+        const onChatMessageCreate = async (data: ClientMessage) => {
+            if (!user || data.authorId === user.id) return;
 
-        let active = true;
+            addMention(data);
+
+            useChatStore.setState((s) => ({
+                messages: [data, ...s.messages],
+                usersTyping: s.usersTyping.filter((u) => u.userId !== data.authorId)
+            }));
+        };
+
+        const onChatMessageUpdate = (data: ClientMessage) => {
+            if (!user) return;
+
+            const prev = messagesRef.current.find((m) => m.id === data.id);
+            if (!prev) return;
+
+            const newMessage = { ...prev, content: data.content, edited: true };
+            const messagesReplying = messagesRef.current.filter((m) => m.replyingTo?.id === data.id);
+
+            useChatStore.setState((s) => ({
+                messages: s.messages.map((m) => {
+                    if (m.id === data.id) return newMessage;
+                    if (messagesReplying.find((mr) => mr.id === m.id)) {
+                        return {
+                            ...m,
+                            replyingTo: { ...m.replyingTo!, content: data.content }
+                        };
+                    }
+                    return m;
+                })
+            }));
+        };
+
+        const onChatMessagesDelete = ({ messageId }: { messageId: string }) => {
+            if (!user) return;
+
+            useChatStore.setState((s) => ({
+                messages: user.hasPermission(PermissionTypeEnum.MANAGE_MESSAGES)
+                    ? s.messages.map((m) => m.id === messageId ? { ...m, deleted: true } : m)
+                    : s.messages.filter((m) => m.id !== messageId)
+            }));
+        };
+
+        const onChatStartTyping = (data: TypingUser) => {
+            if (!user || data.userId === user.id) return;
+
+            addCachedUser(data.userId);
+
+            data.startedTypingAt = Date.now();
+
+            useChatStore.setState((s) => {
+                if (s.usersTyping.find((u) => u.userId === data.userId)) return s;
+                return { usersTyping: [...s.usersTyping, data] };
+            });
+        };
 
         const tick = () => {
-            if (!active) return;
+            const now = Date.now();
 
-            updateUsersTyping();
+            useChatStore.setState((s) => ({
+                usersTyping: s.usersTyping.filter((u) => now - u.startedTypingAt < 2500)
+            }));
 
             setTimeout(tick, 1000);
         };
 
         tick();
 
-        return () => {
-            active = false;
+        socket.on(SocketMessageType.CHAT_MESSAGES_CREATE, onChatMessageCreate);
+        socket.on(SocketMessageType.CHAT_MESSAGES_UPDATE, onChatMessageUpdate);
+        socket.on(SocketMessageType.CHAT_MESSAGES_DELETE, onChatMessagesDelete);
+        socket.on(SocketMessageType.CHAT_TYPING_STARTED, onChatStartTyping);
 
+        return () => {
             socket.off(SocketMessageType.CHAT_MESSAGES_CREATE, onChatMessageCreate);
             socket.off(SocketMessageType.CHAT_MESSAGES_UPDATE, onChatMessageUpdate);
             socket.off(SocketMessageType.CHAT_MESSAGES_DELETE, onChatMessagesDelete);
@@ -268,9 +262,19 @@ export function ChatStoreProvider({ children }: { children: ReactNode }) {
         };
     }, [connected]);
 
-    return <ChatStoreContext.Provider value={{
-        messages, usersTyping, replyingTo, setReplyingTo, editing, setEditing,
-        fetchMessages, sendMessage, startTyping, mentions, resetMentions,
-        room, setRoom
-    }}>{children}</ChatStoreContext.Provider>;
+    return {
+        messages,
+        usersTyping,
+        replyingTo,
+        editing,
+        fetchMessages,
+        sendMessage,
+        startTyping,
+        mentions,
+        resetMentions,
+        room,
+        setRoom,
+        setReplyingTo,
+        setEditing
+    };
 }

@@ -1,3 +1,4 @@
+
 import { Message, PublicUser } from "@blacket/types";
 
 export interface ClientMessage extends Message {
@@ -12,7 +13,7 @@ export interface TypingUser {
     startedTypingAt: number;
 }
 
-export interface ChatStoreContext {
+export interface ChatStore {
     messages: ClientMessage[];
     usersTyping: TypingUser[];
     replyingTo: ClientMessage | null;
@@ -26,4 +27,5 @@ export interface ChatStoreContext {
     resetMentions: () => void;
     room: number;
     setRoom: (room: number) => void;
+    _typingTimeout: number | null;
 }

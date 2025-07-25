@@ -25,11 +25,9 @@ export default function LittlePlacement({ type, placement, user }: LittlePlaceme
                         <ImageOrVideo src={getUserAvatarPath(user)} draggable={false} />
                     </div>
 
-                    <div className={styles.otherStandingUsername}>
-                        <Textfit min={0} max={36} mode="single">
-                            <Username user={user} />
-                        </Textfit>
-                    </div>
+                    <Textfit className={styles.otherStandingUsername} min={0} max={36} mode="single">
+                        <Username user={user} />
+                    </Textfit>
 
                     <div className={styles.otherStandingScore}>
                         {user[type]?.toLocaleString()} <img src={window.constructCDNUrl(`/content/${type === PlacementType.TOKEN ? "token" : "experience"}.png`)} />

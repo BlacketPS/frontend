@@ -3,7 +3,7 @@ import { useModal } from "@stores/ModalStore/index";
 import { useUser } from "@stores/UserStore";
 import { useResource } from "@stores/ResourceStore/index";
 import { useSellBlooks } from "@controllers/blooks/useSellBlooks/index";
-import { Modal, Button, Form, ErrorContainer, Blook, Input } from "@components/index";
+import { Modal, Button, Form, ErrorContainer, Blook, Input, Textfit } from "@components/index";
 import styles from "../inventory.module.scss";
 
 import { SellBlooksModalProps } from "../inventory";
@@ -44,8 +44,6 @@ export default function SellBlooksModal({ blook, shiny }: SellBlooksModalProps) 
         inputRef.current?.focus();
     }, []);
 
-    if (!user) return null;
-
     return (
         <>
             {/* <Modal.ModalHeader>Sell {shiny && "Shiny"} {blook.name} Blook(s) for {blook.price * (shiny ? 10 : 1)} tokens</Modal.ModalHeader> */}
@@ -85,9 +83,9 @@ export default function SellBlooksModal({ blook, shiny }: SellBlooksModalProps) 
                 </div>
 
                 <div style={{ display: "flex", flexDirection: "column", justifyContent: "space-between", width: "20rem", textAlign: "left" }}>
-                    <h1 className={styles.sellBlookBlookName}>
+                    <Textfit className={styles.sellBlookBlookName} mode="single" min={0} max={40}>
                         {shiny && "Shiny"} {blook.name}
-                    </h1>
+                    </Textfit>
 
                     <div className={styles.sellBlookHoldInput}>
                         <div className={styles.sellBlookInput}>

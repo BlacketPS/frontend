@@ -1,18 +1,15 @@
-import { ReactNode, createContext, useContext, useState, useCallback } from "react";
+import { create } from "zustand";
 
-import { type ResourceStoreContext } from "./resource.d";
-import { type Resource } from "@blacket/types";
+import { ResourceStore } from "./resourceStore.d";
 
-const ResourceStoreContext = createContext<ResourceStoreContext>({ resources: [], setResources: () => { }, resourceIdToPath: () => "" });
+export const useResource = create<ResourceStore>((set, get) => ({
+    resources: [],
 
-export function useResource() {
-    return useContext(ResourceStoreContext);
-}
+    setResources: (resources) => set({ resources }),
 
-export function ResourceStoreProvider({ children }: { children: ReactNode }) {
-    const [resources, setResources] = useState<Resource[]>([]);
+    resourceIdToPath: (id) => {
+        const resource = get().resources.find((r) => r.id === id);
 
-    const resourceIdToPath = useCallback((id: number) => resources.find((resource) => resource.id === id)?.path.replace("{cdn}", window.constructCDNUrl("")) ?? window.errorImage, [resources]);
-
-    return <ResourceStoreContext.Provider value={{ resources, setResources, resourceIdToPath }}>{children}</ResourceStoreContext.Provider>;
-}
+        return resource ? resource.path.replace("{cdn}", window.constructCDNUrl("")) : window.errorImage;
+    }
+}));

@@ -1,6 +1,6 @@
 .blook {
-    width: 60px;
-    height: 70px;
+    min-width: 60px;
+    min-height: 70px;
     box-sizing: border-box;
     display: flex;
     flex-direction: column;

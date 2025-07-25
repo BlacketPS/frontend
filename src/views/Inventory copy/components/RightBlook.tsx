@@ -60,7 +60,7 @@ export default function RightBlook({ blook, shiny, owned, noBlooksOwned, childre
                             label: "Auction", icon: "fas fa-building-columns", onClick: () => {
                                 closeContextMenu();
 
-                                createModal(<AuctionModal type={AuctionTypeEnum.BLOOK} blook={blook} />);
+                                createModal(<AuctionModal type={AuctionTypeEnum.BLOOK} blook={blook} shiny={shiny} />);
                             }
                         }
                     ])}

@@ -36,7 +36,9 @@
         "sass": "^1.85.1",
         "slate-react": "^0.112.1",
         "socket.io-client": "^4.8.1",
-        "terser": "^5.39.0"
+        "terser": "^5.39.0",
+        "tone": "^15.1.22",
+        "zustand": "^5.0.6"
     },
     "devDependencies": {
         "@stylistic/eslint-plugin": "^4.2.0",

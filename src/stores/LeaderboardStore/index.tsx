@@ -1,29 +1,11 @@
-import { createContext, useContext, useState, ReactNode } from "react";
-
-import { type LeaderboardStoreContext } from "./leaderboard";
+import { create } from "zustand";
 import { PlacementType } from "../../views/Leaderboard/leaderboard.d";
-import { PublicUser } from "@blacket/types";
 
-const LeaderboardStoreContext = createContext<LeaderboardStoreContext>({
+import { LeaderboardStore } from "./leaderboardStore.d";
+
+export const useLeaderboard = create<LeaderboardStore>((set) => ({
     sortBy: PlacementType.TOKEN,
-    setSortBy: () => { },
     leaderboard: null,
-    setLeaderboard: () => { }
-});
-
-export function useLeaderboard() {
-    return useContext(LeaderboardStoreContext);
-}
-
-export function LeaderboardStoreProvider({ children }: { children: ReactNode }) {
-    const [sortBy, setSortBy] = useState<PlacementType>(PlacementType.TOKEN);
-    const [leaderboard, setLeaderboard] = useState<{
-        tokens: PublicUser[],
-        experience: PublicUser[]
-    } | null>(null);
-
-    return <LeaderboardStoreContext.Provider value={{
-        sortBy, setSortBy,
-        leaderboard, setLeaderboard
-    }}>{children}</LeaderboardStoreContext.Provider>;
-}
+    setSortBy: (type) => set({ sortBy: type }),
+    setLeaderboard: (data) => set({ leaderboard: data })
+}));

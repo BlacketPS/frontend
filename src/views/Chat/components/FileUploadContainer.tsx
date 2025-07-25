@@ -7,7 +7,6 @@ import { useUpload } from "@controllers/users/useUpload";
 import { MAX_UPLOAD_SIZES } from "@constants/index";
 import styles from "../chat.module.scss";
 
-// the styling for this can be redone if needed @XOTlC, just writing it to get the implementation done
 export default function FileUploadContainer() {
     const { createModal } = useModal();
     const { user } = useUser();
@@ -48,7 +47,7 @@ export default function FileUploadContainer() {
                 }
 
                 // TODO: properly implement an attachment system similar to discord's, for now this will do so we can get rewrite released.
-                sendMessage(uploadedFiles.map((file) => `${location.origin}/media/uploads${file.data.path}`).join("\n"));
+                // sendMessage(uploadedFiles.map((file) => `${location.origin}/media/uploads${file.data.path}`).join("\n"));
             }
         }
     };

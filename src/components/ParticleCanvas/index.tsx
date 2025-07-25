@@ -12,6 +12,8 @@ function randomInt(min: number, max: number) {
     return Math.trunc(Math.random() * (max - min)) + min;
 }
 
+const RAINBOW = ["#FF0000", "#FF7F00", "#FFFF00", "#00FF00", "#0000FF", "#4B0082", "#9400D3"];
+
 function particleType(e: ParticleType, brender: BrenderCanvasRef) {
     const velocityDivisor = 100;
     const gravityDivisor = 10000;
@@ -136,7 +138,7 @@ const ParticleCanvas = forwardRef<ParticleCanvasRef, ParticleCanvasProps>(({ wid
             z: 0,
             width: particleWidth,
             height: particleHeight,
-            imageTint: color
+            imageTint: color !== "rainbow" ? color : RAINBOW[Math.floor(Math.random() * RAINBOW.length)]
         });
 
         id++;
@@ -180,7 +182,7 @@ const ParticleCanvas = forwardRef<ParticleCanvasRef, ParticleCanvasProps>(({ wid
 
                         object.width = particleWidth;
                         object.height = particleHeight;
-                        object.imageTint = color;
+                        object.imageTint = color !== "rainbow" ? color : RAINBOW[Math.floor(Math.random() * RAINBOW.length)];
                     }
                 }
             }

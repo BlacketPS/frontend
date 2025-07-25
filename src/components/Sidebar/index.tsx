@@ -3,7 +3,7 @@ import { useLocation, Link } from "react-router-dom";
 import { Tooltip } from "react-tooltip";
 import { useUser } from "@stores/UserStore/index";
 import { useChat } from "@stores/ChatStore/index";
-import { AdUnit, Button } from "@components/index";
+import { Button } from "@components/index";
 
 import styles from "./sidebar.module.scss";
 import { PermissionTypeEnum } from "@blacket/types";
@@ -159,11 +159,6 @@ export default function Sidebar() {
                 </div>}
 
                 <div className={styles.bottom}>
-                    {window.innerWidth > 768 && <div className={styles.adContainer}>
-                        <AdUnit slot={"6329332522"} width={190} height={150} />
-                        {window.innerWidth > 1500 && <AdUnit slot={"7286185381"} width={190} height={150} />}
-                    </div>}
-
                     <div className={styles.bottomItems}>
                         {pages.bottom.map((page, index) => (
                             <Link key={index} className={styles.bottomPage} to={page.link} data-tooltip-id={page.link}>

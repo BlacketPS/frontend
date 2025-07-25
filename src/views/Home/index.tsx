@@ -1,14 +1,21 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { TypeAnimation } from "react-type-animation";
+import { useSound } from "@stores/SoundStore/index";
 import { HeaderButton, HeroButton, HeroImage, HowColumn, Section, Waves } from "./components/index";
 import styles from "./home.module.scss";
 
 export default function Home() {
+    const { defineSounds, playSound } = useSound();
+
     const [scrolled, setScrolled] = useState<boolean>(false);
     const [scrolledPastRegister, setScrolledPastRegister] = useState<boolean>(false);
 
-    const PRONOUNCE_AUDIO = new Audio(window.constructCDNUrl("/content/pronunciation.ogg"));
+    useEffect(() => {
+        defineSounds([
+            { id: "pronounce", url: window.constructCDNUrl("/content/audio/sound/pronunciation.mp3") }
+        ]);
+    }, [defineSounds]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -22,12 +29,6 @@ export default function Home() {
             window.removeEventListener("scroll", handleScroll);
         };
     }, []);
-
-    const playPronounce = () => {
-        PRONOUNCE_AUDIO.currentTime = 0;
-
-        PRONOUNCE_AUDIO.play();
-    };
 
     const name = import.meta.env.VITE_INFORMATION_NAME;
     const pronounceName = import.meta.env.VITE_INFORMATION_PRONUNCIATION;
@@ -94,7 +95,7 @@ export default function Home() {
                                 <HeroButton to="/discord" mobileOnly>Discord</HeroButton>
                                 <HeroButton to="/login" mobileOnly>Login</HeroButton>
 
-                                <div className={styles.heroPronounceButton} onClick={playPronounce}>
+                                <div className={styles.heroPronounceButton} onClick={() => playSound("pronounce")}>
                                     <i className="fa-solid fa-volume-high" />
                                     Pronounced ("{pronounceName}")
                                 </div>

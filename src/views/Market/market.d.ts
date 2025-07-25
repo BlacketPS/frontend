@@ -3,8 +3,9 @@ import { DataBoostersEntity, ItemShop, MarketOpenPackDto, Pack, RarityAnimationT
 
 export enum BigButtonClickType {
     OPEN = 1,
-    CLOSE = 2,
-    NONE = 3
+    OPENING = 2,
+    CLOSE = 3,
+    NONE = 4
 }
 
 export interface SearchOptions {
@@ -35,6 +36,7 @@ export interface OpenPackModalProps {
 export interface OpenPackContainerProps {
     opening: boolean;
     image: string;
+    video?: string;
     animationType: RarityAnimationType;
 }
 

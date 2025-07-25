@@ -10,7 +10,7 @@
     z-index: 998;
 
     &[data-animated="true"] {
-        animation: modal .2s linear forwards;
+        animation: modal .15s linear forwards;
 
         @keyframes modal {
             0% {
@@ -47,7 +47,7 @@
 
     @media not (max-width: 600px) {
         &[data-animated="true"] {
-            animation: content linear .3s forwards;
+            animation: content linear .25s forwards;
 
             @keyframes content {
                 0% {

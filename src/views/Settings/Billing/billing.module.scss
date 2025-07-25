@@ -196,15 +196,16 @@
 
 .transactionDate {
     width: 20%;
+    height: 16px;
 
     @media screen and (max-width: 768px) {
-        width: 50%;
+        width: 30%;
     }
 }
 
 .transactionImage {
     width: 24px;
-    height: 24 px;
+    height: 24px;
     margin-right: 8px;
     object-fit: contain;
 
@@ -225,10 +226,11 @@
     display: flex;
     justify-items: center;
     align-items: center;
+    width: 40%;
+    height: 24px;
 
     @media screen and (max-width: 768px) {
-        width: 40%;
-        font-size: 14px;
+        width: 85%;
     }
 }
 
@@ -277,8 +279,10 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 40%;
+    height: 24px;
 
     @media screen and (max-width: 768px) {
-        font-size: 14px;
+        width: 90%;
     }
 }

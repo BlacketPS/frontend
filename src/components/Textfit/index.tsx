@@ -1,121 +1,75 @@
-import { useState, useRef, useEffect, CSSProperties } from "react";
-
+import { useState, useRef, useEffect, useLayoutEffect, CSSProperties } from "react";
 import { TextfitProps } from "./textfit.d";
 
-export default function Textfit({ min = 1, max = 72, mode = "multi", children, className, style }: TextfitProps) {
-    const [fontSize, setFontSize] = useState<number>(0);
-    const [step, setStep] = useState<number>(1);
+export default function Textfit({
+    min = 1,
+    max = 72,
+    mode = "multi",
+    children,
+    className,
+    style
+}: TextfitProps) {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const textRef = useRef<HTMLDivElement>(null);
+    const [fontSize, setFontSize] = useState<number>(min);
 
-    const containerRef = useRef<HTMLDivElement | null>(null);
-
-    const textRef = useRef<HTMLDivElement | null>(null);
-
-    const minRef = useRef<number>(min);
-    const maxRef = useRef<number>(max);
-
-    const getElementHeight = (element: HTMLElement | null): number => {
-        if (!element) return 0;
-
-        const styles = window.getComputedStyle(element);
-
-        return (
-            element.clientHeight -
-            parseInt(styles.getPropertyValue("padding-top"), 10) -
-            parseInt(styles.getPropertyValue("padding-bottom"), 10)
-        );
-    };
-
-    const getElementWidth = (element: HTMLElement | null): number => {
-        if (!element) return 0;
-
-        const styles = window.getComputedStyle(element);
-
-        return (
-            element.clientWidth -
-            parseInt(styles.getPropertyValue("padding-left"), 10) -
-            parseInt(styles.getPropertyValue("padding-right"), 10)
-        );
-    };
-
-    const isWidthFit = (element: HTMLElement | null, width: number): boolean => element ? element.scrollWidth - 1 <= width : false;
-    const isHeightFit = (element: HTMLElement | null, height: number): boolean => element ? element.scrollHeight - 1 <= height : false;
-
-    const resizeText = () => {
+    const measure = () => {
         const container = containerRef.current;
-        if (!container) return;
+        const text = textRef.current;
+        if (!container || !text) return;
 
-        const height = getElementHeight(container);
-        const width = getElementWidth(container);
+        const containerStyle = getComputedStyle(container);
+        const targetWidth =
+            container.clientWidth -
+            parseFloat(containerStyle.paddingLeft) -
+            parseFloat(containerStyle.paddingRight);
+        const targetHeight =
+            container.clientHeight -
+            parseFloat(containerStyle.paddingTop) -
+            parseFloat(containerStyle.paddingBottom);
 
-        if (height <= 0 || width <= 0) return;
+        if (targetWidth <= 0 || targetHeight <= 0) return;
 
-        minRef.current = min;
-        maxRef.current = max;
+        let low = min;
+        let high = max;
+        let best = min;
 
-        const initialFontSize = (min + max) / 2;
+        while (low <= high) {
+            const mid = Math.floor((low + high) / 2);
+            text.style.fontSize = `${mid}px`;
 
-        setStep(1);
-        setFontSize(initialFontSize);
-    };
+            const fitsWidth = text.scrollWidth <= targetWidth;
+            const fitsHeight = text.scrollHeight <= targetHeight;
 
-    const fitText = () => {
-        const textElement = textRef.current;
-        if (!textElement) return;
+            const fits =
+                mode === "multi" ? fitsHeight && fitsWidth : fitsWidth && fitsHeight;
 
-        const checkFit =
-            mode === "multi"
-                ? () => isHeightFit(textElement, getElementHeight(containerRef.current))
-                : () => isWidthFit(textElement, getElementWidth(containerRef.current));
-
-        const fallbackCheck =
-            mode === "multi"
-                ? () => isWidthFit(textElement, getElementWidth(containerRef.current))
-                : () => isHeightFit(textElement, getElementHeight(containerRef.current));
-
-        if (step === 1 && minRef.current <= maxRef.current) {
-            checkFit()
-                ? (minRef.current = fontSize + 1)
-                : (maxRef.current = fontSize - 1);
-
-            setFontSize((minRef.current + maxRef.current) / 2);
-        } else if (step === 1) setStep(2);
-
-        if (step === 2 && minRef.current < maxRef.current) {
-            fallbackCheck()
-                ? (minRef.current = fontSize + 1)
-                : (maxRef.current = fontSize - 1);
-
-            setFontSize((minRef.current + maxRef.current) / 2);
-        } else if (step === 2) setStep(3);
-
-        if (step === 3) {
-            const adjustedFontSize = Math.max(
-                min,
-                Math.min(max, Math.min(minRef.current, maxRef.current))
-            );
-            setFontSize(adjustedFontSize);
-            setStep(4);
+            if (fits) {
+                best = mid;
+                low = mid + 1;
+            } else {
+                high = mid - 1;
+            }
         }
+
+        setFontSize(best);
     };
 
-    useEffect(() => {
-        window.addEventListener("resize", resizeText);
-        resizeText();
-
-        return () => window.removeEventListener("resize", resizeText);
-    }, [min, max]);
+    useLayoutEffect(() => {
+        measure();
+    }, [min, max, mode, children]);
 
     useEffect(() => {
-        window.addEventListener("resize", fitText);
-        fitText();
+        const observer = new ResizeObserver(() => measure());
+        if (containerRef.current) observer.observe(containerRef.current);
 
-        return () => window.removeEventListener("resize", fitText);
-    }, [fontSize, step, mode, min, max]);
+        return () => observer.disconnect();
+    }, []);
 
     const textStyle: CSSProperties = {
         fontSize,
-        opacity: step === 4 ? 1 : 0,
-        whiteSpace: mode === "single" ? "nowrap" : "normal"
+        whiteSpace: mode === "single" ? "nowrap" : "normal",
+        lineHeight: 1
     };
 
     return (
