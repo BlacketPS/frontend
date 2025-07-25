@@ -88,7 +88,7 @@ export default function Store() {
 
             <Tooltip id="store" place="bottom">What are you looking to purchase today?</Tooltip>
             <div className={styles.rightSide}>
-                <img className={styles.rightSideStore} src={window.constructCDNUrl("/content/shopkeeper.png")} alt="Market" data-tooltip-id="store" />
+                <img className={styles.rightSideStore} src={window.constructCDNUrl("/content/shopkeeper.png")} alt="Shopkeeper" data-tooltip-id="store" />
             </div>
         </>
     );

@@ -11,13 +11,13 @@ export default function LevelContainer({ experience }: LevelContainerProps) {
     return (
         <div className={styles.levelBarContainer}>
             <div className={styles.levelBar}>
-                <div 
+                <div
                     style={{ transform: `scaleX(${experience / experienceRemaining})` }}
                 />
             </div>
 
             <div className={styles.levelStarContainer}>
-                <img src={window.constructCDNUrl("/content/level.png")} alt="Level Star" draggable={false} />
+                <img src={window.constructCDNUrl("/content/level.png")} alt="Level Icon" draggable={false} />
                 <div>{Math.floor(level)}</div>
             </div>
         </div>

@@ -64,7 +64,7 @@ export default function Item({ itemShop, onClick }: ItemProps) {
             }
 
             <div className={styles.bottomLeftText}>
-                <img src={window.constructCDNUrl("/content/token.png")} alt="Token" />
+                <img src={window.constructCDNUrl("/content/token.png")} alt="Token Icon" />
                 {itemShop.price.toLocaleString()}
             </div>
         </div>

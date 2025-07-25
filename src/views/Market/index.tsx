@@ -232,7 +232,7 @@ export default function Market() {
                     <BoosterContainer boosters={boosters} />
 
                     <SearchBox
-                        placeholder="Search for a pack..."
+                        placeholder="Search for a pack or item..."
                         containerProps={{
                             style: { margin: "20px 5% 10px" }
                         }}
@@ -256,31 +256,43 @@ export default function Market() {
                         }}
                     />
 
-                    <Category header={"Packs"} internalName="MARKET_PACKS">
+                    <Category header={"Packs"}>
                         <div className={styles.packsWrapper}>
                             {packs.map((pack) =>
-                                pack.name.toLowerCase().includes(search.query.toLowerCase())
-                                && (!search.onlyPurchasable || user.tokens >= pack.price)
-                                && <Pack key={pack.id} pack={pack} ambienceEnabled={!currentPack} onClick={() => {
+                                <Pack key={pack.id} pack={pack} ambienceEnabled={!currentPack} onClick={() => {
                                     if (!user.settings.openPacksInstantly) createModal(<OpenPackModal
                                         pack={pack}
                                         userTokens={user.tokens}
                                         onYesButton={() => purchasePack({ packId: pack.id })}
                                     />);
                                     else purchasePack({ packId: pack.id });
-                                }} />)}
+                                }}
+                                    style={{
+                                        display: pack.name.toLowerCase().includes(search.query.toLowerCase())
+                                            && (!search.onlyPurchasable || user.tokens >= pack.price)
+                                            ? "block"
+                                            : "none"
+                                    }}
+                                />)}
+
+                            {!packs.some((pack) =>
+                                pack.name.toLowerCase().includes(search.query.toLowerCase())
+                                && (!search.onlyPurchasable || user.tokens >= pack.price)
+                            ) && "No packs found."}
                         </div>
                     </Category>
 
-                    <Category header="Weekly Shop" internalName="MARKET_WEEKLY_SHOP">
+                    <Category header="Weekly Shop">
                         <div className={styles.itemShopContainer}>
-                            {itemShop.length > 0 ? itemShop.map((entry) => entry.weekly && <Item itemShop={entry} key={entry.id} />) : "There are no items available in this shop."}
+                            {/* TODO: weekly shop */}
+                            {itemShop.length > 0 ? itemShop.map((entry) => entry.weekly && <Item itemShop={entry} key={entry.id} />) : "No items found."}
                         </div>
                     </Category>
 
-                    <Category header="Item Shop" internalName="MARKET_ITEM_SHOP">
+                    <Category header="Item Shop">
                         <div className={styles.itemShopContainer}>
-                            {itemShop.length > 0 ? itemShop.map((entry) => !entry.weekly && <Item itemShop={entry} key={entry.id} />) : "There are no items available in this shop."}
+                            {/* TODO: item shop */}
+                            {itemShop.length > 0 ? itemShop.map((entry) => !entry.weekly && <Item itemShop={entry} key={entry.id} />) : "No items found."}
                         </div>
                     </Category>
                 </div>
@@ -288,7 +300,7 @@ export default function Market() {
 
             <div className={styles.rightSide}>
                 <div className={styles.marketContainer}>
-                    <img className={styles.rightSideStore} src={window.constructCDNUrl("/content/shopkeeper.png")} alt="Market" />
+                    <img className={styles.rightSideStore} src={window.constructCDNUrl("/content/shopkeeper.png")} alt="Shopkeeper" />
 
                     <div className={styles.buttonHolder}>
                         <Button.LittleButton onClick={toggleInstantOpen}>Instant Open: {user.settings.openPacksInstantly ? "On" : "Off"}</Button.LittleButton>
@@ -301,7 +313,7 @@ export default function Market() {
 
                 <div className={styles.openModal}>
                     <div className={styles.openModalBackground}>
-                        <img src={resourceIdToPath(currentPack.backgroundId)} alt="Background" />
+                        <img src={resourceIdToPath(currentPack.backgroundId)} />
                     </div>
 
                     {unlockedBlook && <>

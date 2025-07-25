@@ -54,7 +54,7 @@ export default function Error({ code, reason }: ErrorProps) {
                         {code === ErrorCode.MAINTENANCE ? "Oops!" : code === ErrorCode.BLACKLISTED ? "Uh Oh..." : code === ErrorCode.UNKNOWN ? "Something went wrong" : ""}
                     </div>
 
-                    <Image src={code !== ErrorCode.UNKNOWN ? window.constructCDNUrl(`/content/${code}.png`) : window.constructCDNUrl("/content/error.png")} alt="Error" />
+                    <Image src={code !== ErrorCode.UNKNOWN ? window.constructCDNUrl(`/content/${code}.png`) : window.constructCDNUrl("/content/error.png")} alt="Error Image" />
 
                     <div className={styles.bottom}>
                         {code === ErrorCode.MAINTENANCE ? <>

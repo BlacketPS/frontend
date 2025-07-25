@@ -15,7 +15,6 @@ export interface SearchOptions {
 
 export interface CategoryProps extends HTMLAttributes<HTMLDivElement> {
     header: string;
-    internalName: string;
 }
 
 export interface PackProps extends HTMLAttributes<HTMLDivElement> {

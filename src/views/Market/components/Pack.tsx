@@ -7,7 +7,7 @@ import styles from "../market.module.scss";
 
 import { PackProps } from "../market.d";
 
-export default function Pack({ pack, ambienceEnabled = true, onClick }: PackProps) {
+export default function Pack({ pack, ambienceEnabled = true, onClick, ...props }: PackProps) {
     const { resourceIdToPath } = useResource();
     const { defineSounds, getSound, playSound, stopSound } = useSound();
 
@@ -48,7 +48,7 @@ export default function Pack({ pack, ambienceEnabled = true, onClick }: PackProp
     }, [pack.ambienceId, ambienceEnabled, resourceIdToPath, defineSounds, getSound, playSound, stopSound]);
 
     return (
-        <div ref={packRef} className={styles.packContainer2} onClick={onClick}>
+        <div ref={packRef} className={styles.packContainer} onClick={onClick} {...props}>
             <ImageOrVideo className={styles.packBackground} src={resourceIdToPath(pack.backgroundId)} />
 
             <div className={styles.packImageHolder}>
@@ -57,7 +57,7 @@ export default function Pack({ pack, ambienceEnabled = true, onClick }: PackProp
             </div>
 
             <div className={styles.bottomLeftText}>
-                <img src={window.constructCDNUrl("/content/token.png")} alt="Token" />
+                <img src={window.constructCDNUrl("/content/token.png")} alt="Token Icon" />
                 {pack.price.toLocaleString()}
             </div>
         </div>

@@ -6,7 +6,7 @@ import { useData } from "@stores/DataStore/index";
 import { useResource } from "@stores/ResourceStore/index";
 import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
-import { Blook, Button, ItemContainer, InventoryBlook, Markdown, PageHeader, RarityLabel, SearchBox } from "@components/index";
+import { Blook, Button, ItemContainer, Markdown, PageHeader, RarityLabel, SearchBox } from "@components/index";
 import { Info } from "./components/index";
 import { SellBlooksModal } from "../Inventory copy/components/index";
 import styles from "./inventory.module.scss";
@@ -18,7 +18,7 @@ export default function Inventory() {
     const { user, getBlookAmount } = useUser();
     if (!user) return <Navigate to="/login" />;
 
-    const { blooks, items, packs, rarities } = useData();
+    const { blooks, items, rarities } = useData();
     const { resourceIdToPath } = useResource();
     const { createModal } = useModal();
 
@@ -84,7 +84,7 @@ export default function Inventory() {
                     options={{
                         showItems: true,
                         showBlooks: true,
-                        showBlooksShiny: true,
+                        showShiny: true,
                         showLocked: true,
                         showPacks: true
                     }}

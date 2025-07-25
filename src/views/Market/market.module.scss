@@ -41,13 +41,7 @@
     font-family: "Titan One", sans-serif;
     font-size: 35px;
     margin: 20px 5% 10px;
-    cursor: pointer;
     user-select: none;
-    transition: filter .2s;
-
-    &:hover {
-        filter: brightness(0.8);
-    }
 }
 
 .categoryArrow {
@@ -152,7 +146,7 @@
     display: grid;
     grid-template-columns: repeat(auto-fill, 210px);
     grid-gap: 25px;
-    margin: 25px 0 35px 0;
+    margin-top: 10px;
     width: 90%;
 
     @media only screen and (max-width: 1010px) {
@@ -161,27 +155,6 @@
 }
 
 .packContainer {
-    width: 210px;
-    height: 210px;
-    outline: none;
-    cursor: pointer;
-    position: relative;
-    border-radius: 10px;
-    overflow: hidden;
-    padding-bottom: 7px;
-    box-sizing: border-box;
-    transition: .2s;
-
-    &:hover {
-        transform: scale(0.95);
-    }
-
-    &:active {
-        transform: scale(0.9);
-    }
-}
-
-.packContainer2 {
     position: relative;
     width: 220px;
     height: 220px;
