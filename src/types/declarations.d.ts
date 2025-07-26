@@ -54,6 +54,13 @@ declare global {
     }
 }
 
+declare module "@blacket/types" {
+    interface PrivateUser {
+        hasPermission: (permission: PermissionType) => boolean;
+        setTokens: (tokens: number) => number;
+    }
+}
+
 declare module "*.module.scss" {
     const content: { [className: string]: string };
 

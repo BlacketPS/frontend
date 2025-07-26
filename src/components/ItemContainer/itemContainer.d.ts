@@ -1,5 +1,5 @@
 import { HTMLAttributes } from "react";
-import { PrivateUser, Rarity, UserBlook, UserItem } from "@blacket/types";
+import { PrivateUser, UserBlook, UserItem } from "@blacket/types";
 
 export interface ItemContainerOptions {
     showItems?: boolean;
@@ -7,7 +7,9 @@ export interface ItemContainerOptions {
     showShiny?: boolean;
     showLocked?: boolean;
     showPacks?: boolean;
-    onlyRarity?: Rarity;
+
+    rarities?: number[];
+    searchQuery?: string;
 }
 
 export enum SelectedTypeEnum {

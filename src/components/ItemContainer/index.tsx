@@ -14,7 +14,9 @@ const DEFAULT_OPTIONS: ItemContainerOptions = {
     showShiny: true,
     showLocked: true,
     showPacks: true,
-    onlyRarity: undefined
+
+    rarities: undefined,
+    searchQuery: undefined
 };
 
 export default function ItemContainer({ user, options, onClick, ...props }: ItemContainerProps) {
@@ -23,13 +25,15 @@ export default function ItemContainer({ user, options, onClick, ...props }: Item
     const { getBlookAmount } = useUser();
 
     const mergedOptions = { ...DEFAULT_OPTIONS, ...options };
+    const nonPackBlooks = blooks.filter((blook) => !blook.packId);
 
     const renderBlookSet = (pack: Pack) => {
         return blooks
             .filter((b) => b.packId === pack.id)
 
             // filter to specific rarity if defined
-            .filter((b) => !mergedOptions.onlyRarity || b.rarityId === mergedOptions.onlyRarity.id)
+            // .filter((b) => !mergedOptions.onlyRarity || b.rarityId === mergedOptions.onlyRarity.id)
+            .filter((b) => !mergedOptions.rarities || mergedOptions.rarities.includes(b.rarityId))
 
             .sort((a, b) => a.priority - b.priority)
             .map((blook, key) => {
@@ -37,6 +41,18 @@ export default function ItemContainer({ user, options, onClick, ...props }: Item
                 const amountShiny = getBlookAmount(blook.id, true, user);
 
                 const locked = amountNormal <= 0;
+
+                let visible = true;
+
+                // rarity check
+                if (visible && mergedOptions.rarities && !mergedOptions.rarities.includes(blook.rarityId)) {
+                    visible = false;
+                }
+
+                // search query check
+                if (visible && mergedOptions.searchQuery) {
+                    visible = blook.name.toLowerCase().includes(mergedOptions.searchQuery.toLowerCase());
+                }
 
                 return (<Fragment key={key}>
                     {!(locked && !mergedOptions.showLocked) &&
@@ -54,6 +70,7 @@ export default function ItemContainer({ user, options, onClick, ...props }: Item
                                     item: user.blooks.find((ub) => ub.blookId === blook.id && !ub.shiny) || null
                                 });
                             }}
+                            style={{ display: visible ? undefined : "none" }}
                         />
                     }
 
@@ -72,6 +89,7 @@ export default function ItemContainer({ user, options, onClick, ...props }: Item
                                     item: user.blooks.find((ub) => ub.blookId === blook.id && ub.shiny) || null
                                 });
                             }}
+                            style={{ display: visible ? undefined : "none" }}
                         />
                     }
                 </Fragment>);
