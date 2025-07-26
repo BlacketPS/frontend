@@ -26,3 +26,15 @@ export interface HeroImageProps extends HTMLAttributes<HTMLDivElement> {
     alt?: string;
     mobile?: boolean;
 }
+
+export interface FooterLink {
+    to?: string;
+    href?: string;
+    label: string;
+    external?: boolean;
+}
+
+export interface FooterSection {
+    title: string;
+    links: FooterLink[];
+}

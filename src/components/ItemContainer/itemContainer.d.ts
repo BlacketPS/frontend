@@ -18,7 +18,6 @@ export enum SelectedTypeEnum {
 export interface ItemClickEvent {
     type: SelectedTypeEnum;
     item?: UserBlook | UserItem | null;
-    shiny?: boolean;
 }
 
 export interface ItemContainerProps extends HTMLAttributes<HTMLDivElement> {

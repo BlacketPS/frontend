@@ -1,11 +1,15 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { TypeAnimation } from "react-type-animation";
+import { useUser } from "@stores/UserStore/index";
 import { useSound } from "@stores/SoundStore/index";
-import { HeaderButton, HeroButton, HeroImage, HowColumn, Section, Waves } from "./components/index";
+import { HeaderButton, HeroButton, HeroImage, HowColumn, Section, Waves, Footer } from "./components/index";
 import styles from "./home.module.scss";
 
 export default function Home() {
+    const { user } = useUser();
+    if (user) return <Navigate to="/dashboard" replace />;
+
     const { defineSounds, playSound } = useSound();
 
     const [scrolled, setScrolled] = useState<boolean>(false);
@@ -168,49 +172,7 @@ export default function Home() {
             <footer className={styles.footer}>
                 <Waves />
 
-                <div className={styles.footerWrapper}>
-                    <div className={styles.footerContent}>
-                        <div className={styles.footerMenuList}>
-                            <div className={styles.footerMenuTitle}>Legal</div>
-                            <ul>
-                                <li>
-                                    <Link to="/privacy">Privacy Policy</Link>
-                                </li>
-                                <li>
-                                    <Link to="/terms">Terms of Service</Link>
-                                </li>
-                                <li>
-                                    <Link to="/eula">End User License Agreement</Link>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div className={styles.footerMenuList}>
-                            <div className={styles.footerMenuTitle}>Connect</div>
-                            <ul>
-                                <li>
-                                    <a href="/discord" target="_blank">Discord</a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div className={styles.footerMenuList}>
-                            <div className={styles.footerMenuTitle}>Contact</div>
-                            <ul>
-                                <li>
-                                    <a href="mailto:contact-us@blacket.org">contact-us@blacket.org</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div className={styles.copyrightText}>
-                        <b>We are not affiliated with Blooket in any way. Do not contact Blooket about any issues you may have with Blacket.</b>
-                        <br />
-                        <br />
-                        Blacket © 2025 All Rights Reserved.
-                    </div>
-                </div>
+                <Footer />
             </footer>
         </>
     );

@@ -134,7 +134,7 @@ export default function Sidebar() {
     return (
         <>
             <div className={styles.sidebar}>
-                <Link className={styles.header} to="/">{import.meta.env.VITE_INFORMATION_NAME}</Link>
+                <Link className={styles.header} to="/dashboard">{import.meta.env.VITE_INFORMATION_NAME}</Link>
 
                 <div className={styles.pageScroller} style={{ height: user.hasPermission(PermissionTypeEnum.VIEW_AUDIT) ? "60%" : undefined }}>
                     {pages.left.map((page, index) => (
@@ -174,7 +174,7 @@ export default function Sidebar() {
             </div>
 
             <div className={styles.mobileNavbar}>
-                <Link className={styles.mobileHeader} to="/">{import.meta.env.VITE_INFORMATION_NAME}</Link>
+                <Link className={styles.mobileHeader} to="/dashboard">{import.meta.env.VITE_INFORMATION_NAME}</Link>
 
                 <i className={`${styles.mobileHamburgerIcon} fas fa-bars`} onClick={() => setMobileSidebarOpen(true)} />
             </div>

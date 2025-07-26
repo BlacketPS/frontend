@@ -51,8 +51,7 @@ export default function ItemContainer({ user, options, onClick, ...props }: Item
 
                                 if (onClick) onClick({
                                     type: SelectedTypeEnum.BLOOK,
-                                    item: user.blooks.find((ub) => ub.blookId === blook.id && !ub.shiny) || null,
-                                    shiny: false
+                                    item: user.blooks.find((ub) => ub.blookId === blook.id && !ub.shiny) || null
                                 });
                             }}
                         />
@@ -70,8 +69,7 @@ export default function ItemContainer({ user, options, onClick, ...props }: Item
 
                                 if (onClick) onClick({
                                     type: SelectedTypeEnum.BLOOK,
-                                    item: user.blooks.find((ub) => ub.blookId === blook.id && ub.shiny) || null,
-                                    shiny: true
+                                    item: user.blooks.find((ub) => ub.blookId === blook.id && ub.shiny) || null
                                 });
                             }}
                         />

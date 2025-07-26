@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Fragment } from "react/jsx-runtime";
 import { Navigate } from "react-router-dom";
 import Textfit from "react-textfit";
 import { useData } from "@stores/DataStore/index";

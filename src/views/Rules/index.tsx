@@ -11,8 +11,6 @@ import { RuleObject } from "./rules.d";
 
 export default function Rules() {
     const { user } = useUser();
-    if (!user) return <Navigate to="/login" replace />;
-
     const { createModal } = useModal();
 
     const [error, setError] = useState<string | null>(null);
@@ -40,24 +38,25 @@ export default function Rules() {
                 {rules.rules.map((rule, index) => <div key={index}>
                     <h1>{rule.name}</h1>
                     <ReactMarkdown>{rule.content}</ReactMarkdown>
-                </div>
-                )}
+                </div>)}
 
-                <h2>{rules.footer}</h2>
+                {user && <>
+                    <h2>{rules.footer}</h2>
 
-                <Button.ClearButton
-                    className={styles.button}
-                    onClick={() => {
-                        const timeTaken = new Date().getTime() - startedReading.getTime();
-                        if (timeTaken < 60000) return createModal(<TooFastModal startedReading={startedReading} />);
+                    <Button.ClearButton
+                        className={styles.button}
+                        onClick={() => {
+                            const timeTaken = new Date().getTime() - startedReading.getTime();
+                            if (timeTaken < 60000) return createModal(<TooFastModal startedReading={startedReading} />);
 
-                        window.fetch2.patch("/api/users/read-rules", {});
+                            window.fetch2.patch("/api/users/read-rules", {});
 
-                        navigate("/dashboard");
-                    }}
-                >
-                    I Agree
-                </Button.ClearButton>
+                            navigate("/dashboard");
+                        }}
+                    >
+                        I Agree
+                    </Button.ClearButton>
+                </>}
             </div>
         </div>
     );
