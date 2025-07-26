@@ -193,7 +193,7 @@ export default function Sidebar() {
                         </div>}
                     </Link>
                 ))}
-                {staffPages.map((page, index) => (
+                {user.hasPermission(PermissionTypeEnum.VIEW_AUDIT) && staffPages.map((page, index) => (
                     <Link data-active={location === page.link.slice(1)} data-staff={true} key={index} className={styles.page} onClick={() => setMobileSidebarOpen(false)} to={page.link} data-tooltip-id={page.link}>
                         <i className={`${styles.pageIcon} ${page.icon}`} />
                         <div className={styles.pageText} style={{ fontSize: page.textSizeOverride || 20 }}>{page.text}</div>
