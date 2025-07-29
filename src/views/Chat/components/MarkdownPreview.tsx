@@ -311,7 +311,7 @@ export default function MarkdownPreview({ content, color, readOnly, getEditor = 
                 }
             }
 
-            // i know this is a shit workaround but it works, you can clean it up and do this better if you want - zastix
+            // i know this is a shit workaround but it works, you can clean it up and do this better if you want
             const getPointAtGlobalOffset = (
                 // @ts-expect-error
                 editor,

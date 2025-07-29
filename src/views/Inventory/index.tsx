@@ -23,6 +23,7 @@ export default function Inventory() {
 
     const [selectedType, setSelectedType] = useState<SelectedTypeEnum | null>(null);
     const [selected, setSelected] = useState<UserBlook | UserItem | null>(null);
+    const [search, setSearch] = useState<string>("");
 
     const [blook, setBlook] = useState<BlookType | null>(null);
     const [item, setItem] = useState<ItemType | null>(null);
@@ -76,6 +77,8 @@ export default function Inventory() {
                 <SearchBox
                     noPadding={true}
                     placeholder="Search for an item..."
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                 />
 
                 <ItemContainer
@@ -85,7 +88,9 @@ export default function Inventory() {
                         showBlooks: true,
                         showShiny: true,
                         showLocked: true,
-                        showPacks: true
+                        showPacks: true,
+
+                        searchQuery: search
                     }}
                     onClick={(item) => {
                         setSelectedType(item.type);

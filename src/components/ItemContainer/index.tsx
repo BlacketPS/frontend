@@ -6,7 +6,7 @@ import { InventoryBlook, InventoryItem } from "./components";
 import styles from "./itemContainer.module.scss";
 
 import { ItemContainerOptions, ItemContainerProps, SelectedTypeEnum } from "./itemContainer.d";
-import { Pack } from "@blacket/types";
+import { Blook, Pack } from "@blacket/types";
 
 const DEFAULT_OPTIONS: ItemContainerOptions = {
     showItems: true,
@@ -27,12 +27,31 @@ export default function ItemContainer({ user, options, onClick, ...props }: Item
     const mergedOptions = { ...DEFAULT_OPTIONS, ...options };
     const nonPackBlooks = blooks.filter((blook) => !blook.packId);
 
+    const isBlookVisible = (blook: Blook) => {
+        const amountNormal = getBlookAmount(blook.id, false, user);
+        const amountShiny = getBlookAmount(blook.id, true, user);
+        const locked = amountNormal <= 0;
+
+        if (mergedOptions.rarities && !mergedOptions.rarities.includes(blook.rarityId)) return false;
+        if (mergedOptions.searchQuery && !blook.name.toLowerCase().includes(mergedOptions.searchQuery.toLowerCase())) return false;
+
+        if (!locked || (locked && mergedOptions.showLocked)) return true;
+        if (amountShiny > 0 && mergedOptions.showShiny) return true;
+
+        return false;
+    };
+
+    const shouldRenderPack = (pack: Pack) => {
+        const packBlooks = blooks.filter((b) => b.packId === pack.id);
+
+        return packBlooks.some(isBlookVisible);
+    };
+
     const renderBlookSet = (pack: Pack) => {
         return blooks
             .filter((b) => b.packId === pack.id)
 
             // filter to specific rarity if defined
-            // .filter((b) => !mergedOptions.onlyRarity || b.rarityId === mergedOptions.onlyRarity.id)
             .filter((b) => !mergedOptions.rarities || mergedOptions.rarities.includes(b.rarityId))
 
             .sort((a, b) => a.priority - b.priority)
@@ -42,17 +61,7 @@ export default function ItemContainer({ user, options, onClick, ...props }: Item
 
                 const locked = amountNormal <= 0;
 
-                let visible = true;
-
-                // rarity check
-                if (visible && mergedOptions.rarities && !mergedOptions.rarities.includes(blook.rarityId)) {
-                    visible = false;
-                }
-
-                // search query check
-                if (visible && mergedOptions.searchQuery) {
-                    visible = blook.name.toLowerCase().includes(mergedOptions.searchQuery.toLowerCase());
-                }
+                const visible = isBlookVisible(blook);
 
                 return (<Fragment key={key}>
                     {!(locked && !mergedOptions.showLocked) &&
@@ -102,7 +111,10 @@ export default function ItemContainer({ user, options, onClick, ...props }: Item
             {mergedOptions.showBlooks
                 ? mergedOptions.showPacks
                     ? packs.map((pack) => (
-                        <div className={styles.setContainer}>
+                        <div
+                            className={styles.setContainer}
+                            style={{ display: shouldRenderPack(pack) ? undefined : "none" }}
+                        >
                             <div className={styles.setTopContainer}>
                                 <div
                                     className={styles.setTopTile}
