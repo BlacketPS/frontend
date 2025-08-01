@@ -9,6 +9,7 @@ export default function OpenPackModal({ link }: AreYouSureLinkModalProps) {
     return (
         <>
             <Modal.ModalHeader>Warning</Modal.ModalHeader>
+
             <Modal.ModalBody>
                 This link will take you to an external website ({link})
                 <br />

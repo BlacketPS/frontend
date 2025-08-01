@@ -1,5 +1,6 @@
 import { memo, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
+import Twemoji from "react-twemoji";
 import { Editor, Transforms } from "slate";
 import { useUser } from "@stores/UserStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
@@ -9,7 +10,6 @@ import { ImageOrVideo, Username } from "@components/index";
 import styles from "../chat.module.scss";
 
 import { ChatMessageProps } from "../chat.d";
-import Twemoji from "react-twemoji";
 
 export default memo(function ChatMessage({ message, newUser, mentionsMe, isSending, isEditing, messageContextMenu, userContextMenu, onEditSave, onEditCancel }: ChatMessageProps) {
     if (!messageContextMenu || isSending) messageContextMenu = () => { };
@@ -85,7 +85,9 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
 
                     <i className="fas fa-circle" style={{ fontSize: "0.2rem" }} />
 
-                    <Twemoji options={{ className: `${styles.emoji} ${styles.emojiReply}` }}><MarkdownPreview key={contentKey} content={`${message.replyingTo.content.split("\n")[0]}${message.replyingTo.content.split("\n").length > 1 ? "..." : ""}`} readOnly={true} /></Twemoji>
+                    <Twemoji options={{ className: `${styles.emoji} ${styles.emojiReply}` }}>
+                        <MarkdownPreview key={contentKey} content={`${message.replyingTo.content.split("\n")[0]}${message.replyingTo.content.split("\n").length > 1 ? "..." : ""}`} readOnly={true} />
+                    </Twemoji>
                 </div>}
 
                 <div className={styles.messageContainer}>
