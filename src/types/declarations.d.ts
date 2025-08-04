@@ -61,6 +61,29 @@ declare module "@blacket/types" {
     }
 }
 
+declare module "slate" {
+    interface CustomTypes {
+        Editor: BaseEditor & ReactEditor;
+        Element:
+        | { type: "mention"; user: PublicUser; children: CustomText[] }
+        | { type: "paragraph"; children: CustomText[] }
+
+        Text: {
+            text: string;
+            bold?: boolean;
+            italic?: boolean;
+            underlined?: boolean;
+            strikethrough?: boolean;
+            code?: boolean;
+            link?: boolean;
+            mention?: boolean;
+            color?: boolean;
+            hexcode?: string;
+            content?: string;
+        };
+    }
+}
+
 declare module "*.module.scss" {
     const content: { [className: string]: string };
 

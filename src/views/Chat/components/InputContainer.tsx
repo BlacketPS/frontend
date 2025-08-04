@@ -3,7 +3,7 @@ import { Editor, Node, Transforms } from "slate";
 import { useChat } from "@stores/ChatStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
 import UsersTypingContainer from "./UsersTypingContainer";
-import MarkdownPreview from "./MarkdownPreview.tsx";
+import MarkdownEditor from "./MarkdownEditor";
 import styles from "../chat.module.scss";
 
 import { InputContainerProps } from "../chat.d";
@@ -104,7 +104,7 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
 
     return (
         <div className={styles.messageForm}>
-            <UsersTypingContainer usersTyping={usersTyping} />
+            <UsersTypingContainer />
 
             {replyingTo && <div className={styles.aboveInputContainer}>
                 <div>Replying to <b>{cachedUsers.find((user) => user.id === replyingTo.authorId)?.username}</b></div>
@@ -130,7 +130,7 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
                     />
                 </>
             ) : (
-                <MarkdownPreview
+                <MarkdownEditor
                     className={styles.messageInput}
                     placeholder={placeholder}
                     spellCheck

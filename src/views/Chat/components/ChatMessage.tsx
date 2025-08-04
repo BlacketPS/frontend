@@ -4,7 +4,7 @@ import Twemoji from "react-twemoji";
 import { Editor, Transforms } from "slate";
 import { useUser } from "@stores/UserStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
-import MarkdownPreview from "./MarkdownPreview.tsx";
+import MarkdownEditor from "./MarkdownEditor";
 import timestamps from "@functions/core/timestamps";
 import { ImageOrVideo, Username } from "@components/index";
 import styles from "../chat.module.scss";
@@ -86,7 +86,7 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
                     <i className="fas fa-circle" style={{ fontSize: "0.2rem" }} />
 
                     <Twemoji options={{ className: `${styles.emoji} ${styles.emojiReply}` }}>
-                        <MarkdownPreview key={contentKey} content={`${message.replyingTo.content.split("\n")[0]}${message.replyingTo.content.split("\n").length > 1 ? "..." : ""}`} readOnly={true} />
+                        <MarkdownEditor key={contentKey} content={`${message.replyingTo.content.split("\n")[0]}${message.replyingTo.content.split("\n").length > 1 ? "..." : ""}`} readOnly={true} />
                     </Twemoji>
                 </div>}
 
@@ -138,9 +138,9 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
 
                             {!isEditing
                                 // replacing new line with double new line for it to actually be rendered as a new line for whatever reason (slate bs) this also causes extra newlines, someone should probably fix this but im not messing with slate again.
-                                ? <Twemoji options={{ className: styles.emoji }}><MarkdownPreview key={contentKey} content={message.content.replaceAll(/\n/g, "\n\n")} readOnly={true} /></Twemoji>
+                                ? <Twemoji options={{ className: styles.emoji }}><MarkdownEditor key={contentKey} content={message.content.replaceAll(/\n/g, "\n\n")} readOnly={true} /></Twemoji>
                                 : <>
-                                    <MarkdownPreview
+                                    <MarkdownEditor
                                         key={contentKey}
                                         ref={editingInputRef}
                                         content={message.content}

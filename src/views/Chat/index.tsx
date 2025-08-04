@@ -9,12 +9,15 @@ import { useToast } from "@stores/ToastStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
 import { useDeleteMessage } from "@controllers/chat/messages/roomId/useDeleteMessage/index";
 import { useEditMessage } from "@controllers/chat/messages/roomId/useEditMessage/index";
-import { ChatContainer, ChatMessagesContainer, ChatMessage, InputContainer } from "./components";
+import { ChatMessagesContainer, ChatMessage, InputContainer } from "./components";
+import styles from "./chat.module.scss";
 
 import { PermissionTypeEnum } from "@blacket/types";
 
 export default memo(function Chat() {
     const { user } = useUser();
+    if (!user) return <Navigate to="/login" />;
+
     const { messages, replyingTo, setReplyingTo, editing, setEditing, resetMentions } = useChat();
     const { openContextMenu } = useContextMenu();
     const { createToast } = useToast();
@@ -25,8 +28,6 @@ export default memo(function Chat() {
 
     const navigate = useNavigate();
 
-    if (!user) return <Navigate to="/login" />;
-
     useEffect(() => {
         resetMentions();
 
@@ -35,7 +36,7 @@ export default memo(function Chat() {
 
     return (
         <>
-            <ChatContainer>
+            <div className={styles.container}>
                 <ChatMessagesContainer aboveInput={replyingTo ? true : false}>
                     {messages.map((message) => <ChatMessage
                         key={message.id}
@@ -99,7 +100,7 @@ export default memo(function Chat() {
                 </ChatMessagesContainer>
 
                 <InputContainer placeholder="Message #global" maxLength={2048} />
-            </ChatContainer>
+            </div>
 
             {
                 // TODO: finish this after the rewrite

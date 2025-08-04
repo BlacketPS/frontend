@@ -1,5 +1,10 @@
 import { HTMLAttributes, ReactNode } from "react";
-import { ClientMessage, UserTyping } from "@stores/ChatStore/chatStore";
+import { ClientMessage } from "@stores/ChatStore/chatStore";
+import { PublicUser } from "@blacket/types";
+
+export enum ElementType {
+    MENTION = "mention"
+}
 
 export interface ChatMessagesContainerProps extends HTMLAttributes<HTMLUListElement> {
     aboveInput: boolean;
@@ -21,12 +26,11 @@ export interface AreYouSureLinkModalProps {
     link: string;
 }
 
-export interface MarkdownPreviewProps {
+export interface MarkdownEditorProps extends HTMLAttributes<HTMLDivElement> {
     content?: ReactNode;
     color?: string;
     readOnly?: boolean;
     getEditor?: (editor: any) => void;
-    [key: string]: any;
 }
 
 export interface ElementProps {
@@ -35,11 +39,40 @@ export interface ElementProps {
     element: any;
 }
 
+export interface MentionElementProps extends ElementProps {
+    element: {
+        user: PublicUser;
+    }
+}
+
+export interface LeafContent {
+    text: string;
+    color?: string;
+}
+
+export interface Leaf {
+    text: string;
+    content?: LeafContent;
+
+    bold?: boolean;
+    italic?: boolean;
+    strikethrough?: boolean;
+    underlined?: boolean;
+
+    link?: boolean;
+    mention?: boolean;
+
+    color?: string;
+}
+
+export interface LeafProps {
+    attributes: any;
+    children: any;
+    leaf: Leaf;
+    readOnly: boolean;
+}
+
 export interface InputContainerProps {
     placeholder: string;
     maxLength: number;
-}
-
-export interface UsersTypingProps {
-    usersTyping: UserTyping[];
 }
