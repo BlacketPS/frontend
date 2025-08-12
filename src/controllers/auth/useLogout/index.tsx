@@ -10,6 +10,7 @@ export function useLogout() {
             localStorage.removeItem("token");
 
             setUser(null);
+
             initializeSocket();
 
             resolve(res);

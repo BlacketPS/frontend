@@ -22,7 +22,9 @@ export const useCachedUser = create<CachedUserStore>((set, get) => {
 
             const existingUser =
                 cachedUsers.find((user) => user.id === userIdOrName) ||
-                cachedUsers.find((user) => user.username.toLowerCase() === userIdOrName.toLowerCase());
+                (typeof userIdOrName === "string"
+                    ? cachedUsers.find((user) => user.username.toLowerCase() === userIdOrName.toLowerCase())
+                    : undefined);
 
             if (existingUser) return existingUser;
 

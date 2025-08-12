@@ -1,39 +1,65 @@
 import { useEffect, useLayoutEffect, useRef } from "react";
 import { Navigate } from "react-router-dom";
+import { gainToDb } from "tone";
 import { BrenderCanvas, BrenderCanvasRef, BrenderEntity, isColliding, isOnScreen, PlayerEntity, urlToImage } from "@brender/index";
 import { useUser } from "@stores/UserStore/index";
 import { useSocket } from "@stores/SocketStore/index";
 import { useData } from "@stores/DataStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
-import { useChat } from "@stores/ChatStore/index";
+import { useSound } from "@stores/SoundStore/index";
 import { Joystick, WaterBackground } from "@components/index";
+import { MobileRunButton } from "./components";
 import { lerp } from "@functions/core/mathematics";
 import styles from "./tradingPlaza.module.scss";
 
 import { SocketMessageType } from "@blacket/types";
 import { TILES } from "@constants/index";
-import map from "./map";
-import { ClientMessage } from "@stores/ChatStore/chatStore";
-import { Direction } from "@components/Joystick/joystick.d";
-import { MobileRunButton } from "./components";
 
 export default function TradingPlaza() {
     const { user, getUserAvatarPath } = useUser();
     const { socket, connected, latency } = useSocket();
     const { fontIdToName } = useData();
     const { addCachedUser } = useCachedUser();
-    const { messages, sendMessage, setRoom } = useChat();
+    const { playSound, defineSounds, stopSound } = useSound();
 
     if (!user) return <Navigate to="/login" />;
 
     const brenderCanvasRef = useRef<BrenderCanvasRef>(null);
     const waterBackgroundRef = useRef<HTMLDivElement>(null);
 
-    const messagesRef = useRef(messages);
+    const stepSounds = [
+        "step-1",
+        "step-2",
+        "step-3",
+        "step-4",
+        "step-5"
+    ];
 
     useEffect(() => {
-        messagesRef.current = messages;
-    }, [messages]);
+        defineSounds([
+            {
+                id: "trading-plaza-ambience",
+                url: window.constructCDNUrl("/content/audio/sound/trading-plaza/ambience.mp3"),
+                options: {
+                    loop: true,
+                    preload: true,
+                    volume: gainToDb(0.5)
+                }
+            },
+            ...stepSounds.map((sound) => ({
+                id: sound,
+                url: window.constructCDNUrl(`/content/audio/sound/trading-plaza/${sound}.mp3`),
+                options: { volume: gainToDb(0.5) }
+            }))
+        ])
+            .then(() => {
+                playSound("trading-plaza-ambience");
+            });
+
+        return () => {
+            stopSound("trading-plaza-ambience");
+        };
+    }, [defineSounds, playSound]);
 
     useLayoutEffect(() => {
         if (!socket) return;
@@ -52,11 +78,15 @@ export default function TradingPlaza() {
         };
 
         const PLAYER_SPEED = (window.innerWidth < 1024 ? 8 : 10);
+        const FOOTSTEP_INTERVAL = 350 / (PLAYER_SPEED / 10);
         const TILE_SIZE = 50;
         const COLUMNS = 35;
         const ROWS = 40;
 
         let _previousPos = { x: 0, y: 0 };
+        let _lastFootstep = 0;
+
+        let sprinting = false;
 
         const tiles = TILES.filter((tile) => tile.id.includes("grass"));
 
@@ -98,8 +128,6 @@ export default function TradingPlaza() {
         }
 
         socket.emit(SocketMessageType.TRADING_PLAZA_JOIN);
-
-        setRoom(1);
 
         // const loadMap = async () => {
         //     // @ts-ignore temporary
@@ -162,7 +190,6 @@ export default function TradingPlaza() {
                 width: 300 / 6,
                 height: 345 / 6,
                 targetEasingSpeed: 0.1,
-                // make it glow
                 user: {
                     id: userId,
                     username: "",
@@ -174,63 +201,6 @@ export default function TradingPlaza() {
 
                     entity.x = lerp(entity.x, entity?.targetX ?? 0, (entity?.targetEasingSpeed ?? 0.1 * deltaTime));
                     entity.y = lerp(entity.y, entity?.targetY ?? 0, (entity?.targetEasingSpeed ?? 0.1 * deltaTime));
-
-                    let currentMessage: ClientMessage | null = null;
-
-                    if (!currentMessage) {
-                        const msg = messagesRef.current.find((message) =>
-                            message.authorId === userId &&
-                            message.roomId === 1
-                            && new Date(message.createdAt).getTime() > Date.now() - 1000
-                        );
-
-                        currentMessage = msg ?? null;
-
-                        if (currentMessage) {
-                            setTimeout(() => {
-                                if (currentMessage && currentMessage.authorId === userId) {
-                                    currentMessage = null;
-                                }
-                            }, (3000 + currentMessage.content.length * 1000));
-                        }
-                    }
-
-                    if (currentMessage) {
-                        const chatBottomImage = await brender.urlToImage(window.constructCDNUrl("/content/chat-bottom.png"));
-
-                        brender.drawImage({
-                            image: chatBottomImage,
-                            x: entity.x + (entity.width ?? 300) / 2 - 30 / 2,
-                            y: entity.y - 20 - 10,
-                            z: 1,
-                            width: 30,
-                            height: 30
-                        });
-
-                        brender.drawRect({
-                            x: entity.x + (entity.width ?? 300) / 2 - (currentMessage.content.length * 10 + 20) / 2,
-                            y: entity.y - 20 - 20,
-                            z: 2,
-                            width: currentMessage.content.length * 10 + 20,
-                            height: 30,
-                            color: "#ffffff",
-                            useCamera: true
-                        });
-
-                        brender.drawText({
-                            text: currentMessage.content,
-                            x: entity.x + (entity.width ?? 300) / 2,
-                            y: entity.y - 20,
-                            z: 3,
-                            style: {
-                                fontFamily: "Nunito",
-                                fontSize: 20,
-                                textAlign: "center",
-                                color: "#000000"
-                            },
-                            useCamera: true
-                        });
-                    }
                 }
             });
 
@@ -302,6 +272,10 @@ export default function TradingPlaza() {
                 if (MOVEMENT_KEYS.RUN.some((key) => brender.pressing[key])) {
                     moveX *= 1.5;
                     moveY *= 1.5;
+
+                    sprinting = true;
+                } else {
+                    sprinting = false;
                 }
 
                 if (moveX !== 0 && moveY !== 0) {
@@ -371,7 +345,18 @@ export default function TradingPlaza() {
         const movementLoop = () => {
             if (!active) return;
 
-            if (player.x !== _previousPos.x || player.y !== _previousPos.y) {
+            const now = Date.now();
+            const isMoving = player.x !== _previousPos.x || player.y !== _previousPos.y;
+
+            if (isMoving) {
+                if (now - _lastFootstep > FOOTSTEP_INTERVAL / (sprinting ? 1.5 : 1)) {
+                    const sound = `step-${Math.floor(Math.random() * 5) + 1}`;
+
+                    playSound(sound);
+
+                    _lastFootstep = now;
+                }
+
                 socket.emit(SocketMessageType.TRADING_PLAZA_MOVE, { x: player.x, y: player.y });
 
                 _previousPos.x = player.x;
@@ -385,14 +370,14 @@ export default function TradingPlaza() {
 
         (async () => {
             brender.createObject({
-                id: "block",
-                x: 300,
-                y: 200,
-                z: 1,
-                image: (await brender.urlToImage(window.constructCDNUrl("/content/blooks/Astronaut.png"))),
-                width: 300,
-                height: 345,
-                hasCollision: true
+                id: "spawn",
+                x: 0,
+                y: 0,
+                z: 0,
+                image: (await brender.urlToImage(window.constructCDNUrl("/content/trading-plaza/spawn.png"))),
+                width: 500,
+                height: 500,
+                hasCollision: false
             });
         })();
 

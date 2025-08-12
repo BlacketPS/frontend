@@ -1,10 +1,10 @@
-import { useEffect } from "react";
+import { ReactNode, useEffect } from "react";
 import { useUser } from "@stores/UserStore";
 import { useSocket } from "@stores/SocketStore";
 import { useNavigate } from "react-router-dom";
 import { SocketMessageType } from "@blacket/types";
 
-export function SocketWrapper({ children }: { children: React.ReactNode }) {
+export function SocketWrapper({ children }: { children: ReactNode }) {
     const { user, setUser } = useUser();
     const { socket, initializeSocket } = useSocket();
     const navigate = useNavigate();
@@ -19,7 +19,7 @@ export function SocketWrapper({ children }: { children: React.ReactNode }) {
         const onPurchase = (data: any) => {
             if (!user) return;
 
-             const newUser = {
+            const newUser = {
                 ...user,
 
                 blooks: [

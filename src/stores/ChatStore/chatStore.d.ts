@@ -20,7 +20,7 @@ export interface ChatStore {
     setReplyingTo: (message: ClientMessage | null) => void;
     editing: ClientMessage | null;
     setEditing: (message: ClientMessage | null) => void;
-    fetchMessages: (room: number) => void;
+    fetchMessages: (roomOverride?: number) => void;
     sendMessage: (content: string) => void;
     startTyping: () => void;
     mentions: number;

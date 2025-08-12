@@ -10,16 +10,10 @@ export default function Home() {
     const { user } = useUser();
     if (user) return <Navigate to="/dashboard" replace />;
 
-    const { defineSounds, playSound } = useSound();
+    const { playSound } = useSound();
 
     const [scrolled, setScrolled] = useState<boolean>(false);
     const [scrolledPastRegister, setScrolledPastRegister] = useState<boolean>(false);
-
-    useEffect(() => {
-        defineSounds([
-            { id: "pronounce", url: window.constructCDNUrl("/content/audio/sound/pronunciation.mp3") }
-        ]);
-    }, [defineSounds]);
 
     useEffect(() => {
         const handleScroll = () => {

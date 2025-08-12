@@ -1,20 +1,11 @@
 import { useEffect } from "react";
 import { Modal } from "@components/index";
 import { useModal } from "@stores/ModalStore/index";
-import { useSound } from "@stores/SoundStore/index";
 
 export function ModalUI() {
     const modals = useModal((s) => s.modals);
     const closing = useModal((s) => s.closing);
     const setClosing = useModal((s) => s.setClosing);
-    const { defineSounds } = useSound();
-
-    useEffect(() => {
-        defineSounds([
-            { id: "modal-open", url: window.constructCDNUrl("/content/audio/sound/modal-open.mp3") },
-            { id: "modal-close", url: window.constructCDNUrl("/content/audio/sound/modal-close.mp3") }
-        ]);
-    }, []);
 
     useEffect(() => {
         if (modals.length > 0) document.body.style.overflow = "hidden";

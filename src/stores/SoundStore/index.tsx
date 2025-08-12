@@ -2,9 +2,8 @@ import { create } from "zustand";
 import * as Tone from "tone";
 
 import { SoundStore, Sound, DefinedSound } from "./soundStore.d";
-import { useEffect } from "react";
 
-const useSoundStore = create<SoundStore>((set, get) => {
+export const useSound = create<SoundStore>((set, get) => {
     const sounds: Sound[] = [];
 
     return {
@@ -70,20 +69,3 @@ const useSoundStore = create<SoundStore>((set, get) => {
         }
     };
 });
-
-export const useSound = () => {
-    const soundStore = useSoundStore();
-
-
-    useEffect(() => {
-        const start = async () => {
-            await Tone.start();
-        };
-
-        start();
-    }, []);
-
-    return {
-        ...soundStore
-    };
-};

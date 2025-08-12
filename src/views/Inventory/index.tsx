@@ -7,11 +7,11 @@ import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { Blook, Button, ItemContainer, Markdown, PageHeader, RarityLabel, SearchBox } from "@components/index";
 import { Info } from "./components/index";
-import { SellBlooksModal } from "../Inventory copy/components/index";
+import { SellBlooksModal, AuctionModal } from "../Inventory copy/components/index";
 import styles from "./inventory.module.scss";
 
 import { SelectedTypeEnum } from "@components/ItemContainer/itemContainer.d";
-import { Blook as BlookType, Item as ItemType, Rarity, UserBlook, UserItem } from "@blacket/types";
+import { AuctionTypeEnum, Blook as BlookType, Item as ItemType, Rarity, UserBlook, UserItem } from "@blacket/types";
 
 export default function Inventory() {
     const { user, getBlookAmount } = useUser();
@@ -326,7 +326,11 @@ export default function Inventory() {
                                 Sell
                             </Button.GenericButton>
 
-                            <Button.GenericButton>
+                            <Button.GenericButton onClick={() => {
+                                if (selectedType === SelectedTypeEnum.BLOOK) {
+                                    createModal(<AuctionModal type={AuctionTypeEnum.BLOOK} blook={blook!} shiny={(selected as UserBlook).shiny} />);
+                                }
+                            }}>
                                 Auction
                             </Button.GenericButton>
                         </div>

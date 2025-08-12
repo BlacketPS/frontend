@@ -16,27 +16,20 @@ import { RarityAnimationTypeEnum, UserPaymentMethod } from "@blacket/types";
 function SuccessModalOutside() {
     const particleCanvasRef = useRef<ParticleCanvasRef>(null);
 
-    const { defineSounds, playSound, playSounds, stopSounds } = useSound();
+    const { playSound, playSounds, stopSounds } = useSound();
 
     useEffect(() => {
         if (!particleCanvasRef.current) return;
 
         particleCanvasRef.current.start();
 
-        defineSounds([
-            { id: "party-popper", url: window.constructCDNUrl("/content/audio/sound/party-popper.mp3") },
-            { id: "cha-ching", url: window.constructCDNUrl("/content/audio/sound/cha-ching.mp3") },
-            { id: "token-shower", url: window.constructCDNUrl("/content/audio/sound/token-shower.mp3") }
-        ])
-            .then(() => {
-                setTimeout(() => {
-                    playSound("party-popper");
-                }, 100);
+        setTimeout(() => {
+            playSound("party-popper");
+        }, 100);
 
-                setTimeout(() => {
-                    playSounds(["cha-ching", "token-shower"]);
-                }, 400);
-            });
+        setTimeout(() => {
+            playSounds(["cha-ching", "token-shower"]);
+        }, 400);
 
         const stopTimeout = setTimeout(() => {
             if (particleCanvasRef.current) particleCanvasRef.current.stop();

@@ -6,14 +6,8 @@ import { NotificationAccessModal } from "./components";
 
 export function useToastLoop() {
     const { toasts, closeToast } = useToast();
-    const { defineSounds, playSound } = useSound();
+    const { playSound } = useSound();
     const { createModal } = useModal();
-
-    useEffect(() => {
-        defineSounds([
-            { id: "notification", url: window.constructCDNUrl("/content/audio/sound/notification.mp3") }
-        ]);
-    }, []);
 
     useEffect(() => {
         let active = true;

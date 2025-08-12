@@ -112,6 +112,8 @@ export function useAuctionHouse() {
     const onAuctionBid = useCallback(async (data: SocketAuctionBidEntity) => {
         if (!user) return;
 
+        console.log("[Blacket] New auction bid received:", data);
+
         const cachedUser = data.bidderId !== user.id ? await addCachedUser(data.bidderId) : user;
         const blook = data?.blook?.blookId
             ? blooks.find((b) => b.id === data?.blook?.blookId)

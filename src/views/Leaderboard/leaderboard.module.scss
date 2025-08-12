@@ -3,7 +3,7 @@
     margin: 0;
     padding: 0;
     position: absolute;
-    top: 50px;
+    // top: 50px;
     left: 85px;
     z-index: 0;
     // transform: scale(.95);
@@ -14,7 +14,6 @@
 
     @media only screen and (max-width: 850px) {
         left: 0;
-        top: 55px;
         transform: scale(.95);
     }
 }

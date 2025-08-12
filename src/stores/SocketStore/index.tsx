@@ -10,6 +10,14 @@ export const useSocket = create<SocketStore>((set, get) => ({
     latency: 0,
 
     initializeSocket: () => {
+        const oldSocket = get().socket;
+        if (oldSocket && oldSocket.connected) return;
+
+        if (oldSocket) {
+            oldSocket.disconnect();
+            oldSocket.removeAllListeners();
+        }
+
         const socket = io(`${location.protocol}//${location.host}`, {
             path: "/gateway",
             auth: { token: localStorage.getItem("token") },

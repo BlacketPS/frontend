@@ -6,17 +6,11 @@ import styles from "../insanePullStore.module.scss";
 
 export default function InsanePullUI() {
     const { video, setVideo } = useInsanePull();
-    const { defineSounds, stopAllSounds, playSound } = useSound();
+    const { stopAllSounds, playSound } = useSound();
 
     const flashRef = useRef<HTMLDivElement>(null);
     const videoRef = useRef<HTMLVideoElement>(null);
     const navigate = useNavigate();
-
-    useEffect(() => {
-        defineSounds([
-            { id: "bass-drop", url: window.constructCDNUrl("/content/audio/sound/bass-drop.mp3") }
-        ]);
-    }, [defineSounds]);
 
     useEffect(() => {
         if (!video) return;

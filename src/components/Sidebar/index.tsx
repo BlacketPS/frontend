@@ -173,11 +173,7 @@ export default function Sidebar() {
                 </div>
             </div>
 
-            <div className={styles.mobileNavbar}>
-                <Link className={styles.mobileHeader} to="/dashboard">{import.meta.env.VITE_INFORMATION_NAME}</Link>
-
-                <i className={`${styles.mobileHamburgerIcon} fas fa-bars`} onClick={() => setMobileSidebarOpen(true)} />
-            </div>
+            <i className={`${styles.mobileHamburgerIcon} fas fa-bars`} onClick={() => setMobileSidebarOpen(true)} />
 
             {mobileSidebarOpen && <div className={styles.mobileSidebarModal} onClick={() => setMobileSidebarOpen(false)} />}
             <div className={styles.mobileSidebar} data-open={mobileSidebarOpen}>

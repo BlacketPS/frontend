@@ -1,7 +1,7 @@
 import { getLayerCtx, camera, isOnScreen, DrawImageProps } from "@brender/index";
 
 const shineVideo = document.createElement("video");
-shineVideo.src = "https://files.catbox.moe/97k1uf.mp4";
+shineVideo.src = window.constructCDNUrl("/content/shine.webm");
 shineVideo.muted = true;
 shineVideo.loop = true;
 shineVideo.play();

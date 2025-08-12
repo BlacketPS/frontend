@@ -9,7 +9,7 @@ import { PackProps } from "../market.d";
 
 export default function Pack({ pack, ambienceEnabled = true, onClick, ...props }: PackProps) {
     const { resourceIdToPath } = useResource();
-    const { defineSounds, getSound, playSound, stopSound } = useSound();
+    const { getSound, playSound, stopSound } = useSound();
 
     const packRef = useRef<HTMLDivElement>(null);
     const ambienceIdRef = useRef<string>(`pack-ambience-${pack.id}`);
@@ -45,7 +45,7 @@ export default function Pack({ pack, ambienceEnabled = true, onClick, ...props }
         return () => {
             window.removeEventListener("mousemove", handleMove);
         };
-    }, [pack.ambienceId, ambienceEnabled, resourceIdToPath, defineSounds, getSound, playSound, stopSound]);
+    }, [pack.ambienceId, ambienceEnabled, resourceIdToPath, getSound, playSound, stopSound]);
 
     return (
         <div ref={packRef} className={styles.packContainer} onClick={onClick} {...props}>
