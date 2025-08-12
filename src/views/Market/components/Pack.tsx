@@ -47,8 +47,10 @@ export default function Pack({ pack, ambienceEnabled = true, onClick, ...props }
         };
     }, [pack.ambienceId, ambienceEnabled, resourceIdToPath, getSound, playSound, stopSound]);
 
+    const onHover = () => playSound("tick");
+
     return (
-        <div ref={packRef} className={styles.packContainer} onClick={onClick} {...props}>
+        <div ref={packRef} className={styles.packContainer} onClick={onClick} onMouseEnter={onHover} {...props}>
             <ImageOrVideo className={styles.packBackground} src={resourceIdToPath(pack.backgroundId)} />
 
             <div className={styles.packImageHolder}>

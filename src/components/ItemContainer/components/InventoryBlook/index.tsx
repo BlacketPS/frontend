@@ -25,7 +25,7 @@ export default function InventoryBlook({ blook, shiny = false, big = false, lock
             onMouseEnter={() => {
                 if (!selectable) return;
 
-                playSound("hover");
+                playSound("tick");
             }}
             {...props}
         >
