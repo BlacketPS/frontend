@@ -1,26 +1,30 @@
 import { memo, useState } from "react";
 import { Editor, Node, Transforms } from "slate";
+import { useUser } from "@stores/UserStore/index";
 import { useChat } from "@stores/ChatStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
+import { useModal } from "@stores/ModalStore/index";
 import UsersTypingContainer from "./UsersTypingContainer";
+import FileUploadContainer from "./FileUploadContainer";
+import ChangeChatColorModal from "./ChangeChatColorModal";
 import MarkdownEditor from "./MarkdownEditor";
 import styles from "../chat.module.scss";
 
 import { InputContainerProps } from "../chat.d";
-import { useUser } from "@stores/UserStore/index.tsx";
-import FileUploadContainer from "./FileUploadContainer.tsx";
+import { PermissionTypeEnum } from "@blacket/types";
 
 const isMobile = () => window.innerWidth <= 768;
 
 export default memo(function InputContainer({ placeholder }: InputContainerProps) {
-    const { messages, sendMessage, startTyping, usersTyping, replyingTo, setReplyingTo, editing, setEditing } = useChat();
-    const { cachedUsers } = useCachedUser();
     const { user } = useUser();
+    if (!user) return null;
+
+    const { messages, sendMessage, startTyping, replyingTo, setReplyingTo, editing, setEditing } = useChat();
+    const { cachedUsers } = useCachedUser();
+    const { createModal } = useModal();
 
     const [editor, setEditor] = useState<Editor | null>(null);
     const [mTextareaValue, setMTextareaValue] = useState<string>("");
-
-    if (!user) return null;
 
     const clearEditor = (editor: Editor) => {
         editor.children.map(() => Transforms.delete(editor, { at: [0] }));
@@ -32,6 +36,7 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
 
     const getEditorContent = (editor: Editor) => {
         let content = "";
+
         editor.children.map((object: any) => {
             object.children.map((child: any) => {
                 if (child.text) content += child.text;
@@ -54,6 +59,7 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
             });
 
             sendMessage(content.trim());
+
             setMTextareaValue("");
         } else {
             if (!editor) return;
@@ -82,10 +88,7 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
                 break;
             }
             case "ArrowUp": {
-                if (!editor) return;
-                if (editing) return;
-                if (isMobile()) return;
-                if (getEditorContent(editor) !== "") return;
+                if (!editor || editing || isMobile() || getEditorContent(editor) !== "") return;
 
                 e.preventDefault();
 
@@ -101,19 +104,26 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
         }
     };
 
+    const openColorPickerModal = () => createModal(<ChangeChatColorModal />);
 
     return (
         <div className={styles.messageForm}>
             <UsersTypingContainer />
+
+            <div
+                style={{
+                    position: "absolute",
+                    bottom: "99%"
+                }}
+            ></div>
 
             {replyingTo && <div className={styles.aboveInputContainer}>
                 <div>Replying to <b>{cachedUsers.find((user) => user.id === replyingTo.authorId)?.username}</b></div>
                 <i className="fas fa-times" onClick={() => setReplyingTo(null)} />
             </div>}
 
-
             <div className={styles.leftInputButtonsContainer}>
-                <FileUploadContainer />
+                {user.hasPermission(PermissionTypeEnum.UPLOAD_FILES_SMALL) && <FileUploadContainer />}
             </div>
 
             {isMobile() ? (
@@ -121,18 +131,20 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
                     <textarea
                         className={styles.messageInput}
                         placeholder={placeholder}
+                        style={{ color: user.settings.chatColor || undefined }}
                         spellCheck
                         autoFocus
                         value={mTextareaValue}
+                        onInput={() => startTyping()}
                         onChange={(e) => setMTextareaValue(e.target.value)}
                         onKeyDown={(e) => handleKeyDown(e as any)}
-
                     />
                 </>
             ) : (
                 <MarkdownEditor
                     className={styles.messageInput}
                     placeholder={placeholder}
+                    color={user.settings.chatColor || undefined}
                     spellCheck
                     autoFocus
                     onInput={() => startTyping()}
@@ -142,8 +154,12 @@ export default memo(function InputContainer({ placeholder }: InputContainerProps
             )}
 
             <div className={styles.rightInputButtonsContainer}>
-                <div className={styles.inputButton}>
-                    <i className="fas fa-paper-plane" onClick={send} />
+                {user.hasPermission(PermissionTypeEnum.USE_CHAT_COLORS) && <div className={styles.inputButton} onClick={openColorPickerModal}>
+                    <i className="fas fa-paint-brush" />
+                </div>}
+
+                <div className={styles.inputButton} onClick={send}>
+                    <i className="fas fa-paper-plane" />
                 </div>
             </div>
         </div>

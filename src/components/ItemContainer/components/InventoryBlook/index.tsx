@@ -1,6 +1,5 @@
 import { useResource } from "@stores/ResourceStore/index";
 import { useData } from "@stores/DataStore/index";
-import { useSound } from "@stores/SoundStore/index";
 import Blook from "../../../Blook/index";
 import stylesNormal from "./inventoryBlook.module.scss";
 import stylesVh from "./inventoryBlookVh.module.scss";
@@ -10,7 +9,6 @@ import { InventoryBlookProps } from "./inventoryBlook";
 export default function InventoryBlook({ blook, shiny = false, big = false, locked = false, amount = 0, selectable = true, useVhStyles = false, ...props }: InventoryBlookProps) {
     const { resourceIdToPath } = useResource();
     const { rarities } = useData();
-    const { playSound } = useSound();
 
     const rarity = rarities.find((r) => r.id === blook.rarityId);
     if (!rarity) return null;
@@ -22,11 +20,6 @@ export default function InventoryBlook({ blook, shiny = false, big = false, lock
             data-locked={locked}
             data-selectable={selectable}
             className={styles.blook}
-            onMouseEnter={() => {
-                if (!selectable) return;
-
-                playSound("tick");
-            }}
             {...props}
         >
             <Blook

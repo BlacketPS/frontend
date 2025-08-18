@@ -86,7 +86,7 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
                     <i className="fas fa-circle" style={{ fontSize: "0.2rem" }} />
 
                     <Twemoji options={{ className: `${styles.emoji} ${styles.emojiReply}` }}>
-                        <MarkdownEditor key={contentKey} content={`${message.replyingTo.content.split("\n")[0]}${message.replyingTo.content.split("\n").length > 1 ? "..." : ""}`} readOnly={true} />
+                        <MarkdownEditor key={contentKey} content={`${message.replyingTo.content.split("\n")[0]}${message.replyingTo.content.split("\n").length > 1 ? "..." : ""}`} color={message.color || undefined} readOnly={true} />
                     </Twemoji>
                 </div>}
 
@@ -138,12 +138,13 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
 
                             {!isEditing
                                 // replacing new line with double new line for it to actually be rendered as a new line for whatever reason (slate bs) this also causes extra newlines, someone should probably fix this but im not messing with slate again.
-                                ? <Twemoji options={{ className: styles.emoji }}><MarkdownEditor key={contentKey} content={message.content.replaceAll(/\n/g, "\n\n")} readOnly={true} /></Twemoji>
+                                ? <Twemoji options={{ className: styles.emoji }}><MarkdownEditor key={contentKey} content={message.content.replaceAll(/\n/g, "\n\n")} color={message.color || undefined} readOnly={true} /></Twemoji>
                                 : <>
                                     <MarkdownEditor
                                         key={contentKey}
                                         ref={editingInputRef}
                                         content={message.content}
+                                        color={message.color || undefined}
                                         className={styles.editingMessageInput}
                                         autoFocus={true}
                                         readOnly={false}

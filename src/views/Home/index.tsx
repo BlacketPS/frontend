@@ -31,6 +31,8 @@ export default function Home() {
     const name = import.meta.env.VITE_INFORMATION_NAME;
     const pronounceName = import.meta.env.VITE_INFORMATION_PRONUNCIATION;
 
+    const playPronounce = async () => playSound("pronounce");
+
     return (
         <>
             <header className={`${styles.header} ${scrolled ? styles.scrolled : ""}`}>
@@ -93,7 +95,7 @@ export default function Home() {
                                 <HeroButton to="/discord" mobileOnly>Discord</HeroButton>
                                 <HeroButton to="/login" mobileOnly>Login</HeroButton>
 
-                                <div className={styles.heroPronounceButton} onClick={() => playSound("pronounce")}>
+                                <div className={styles.heroPronounceButton} onClick={playPronounce}>
                                     <i className="fa-solid fa-volume-high" />
                                     Pronounced ("{pronounceName}")
                                 </div>

@@ -471,8 +471,8 @@
     flex-direction: column;
     justify-content: start;
     position: absolute;
-    bottom: 75px;
-    border-radius: 7px;
+    bottom: 99%;
+    border-radius: 7px 7px 0 0;
     z-index: 1;
 }
 
@@ -483,7 +483,7 @@
     gap: 8px;
     cursor: pointer;
     padding: 5px;
-    border-radius: 7px;
+    border-radius: 7px 7px 0 0;
 
     &>*img {
         height: 20px;

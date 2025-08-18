@@ -65,6 +65,7 @@ export function useChat() {
             authorId: user.id,
             author: user,
             content,
+            color: user.settings.chatColor,
             mentions: [],
             replyingToId: chatStore.replyingTo?.id ?? null,
             replyingTo: chatStore.replyingTo ?? undefined,
