@@ -7,6 +7,8 @@ import { BannerProps } from "../cosmeticsModal.d";
 export default function Banner({ banner, ...props }: BannerProps) {
     const { resourceIdToPath } = useResource();
 
+    console.log(banner);
+
     return (
         <div className={styles.bannerContainer} {...props}>
             <ImageOrVideo className={styles.bannerImage} src={resourceIdToPath(banner.imageId)} alt={banner.name} />

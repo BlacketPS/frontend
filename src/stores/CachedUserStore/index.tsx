@@ -1,4 +1,5 @@
 import { create } from "zustand";
+import { useUserStore } from "@stores/UserStore/index";
 import { useUsers } from "@controllers/users/useUsers";
 
 import { CachedUserStore } from "./cachedUser.d";
@@ -17,8 +18,20 @@ export const useCachedUser = create<CachedUserStore>((set, get) => {
             return { cachedUsers: [...s.cachedUsers, ...newUsers] };
         }),
 
+        getCachedUser: (userIdOrName: string) => {
+            const { cachedUsers } = get();
+
+            return (
+                cachedUsers.find((user) => user.id === userIdOrName) ||
+                (typeof userIdOrName === "string"
+                    ? cachedUsers.find((user) => user.username.toLowerCase() === userIdOrName.toLowerCase())
+                    : undefined)
+            );
+        },
+
         addCachedUser: async (userIdOrName: string) => {
             const { cachedUsers } = get();
+            const { user } = useUserStore.getState();
 
             const existingUser =
                 cachedUsers.find((user) => user.id === userIdOrName) ||
@@ -28,11 +41,11 @@ export const useCachedUser = create<CachedUserStore>((set, get) => {
 
             if (existingUser) return existingUser;
 
-            const res = await getUser(userIdOrName);
+            const dummyUser = { ...user, id: userIdOrName, username: userIdOrName, avatar: undefined, bannerId: undefined } as PublicUser;
+            set((state) => ({ cachedUsers: [...state.cachedUsers, dummyUser] }));
 
-            set((state) => ({
-                cachedUsers: [...state.cachedUsers, res.data]
-            }));
+            const res = await getUser(userIdOrName);
+            set((state) => ({ cachedUsers: state.cachedUsers.map((user) => user.id === userIdOrName ? res.data : user) }));
 
             return res.data;
         },

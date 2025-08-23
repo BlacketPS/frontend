@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Blook, ImageOrVideo, Username } from "@components/index";
 import { useResource } from "@stores/ResourceStore/index";
 import { useData } from "@stores/DataStore/index";
-import { formatTimeRemaining } from "@functions/core/formatTimeRemaining";
+import { formatTimeRemaining } from "@functions/blacket/formatTimeRemaining";
 import normalStyles from "./auction.module.scss";
 import vhStyles from "./auctionVh.module.scss";
 

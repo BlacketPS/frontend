@@ -6,6 +6,6 @@ export default {
     title: `Inventory | ${import.meta.env.VITE_INFORMATION_NAME}`,
     description: "Manage all of your blooks and items.",
     sidebar: true,
-    topRight: ["tokens"],
+    topRight: ["tokens", "diamonds"],
     topRightDesktopOnly: true
 } as BlacketRoute;

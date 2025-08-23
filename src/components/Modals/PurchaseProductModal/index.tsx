@@ -54,7 +54,8 @@ function SuccessModalOutside() {
             }}
             images={[
                 window.constructCDNUrl("/content/token.png"),
-                window.constructCDNUrl("/content/gem.png")
+                window.constructCDNUrl("/content/diamond.png"),
+                window.constructCDNUrl("/content/crystal.png")
             ]}
             particleWidth={50}
             particleHeight={50}

@@ -5,7 +5,7 @@ import { Editor, Transforms } from "slate";
 import { useUser } from "@stores/UserStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
 import MarkdownEditor from "./MarkdownEditor";
-import timestamps from "@functions/core/timestamps";
+import timestamps from "@functions/blacket/timestamps";
 import { ImageOrVideo, Username } from "@components/index";
 import styles from "../chat.module.scss";
 

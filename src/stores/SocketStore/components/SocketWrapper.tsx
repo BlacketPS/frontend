@@ -47,7 +47,8 @@ export function SocketWrapper({ children }: { children: ReactNode }) {
                     ...(data.permissions || [])
                 ],
 
-                gems: user.gems + (data.gems ?? 0),
+                crystals: user.crystals + (data.crystals ?? 0),
+                diamonds: user.diamonds + (data.diamonds ?? 0),
                 tokens: user.tokens + (data.tokens ?? 0),
 
                 subscription: data.subscription || user.subscription

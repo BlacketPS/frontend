@@ -25,7 +25,7 @@ export default function Settings() {
     const { createModal } = useModal();
     const { changeSetting } = useSettings();
     const { user } = useUser();
-    const { fontIdToName, titleIdToText } = useData();
+    const { fontIdToName } = useData();
 
     if (!user) return <Navigate to="/login" />;
 
@@ -71,7 +71,6 @@ export default function Settings() {
             <SettingsContainer header={{ icon: "fas fa-user", text: "Profile" }}>
                 <div><b>ID:</b> {user.id}</div>
                 <div><b>Username:</b> {user.username}</div>
-                <div><b>Title:</b> {titleIdToText(user.titleId)}</div>
                 <div style={{ display: "inline-flex" }}><b>Font: </b> <div style={{ fontFamily: fontIdToName(user.fontId), marginLeft: 7 }}>{fontIdToName(user.fontId)}</div></div>
                 <div><b>Joined:</b> {`${new Date(user.createdAt).toLocaleDateString()} ${new Date(user.createdAt).toLocaleTimeString()}`}</div>
                 {user.discord && <div><b>Discord:</b> {user.discord.username}</div>}

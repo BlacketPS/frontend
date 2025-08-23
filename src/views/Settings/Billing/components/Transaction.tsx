@@ -18,7 +18,7 @@ export default function Transaction({ transaction, selected, ...props }: Transac
         switch (transaction.currency) {
             case CurrencyTypeEnum.USD:
                 return <>${transaction.amount} USD</>;
-            case CurrencyTypeEnum.GEM:
+            case CurrencyTypeEnum.CRYSTAL:
                 return <>{transaction.amount}</>;
             default:
                 return <>{transaction.amount} {transaction.currency}</>;
@@ -67,8 +67,8 @@ export default function Transaction({ transaction, selected, ...props }: Transac
                     {getCurrencyString()}
                 </Textfit>
 
-                {transaction.currency === CurrencyTypeEnum.GEM && (
-                    <img src={window.constructCDNUrl("/content/gem.png")} className={styles.transactionAmountImage} />
+                {transaction.currency === CurrencyTypeEnum.CRYSTAL && (
+                    <img src={window.constructCDNUrl("/content/crystal.png")} className={styles.transactionAmountImage} />
                 )}
             </div>
 

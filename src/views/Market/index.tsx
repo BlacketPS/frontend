@@ -258,22 +258,24 @@ export default function Market() {
 
                     <Category header={"Packs"}>
                         <div className={styles.packsWrapper}>
-                            {packs.map((pack) =>
-                                <Pack key={pack.id} pack={pack} ambienceEnabled={!currentPack} onClick={() => {
-                                    if (!user.settings.openPacksInstantly) createModal(<OpenPackModal
-                                        pack={pack}
-                                        userTokens={user.tokens}
-                                        onYesButton={() => purchasePack({ packId: pack.id })}
-                                    />);
-                                    else purchasePack({ packId: pack.id });
-                                }}
-                                    style={{
-                                        display: pack.name.toLowerCase().includes(search.query.toLowerCase())
-                                            && (!search.onlyPurchasable || user.tokens >= pack.price)
-                                            ? "block"
-                                            : "none"
+                            {packs
+                                .filter((pack) => pack.enabled)
+                                .map((pack) =>
+                                    <Pack key={pack.id} pack={pack} ambienceEnabled={!currentPack} onClick={() => {
+                                        if (!user.settings.openPacksInstantly) createModal(<OpenPackModal
+                                            pack={pack}
+                                            userTokens={user.tokens}
+                                            onYesButton={() => purchasePack({ packId: pack.id })}
+                                        />);
+                                        else purchasePack({ packId: pack.id });
                                     }}
-                                />)}
+                                        style={{
+                                            display: pack.name.toLowerCase().includes(search.query.toLowerCase())
+                                                && (!search.onlyPurchasable || user.tokens >= pack.price)
+                                                ? "block"
+                                                : "none"
+                                        }}
+                                    />)}
 
                             {!packs.some((pack) =>
                                 pack.name.toLowerCase().includes(search.query.toLowerCase())
@@ -341,7 +343,11 @@ export default function Market() {
                         <OpenPackContainer
                             opening={openingPack}
                             image={resourceIdToPath(currentPack.imageId)}
-                            video={resourceIdToPath(blooks.find((blook) => blook.id === unlockedBlook.blookId)!.videoId!) || undefined}
+                            video={
+                                blooks.find((blook) => blook.id === unlockedBlook.blookId)!.videoId
+                                    ? resourceIdToPath(blooks.find((blook) => blook.id === unlockedBlook.blookId)!.videoId!)
+                                    : undefined
+                            }
                             animationType={rarities.find((rarity) => rarity.id === blooks.find((blook) => blook.id === unlockedBlook.blookId)!.rarityId)!.animationType}
                         />
                     </>}

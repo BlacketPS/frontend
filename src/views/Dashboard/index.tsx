@@ -10,7 +10,7 @@ import { useAuctionHouse } from "@stores/AuctionHouseStore/index";
 import { useUsers } from "@controllers/users/useUsers/index";
 import { useSearchAuction } from "@controllers/auctions/useSearchAuction/index";
 import { useClaimDailyTokens } from "@controllers/quests/useClaimDailyTokens/index";
-import { Auction, Blook, ImageOrVideo, Username, InventoryBlook, InventoryItem, ItemContainer } from "@components/index";
+import { Auction, Blook, ImageOrVideo, Username, InventoryBlook, InventoryItem, ItemContainer, Title } from "@components/index";
 import { LevelContainer, LookupUserModal, SmallButton, SectionHeader, StatContainer, CosmeticsModal, DailyRewardsModal } from "./components";
 import styles from "./dashboard.module.scss";
 
@@ -150,7 +150,7 @@ export default function Dashboard() {
                                 <div className={styles.userInfoContainer}>
                                     <div className={styles.usernameAndTitleContainer}>
                                         <Username className={styles.username} user={viewingUser} />
-                                        <span className={styles.title}>{titleIdToText(viewingUser.titleId)}</span>
+                                        <Title title={viewingUser.titleId} className={styles.title} />
                                     </div>
                                 </div>
                             </div>
@@ -204,9 +204,11 @@ export default function Dashboard() {
                     <div className={styles.statsContainerHolder}>
                         <StatContainer title="User ID" icon={window.constructCDNUrl("/content/icons/dashboardStatsUserID.png")} value={viewingUser.id} />
                         {viewingUser.guild && <StatContainer title="Guild" icon={window.constructCDNUrl("/content/icons/dashboardStatsGuild.png")} value={viewingUser.guild ? viewingUser.guild : "None"} />}
-                        <StatContainer title="Tokens" icon={window.constructCDNUrl("/content/token.png")} value={viewingUser.tokens.toLocaleString()} />
-                        <StatContainer title="Experience" icon={window.constructCDNUrl("/content/experience.png")} value={viewingUser.experience.toLocaleString()} />
                         <StatContainer title="Blooks Unlocked" icon={window.constructCDNUrl("/content/icons/dashboardStatsBlooksUnlocked.png")} value={`${viewingUser.blooks.length.toLocaleString()} / ${blooks.length.toLocaleString()}`} /> {/* TODO: BACKEND (Syfe/Xotic): Default blook does NOT count in inventory (yet). REVERT to (blooks.length - 1) when fixed. */}
+                        <StatContainer title="Experience" icon={window.constructCDNUrl("/content/experience.png")} value={viewingUser.experience.toLocaleString()} />
+                        <StatContainer title="Tokens" icon={window.constructCDNUrl("/content/token.png")} value={viewingUser.tokens.toLocaleString()} />
+                        <StatContainer title="Diamonds" icon={window.constructCDNUrl("/content/diamond.png")} value={viewingUser.diamonds.toLocaleString()} />
+                        <StatContainer title="Crystals" icon={window.constructCDNUrl("/content/crystal.png")} value={viewingUser.crystals.toLocaleString()} />
                         <StatContainer title="Packs Opened" icon={window.constructCDNUrl("/content/icons/dashboardStatsPacksOpened.png")} value={viewingUser.statistics.packsOpened.toLocaleString()} />
                         <StatContainer title="Messages Sent" icon={window.constructCDNUrl("/content/icons/dashboardStatsMessagesSent.png")} value={viewingUser.statistics.messagesSent.toLocaleString()} />
                     </div>
