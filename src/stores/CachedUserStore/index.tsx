@@ -21,12 +21,13 @@ export const useCachedUser = create<CachedUserStore>((set, get) => {
         getCachedUser: (userIdOrName: string) => {
             const { cachedUsers } = get();
 
-            return (
+            const existingUser =
                 cachedUsers.find((user) => user.id === userIdOrName) ||
                 (typeof userIdOrName === "string"
                     ? cachedUsers.find((user) => user.username.toLowerCase() === userIdOrName.toLowerCase())
-                    : undefined)
-            );
+                    : undefined);
+
+            return existingUser || null;
         },
 
         addCachedUser: async (userIdOrName: string) => {
