@@ -53,9 +53,7 @@ export default function Leaderboard() {
 
                 <div className={styles.otherTopThreeStandings}>
                     {leaderboard[sortBy === PlacementType.DIAMONDS ? "diamonds" : "experience"]
-                        .slice(0, 3)
-                        // .map((user, i: number) => <LittlePlacement key={i} type={sortBy} placement={i + 1} user={getCachedUser(user)} />)}
-                        .map((user, i: number) => getCachedUser(user) && <LittlePlacement key={i} type={sortBy} placement={i + 1} user={getCachedUser(user)} />)}
+                        .map((user, i: number) => getCachedUser(user) && <LittlePlacement key={i} type={sortBy} placement={i + 1} user={getCachedUser(user)!} />)}
                 </div>
 
             </div>

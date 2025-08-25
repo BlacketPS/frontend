@@ -59,7 +59,7 @@ export interface BrenderCanvasRef {
     drawRect(rect: DrawRectProps): void
     drawText(text: DrawTextProps): void;
     drawImage(image: DrawImageProps): void;
-    urlToImage(url: string): Promise<HTMLImageElement>;
+    urlToImage(url: string): Promise<HTMLImageElement | HTMLVideoElement>;
     getWidth(): number;
     getHeight(): number;
 }

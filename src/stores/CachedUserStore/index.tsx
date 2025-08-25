@@ -42,7 +42,7 @@ export const useCachedUser = create<CachedUserStore>((set, get) => {
 
             if (existingUser) return existingUser;
 
-            const dummyUser = { ...user, id: userIdOrName, username: userIdOrName, avatar: undefined, bannerId: undefined } as PublicUser;
+            const dummyUser = { ...user, id: userIdOrName, username: userIdOrName, avatar: undefined, customAvatar: undefined, bannerId: undefined } as PublicUser;
             set((state) => ({ cachedUsers: [...state.cachedUsers, dummyUser] }));
 
             const res = await getUser(userIdOrName);
