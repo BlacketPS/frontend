@@ -1,5 +1,9 @@
+import AuctionModal from "./AuctionModal";
 import Info from "./Info";
+import SellBlooksModal from "./SellBlooksModal";
 
 export {
-    Info
+    AuctionModal,
+    Info,
+    SellBlooksModal
 };

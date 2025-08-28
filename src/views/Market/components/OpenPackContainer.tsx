@@ -149,7 +149,7 @@ export default function OpenPackContainer({ opening, image, video, animationType
             const shakeX = Math.sin(shakePhase) * 6;
             const shakeY = Math.cos(shakePhase * 1.2) * 6;
             const shakeZ = Math.sin(shakePhase * 0.7);
-            shakePhase += 0.12;
+            shakePhase += isMythical ? 0.2 : 0.4;
 
             let brightness = 1 + t * 0.3;
             let glow = 0;

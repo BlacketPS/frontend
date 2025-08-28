@@ -6,8 +6,7 @@ import { useResource } from "@stores/ResourceStore/index";
 import { useUser } from "@stores/UserStore/index";
 import { useModal } from "@stores/ModalStore/index";
 import { Blook, Button, ItemContainer, Markdown, PageHeader, RarityLabel, SearchBox } from "@components/index";
-import { Info } from "./components/index";
-import { SellBlooksModal, AuctionModal } from "../Inventory copy/components/index";
+import { Info, SellBlooksModal, AuctionModal } from "./components/index";
 import styles from "./inventory.module.scss";
 
 import { SelectedTypeEnum } from "@components/ItemContainer/itemContainer.d";

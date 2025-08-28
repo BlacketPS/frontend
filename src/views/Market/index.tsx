@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { Navigate } from "react-router-dom";
-import { BitCrusher, Chorus, gainToDb, Synth } from "tone";
+import { gainToDb } from "tone";
 import { useLoading } from "@stores/LoadingStore";
 import { useUser } from "@stores/UserStore/index";
 import { useResource } from "@stores/ResourceStore";
@@ -16,14 +16,16 @@ import { OpenPackModal, Category, Pack, OpenPackContainer, OpenPackBlook, Item, 
 import styles from "./market.module.scss";
 
 import { DataBoostersEntity, MarketOpenPackDto, Pack as PackType, RarityAnimationTypeEnum, UserBlook } from "@blacket/types";
-import { BigButtonClickType, SearchOptions } from "./market.d";
+import { BigButtonClickType, LittleButton, SearchOptions } from "./market.d";
+
+// TODO: can't hear so i will see if this is right
 
 export default function Market() {
     const { setLoading } = useLoading();
     const { createModal } = useModal();
     const { user } = useUser();
     const { resourceIdToPath } = useResource();
-    const { playSound, playSounds, stopSound, stopSounds, defineSounds, getSound } = useSound();
+    const { playSound, stopSounds, defineSounds, setVolume } = useSound();
     const { packs, rarities, blooks, itemShop } = useData();
 
     if (!user) return <Navigate to="/login" />;
@@ -72,18 +74,22 @@ export default function Market() {
         const sounds = packs.map((p) => `pack-ambience-${p.id}`);
 
         for (const soundId of sounds) {
-            const sound = await getSound(soundId);
+            // const sound = await getSound(soundId);
 
-            if (sound) {
-                if (soundId === `pack-ambience-${pack.id}`) sound.volume.value = gainToDb(0.1);
-                else sound.volume.value = -Infinity;
-            }
+            // if (sound) {
+            //     if (soundId === `pack-ambience-${pack.id}`) sound.volume.value = gainToDb(0.1);
+            //     else sound.volume.value = -Infinity;
+            // }
+
+            if (soundId < `pack-ambience-${pack.id}`) setVolume(`pack-ambience-${pack.id}`, gainToDb(0.1));
+            else setVolume(`pack-ambience-${pack.id}`, -Infinity);
         }
     };
 
     const muteAmbience = async () => {
-        const sound = await getSound(`pack-ambience-${currentPack?.id}`);
-        if (sound) sound.volume.value = -Infinity;
+        // const sound = await getSound(`pack-ambience-${currentPack?.id}`);
+        // if (sound) sound.volume.value = -Infinity;
+        setVolume(`pack-ambience-${currentPack?.id}`, -Infinity);
     };
 
     const toggleInstantOpen = () => {
@@ -219,13 +225,24 @@ export default function Market() {
         };
     }, []);
 
+    const LITTLE_BUTTONS: LittleButton[] = [
+        {
+            children: <>Instant Open: {user.settings.openPacksInstantly ? "On" : "Off"}</>,
+            onClick: toggleInstantOpen
+        },
+        {
+            children: <>Convert Diamonds</>,
+            onClick: () => { }
+        }
+    ];
+
     return (
         <>
             <SidebarBody pushOnMobile={true}>
                 <PageHeader>Market</PageHeader>
 
                 <div className={styles.buttonHolderMobile}>
-                    <Button.LittleButton onClick={toggleInstantOpen}>Instant Open: {user.settings.openPacksInstantly ? "On" : "Off"}</Button.LittleButton>
+                    {LITTLE_BUTTONS.map((button, index) => <Button.LittleButton key={index} onClick={button.onClick}>{button.children}</Button.LittleButton>)}
                 </div>
 
                 <div className={styles.leftSide}>
@@ -305,7 +322,7 @@ export default function Market() {
                     <img className={styles.rightSideStore} src={window.constructCDNUrl("/content/shopkeeper.png")} alt="Shopkeeper" />
 
                     <div className={styles.buttonHolder}>
-                        <Button.LittleButton onClick={toggleInstantOpen}>Instant Open: {user.settings.openPacksInstantly ? "On" : "Off"}</Button.LittleButton>
+                        {LITTLE_BUTTONS.map((button, index) => <Button.LittleButton key={index} onClick={button.onClick}>{button.children}</Button.LittleButton>)}
                     </div>
                 </div>
             </div>

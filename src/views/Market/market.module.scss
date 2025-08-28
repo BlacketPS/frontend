@@ -125,6 +125,10 @@
 
 .buttonHolder {
     display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
     margin: 15px 5% 10px;
 
     @media only screen and (max-width: 850px) {
@@ -138,7 +142,10 @@
 
     @media only screen and (max-width: 850px) {
         display: flex;
+        flex-direction: column;
         justify-content: center;
+        align-items: center;
+        gap: 10px;
     }
 }
 
@@ -696,141 +703,151 @@
 
 .openPackBlookContainerAnimation1,
 .openPackBlookContainerAnimation2 {
-    animation: uncommon .2s linear .5s forwards;
+    // animation: uncommon .2s linear .5s forwards;
+    // not linear
+    animation: uncommon 0.8s ease-in-out .4s forwards;
 
     @keyframes uncommon {
         0% {
             transform: translate(-50%, -50%) scale(0)
         }
 
-        to {
+        33% {
+            transform: translate(-50%, -50%) scale(1.05)
+        }
+
+        66% {
+            transform: translate(-50%, -50%) scale(0.98)
+        }
+
+        100% {
             transform: translate(-50%, -50%) scale(1)
         }
     }
 }
 
-.openPackBlookContainerAnimation3 {
-    animation: epic 1.5s linear .5s forwards;
+// .openPackBlookContainerAnimation3 {
+//     animation: epic 1.5s linear .5s forwards;
 
-    @keyframes epic {
-        0% {
-            transform: translate(calc(-50% - 25vw), calc(-50% - 25vh)) rotate(15deg) scale(.1)
-        }
+//     @keyframes epic {
+//         0% {
+//             transform: translate(calc(-50% - 25vw), calc(-50% - 25vh)) rotate(15deg) scale(.1)
+//         }
 
-        25% {
-            transform: translate(calc(-50% - 25vw), calc(-50% - 25vh)) rotate(15deg) scale(.1)
-        }
+//         25% {
+//             transform: translate(calc(-50% - 25vw), calc(-50% - 25vh)) rotate(15deg) scale(.1)
+//         }
 
-        25.1% {
-            transform: translate(calc(-50% + 25vw), calc(-50% + 25vh)) rotate(-15deg) scale(.2)
-        }
+//         25.1% {
+//             transform: translate(calc(-50% + 25vw), calc(-50% + 25vh)) rotate(-15deg) scale(.2)
+//         }
 
-        50% {
-            transform: translate(calc(-50% + 25vw), calc(-50% + 25vh)) rotate(-15deg) scale(.2)
-        }
+//         50% {
+//             transform: translate(calc(-50% + 25vw), calc(-50% + 25vh)) rotate(-15deg) scale(.2)
+//         }
 
-        50.1% {
-            transform: translate(calc(-50% - 25vw), calc(-50% + 25vh)) rotate(15deg) scale(.3)
-        }
+//         50.1% {
+//             transform: translate(calc(-50% - 25vw), calc(-50% + 25vh)) rotate(15deg) scale(.3)
+//         }
 
-        75% {
-            transform: translate(calc(-50% - 25vw), calc(-50% + 25vh)) rotate(15deg) scale(.3)
-        }
+//         75% {
+//             transform: translate(calc(-50% - 25vw), calc(-50% + 25vh)) rotate(15deg) scale(.3)
+//         }
 
-        75.1% {
-            transform: translate(calc(-50% + 25vw), calc(-50% - 25vh)) rotate(-15deg) scale(.4)
-        }
+//         75.1% {
+//             transform: translate(calc(-50% + 25vw), calc(-50% - 25vh)) rotate(-15deg) scale(.4)
+//         }
 
-        99.9% {
-            transform: translate(calc(-50% + 25vw), calc(-50% - 25vh)) rotate(-15deg) scale(.4)
-        }
+//         99.9% {
+//             transform: translate(calc(-50% + 25vw), calc(-50% - 25vh)) rotate(-15deg) scale(.4)
+//         }
 
-        to {
-            transform: translate(-50%, -50%) rotate(0) scale(1)
-        }
-    }
-}
+//         to {
+//             transform: translate(-50%, -50%) rotate(0) scale(1)
+//         }
+//     }
+// }
 
-.openPackBlookContainerAnimation4 {
-    animation: legendary 2.5s ease-in 1s forwards;
+// .openPackBlookContainerAnimation4 {
+//     animation: legendary 2.5s ease-in 1s forwards;
 
-    @keyframes legendary {
-        0% {
-            transform: translate(calc(-50% - 25vw), calc(-50% - 100vh)) scale(.1)
-        }
+//     @keyframes legendary {
+//         0% {
+//             transform: translate(calc(-50% - 25vw), calc(-50% - 100vh)) scale(.1)
+//         }
 
-        35% {
-            transform: translate(calc(-50% - 25vw), calc(-50% + 100vh)) scale(.1)
-        }
+//         35% {
+//             transform: translate(calc(-50% - 25vw), calc(-50% + 100vh)) scale(.1)
+//         }
 
-        35.1% {
-            transform: translate(calc(-50% + 25vw), calc(-50% - 100vh)) scale(.3)
-        }
+//         35.1% {
+//             transform: translate(calc(-50% + 25vw), calc(-50% - 100vh)) scale(.3)
+//         }
 
-        70% {
-            transform: translate(calc(-50% + 25vw), calc(-50% + 100vh)) scale(.3)
-        }
+//         70% {
+//             transform: translate(calc(-50% + 25vw), calc(-50% + 100vh)) scale(.3)
+//         }
 
-        70.1% {
-            transform: translate(-50%, calc(-50% - 100vh)) scale(1)
-        }
+//         70.1% {
+//             transform: translate(-50%, calc(-50% - 100vh)) scale(1)
+//         }
 
-        to {
-            transform: translate(-50%, -50%) scale(1)
-        }
-    }
-}
+//         to {
+//             transform: translate(-50%, -50%) scale(1)
+//         }
+//     }
+// }
 
-.openPackBlookContainerAnimation5,
-.openPackBlookContainerAnimation6 {
-    animation: chroma 2s linear 1.5s forwards;
+// .openPackBlookContainerAnimation5,
+// .openPackBlookContainerAnimation6 {
+//     animation: chroma 2s linear 1.5s forwards;
 
-    @keyframes chroma {
-        0% {
-            transform: translate(-50%, -50%) rotate(0) scale(0)
-        }
+//     @keyframes chroma {
+//         0% {
+//             transform: translate(-50%, -50%) rotate(0) scale(0)
+//         }
 
-        10% {
-            transform: translate(-50%, -50%) rotate(180deg) scale(.1)
-        }
+//         10% {
+//             transform: translate(-50%, -50%) rotate(180deg) scale(.1)
+//         }
 
-        20% {
-            transform: translate(-50%, -50%) rotate(1turn) scale(.2)
-        }
+//         20% {
+//             transform: translate(-50%, -50%) rotate(1turn) scale(.2)
+//         }
 
-        30% {
-            transform: translate(-50%, -50%) rotate(540deg) scale(.3)
-        }
+//         30% {
+//             transform: translate(-50%, -50%) rotate(540deg) scale(.3)
+//         }
 
-        40% {
-            transform: translate(-50%, -50%) rotate(2turn) scale(.4)
-        }
+//         40% {
+//             transform: translate(-50%, -50%) rotate(2turn) scale(.4)
+//         }
 
-        50% {
-            transform: translate(-50%, -50%) rotate(900deg) scale(.5)
-        }
+//         50% {
+//             transform: translate(-50%, -50%) rotate(900deg) scale(.5)
+//         }
 
-        60% {
-            transform: translate(-50%, -50%) rotate(3turn) scale(.6)
-        }
+//         60% {
+//             transform: translate(-50%, -50%) rotate(3turn) scale(.6)
+//         }
 
-        70% {
-            transform: translate(-50%, -50%) rotate(1260deg) scale(.7)
-        }
+//         70% {
+//             transform: translate(-50%, -50%) rotate(1260deg) scale(.7)
+//         }
 
-        80% {
-            transform: translate(-50%, -50%) rotate(4turn) scale(.8)
-        }
+//         80% {
+//             transform: translate(-50%, -50%) rotate(4turn) scale(.8)
+//         }
 
-        90% {
-            transform: translate(-50%, -50%) rotate(1620deg) scale(.9)
-        }
+//         90% {
+//             transform: translate(-50%, -50%) rotate(1620deg) scale(.9)
+//         }
 
-        to {
-            transform: translate(-50%, -50%) rotate(5turn) scale(1)
-        }
-    }
-}
+//         to {
+//             transform: translate(-50%, -50%) rotate(5turn) scale(1)
+//         }
+//     }
+// }
 
 .openPackIcon {
     width: 400px;

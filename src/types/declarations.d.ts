@@ -58,6 +58,7 @@ declare module "@blacket/types" {
     interface PrivateUser {
         hasPermission: (permission: PermissionType) => boolean;
         setTokens: (tokens: number) => number;
+        setDiamonds: (diamonds: number) => number;
     }
 }
 

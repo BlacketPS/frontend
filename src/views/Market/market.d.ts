@@ -1,4 +1,4 @@
-import { HTMLAttributes } from "react";
+import { HTMLAttributes, ReactNode } from "react";
 import { DataBoostersEntity, ItemShop, MarketOpenPackDto, Pack, RarityAnimationType, UserBlook } from "@blacket/types";
 
 export enum BigButtonClickType {
@@ -11,6 +11,11 @@ export enum BigButtonClickType {
 export interface SearchOptions {
     query: string;
     onlyPurchasable: boolean;
+}
+
+export interface LittleButton {
+    children: ReactNode;
+    onClick: () => void;
 }
 
 export interface CategoryProps extends HTMLAttributes<HTMLDivElement> {

@@ -24,7 +24,7 @@ export function useCreateAuction() {
                 if (index !== -1) userItems.splice(index, 1);
             }
 
-            setUser({ ...user, blooks: userBlooks, items: userItems, tokens: user.tokens - tax });
+            setUser({ ...user, blooks: userBlooks, items: userItems, diamonds: user.diamonds - tax });
 
             resolve(res);
         })

@@ -19,6 +19,12 @@ export const useUserStore = create<UserStore>((set, get) => {
 
                     return tokens;
                 };
+                user.setDiamonds = (diamonds: number) => {
+                    set({ user: { ...user, diamonds } });
+
+
+                    return diamonds;
+                };
             }
 
             set({ user });

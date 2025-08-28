@@ -11,7 +11,7 @@ export function useSellBlooks() {
 
     const sellBlooks = (dto: BlooksSellBlookDto) => new Promise<Fetch2Response>((resolve, reject) => window.fetch2.put("/api/blooks/sell-blooks", dto)
         .then((res: Fetch2Response) => {
-            let tokensEarned = 0;
+            let diamondsEarned = 0;
 
             for (const blookId of dto.blooks) {
                 const userBlook = user.blooks.find((b) => b.id === blookId);
@@ -20,16 +20,16 @@ export function useSellBlooks() {
                 const blook = blooks.find((b) => b.id === userBlook.blookId);
                 if (!blook) continue;
 
-                tokensEarned += blook.price;
+                diamondsEarned += blook.price;
             }
 
             const newBlooks = user.blooks.filter((blook) => !dto.blooks.includes(blook.id));
-            const newTokens = user.tokens + tokensEarned;
+            const newDiamonds = user.diamonds + diamondsEarned;
 
             setUser({
                 ...user,
                 blooks: newBlooks,
-                tokens: newTokens
+                diamonds: newDiamonds
             });
 
             resolve(res);

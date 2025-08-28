@@ -15,7 +15,7 @@ export function useBuyAuction() {
             if (auction.blook) userBlooks.push(auction.blook);
             else if (auction.item) userItems.push(auction.item);
 
-            setUser({ ...user, blooks: userBlooks, items: userItems, tokens: user.tokens - auction.price });
+            setUser({ ...user, blooks: userBlooks, items: userItems, diamonds: user.diamonds - auction.price });
 
             resolve(res);
         })

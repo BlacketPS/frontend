@@ -128,7 +128,7 @@
 
             @keyframes slideIn {
                 0% {
-                    bottom: -50%;
+                    bottom: -100vh;
                 }
 
                 100% {
@@ -138,7 +138,7 @@
         }
 
         &[data-closing="true"] {
-            animation: .5s ease slideOut forwards;
+            animation: 1s ease slideOut forwards;
 
             @keyframes slideOut {
                 0% {
@@ -146,7 +146,7 @@
                 }
 
                 100% {
-                    bottom: -50%;
+                    bottom: -100vh;
                 }
             }
         }

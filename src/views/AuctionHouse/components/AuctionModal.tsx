@@ -53,7 +53,7 @@ export default function AuctionModal({ auctionId }: AuctionModalProps) {
         //             Forbidden.AUCTIONS_BID_TOO_LOW
         //                 .replace("%s", (auction.price + 1).toLocaleString())
         //         );
-        //     case parseInt(amount) > user.tokens:
+        //     case parseInt(amount) > user.diamonds:
         //         return setError(Forbidden.AUCTIONS_BID_NOT_ENOUGH_TOKENS);
         // }
         if (captchaToken === "") return setError("Please complete the captcha.");
@@ -64,7 +64,7 @@ export default function AuctionModal({ auctionId }: AuctionModalProps) {
             : 0;
 
         const additionalAmount = parseInt(amount) - highestPreviousBidAmount;
-        const remainingTokens = user.tokens - additionalAmount;
+        const remainingDiamonds = user.diamonds - additionalAmount;
 
         switch (true) {
             case amount === "":
@@ -93,7 +93,7 @@ export default function AuctionModal({ auctionId }: AuctionModalProps) {
             .then(() => {
                 setAmount("");
 
-                user.setTokens(remainingTokens);
+                user.setDiamonds(remainingDiamonds);
             })
             .catch((err) => err?.data?.message ? setError(err.data.message) : setError("Something went wrong."))
             .finally(() => setLoading(false));
