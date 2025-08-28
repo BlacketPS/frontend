@@ -1,4 +1,4 @@
-import { useEffect, useLayoutEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { Navigate } from "react-router-dom";
 import { gainToDb } from "tone";
 import { BrenderCanvas, BrenderCanvasRef, BrenderEntity, isColliding, isOnScreen, PlayerEntity, urlToImage } from "@brender/index";
@@ -15,17 +15,78 @@ import styles from "./tradingPlaza.module.scss";
 import { SocketMessageType } from "@blacket/types";
 import { TILES } from "@constants/index";
 
+// TODO: Put these somewhere else
+type RGBA = { r: number; g: number; b: number; a: number };
+
+const TIME_KEYFRAMES: Array<{ minute: number; color: RGBA }> = [
+    { minute: 0, color: { r: 6, g: 10, b: 22, a: 0.7 } }, // 00:00 midnight - almost black-blue
+    { minute: 300, color: { r: 10, g: 15, b: 30, a: 0.6 } }, // 05:00 pre-dawn
+    { minute: 360, color: { r: 255, g: 150, b: 70, a: 0.2 } }, // 06:00 sunrise (strong warm glow)
+    { minute: 600, color: { r: 120, g: 190, b: 255, a: 0.2 } }, // 10:00 morning
+    { minute: 780, color: { r: 0, g: 0, b: 0, a: 0 } }, // 13:00 midday
+    { minute: 1020, color: { r: 255, g: 160, b: 80, a: 0.2 } }, // 17:00 golden hour
+    { minute: 1140, color: { r: 110, g: 40, b: 120, a: 0.3 } }, // 19:00 dusk, more saturated purple
+    { minute: 1220, color: { r: 6, g: 10, b: 22, a: 0.7 } }  // 20:00 midnight again
+];
+
+const MOVEMENT_KEYS = {
+    UP: ["w", "arrowup"],
+    LEFT: ["a", "arrowleft"],
+    DOWN: ["s", "arrowdown"],
+    RIGHT: ["d", "arrowright"],
+    RUN: ["shift"]
+};
+
+const clampBit = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
+const minutesSinceMidnightLocal = (): number => {
+    const now = new Date();
+
+    return now.getHours() * 60 + now.getMinutes() + now.getSeconds() / 60;
+};
+const minuteToHHMM = (m: number) => {
+    const hh = Math.floor(m / 60) % 24;
+    const mm = Math.floor(m % 60);
+    return `${String(hh).padStart(2, "0")}:${String(mm).padStart(2, "0")}`;
+};
+
+const lerpRGBA = (a: RGBA, b: RGBA, t: number): RGBA => {
+    return {
+        r: Math.round(lerp(a.r, b.r, t)),
+        g: Math.round(lerp(a.g, b.g, t)),
+        b: Math.round(lerp(a.b, b.b, t)),
+        a: lerp(a.a, b.a, t)
+    };
+};
+
+const getTimeColor = (m: number): RGBA => {
+    const f = TIME_KEYFRAMES, n = f.length;
+    let i = f.findIndex((k) => m <= k.minute);
+    if (i === -1) i = n;
+    const a = i === 0 ? f[n - 1] : f[i - 1];
+    const b = i === n ? f[0] : f[i];
+
+    const bMin = b.minute + (i === n ? 1440 : 0);
+    const span = bMin - a.minute || 1;
+    const t = clampBit(((m + (i === 0 ? 1440 : 0)) - a.minute) / span);
+
+    return lerpRGBA(a.color, b.color, t);
+};
+
 export default function TradingPlaza() {
     const { user, getUserAvatarPath } = useUser();
     const { socket, connected, latency } = useSocket();
     const { fontIdToName } = useData();
     const { addCachedUser } = useCachedUser();
-    const { playSound, defineSounds, stopSound } = useSound();
+    const { playSound, defineSounds, stopSound, setVolume } = useSound();
 
     if (!user) return <Navigate to="/login" />;
 
     const brenderCanvasRef = useRef<BrenderCanvasRef>(null);
     const waterBackgroundRef = useRef<HTMLDivElement>(null);
+
+    const [useSystemTime, setUseSystemTime] = useState<boolean>(true);
+    const [debugMinute, setDebugMinute] = useState<number>(() => Math.floor(minutesSinceMidnightLocal()));
+    const overlayRef = useRef<RGBA>(getTimeColor(debugMinute));
 
     const stepSounds = [
         "step-1",
@@ -35,6 +96,21 @@ export default function TradingPlaza() {
         "step-5"
     ];
 
+    const setAmbienceVolumes = (minute: number) => {
+        let mix = 0;
+
+        if (minute >= 1140 || minute < 360) mix = 1;
+        else if (minute >= 1080 && minute < 1140) mix = (minute - 1080) / 60;
+        else if (minute >= 360 && minute < 420) mix = 1 - (minute - 360) / 60;
+        else mix = 0;
+
+        const dayGain = 0.5 * (1 - mix);
+        const nightGain = 0.5 * mix;
+
+        setVolume("trading-plaza-ambience", dayGain > 0 ? gainToDb(dayGain) : gainToDb(0));
+        setVolume("trading-plaza-night-ambience", nightGain > 0 ? gainToDb(nightGain) : gainToDb(0));
+    };
+
     useEffect(() => {
         defineSounds([
             {
@@ -43,7 +119,16 @@ export default function TradingPlaza() {
                 options: {
                     loop: true,
                     preload: true,
-                    volume: gainToDb(0.5)
+                    volume: gainToDb(0)
+                }
+            },
+            {
+                id: "trading-plaza-night-ambience",
+                url: window.constructCDNUrl("/content/audio/sound/trading-plaza/night-ambience.mp3"),
+                options: {
+                    loop: true,
+                    preload: true,
+                    volume: gainToDb(0)
                 }
             },
             ...stepSounds.map((sound) => ({
@@ -54,12 +139,32 @@ export default function TradingPlaza() {
         ])
             .then(() => {
                 playSound("trading-plaza-ambience");
+                playSound("trading-plaza-night-ambience");
+
+                setAmbienceVolumes(debugMinute);
             });
 
         return () => {
             stopSound("trading-plaza-ambience");
+            stopSound("trading-plaza-night-ambience");
         };
     }, [defineSounds, playSound]);
+
+    useEffect(() => {
+        overlayRef.current = getTimeColor(debugMinute);
+
+        setAmbienceVolumes(debugMinute);
+    }, [debugMinute]);
+
+    useEffect(() => {
+        if (useSystemTime) {
+            const m = Math.floor(minutesSinceMidnightLocal());
+
+            setDebugMinute(m);
+
+            overlayRef.current = getTimeColor(m);
+        }
+    }, [useSystemTime]);
 
     useLayoutEffect(() => {
         if (!socket) return;
@@ -69,16 +174,10 @@ export default function TradingPlaza() {
 
         let active = true;
 
-        const MOVEMENT_KEYS = {
-            UP: ["w", "arrowup"],
-            LEFT: ["a", "arrowleft"],
-            DOWN: ["s", "arrowdown"],
-            RIGHT: ["d", "arrowright"],
-            RUN: ["shift"]
-        };
-
         const PLAYER_SPEED = (window.innerWidth < 1024 ? 8 : 10);
         const FOOTSTEP_INTERVAL = 350 / (PLAYER_SPEED / 10);
+
+        // TODO: delete this
         const TILE_SIZE = 50;
         const COLUMNS = 35;
         const ROWS = 40;
@@ -379,6 +478,26 @@ export default function TradingPlaza() {
                 height: 500,
                 hasCollision: false
             });
+
+            brender.createGenericEntity({
+                id: "time-cycle",
+                x: 0,
+                y: 0,
+                z: Number.MAX_SAFE_INTEGER,
+                onFrame: async () => {
+                    const TIME_OVERLAY = overlayRef.current;
+                    const alpha = clampBit(TIME_OVERLAY.a);
+
+                    brender.drawRect({
+                        x: 0,
+                        y: 0,
+                        z: Number.MAX_SAFE_INTEGER,
+                        width: brender.getWidth(),
+                        height: brender.getHeight(),
+                        color: `rgba(${TIME_OVERLAY.r}, ${TIME_OVERLAY.g}, ${TIME_OVERLAY.b}, ${alpha})`
+                    });
+                }
+            });
         })();
 
         return () => {
@@ -417,6 +536,46 @@ export default function TradingPlaza() {
                     {connected ? "Connected to Trading Plaza" : "Disconnected from Trading Plaza"}
                     <br />
                     <div style={{ color: latency < 100 ? "unset" : latency < 200 ? "yellow" : "red" }}>Ping: {latency}ms</div>
+                </div>
+            </div>
+
+            <div
+                style={{
+                    position: "absolute",
+                    top: 10,
+                    right: 10,
+                    padding: 10,
+                    zIndex: 10,
+                    background: "rgba(0,0,0,0.35)",
+                    backdropFilter: "blur(4px)",
+                    borderRadius: 8,
+                    color: "#fff",
+                    width: 260
+                }}
+            >
+                <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+                    <input
+                        id="useSystemTime"
+                        type="checkbox"
+                        checked={useSystemTime}
+                        onChange={(e) => setUseSystemTime(e.target.checked)}
+                    />
+                    <label htmlFor="useSystemTime">system time (snapshot at open)</label>
+                </div>
+
+                <div style={{ opacity: useSystemTime ? 0.5 : 1, pointerEvents: useSystemTime ? "none" : "auto" }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12, marginBottom: 4 }}>
+                        <span>fake time</span>
+                        <span>{minuteToHHMM(debugMinute)}</span>
+                    </div>
+                    <input
+                        type="range"
+                        min={0}
+                        max={1439}
+                        value={debugMinute}
+                        onChange={(e) => setDebugMinute(Number(e.target.value))}
+                        style={{ width: "100%" }}
+                    />
                 </div>
             </div>
 

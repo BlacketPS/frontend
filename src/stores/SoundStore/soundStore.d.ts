@@ -28,4 +28,6 @@ export interface SoundStore {
     stopAllSounds: () => Promise<void>;
 
     defineSounds: (definedSounds: DefinedSound[]) => Promise<void>;
+
+    setVolume: (id: string, volume: number) => Promise<void>;
 }

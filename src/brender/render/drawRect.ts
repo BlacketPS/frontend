@@ -7,12 +7,22 @@ export const drawRect = (rect: DrawRectProps) => {
 
     rectCtx.fillStyle = rect.color;
 
-    rectCtx.fillRect(
-        (rect.x - camera.x) * camera.scale,
-        (rect.y - camera.y) * camera.scale,
-        rect.width * camera.scale,
-        rect.height * camera.scale
-    );
+
+    if (rect.useCamera) {
+        rectCtx.fillRect(
+            (rect.x - camera.x) * camera.scale,
+            (rect.y - camera.y) * camera.scale,
+            rect.width * camera.scale,
+            rect.height * camera.scale
+        );
+    } else {
+        rectCtx.fillRect(
+            (rect.x),
+            (rect.y),
+            rect.width,
+            rect.height
+        );
+    }
 
     rectCtx.restore();
 };

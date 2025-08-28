@@ -66,6 +66,13 @@ export const useSound = create<SoundStore>((set, get) => {
                     ...newSounds.filter((s): s is Sound => s !== null)
                 ]
             }));
+        },
+
+        setVolume: async (id: string, volume: number) => {
+            const sound = get().sounds.find((s) => s.id === id);
+            if (!sound) return;
+
+            sound.player.volume.value = volume;
         }
     };
 });

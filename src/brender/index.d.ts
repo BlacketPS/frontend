@@ -90,7 +90,7 @@ export interface BrenderObject {
     z: number;
     width?: number;
     height?: number;
-    image?: HTMLImageElement;
+    image?: HTMLImageElement | HTMLVideoElement;
     imageBlendMode?: GlobalCompositeOperation;
     imageOpacity?: number;
     imageTint?: string;
