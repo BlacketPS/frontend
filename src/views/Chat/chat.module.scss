@@ -126,6 +126,7 @@
     justify-content: flex-end;
     cursor: pointer;
     transition: .2s;
+    margin-top: -1px;
 
     &:hover {
         transform: scale(0.9);
@@ -420,6 +421,11 @@
         font-size: 1rem;
         margin: 0 0 0 34px;
     }
+}
+
+.replyingToAvatar {
+    width: 20px;
+    height: 23px;
 }
 
 .replyingToUsername {

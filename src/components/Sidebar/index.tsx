@@ -169,7 +169,7 @@ export default function Sidebar() {
                         ))}
                     </div>
 
-                    <Button.GenericButton to="/store" icon="fas fa-cart-shopping" className={styles.visitStoreButton} backgroundColor="#2b22c2">Visit Store</Button.GenericButton>
+                    <Button.GenericButton to="/store" icon="fas fa-cart-shopping" className={styles.visitStoreButton} backgroundColor="#2b22c2">Store</Button.GenericButton>
                 </div>
             </div>
 
@@ -214,7 +214,7 @@ export default function Sidebar() {
                         backgroundColor="#2b22c2"
                         onClick={() => setMobileSidebarOpen(false)}
                     >
-                        Visit Store
+                        Store
                     </Button.GenericButton>
                 </div>
             </div>

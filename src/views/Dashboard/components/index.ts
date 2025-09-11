@@ -4,6 +4,7 @@ import LevelContainer from "./LevelContainer";
 import LookupUserModal from "./LookupUserModal";
 import SectionHeader from "./SectionHeader";
 import SmallButton from "./SmallButton";
+import StatButton from "./StatButton";
 import StatContainer from "./StatContainer";
 
 export {
@@ -13,5 +14,6 @@ export {
     LookupUserModal,
     SectionHeader,
     SmallButton,
+    StatButton,
     StatContainer
 };

@@ -1,12 +1,9 @@
 import { HTMLAttributes } from "react";
 import { Blook } from "@blacket/types";
 
-export interface SmallButton {
+export interface StatButtonProps extends HTMLAttributes<HTMLDivElement> {
     icon: string;
-    text: string;
-    link?: string;
-    onlyMe?: boolean;
-    onlyOther?: boolean;
+    backgroundColor?: string;
     onClick?: () => void;
 }
 

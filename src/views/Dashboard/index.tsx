@@ -10,8 +10,8 @@ import { useAuctionHouse } from "@stores/AuctionHouseStore/index";
 import { useUsers } from "@controllers/users/useUsers/index";
 import { useSearchAuction } from "@controllers/auctions/useSearchAuction/index";
 import { useClaimDailyTokens } from "@controllers/quests/useClaimDailyTokens/index";
-import { Auction, Blook, ImageOrVideo, Username, InventoryBlook, InventoryItem, ItemContainer, Title } from "@components/index";
-import { LevelContainer, LookupUserModal, SmallButton, SectionHeader, StatContainer, CosmeticsModal, DailyRewardsModal } from "./components";
+import { Auction, Blook, ImageOrVideo, Username, InventoryBlook, InventoryItem, ItemContainer, Title, Button } from "@components/index";
+import { LevelContainer, LookupUserModal, SmallButton, SectionHeader, StatContainer, CosmeticsModal, DailyRewardsModal, StatButton } from "./components";
 import styles from "./dashboard.module.scss";
 
 import { AuctionsAuctionEntity, PrivateUser, PublicUser } from "@blacket/types";
@@ -20,7 +20,7 @@ import { CosmeticsModalCategory } from "./dashboard.d";
 export default function Dashboard() {
     const { setLoading } = useLoading();
     const { createModal } = useModal();
-    const { user, getUserAvatarPath, getUserBannerPath, getBlookAmount } = useUser();
+    const { user, getUserAvatarPath, getUserBannerPath, getBlookAmount, isAvatarBig } = useUser();
     const { cachedUsers, addCachedUserWithData } = useCachedUser();
     const { blooks, packs, items, titleIdToText } = useData();
     const { resourceIdToPath } = useResource();
@@ -103,13 +103,6 @@ export default function Dashboard() {
         setViewingUser(user);
     }, [user]);
 
-    const hasUserBlook = (blookId: number) => getBlookAmount(blookId, false, viewingUser) > 0;
-    const hasShinyUserBlook = (blookId: number) => getBlookAmount(blookId, true, viewingUser) > 0;
-
-    const nonPackBlooks = blooks
-        .filter((blook) => !blook.packId)
-        .sort((a, b) => a.priority - b.priority);
-
     const claimableDate = new Date();
     claimableDate.setUTCHours(0, 0, 0, 0);
 
@@ -129,6 +122,7 @@ export default function Dashboard() {
                                 draggable={false}
                                 custom={viewingUser.customAvatar ? true : false}
                                 shiny={viewingUser.avatar?.shiny}
+                                big={isAvatarBig(viewingUser)}
                                 onClick={() => {
                                     if (viewingUser.id === user.id) createModal(<CosmeticsModal category={CosmeticsModalCategory.AVATAR} />);
                                 }}
@@ -159,23 +153,29 @@ export default function Dashboard() {
                         </div>
                     </div>
 
-                    <div className={styles.smallButtonContainer}>
-                        <SmallButton icon="fas fa-user-plus" onClick={() => createModal(<LookupUserModal onClick={viewUser} />)}>Lookup User</SmallButton>
-                        {viewingUser.id === user.id && new Date(user.lastClaimed) < claimableDate && <SmallButton icon="fas fa-star" onClick={() => {
+                    <div className={styles.statButtonContainer}>
+                        <StatButton
+                            icon="fas fa-user-plus"
+                            onClick={() => createModal(<LookupUserModal onClick={viewUser} />)}
+                        >
+                            Lookup User
+                        </StatButton>
+
+                        {viewingUser.id === user.id && new Date(user.lastClaimed) < claimableDate && <StatButton icon="fas fa-star" onClick={() => {
                             setLoading(true);
 
                             claimDailyTokens()
                                 .then((res) => createModal(<DailyRewardsModal amount={res.data.tokens} />))
                                 .finally(() => setLoading(false));
-                        }}>Daily Rewards</SmallButton>}
-                        <SmallButton icon="fas fa-cart-shopping" onClick={() => {
+                        }}>Daily Rewards</StatButton>}
+                        <StatButton icon="fas fa-cart-shopping" onClick={() => {
                             navigate("/store");
-                        }}>Store</SmallButton>
-                        {viewingUser.id !== user.id && <SmallButton icon="fas fa-reply" onClick={() => {
+                        }}>Store</StatButton>
+                        {viewingUser.id !== user.id && <StatButton icon="fas fa-reply" onClick={() => {
                             setViewingUser(user);
 
                             navigate("/dashboard");
-                        }}>Go Back</SmallButton>}
+                        }}>Go Back</StatButton>}
                     </div>
 
                     <div className={styles.userBadges}>
@@ -200,12 +200,14 @@ export default function Dashboard() {
             </div>
 
             <div className={`${styles.section} ${styles.statsSection}`}>
-                <div className={styles.statsContainer}>
+                <div className={styles.statsContainer} style={{
+                    backgroundColor: "unset",
+                    boxShadow: "unset"
+                }}>
                     <div className={styles.statsContainerHolder}>
                         <StatContainer title="User ID" icon={window.constructCDNUrl("/content/icons/dashboardStatsUserID.png")} value={viewingUser.id} />
                         {viewingUser.guild && <StatContainer title="Guild" icon={window.constructCDNUrl("/content/icons/dashboardStatsGuild.png")} value={viewingUser.guild ? viewingUser.guild : "None"} />}
-                        <StatContainer title="Blooks Unlocked" icon={window.constructCDNUrl("/content/icons/dashboardStatsBlooksUnlocked.png")} value={`${viewingUser.blooks.length.toLocaleString()} / ${blooks.length.toLocaleString()}`} /> {/* TODO: BACKEND (Syfe/Xotic): Default blook does NOT count in inventory (yet). REVERT to (blooks.length - 1) when fixed. */}
-                        <StatContainer title="Experience" icon={window.constructCDNUrl("/content/experience.png")} value={viewingUser.experience.toLocaleString()} />
+                        <StatContainer title="Total Blooks" icon={window.constructCDNUrl("/content/icons/dashboardStatsBlooksUnlocked.png")} value={`${viewingUser.blooks.length.toLocaleString()}`} />
                         <StatContainer title="Tokens" icon={window.constructCDNUrl("/content/token.png")} value={viewingUser.tokens.toLocaleString()} />
                         <StatContainer title="Diamonds" icon={window.constructCDNUrl("/content/diamond.png")} value={viewingUser.diamonds.toLocaleString()} />
                         <StatContainer title="Crystals" icon={window.constructCDNUrl("/content/crystal.png")} value={viewingUser.crystals.toLocaleString()} />
@@ -220,8 +222,8 @@ export default function Dashboard() {
                     <div className={styles.friendsTop}>
                         <p>Friends</p>
                         <div>
-                            <SmallButton data-secondary icon="fas fa-arrow-up">Incoming</SmallButton>
-                            <SmallButton data-secondary icon="fas fa-arrow-down">Outgoing</SmallButton>
+                            <StatButton icon="fas fa-arrow-up">Incoming</StatButton>
+                            <StatButton icon="fas fa-arrow-down">Outgoing</StatButton>
                         </div>
                     </div>
 
@@ -240,7 +242,10 @@ export default function Dashboard() {
                             setSearch({ seller: viewingUser.username });
 
                             navigate("/auction-house");
-                        }} />) : <div className={styles.noAuctions}>No auctions found.</div>}
+                        }} />) : <div className={styles.noAuctions}>
+                            <img src={window.constructCDNUrl("/content/404.png")} />
+                            No auctions found.
+                        </div>}
                     </div>
                 </div>
             </div>
@@ -250,26 +255,6 @@ export default function Dashboard() {
 
                 <div className={styles.statsContainer}>
                     <div className={styles.inventoryItemsContainer}>
-                        {/* <div className={styles.inventoryItems}>
-                            {items.sort((a, b) => a.priority - b.priority).map((item) => {
-                                const filteredItems = viewingUser.items.filter((i) => i.itemId === item.id);
-
-                                if (filteredItems.length > 0) return filteredItems.map((i) => <InventoryItem key={i.id} item={i} selectable={false} useVhStyles={true} />);
-                            })}
-
-                            {packs.sort((a, b) => a.priority - b.priority).map((pack) => {
-                                const filteredBlooks = blooks
-                                    .filter((blook) => blook.packId === pack.id)
-                                    .sort((a, b) => a.priority - b.priority);
-
-                                if (filteredBlooks.length > 0) return filteredBlooks.map((blook) => <Fragment key={blook.id}>
-                                    {hasUserBlook(blook.id) && <InventoryBlook blook={blook} amount={getBlookAmount(blook.id, false, viewingUser)} selectable={false} useVhStyles={true} />}
-                                    {hasShinyUserBlook(blook.id) && <InventoryBlook blook={blook} amount={getBlookAmount(blook.id, true, viewingUser)} shiny={true} selectable={false} useVhStyles={true} />}
-                                </Fragment>);
-                            })}
-
-                            {nonPackBlooks.map((blook) => hasUserBlook(blook.id) && <InventoryBlook key={blook.id} blook={blook} amount={getBlookAmount(blook.id, false, viewingUser)} selectable={false} useVhStyles={true} />)}
-                        </div> */}
                         <ItemContainer
                             user={viewingUser}
                             options={{

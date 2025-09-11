@@ -15,15 +15,14 @@ export default function InsanePullUI() {
     useEffect(() => {
         if (!video) return;
 
-        navigate("/chat");
+        const flash = flashRef.current;
+        const vid = videoRef.current;
+        if (!flash || !vid) return;
+
         stopAllSounds();
         playSound("bass-drop");
 
         setTimeout(() => {
-            const flash = flashRef.current;
-            const vid = videoRef.current;
-            if (!flash || !vid) return;
-
             flash.style.backgroundColor = "black";
 
             setTimeout(() => {
@@ -49,7 +48,10 @@ export default function InsanePullUI() {
                 flashRef.current!.style.opacity = "0";
                 videoRef.current!.style.opacity = "0";
 
-                setTimeout(() => setVideo(null), 5000);
+                setTimeout(() => {
+                    navigate("/chat");
+                    setVideo(null);
+                }, 5000);
             }}
         />
     </>);

@@ -1,5 +1,5 @@
 import { useUser } from "@stores/UserStore/index";
-import { ImageOrVideo, Username } from "@components/index";
+import { Blook, Username } from "@components/index";
 import styles from "../credits.module.scss";
 
 import { CreditContainerProps } from "../credits.d";
@@ -10,7 +10,11 @@ export default function CreditContainer({ credit, ...props }: CreditContainerPro
     return (
         <div className={styles.creditContainer} {...props}>
             <div className={styles.creditAvatar}>
-                <ImageOrVideo src={getUserAvatarPath(credit.user)} />
+                <Blook
+                    src={getUserAvatarPath(credit.user)}
+                    shiny={credit.user.avatar?.shiny}
+                    draggable={false}
+                />
             </div>
 
             <div className={styles.creditRightSide}>

@@ -6,7 +6,7 @@ import { useUser } from "@stores/UserStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
 import MarkdownEditor from "./MarkdownEditor";
 import timestamps from "@functions/blacket/timestamps";
-import { ImageOrVideo, Username } from "@components/index";
+import { Blook, Username } from "@components/index";
 import styles from "../chat.module.scss";
 
 import { ChatMessageProps } from "../chat.d";
@@ -17,7 +17,7 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
     if (!onEditSave || isSending) onEditSave = () => { };
     if (!onEditCancel || isSending) onEditCancel = () => { };
 
-    const { getUserAvatarPath } = useUser();
+    const { getUserAvatarPath, isAvatarBig } = useUser();
     const { cachedUsers } = useCachedUser();
 
     const [editor, setEditor] = useState<Editor | null>(null);
@@ -57,6 +57,8 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
 
     const handleEditSave = (content: string) => onEditSave(content);
 
+    const big = isAvatarBig(author);
+
     if (author) return (
         <span className={styles.messageHolder} style={{
             marginTop: (newUser || message.replyingTo) ? "15px" : ""
@@ -79,7 +81,12 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
                 }}>
                     <img src={window.constructCDNUrl("/content/reply.svg")} />
 
-                    <ImageOrVideo src={getUserAvatarPath(replyingToAuthor)} className={styles.replyingToAvatar} />
+                    <Blook
+                        className={styles.replyingToAvatar}
+                        src={getUserAvatarPath(replyingToAuthor)}
+                        shiny={replyingToAuthor.avatar?.shiny}
+                        draggable={false}
+                    />
 
                     <Username user={replyingToAuthor} className={styles.replyingToUsername} />
 
@@ -98,17 +105,35 @@ export default memo(function ChatMessage({ message, newUser, mentionsMe, isSendi
                         e.stopPropagation();
 
                         userContextMenu(e);
-                    }}>
-                        <ImageOrVideo className={styles.avatar} src={getUserAvatarPath(author)} />
+                    }}
+                        style={big ? {
+                            transform: "scale(1.4)",
+                            marginLeft: 5
+                        } : undefined}
+                    >
+                        <Blook
+                            src={getUserAvatarPath(author)}
+                            shiny={author.avatar?.shiny}
+                            draggable={false}
+                        />
                     </Link>}
 
-                    <div className={styles.messageContentContainer}>
+                    <div
+                        className={styles.messageContentContainer}
+                        style={big ? {
+                            marginLeft: 75
+                        } : undefined}
+                    >
                         {(newUser || message.replyingTo) && <div className={styles.usernameContainer} onContextMenu={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
 
                             userContextMenu(e);
-                        }}>
+                        }}
+                            style={big ? {
+                                marginTop: 15
+                            } : undefined}
+                        >
                             <Username user={author} onClick={(e) => {
                                 if (window.innerWidth <= 850) e.preventDefault();
                             }} />

@@ -297,7 +297,7 @@
 .title {
     height: 50%;
     margin-top: -0.5vh;
-    font-size: 1.5vh;
+    // font-size: 1.5vh;
 
     @media screen and (max-width: 475px) {
         margin-top: -5px;
@@ -427,7 +427,7 @@
     }
 }
 
-.smallButtonContainer {
+.statButtonContainer {
     display: flex;
     gap: 1.5vh;
     flex-wrap: wrap;
@@ -534,6 +534,7 @@
     box-sizing: border-box;
     color: var(--accent-color);
     overflow-y: auto;
+    overflow-x: hidden;
 }
 
 .statsContainerHolder {
@@ -541,9 +542,15 @@
     gap: 1vh;
     max-height: 28vh;
     overflow-y: auto;
+    overflow-x: hidden;
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    padding-right: 1vh;
+
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
 
     @media screen and (max-width: 475px) {
         max-height: unset;
@@ -572,7 +579,7 @@
     gap: 1vh;
     box-shadow: inset 0 -0.7vh rgba(0, 0, 0, 0.2);
     border-radius: 0.7vh;
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
     line-height: 1;
     padding: 0.5vh 2vh 1.5vh 2vh;
 
@@ -661,8 +668,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    background: var(--primary-color);
-    padding: 0 0 2vh 0;
+    padding: 0 0 1vh 0;
     border-radius: 0.5vh;
 
     &>p {
@@ -686,7 +692,7 @@
     text-align: center;
     height: 100%;
     font-size: 1.5vh;
-    background: var(--primary-color);
+    background: rgba(0, 0, 0, 0.2);
     padding: 1vh;
     border-radius: 0.5vh;
 }
@@ -805,8 +811,18 @@
 }
 
 .noAuctions {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
     font-size: 2.5vh;
     font-weight: 700;
+
+    &>img {
+        width: 40vh;
+        height: 40vh;
+        object-fit: contain;
+    }
 
     @media screen and (max-width: 475px) {
         margin-top: 15px;

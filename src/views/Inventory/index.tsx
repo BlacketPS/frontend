@@ -30,23 +30,26 @@ export default function Inventory() {
     const [description, setDescription] = useState<string>("");
 
     useEffect(() => {
-        if (selectedType === SelectedTypeEnum.BLOOK) {
-            const blook = blooks.find((b) => b.id === (selected as UserBlook).blookId);
+        switch (selectedType) {
+            case SelectedTypeEnum.BLOOK:
+                const blook = blooks.find((b) => b.id === (selected as UserBlook).blookId);
 
-            setBlook(blook || null);
-            setRarity(rarities.find((r) => r.id === blook?.rarityId) || null);
-            setDescription(blook?.description || "No description available for this Blook.");
-        } else if (selectedType === SelectedTypeEnum.ITEM) {
-            const item = items.find((i) => i.id === (selected as UserItem).itemId);
+                setBlook(blook || null);
+                setRarity(rarities.find((r) => r.id === blook?.rarityId) || null);
+                setDescription(blook?.description || "No description available for this Blook.");
+                break;
+            case SelectedTypeEnum.ITEM:
+                const item = items.find((i) => i.id === (selected as UserItem).itemId);
 
-            setItem(item || null);
-            setRarity(rarities.find((r) => r.id === item?.rarityId) || null);
-            setDescription(item?.description || "No description available for this Item.");
-        } else {
-            setBlook(null);
-            setItem(null);
-            setRarity(null);
-            setDescription("");
+                setItem(item || null);
+                setRarity(rarities.find((r) => r.id === item?.rarityId) || null);
+                setDescription(item?.description || "No description available for this Item.");
+                break;
+            default:
+                setBlook(null);
+                setItem(null);
+                setRarity(null);
+                setDescription("");
         }
     }, [selected]);
 
@@ -321,7 +324,9 @@ export default function Inventory() {
                                 if (selectedType === SelectedTypeEnum.BLOOK) {
                                     createModal(<SellBlooksModal blook={blook!} shiny={(selected as UserBlook).shiny} />);
                                 }
-                            }}>
+                            }}
+                                icon="fas fa-gem"
+                            >
                                 Sell
                             </Button.GenericButton>
 
@@ -329,7 +334,9 @@ export default function Inventory() {
                                 if (selectedType === SelectedTypeEnum.BLOOK) {
                                     createModal(<AuctionModal type={AuctionTypeEnum.BLOOK} blook={blook!} shiny={(selected as UserBlook).shiny} />);
                                 }
-                            }}>
+                            }}
+                                icon="fas fa-building-columns"
+                            >
                                 Auction
                             </Button.GenericButton>
                         </div>

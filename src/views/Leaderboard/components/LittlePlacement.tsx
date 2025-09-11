@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import Textfit from "react-textfit";
 import { useUser } from "@stores/UserStore/index";
 import cardinalToOrdinal from "@functions/core/cardinalToOrdinal";
-import { ImageOrVideo, Username } from "@components/index";
+import { Blook, Username } from "@components/index";
 import styles from "../leaderboard.module.scss";
 
 import { LittlePlacementProps, PlacementType } from "../leaderboard.d";
@@ -22,7 +22,11 @@ export default function LittlePlacement({ type, placement, user }: LittlePlaceme
                     <div className={styles.otherStandingSuffix}>{cardinalToOrdinal(placement)}</div>
 
                     <div className={styles.otherStandingAvatar}>
-                        <ImageOrVideo src={getUserAvatarPath(user)} draggable={false} />
+                        <Blook
+                            src={getUserAvatarPath(user)}
+                            shiny={user.avatar?.shiny}
+                            draggable={false}
+                        />
                     </div>
 
                     <Textfit className={styles.otherStandingUsername} min={0} max={36} mode="single">

@@ -6,7 +6,7 @@ export const objectLoop = (object: BrenderObject, deltaTime: number) => {
         && isOnScreen(object.x, object.y, object.width ?? object?.image?.width ?? 0, object.height ?? object?.image?.height ?? 0)
     ) {
         drawImage({
-            image: object.image,
+            image: object.image as HTMLImageElement,
             x: object.x,
             y: object.y,
             z: object.z,

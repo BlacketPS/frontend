@@ -1,7 +1,7 @@
+import {ImageOrVideo} from "@components/index";
 import styles from "../home.module.scss";
 
-import { HeroImageProps } from "../home";
-import ImageOrVideo from "@components/ImageOrVideo";
+import { HeroImageProps } from "../home.d";
 
 export default function HeroImage({ src, alt, mobile }: HeroImageProps) {
     if (mobile) return (

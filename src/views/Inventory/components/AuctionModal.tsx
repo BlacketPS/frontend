@@ -115,7 +115,7 @@ export default function AuctionModal({ type, blook, item, shiny }: AuctionModalP
                         {shiny && "Shiny"} {type === AuctionTypeEnum.BLOOK ? blook!.name : item!.name}
                     </Textfit>
 
-                    <Form style={{ marginTop: 15 }}>
+                    <Form>
                         <Input
                             value={price}
                             icon="fas fa-dollar-sign"
@@ -161,16 +161,6 @@ export default function AuctionModal({ type, blook, item, shiny }: AuctionModalP
                         />
                     </Form>
 
-                    {/* <Modal.ModalBody>
-                        <div style={{ display: "flex", flexDirection: "column" }}>
-                            <div style={{ color: auctionTax > user.tokens ? "#ff0000" : "" }}>Auction Tax: {auctionTax.toLocaleString()}</div>
-                            <div style={{ color: durationTax > user.tokens ? "#ff0000" : "" }}>Duration Tax: {durationTax.toLocaleString()}</div>
-                            <div style={{ color: (auctionTax + durationTax) > user.tokens ? "#ff0000" : "" }}>Total: {(auctionTax + durationTax).toLocaleString()}</div>
-
-                            {user.permissions.includes(PermissionTypeEnum.LESS_AUCTION_TAX) && <div style={{ fontSize: "0.8rem", marginTop: 13 }}>You have a 25% discount on auction tax!</div>}
-                        </div>
-                    </Modal.ModalBody> */}
-
                     <Modal.ModalToggleContainer style={{ justifyContent: "left" }}>
                         <Toggle checked={buyItNow} onClick={() => setBuyItNow(!buyItNow)}>
                             Buy It Now
@@ -178,6 +168,13 @@ export default function AuctionModal({ type, blook, item, shiny }: AuctionModalP
                     </Modal.ModalToggleContainer>
                 </div>
             </div>
+
+            <div style={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", gap: 10, marginBottom: 20 }}>
+                <div style={{ color: auctionTax > user.tokens ? "#ff0000" : "" }}>Auction Tax: {auctionTax.toLocaleString()}</div>
+                <div style={{ color: durationTax > user.tokens ? "#ff0000" : "" }}>Duration Tax: {durationTax.toLocaleString()}</div>
+                <div style={{ color: (auctionTax + durationTax) > user.tokens ? "#ff0000" : "" }}>Total: {(auctionTax + durationTax).toLocaleString()}</div>
+            </div>
+            {user.permissions.includes(PermissionTypeEnum.LESS_AUCTION_TAX) && <div style={{ fontSize: "0.8rem", marginTop: -10, marginBottom: 20 }}>You have a 25% discount on auction tax!</div>}
 
             {suspicious && <WarningContainer>This item's recent average price seems suspicious. <b>Be careful when choosing a price for this item.</b></WarningContainer>}
             {error !== "" && <ErrorContainer>{error}</ErrorContainer>}

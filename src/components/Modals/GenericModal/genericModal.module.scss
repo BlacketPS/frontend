@@ -47,11 +47,11 @@
 
     @media not (max-width: 600px) {
         &[data-animated="true"] {
-            animation: content linear .25s forwards;
+            animation: content ease .3s forwards;
 
             @keyframes content {
                 0% {
-                    transform: scale(.5);
+                    transform: scale(0);
                     opacity: 0;
                 }
 
@@ -60,7 +60,7 @@
                 }
 
                 70% {
-                    transform: scale(1.2);
+                    transform: scale(1.1);
                 }
 
                 100% {
@@ -71,7 +71,7 @@
         }
 
         &[data-closing="true"] {
-            animation: contentClose linear .3s forwards;
+            animation: contentClose ease .3s forwards;
 
             @keyframes contentClose {
                 0% {
@@ -80,7 +80,7 @@
                 }
 
                 60% {
-                    transform: scale(1.2);
+                    transform: scale(1.1);
                 }
 
                 70% {
@@ -88,7 +88,7 @@
                 }
 
                 100% {
-                    transform: scale(.5);
+                    transform: scale(0);
                     opacity: 0;
                 }
             }

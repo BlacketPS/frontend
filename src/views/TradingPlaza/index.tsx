@@ -73,7 +73,7 @@ const getTimeColor = (m: number): RGBA => {
 };
 
 export default function TradingPlaza() {
-    const { user, getUserAvatarPath } = useUser();
+    const { user, getUserAvatarPath, isAvatarBig } = useUser();
     const { socket, connected, latency } = useSocket();
     const { fontIdToName } = useData();
     const { addCachedUser } = useCachedUser();
@@ -104,8 +104,8 @@ export default function TradingPlaza() {
         else if (minute >= 360 && minute < 420) mix = 1 - (minute - 360) / 60;
         else mix = 0;
 
-        const dayGain = 0.5 * (1 - mix);
-        const nightGain = 0.5 * mix;
+        const dayGain = 0.3 * (1 - mix);
+        const nightGain = 0.3 * mix;
 
         setVolume("trading-plaza-ambience", dayGain > 0 ? gainToDb(dayGain) : gainToDb(0));
         setVolume("trading-plaza-night-ambience", nightGain > 0 ? gainToDb(nightGain) : gainToDb(0));
@@ -312,9 +312,13 @@ export default function TradingPlaza() {
                 .then((image) => {
                     entity.image = image;
                     if (user?.avatar?.shiny) entity.imageShiny = true;
-
-                    entity.width = 300 / 6;
-                    entity.height = 345 / 6;
+                    if (isAvatarBig(user)) {
+                        entity.width = 600 / 6;
+                        entity.height = 690 / 6;
+                    } else {
+                        entity.width = 300 / 6;
+                        entity.height = 345 / 6;
+                    }
                 });
 
             return entity;
@@ -436,9 +440,13 @@ export default function TradingPlaza() {
             .then((image) => {
                 player.image = image;
                 if (user?.avatar?.shiny) player.imageShiny = true;
-
-                player.width = 300 / 6;
-                player.height = 345 / 6;
+                if (isAvatarBig(user)) {
+                    player.width = 600 / 6;
+                    player.height = 690 / 6;
+                } else {
+                    player.width = 300 / 6;
+                    player.height = 345 / 6;
+                }
             });
 
         const movementLoop = () => {
@@ -483,7 +491,7 @@ export default function TradingPlaza() {
                 id: "time-cycle",
                 x: 0,
                 y: 0,
-                z: Number.MAX_SAFE_INTEGER,
+                z: 0,
                 onFrame: async () => {
                     const TIME_OVERLAY = overlayRef.current;
                     const alpha = clampBit(TIME_OVERLAY.a);
@@ -491,7 +499,7 @@ export default function TradingPlaza() {
                     brender.drawRect({
                         x: 0,
                         y: 0,
-                        z: Number.MAX_SAFE_INTEGER,
+                        z: 100,
                         width: brender.getWidth(),
                         height: brender.getHeight(),
                         color: `rgba(${TIME_OVERLAY.r}, ${TIME_OVERLAY.g}, ${TIME_OVERLAY.b}, ${alpha})`

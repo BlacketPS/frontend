@@ -1,5 +1,6 @@
 import { parseColor } from "@functions/blacket/parseColor";
 import { useData } from "@stores/DataStore/index";
+import styles from "./title.module.scss";
 
 import { TitleProps } from "./title.d";
 
@@ -13,7 +14,7 @@ export default function Title({ title, className, style = {}, ...props }: TitleP
 
     return <span
         className={`
-            ${className ? `${className}` : ""}
+            ${className ? `${className} ${styles.title}` : styles.title}
             ${t.color === "rainbow" ? "rainbow" : ""}
         `}
         style={{

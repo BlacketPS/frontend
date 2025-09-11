@@ -352,7 +352,8 @@
     width: 100%;
     padding: 20px;
     gap: 20px;
-    height: 13.5rem;
+    // height: 13.5rem;
+    height: 100%;
 
     @media only screen and (max-width: 685px) {
         flex-direction: column;
@@ -392,6 +393,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .sellBlookExtraOptionButton {

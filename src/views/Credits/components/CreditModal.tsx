@@ -1,7 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { useModal } from "@stores/ModalStore/index";
 import { useUser } from "@stores/UserStore/index";
-import { Modal, Button, ImageOrVideo, Username } from "@components/index";
+import { Modal, Button, Username, Blook } from "@components/index";
 import styles from "../credits.module.scss";
 
 import { CreditModalProps } from "../credits.d";
@@ -16,7 +16,12 @@ export default function CreditModal({ credit }: CreditModalProps) {
         <>
             <Modal.ModalHeader>
                 <div className={styles.creditModalAvatarContainer}>
-                    <ImageOrVideo className={styles.creditModalAvatar} src={getUserAvatarPath(credit.user)} />
+                    <Blook
+                        className={styles.creditModalAvatar}
+                        src={getUserAvatarPath(credit.user)}
+                        shiny={credit.user.avatar?.shiny}
+                        draggable={false}
+                    />
                 </div>
                 <Username user={credit.user} />
             </Modal.ModalHeader>

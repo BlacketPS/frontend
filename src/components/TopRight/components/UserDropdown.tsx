@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useModal } from "@stores/ModalStore/index";
 import { useUser } from "@stores/UserStore/index";
-import { Blook, ImageOrVideo, Modal, Username } from "@components/index";
+import { Blook, Modal, Username } from "@components/index";
 import styles from "../topRight.module.scss";
 
 import { UserDropdownProps } from "../topRight.d";

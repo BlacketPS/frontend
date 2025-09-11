@@ -6,4 +6,5 @@ export interface GenericButtonProps extends HTMLAttributes<HTMLButtonElement | H
     className?: string;
     type?: "button" | "submit" | "reset";
     backgroundColor?: string;
+    useVhStyles?: boolean;
 }

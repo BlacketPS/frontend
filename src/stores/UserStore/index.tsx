@@ -1,3 +1,5 @@
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 import { create } from "zustand";
 import { PrivateUser, PermissionType } from "@blacket/types";
 import { useData } from "@stores/DataStore/index";
@@ -5,7 +7,6 @@ import { useResource } from "@stores/ResourceStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
 
 import { UserStore } from "./userStore.d";
-import { useEffect } from "react";
 
 export const useUserStore = create<UserStore>((set, get) => {
     return {
@@ -35,6 +36,8 @@ export const useUserStore = create<UserStore>((set, get) => {
         getUserAvatarPath: () => window.constructCDNUrl("/content/blooks/Default.png"),
         getUserBannerPath: () => window.constructCDNUrl("/content/banners/Default.png"),
 
+        isAvatarBig: () => false,
+
         getBlookAmount: (blookId: number, shiny: boolean, usr?: PrivateUser) => {
             const user = usr || get().user;
             if (!user) return 0;
@@ -52,9 +55,16 @@ export function useUser() {
     const { resourceIdToPath } = useResource();
     const { addCachedUserWithData } = useCachedUser();
 
+    const location = useLocation();
+    const navigate = useNavigate();
+
     useEffect(() => {
-        if (user) addCachedUserWithData(user);
-    }, [user]);
+        if (user) {
+            addCachedUserWithData(user);
+
+            if (!location.pathname.startsWith("/rules") && !user.readRulesAt) navigate("/rules");
+        }
+    }, [user, location]);
 
     const getUserAvatarPath = (user: PrivateUser | null): string => {
         if (!user) return window.constructCDNUrl("/content/icons/error.png");
@@ -81,11 +91,24 @@ export function useUser() {
         return window.constructCDNUrl("/content/banners/Default.png");
     };
 
+    const isAvatarBig = (usr: PrivateUser | null): boolean => {
+        const u = usr || user;
+
+        if (u?.avatar?.blookId) {
+            const blook = blooks.find((b) => b.id === u.avatar?.blookId);
+
+            return blook ? blook.isBig : false;
+        }
+
+        return false;
+    };
+
     return {
         user,
         setUser,
         getBlookAmount,
         getUserAvatarPath,
-        getUserBannerPath
+        getUserBannerPath,
+        isAvatarBig
     };
 }

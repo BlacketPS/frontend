@@ -4,7 +4,7 @@ import { Editor, Node, Transforms, Range, createEditor } from "slate";
 import { Slate, Editable, withReact } from "slate-react";
 import { useUser } from "@stores/UserStore/index";
 import { useCachedUser } from "@stores/CachedUserStore/index";
-import { ImageOrVideo, Username } from "@components/index";
+import { Blook, Username } from "@components/index";
 import { withCustomElement, insertEmoji, insertMention } from "./utils";
 import decorate from "./decorate";
 import Element from "./elements";
@@ -169,7 +169,11 @@ export default function MarkdownEditor({ content, color, readOnly, getEditor = (
                             data-selected={user.id === mentionUserId}
                         >
                             <div className={styles.typingListItemImage}>
-                                <ImageOrVideo src={getUserAvatarPath(user)} />
+                                <Blook
+                                    src={getUserAvatarPath(user)}
+                                    shiny={user.avatar?.shiny}
+                                    draggable={false}
+                                />
                             </div>
 
                             <Username user={user} />

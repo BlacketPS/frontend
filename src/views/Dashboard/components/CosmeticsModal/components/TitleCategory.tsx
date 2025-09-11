@@ -2,8 +2,7 @@ import { useState } from "react";
 import { useLoading } from "@stores/LoadingStore/index";
 import { useUser } from "@stores/UserStore/index";
 import { useData } from "@stores/DataStore/index";
-import { SearchBox } from "@components/index";
-import { Title } from ".";
+import { SearchBox, Title } from "@components/index";
 import { useChangeTitle } from "@controllers/cosmetics/useChangeTitle/index";
 import styles from "../cosmeticsModal.module.scss";
 
@@ -38,13 +37,12 @@ export default function TitleCategory() {
             />
 
             <div className={styles.holder} data-column={true}>
-                <Title title={titles.find((title) => title.id === 1)!} onClick={() => onSelect(1)} />
-
                 {titles
                     .filter((title) => title.name.toLowerCase().includes(search.toLowerCase()))
                     .sort((a, b) => a.priority - b.priority)
-                    .map((title) => (user.titles as number[]).includes(title.id) && <Title key={title.id} title={title} onClick={() => onSelect(title.id)} />)
-                }
+                    .map((title) => <div className={styles.titleContainer} key={title.id} onClick={() => onSelect(title.id)}>
+                        <Title title={title} />
+                    </div>)}
             </div>
         </>
     );

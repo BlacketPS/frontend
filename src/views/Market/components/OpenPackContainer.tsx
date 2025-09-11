@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useSound } from "@stores/SoundStore/index";
 import { useInsanePull } from "@stores/InsanePullStore/index";
-import { ImageOrVideo } from "@components/index";
 import styles from "../market.module.scss";
+
 import { OpenPackContainerProps } from "../market.d";
 import { RarityAnimationTypeEnum } from "@blacket/types";
 
@@ -146,10 +146,12 @@ export default function OpenPackContainer({ opening, image, video, animationType
             const t = Math.min(elapsed / growDuration, 1);
             scale = 1 + t * (maxScale - 1);
 
+            const shakeSpeed = isMythical ? 0.01 : 0.02;
+            shakePhase += shakeSpeed * dt;
+
             const shakeX = Math.sin(shakePhase) * 6;
             const shakeY = Math.cos(shakePhase * 1.2) * 6;
             const shakeZ = Math.sin(shakePhase * 0.7);
-            shakePhase += isMythical ? 0.2 : 0.4;
 
             let brightness = 1 + t * 0.3;
             let glow = 0;
@@ -215,7 +217,7 @@ export default function OpenPackContainer({ opening, image, video, animationType
                         muted={true}
                         onEnded={setEnded.bind(null, true)}
                     />}
-                    <ImageOrVideo className={styles.openPackBottom} src={image} data-opening={opening} />
+                    <img className={styles.openPackBottom} src={image} data-opening={opening} />
                 </div>
 
                 {ended && <div className={styles.openPackEndContainer}>
@@ -228,7 +230,7 @@ export default function OpenPackContainer({ opening, image, video, animationType
                 </div>}
             </> : <>
                 <div className={styles.openPackContainer} style={{ zIndex: 2 }}>
-                    <ImageOrVideo
+                    <img
                         ref={chromaImageRef}
                         className={styles.openPackCenter}
                         src={image}

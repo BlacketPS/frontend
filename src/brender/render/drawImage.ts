@@ -1,7 +1,7 @@
 import { getLayerCtx, camera, isOnScreen, DrawImageProps } from "@brender/index";
 
 const shineVideo = document.createElement("video");
-shineVideo.src = window.constructCDNUrl("/content/shine.webm");
+shineVideo.src = window.constructCDNUrl("/content/shine.mp4");
 shineVideo.muted = true;
 shineVideo.loop = true;
 shineVideo.play();
@@ -47,7 +47,7 @@ export const drawImage = (image: DrawImageProps) => {
         shineCanvas.height = screenH;
         const shineCtx = shineCanvas.getContext("2d")!;
 
-        shineCtx.globalAlpha = 0.65;
+        shineCtx.globalAlpha = 0.5;
         shineCtx.globalCompositeOperation = "lighter";
 
         shineCtx.fillStyle = "rgba(255,255,255,1)";

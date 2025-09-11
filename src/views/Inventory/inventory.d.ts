@@ -1,5 +1,7 @@
 import { HTMLAttributes } from "react";
 
+import { Item } from "@blacket/types";
+
 export interface InfoProps extends HTMLAttributes<HTMLDivElement> {
     name?: string;
     icon?: string;
@@ -15,4 +17,8 @@ export interface AuctionModalProps {
     blook?: Blook;
     item?: Item;
     shiny?: boolean;
+}
+
+export interface BoosterModalProps {
+    booster: Item;
 }

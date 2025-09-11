@@ -57,7 +57,7 @@ export default function OpenPackBlook({ userBlook, animate = false, isNew }: Ope
             className={`${styles.openPackBlookContainer} ${animate ? styles.openPackBlookContainerAnimation1 : ""}`}>
             <ImageOrVideo src={resourceIdToPath(blook.backgroundId)} className={styles.openPackBlookBackground} />
 
-            {userBlook.shiny && <ImageOrVideo className={styles.shinySunburst} src={window.constructCDNUrl("/content/sunburst.svg")} />}
+            {userBlook.shiny && <img className={styles.shinySunburst} src={window.constructCDNUrl("/content/sunburst.svg")} />}
 
             <div className={styles.openPackBlookBlook}>
                 <Blook
