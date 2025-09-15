@@ -12,6 +12,18 @@ export default function InsanePullUI() {
     const videoRef = useRef<HTMLVideoElement>(null);
     const navigate = useNavigate();
 
+    const fullscreen = () => {
+        switch (document.documentElement.requestFullscreen) {
+            case undefined:
+                if ((document.documentElement as any).webkitRequestFullscreen) (document.documentElement as any).webkitRequestFullscreen();
+                if ((document.documentElement as any).msRequestFullscreen) (document.documentElement as any).msRequestFullscreen();
+
+                break;
+            default:
+                document.documentElement.requestFullscreen();
+        }
+    };
+
     useEffect(() => {
         if (!video) return;
 
@@ -19,29 +31,40 @@ export default function InsanePullUI() {
         const vid = videoRef.current;
         if (!flash || !vid) return;
 
+        // weird workaround for autoplay issues - xotic
+        vid.pause();
+
+        fullscreen();
         stopAllSounds();
         playSound("bass-drop");
+        navigate("/chat");
 
-        setTimeout(() => {
-            flash.style.backgroundColor = "black";
-
+        const handleCanPlayThrough = () => {
             setTimeout(() => {
-                vid.style.opacity = "1";
-                vid.play();
-            }, 4000);
-        }, 150);
+                flash.style.backgroundColor = "black";
+
+                setTimeout(() => {
+                    vid.style.opacity = "1";
+                    vid.play();
+                }, 4000);
+            }, 150);
+
+            vid.removeEventListener("canplaythrough", handleCanPlayThrough);
+        };
+
+        vid.addEventListener("canplaythrough", handleCanPlayThrough);
     }, [video]);
 
     if (video) return (<>
         <style>{"body{overflow:hidden}"}</style>
 
-        <div className={styles.flash} ref={flashRef} />
+        <div className={styles.flash} onContextMenu={(e) => e.preventDefault()} ref={flashRef} />
 
         <video
             ref={videoRef}
             src={video}
             className={styles.video}
-            autoPlay={false}
+            autoPlay={true}
             muted={false}
             playsInline
             onEnded={() => {
@@ -49,10 +72,13 @@ export default function InsanePullUI() {
                 videoRef.current!.style.opacity = "0";
 
                 setTimeout(() => {
-                    navigate("/chat");
+                    document.exitFullscreen();
+
                     setVideo(null);
                 }, 5000);
             }}
+            onContextMenu={(e) => e.preventDefault()}
         />
     </>);
+    else return null;
 }

@@ -8,3 +8,9 @@ export interface SettingsContainerProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 export interface UpgradeButtonProps extends HTMLAttributes<HTMLAnchorElement> { }
+
+export interface SecurityKeyProps {
+    name: string;
+    createdAt: Date;
+    onRemove: () => void;
+}

@@ -35,8 +35,11 @@ export default defineConfig({
             }
         },
         allowedHosts: [
-            ".blacket.org",
-            ".blacket.net"
+            ...process.env.VITE_ALLOWED_ORIGINS ? process.env.VITE_ALLOWED_ORIGINS.split(",").map((origin) => {
+                const url = new URL(origin);
+
+                return url.hostname;
+            }) : []
         ],
         fs: {
             strict: true

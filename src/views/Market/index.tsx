@@ -25,7 +25,7 @@ export default function Market() {
     const { createModal } = useModal();
     const { user } = useUser();
     const { resourceIdToPath } = useResource();
-    const { playSound, stopSounds, defineSounds, setVolume } = useSound();
+    const { playSound, stopSounds, defineSounds, setVolume, getSound } = useSound();
     const { packs, rarities, blooks, itemShop } = useData();
 
     if (!user) return <Navigate to="/login" />;
@@ -71,24 +71,14 @@ export default function Market() {
     };
 
     const setAmbienceSound = async (pack: PackType) => {
-        const sounds = packs.map((p) => `pack-ambience-${p.id}`);
+        setVolume(`pack-ambience-${pack.id}`, gainToDb(0.1));
 
-        for (const soundId of sounds) {
-            // const sound = await getSound(soundId);
-
-            // if (sound) {
-            //     if (soundId === `pack-ambience-${pack.id}`) sound.volume.value = gainToDb(0.1);
-            //     else sound.volume.value = -Infinity;
-            // }
-
-            if (soundId < `pack-ambience-${pack.id}`) setVolume(`pack-ambience-${pack.id}`, gainToDb(0.1));
-            else setVolume(`pack-ambience-${pack.id}`, -Infinity);
+        for (const p of packs.filter((p) => p.id !== pack.id && p.ambienceId)) {
+            setVolume(`pack-ambience-${p.id}`, -Infinity);
         }
     };
 
     const muteAmbience = async () => {
-        // const sound = await getSound(`pack-ambience-${currentPack?.id}`);
-        // if (sound) sound.volume.value = -Infinity;
         setVolume(`pack-ambience-${currentPack?.id}`, -Infinity);
     };
 
@@ -118,8 +108,7 @@ export default function Market() {
                 }
 
                 setCurrentPack(pack);
-
-                setAmbienceSound(pack!);
+                setAmbienceSound(pack);
 
                 setBigButtonEvent(BigButtonClickType.NONE);
                 setTimeout(() => setBigButtonEvent(BigButtonClickType.OPEN), 100);

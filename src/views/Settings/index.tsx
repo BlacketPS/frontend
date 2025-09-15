@@ -14,7 +14,8 @@ import {
     ChangeUsernameModal,
     ChangePasswordModal,
     EnableOTPModal,
-    DisableOTPModal
+    DisableOTPModal,
+    ManageSecurityKeysModal
 } from "./components/index";
 import styles from "./settings.module.scss";
 
@@ -102,16 +103,17 @@ export default function Settings() {
                 </div>
             </SettingsContainer>
 
-            <SettingsContainer header={{ icon: "fas fa-pencil-alt", text: "Edit Info" }}>
-                <Button.ClearButton onClick={() => createModal(<ChangeUsernameModal />)}>Change Username</Button.ClearButton>
+            <SettingsContainer header={{ icon: "fas fa-lock", text: "Security" }}>
                 <Button.ClearButton onClick={() => createModal(<ChangePasswordModal />)}>Change Password</Button.ClearButton>
+                <Button.ClearButton onClick={() => createModal(user.settings.otpEnabled ? <DisableOTPModal /> : <EnableOTPModal />)}>{user.settings.otpEnabled ? "Disable" : "Enable"} 2FA / OTP</Button.ClearButton>
+                <Button.ClearButton onClick={() => createModal(<ManageSecurityKeysModal />)}>Add Security Key</Button.ClearButton>
             </SettingsContainer>
 
             <SettingsContainer header={{ icon: "fas fa-cog", text: "General" }}>
+                <Button.ClearButton onClick={() => createModal(<ChangeUsernameModal />)}>Change Username</Button.ClearButton>
                 <Button.ClearButton onClick={friendRequestsButton}>Friend Requests: {
                     user.settings.friendRequests === SettingFriendRequestEnum.ON ? "On" : user.settings.friendRequests === SettingFriendRequestEnum.OFF ? "Off" : user.settings.friendRequests === SettingFriendRequestEnum.MUTUAL ? "Mutual" : "Unknown"
                 }</Button.ClearButton>
-                <Button.ClearButton onClick={() => createModal(user.settings.otpEnabled ? <DisableOTPModal /> : <EnableOTPModal />)}>{user.settings.otpEnabled ? "Disable" : "Enable"} OTP / 2FA</Button.ClearButton>
             </SettingsContainer>
 
             <SettingsContainer header={{ icon: "fas fa-palette", text: "Cosmetics" }}>
@@ -149,7 +151,7 @@ export default function Settings() {
                 <Link to="/terms">Terms of Service</Link>
                 <Link to="/privacy">Privacy Policy</Link>
                 <Link to="/eula">End User License Agreement</Link>
-                                <Link to="/rules">Rules</Link>
+                <Link to="/rules">Rules</Link>
             </SettingsContainer>
         </div>
     );
