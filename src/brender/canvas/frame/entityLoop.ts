@@ -5,7 +5,7 @@ export const entityLoop = (entity: BrenderEntity, deltaTime: number) => {
         entity.image
         && isOnScreen(entity.x, entity.y, entity.width ?? entity?.image?.width ?? 0, entity.height ?? entity?.image?.height ?? 0)
     ) drawImage({
-        image: entity.image,
+        image: entity.image as HTMLImageElement,
         x: entity.x,
         y: entity.y,
         z: entity.z,

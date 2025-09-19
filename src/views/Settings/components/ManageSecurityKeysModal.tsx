@@ -1,22 +1,20 @@
 import { useState } from "react";
 import { useModal } from "@stores/ModalStore/index";
 import { useUser } from "@stores/UserStore/index";
-import { Modal, Button, ErrorContainer, Form, Input } from "@components/index";
+import { Modal, Button, ErrorContainer } from "@components/index";
 import { SecurityKey } from ".";
 import { useGenerateRegistration } from "@controllers/auth/webauthn/useGenerateRegistration/index";
 import { useVerifyRegistration } from "@controllers/auth/webauthn/useVerifyRegistration/index";
 import styles from "../settings.module.scss";
 
 export default function ManageSecurityKeysModal() {
-    const { closeModal } = useModal();
-
     const { user } = useUser();
-    if (!user) return closeModal();
+    if (!user) return null;
+
+    const { closeModal } = useModal();
 
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<string>("");
-    const [nickname, setNickname] = useState<string>("");
-
 
     const { generateRegistration } = useGenerateRegistration();
     const { verifyRegistration } = useVerifyRegistration();
@@ -57,7 +55,16 @@ export default function ManageSecurityKeysModal() {
                         }
                     };
 
-                    const credential: any = await navigator.credentials.create({ publicKey: options });
+                    let credential: any;
+
+                    try {
+                        credential = await navigator.credentials.create({ publicKey: options });
+                    } catch (err) {
+                        setLoading(false);
+
+                        return;
+                    }
+
                     if (!credential) {
                         setLoading(false);
                         setError("Failed to create credential.");

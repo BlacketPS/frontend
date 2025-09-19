@@ -6,7 +6,7 @@ import { useModal } from "@stores/ModalStore";
 import { useSettings } from "@controllers/settings/useSettings/index";
 import { useUser } from "@stores/UserStore/index";
 import { useData } from "@stores/DataStore/index";
-import { Modal, Button, Dropdown } from "@components/index";
+import { Modal, Button } from "@components/index";
 import {
     SettingsContainer,
     PlanText,

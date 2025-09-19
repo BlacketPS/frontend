@@ -44,9 +44,13 @@
 
 .securityKeys {
     display: flex;
-    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
     gap: 10px;
-    max-height: 300px;
+    max-height: 250px;
+    max-width: 500px;
     overflow-y: auto;
 }
 

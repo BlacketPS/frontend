@@ -34,20 +34,21 @@ export default function InsanePullUI() {
         // weird workaround for autoplay issues - xotic
         vid.pause();
 
-        fullscreen();
         stopAllSounds();
         playSound("bass-drop");
         navigate("/chat");
 
+        setTimeout(() => {
+            flash.style.backgroundColor = "black";
+        }, 300);
+
         const handleCanPlayThrough = () => {
             setTimeout(() => {
-                flash.style.backgroundColor = "black";
+                fullscreen();
 
-                setTimeout(() => {
-                    vid.style.opacity = "1";
-                    vid.play();
-                }, 4000);
-            }, 150);
+                vid.style.opacity = String(1);
+                vid.play();
+            }, Math.floor(Math.random() * (7000 - 4000 + 1)) + 4000);
 
             vid.removeEventListener("canplaythrough", handleCanPlayThrough);
         };
@@ -68,6 +69,8 @@ export default function InsanePullUI() {
             muted={false}
             playsInline
             onEnded={() => {
+                videoRef.current!.onpause = null;
+
                 flashRef.current!.style.opacity = "0";
                 videoRef.current!.style.opacity = "0";
 
